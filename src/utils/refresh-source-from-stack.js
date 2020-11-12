@@ -7,9 +7,9 @@ import {
   setEditingMode,
   reverseTemplate,
   getResourceID
-} from './utils'
+} from './source-utils'
 import { generateSourceFromTemplate } from './refresh-source-from-templates'
-import YamlParser from '../utils/YamlParser'
+import YamlParser from './YamlParser'
 import _ from 'lodash'
 
 export const generateSourceFromStack = (

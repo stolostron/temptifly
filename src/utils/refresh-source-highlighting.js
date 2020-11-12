@@ -1,7 +1,7 @@
 'use strict'
 
 import { diff } from 'deep-diff'
-import { parseYAML, getInsideObject, getResourceID } from './utils'
+import { parseYAML, getInsideObject, getResourceID } from './source-utils'
 import _ from 'lodash'
 import { Base64 } from 'js-base64'
 

@@ -1,6 +1,6 @@
 'use strict'
 
-import { getSourcePath } from './utils'
+import { getSourcePath } from './source-utils'
 import _ from 'lodash'
 
 ///////////////////////////////////////////////////////////////////////////////

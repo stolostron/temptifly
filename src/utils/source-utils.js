@@ -55,10 +55,14 @@ export function reverseTemplate(controlData, templateObject) {
         group.forEach(gcontrol => {
           reverseControl(gcontrol)
         })
-        shift(templateObject)
+        if (typeof shift === 'function') {
+          shift(templateObject)
+        }
       })
     } else if (reverse) {
-      reverse(control, templateObject)
+      if (typeof shift === 'function') {
+        reverse(control, templateObject)
+      }
     }
   }
   controlData.forEach(control => {

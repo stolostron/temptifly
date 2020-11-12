@@ -1,6 +1,6 @@
 'use strict'
 
-import { ControlMode, parseYAML, reverseTemplate } from './utils'
+import { ControlMode, parseYAML, reverseTemplate } from './source-utils'
 import msgs from '../../nls/platform.properties'
 import _ from 'lodash'
 

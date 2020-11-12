@@ -12,7 +12,6 @@ import {
 import 'monaco-editor/esm/vs/editor/editor.all.js'
 //import 'monaco-editor/esm/vs/editor/standalone/browser/quickOpen/quickCommand.js'
 import 'monaco-editor/esm/vs/basic-languages/yaml/yaml.contribution.js'
-import config from '../configTODO'
 
 if (window.monaco) {
   window.monaco.editor.defineTheme('console', {
@@ -32,12 +31,6 @@ if (window.monaco) {
       'editorLineNumber.foreground': lineNumberForeground.value
     }
   })
-}
-
-window.MonacoEnvironment = {
-  getWorkerUrl: function() {
-    return `${config.contextPath}/editor.worker.js`
-  }
 }
 
 class MonacoEditorEx extends MonacoEditor {

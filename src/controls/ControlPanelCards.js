@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import Tooltip from '../components/Tooltip'
 import '../../graphics/diagramIcons.svg'
-import config from '../configTODO'
 import _ from 'lodash'
 
 class ControlPanelCards extends React.Component {
@@ -35,7 +34,8 @@ class ControlPanelCards extends React.Component {
 
   UNSAFE_componentWillMount() {
     const { control } = this.props
-    if (typeof control.active === 'function') {
+    const { active, collapseCardsControlOnSelect } = control
+    if (typeof active === 'function') {
       const activeID = control.active(control, this.props.fetchData)
       if (activeID) {
         this.props.handleChange(activeID)
@@ -43,13 +43,15 @@ class ControlPanelCards extends React.Component {
         control.active = []
       }
     }
-    this.setState({ collapsed: !_.isEmpty(control.active) })
+    this.setState({ collapsed: collapseCardsControlOnSelect && !_.isEmpty(active) })
   }
 
   render() {
     const { locale, control, showEditor } = this.props
-    const { available, availableMap, active = [] } = control
+    const { available, availableMap } = control
     const { collapsed } = this.state
+    let { active } = control
+    active = active||[]
     const gridClasses = classNames({
       'mcx--grid-container': true,
       small: showEditor
@@ -177,7 +179,7 @@ const ControlPanelCard = ({
     >
       <div className={'mcx--provider-card-container'}>
         <div className={cardClasses}>
-          <img src={`${config.contextPath}/graphics/${logo}`} alt={title} />
+          <img src={logo} alt={title} />
           <p className={'mcx--create-cluster-page__provider-card-title'}>
             {title1}
             <span>{title2}</span>

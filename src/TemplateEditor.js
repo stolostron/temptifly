@@ -17,7 +17,7 @@ import {
   generateSource,
   getUniqueName,
   cacheUserData
-} from './utils/utils'
+} from './utils/source-utils'
 import { validateControls } from './utils/validate-controls'
 import { updateEditStack } from './utils/refresh-source-from-stack'
 import {
