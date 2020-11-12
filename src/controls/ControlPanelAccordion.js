@@ -39,9 +39,9 @@ class ControlPanelAccordion extends React.Component {
       techPreview
     } = control
     let { info } = control
-    //if (typeof info === 'function') {
-    //  info = info(control, controlData, this.context.locale)
-    //}
+    if (typeof info === 'function') {
+      info = info(control, controlData, this.context.locale)
+    }
 
     const handleCollapse = () => {
       if (control.sectionRef && collapsable) {

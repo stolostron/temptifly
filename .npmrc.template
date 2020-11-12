@@ -1,5 +1,0 @@
-@icpui:registry=https://na.artifactory.swg-devops.com/artifactory/api/npm/cpi-npm-local/
-//na.artifactory.swg-devops.com/artifactory/api/npm/cpi-npm-local/:_password=${ARTIFACTORY_TOKEN}
-//na.artifactory.swg-devops.com/artifactory/api/npm/cpi-npm-local/:username=${ARTIFACTORY_USER}
-//na.artifactory.swg-devops.com/artifactory/api/npm/cpi-npm-local/:email=${ARTIFACTORY_USER}
-//na.artifactory.swg-devops.com/artifactory/api/npm/cpi-npm-local/:always-auth=true

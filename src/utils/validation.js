@@ -1,7 +1,59 @@
 'use strict'
 
 import msgs from '../../nls/platform.properties'
+import _ from 'lodash'
+import IPCIDR from 'ip-cidr'
+import { Address4, Address6 } from 'ip-address'
 
+const IP_ADDRESS_TESTER = {
+  test: value => new Address4(value).isValid() || new Address6(value).isValid()
+}
+
+const getCIDRContextTexter = (cidrFieldKey, sourcePath) => {
+  const { tabId, path } = sourcePath
+  return (value, templateObjectMap, locale) => {
+    if (!IP_ADDRESS_TESTER.test(value)) {
+      return msgs.get('creation.ocp.cluster.valid.ip', locale)
+    }
+    const cidrString = _.get(templateObjectMap[tabId], path) || ''
+    const cidr = new IPCIDR(cidrString.toString())
+    if (cidr.isValid() && !cidr.contains(value)) {
+      const cidrFieldName = msgs.get(cidrFieldKey)
+      return msgs.get(
+        'creation.ocp.cluster.valid.cidr.membership',
+        [cidrFieldName, cidrString],
+        locale
+      )
+    }
+    return null
+  }
+}
+
+const MACHINE_CIDR_CONTEXT_TESTER = getCIDRContextTexter(
+  'creation.ocp.machine.cidr',
+  {
+    tabId: 'install-config',
+    path: 'unknown[0].$synced.networking.$v.machineCIDR.$v'
+  }
+)
+
+export const VALIDATE_IP = {
+  tester: IP_ADDRESS_TESTER,
+  notification: 'creation.ocp.cluster.valid.ip',
+  required: true
+}
+
+export const VALIDATE_CIDR = {
+  tester: {
+    test: value => {
+      const cidr = new IPCIDR(value)
+      // Ensure CIDR is valid and results in more than one address
+      return cidr.isValid() && cidr.start() !== cidr.end()
+    }
+  },
+  notification: 'creation.ocp.cluster.valid.cidr',
+  required: true
+}
 
 export const VALIDATE_URL = {
   tester: {
@@ -16,6 +68,17 @@ export const VALIDATE_URL = {
   },
   notification: 'creation.invalid.url',
   required: true
+}
+
+export const VALIDATE_IP_AGAINST_MACHINE_CIDR = {
+  contextTester: MACHINE_CIDR_CONTEXT_TESTER,
+  notification: 'creation.ocp.cluster.valid.ip',
+  required: true
+}
+
+export const VALIDATE_IP_AGAINST_MACHINE_CIDR_OPTIONAL = {
+  contextTester: MACHINE_CIDR_CONTEXT_TESTER,
+  required: false
 }
 
 export const VALIDATE_USER_AND_IP = {
@@ -43,6 +106,13 @@ export const VALIDATE_NUMERIC = {
   notification: 'creation.valid.numeric',
   required: true
 }
+
+export const VALIDATE_ALPHANUMERIC_PERIOD = {
+  tester: new RegExp('^[A-Za-z0-9-_.]+$'),
+  notification: 'creation.ocp.cluster.valid.alphanumeric.period',
+  required: false
+}
+
 
 export const VALID_DNS_NAME =
   '^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$'

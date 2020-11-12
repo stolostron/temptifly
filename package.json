@@ -37,6 +37,8 @@
     "classnames": "2.2.5",
     "deep-diff": "^1.0.2",
     "graphql": "^0.13.2",
+    "ip-address": "^6.3.0",
+    "ip-cidr": "^2.0.11",
     "js-base64": "^2.6.4",
     "js-yaml": "^3.12.0",
     "lodash": "^4.17.11",
