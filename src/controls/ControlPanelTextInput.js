@@ -4,14 +4,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { TextInput } from 'carbon-components-react'
 import Tooltip from '../components/Tooltip'
-import msgs from '../../nls/platform.properties'
 
 class ControlPanelTextInput extends React.Component {
   static propTypes = {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    locale: PropTypes.string
+    i18n: PropTypes.func
   };
 
   constructor(props) {
@@ -24,7 +23,7 @@ class ControlPanelTextInput extends React.Component {
   };
 
   render() {
-    const { controlId, locale, control } = this.props
+    const { controlId, i18n, control } = this.props
     const {
       name,
       type,
@@ -37,11 +36,9 @@ class ControlPanelTextInput extends React.Component {
     // if placeholder missing, create one
     let { placeholder } = control
     if (!placeholder) {
-      placeholder = msgs.get(
+      placeholder = i18n(
         'creation.ocp.cluster.enter.value',
-        [name.toLowerCase()],
-        locale
-      )
+        [name.toLowerCase()])
     }
     return (
       <React.Fragment>
@@ -58,7 +55,7 @@ class ControlPanelTextInput extends React.Component {
             {validation.required ? (
               <div className="creation-view-controls-required">*</div>
             ) : null}
-            <Tooltip control={control} locale={locale} />
+            <Tooltip control={control} i18n={i18n} />
           </label>
           <TextInput
             id={controlId}

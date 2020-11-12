@@ -8,7 +8,6 @@ import {
   InlineLoading
 } from 'carbon-components-react'
 import Tooltip from '../components/Tooltip'
-import msgs from '../../nls/platform.properties'
 import _ from 'lodash'
 
 class ControlPanelComboBox extends React.Component {
@@ -17,7 +16,7 @@ class ControlPanelComboBox extends React.Component {
     controlData: PropTypes.array,
     controlId: PropTypes.string,
     handleControlChange: PropTypes.func,
-    locale: PropTypes.string
+    i18n: PropTypes.func
   };
 
   constructor(props) {
@@ -30,7 +29,7 @@ class ControlPanelComboBox extends React.Component {
   };
 
   render() {
-    const { controlId, locale, control } = this.props
+    const { controlId, i18n, control } = this.props
     const {
       name,
       userData = [],
@@ -48,32 +47,26 @@ class ControlPanelComboBox extends React.Component {
     let loadingMsg
     if (fetchAvailable) {
       if (isLoading) {
-        loadingMsg = msgs.get(
-          _.get(control, 'fetchAvailable.loadingDesc', 'resource.loading'),
-          locale
-        )
+        loadingMsg = i18n(
+          _.get(control, 'fetchAvailable.loadingDesc', 'resource.loading'))
       } else if (isFailed) {
-        placeholder = msgs.get('resource.error', locale)
+        placeholder = i18n('resource.error')
       } else if (available.length === 0) {
         placeholder =
           placeholder ||
-          msgs.get(
-            _.get(control, 'fetchAvailable.emptyDesc', 'resource.empty'),
-            locale
-          )
+          i18n(
+            _.get(control, 'fetchAvailable.emptyDesc', 'resource.empty'))
       }
     } else if (isLoading) {
-      loadingMsg = msgs.get(
+      loadingMsg = i18n(
         'creation.loading.values',
-        [name.toLowerCase()],
-        locale
+        [name.toLowerCase()]
       )
     }
     if (!placeholder) {
-      placeholder = msgs.get(
+      placeholder = i18n(
         'creation.enter.value',
-        [name.toLowerCase()],
-        locale
+        [name.toLowerCase()]
       )
     }
     available = _.uniq([...userData, ...available])
@@ -115,7 +108,7 @@ class ControlPanelComboBox extends React.Component {
             {validation.required ? (
               <div className="creation-view-controls-required">*</div>
             ) : null}
-            <Tooltip control={control} locale={locale} />
+            <Tooltip control={control} i18n={i18n} />
           </div>
           {isLoading && !active ? (
             <div className="creation-view-controls-singleselect-loading">

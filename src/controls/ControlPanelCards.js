@@ -12,7 +12,7 @@ class ControlPanelCards extends React.Component {
     control: PropTypes.object,
     fetchData: PropTypes.object,
     handleChange: PropTypes.func,
-    locale: PropTypes.string,
+    i18n: PropTypes.func,
     showEditor: PropTypes.bool
   };
 
@@ -47,7 +47,7 @@ class ControlPanelCards extends React.Component {
   }
 
   render() {
-    const { locale, control, showEditor } = this.props
+    const { i18n, control, showEditor } = this.props
     const { available, availableMap } = control
     const { collapsed } = this.state
     let { active } = control
@@ -82,7 +82,7 @@ class ControlPanelCards extends React.Component {
                         selected={active.includes(id)}
                         choice={choice}
                         handleOnClick={this.handleChange.bind(this, id)}
-                        locale={locale}
+                        i18n={i18n}
                       />
                     )
                   })}
@@ -147,7 +147,7 @@ const ControlPanelCard = ({
   handleOnClick,
   type,
   selected,
-  locale
+  i18n
 }) => {
   const { id, disabled, logo, title, tooltip, learnMore } = choice
   const cardClasses = classNames({
@@ -195,7 +195,7 @@ const ControlPanelCard = ({
         {tooltip &&
           !selected && (
           <div className="card-tooltip-container">
-            <Tooltip control={{ tooltip, learnMore }} locale={locale} />
+            <Tooltip control={{ tooltip, learnMore }} i18n={i18n} />
           </div>
         )}
       </div>
@@ -206,7 +206,7 @@ const ControlPanelCard = ({
 ControlPanelCard.propTypes = {
   choice: PropTypes.object,
   handleOnClick: PropTypes.func,
-  locale: PropTypes.string,
+  i18n: PropTypes.func,
   selected: PropTypes.bool,
   type: PropTypes.string
 }

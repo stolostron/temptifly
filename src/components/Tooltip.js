@@ -3,16 +3,15 @@
 import React from 'react'
 import { Tooltip as CarbonTooltip } from 'carbon-components-react'
 import PropTypes from 'prop-types'
-import msgs from '../../nls/platform.properties'
 
 class Tooltip extends React.PureComponent {
   static propTypes = {
     control: PropTypes.object.isRequired,
-    locale: PropTypes.string
+    i18n: PropTypes.func
   };
 
   render() {
-    const { control, locale } = this.props
+    const { control, i18n } = this.props
     const { tooltip, learnMore } = control
     return tooltip ? (
       <CarbonTooltip
@@ -46,7 +45,7 @@ class Tooltip extends React.PureComponent {
               target="_blank"
               rel="noreferrer"
             >
-              {msgs.get('tooltip.link', locale)}
+              {i18n('tooltip.link')}
             </a>
           </div>
         )}

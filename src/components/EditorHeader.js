@@ -5,14 +5,13 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Tab, Tabs, Checkbox } from 'carbon-components-react'
 import '../scss/editor-header.scss'
-import msgs from '../../nls/platform.properties'
 
 class EditorHeader extends React.Component {
   static propTypes = {
     children: PropTypes.node,
     handleShowSecretChange: PropTypes.func,
     handleTabChange: PropTypes.func,
-    locale: PropTypes.string,
+    i18n: PropTypes.func,
     otherYAMLTabs: PropTypes.array,
     showSecrets: PropTypes.bool,
     type: PropTypes.string.isRequired
@@ -23,8 +22,8 @@ class EditorHeader extends React.Component {
   }
 
   render() {
-    const { children, otherYAMLTabs = [], locale } = this.props
-    const editorToolbarTitle = msgs.get('editor.toolbar', locale)
+    const { children, otherYAMLTabs = [], i18n } = this.props
+    const editorToolbarTitle = i18n('editor.toolbar')
     const hasTabs = otherYAMLTabs.length > 0
     const classnames = classNames({
       'creation-view-yaml-header': true,
@@ -75,7 +74,7 @@ class EditorHeader extends React.Component {
   };
 
   renderShowSecrets = () => {
-    const { showSecrets, handleShowSecretChange, locale } = this.props
+    const { showSecrets, handleShowSecretChange, i18n } = this.props
     return (
       <div className="creation-view-yaml-header-secrets">
         <Checkbox
@@ -86,7 +85,7 @@ class EditorHeader extends React.Component {
           checked={showSecrets}
           onChange={handleShowSecretChange}
         />
-        <div>{msgs.get('editor.show.secrets', locale)}</div>
+        <div>{i18n('editor.show.secrets')}</div>
       </div>
     )
   };

@@ -30,7 +30,6 @@ import EditorBar from './components/EditorBar'
 import YamlEditor from './components/YamlEditor'
 import TooltipContainer from './components/TooltipContainer'
 import './scss/template-editor.scss'
-import msgs from '../nls/platform.properties'
 import '../graphics/diagramIcons.svg'
 import _ from 'lodash'
 
@@ -55,7 +54,7 @@ export default class TemplateEditor extends React.Component {
       fetchData: PropTypes.object
     }),
     history: PropTypes.object,
-    locale: PropTypes.string,
+    i18n: PropTypes.func,
     portals: PropTypes.object.isRequired,
     savedFormData: PropTypes.oneOfType([
       PropTypes.object,
@@ -68,7 +67,7 @@ export default class TemplateEditor extends React.Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { createControl = {}, type, locale } = props
+    const { createControl = {}, type, i18n } = props
 
     // update notifications
     let { notifications } = state
@@ -83,12 +82,11 @@ export default class TemplateEditor extends React.Component {
             kind: 'info',
             exception: Array.isArray(creationMsg)
               ? creationMsg[0]
-              : msgs.get(
+              : i18n(
                 isEditing
                   ? 'success.create.updating'
                   : 'success.create.creating',
-                [type],
-                locale
+                [type]
               )
           }
         ]
@@ -101,12 +99,11 @@ export default class TemplateEditor extends React.Component {
             kind: 'success',
             exception: Array.isArray(creationMsg)
               ? creationMsg[0]
-              : msgs.get(
+              : i18n(
                 isEditing
                   ? 'success.create.updated'
                   : 'success.create.created',
-                [type],
-                locale
+                [type]
               )
           }
         ]
@@ -145,7 +142,7 @@ export default class TemplateEditor extends React.Component {
     if (!controlData) {
       // initialize control data
       const cd = _.cloneDeep(initialControlData)
-      controlData = initializeControls(cd, editor, locale)
+      controlData = initializeControls(cd, editor, i18n)
       newState = { ...newState, controlData }
 
       const showControl = controlData.find(
@@ -161,7 +158,7 @@ export default class TemplateEditor extends React.Component {
       // editing an existing set of resources??
       const customResources = _.get(fetchControl, 'resources')
       if (customResources) {
-        editStack = { customResources, editor, locale }
+        editStack = { customResources, editor, i18n }
       }
 
       // generate source from template or stack of resources
@@ -316,7 +313,7 @@ export default class TemplateEditor extends React.Component {
   };
 
   render() {
-    const { locale } = this.props
+    const { i18n } = this.props
     const { isLoaded, isFailed, showEditor, resetInx } = this.state
     if (!showEditor) {
       this.editors = []
@@ -328,7 +325,7 @@ export default class TemplateEditor extends React.Component {
           title=""
           className="overview-notification"
           kind="error"
-          subtitle={msgs.get('overview.error.default', locale)}
+          subtitle={i18n('overview.error.default')}
         />
       )
     }
@@ -344,7 +341,7 @@ export default class TemplateEditor extends React.Component {
       >
         <Prompt
           when={this.isDirty}
-          message={msgs.get('changes.maybe.lost', locale)}
+          message={i18n('changes.maybe.lost')}
         />
         {this.renderEditButton(isLoaded)}
         {this.renderCreateButton(isLoaded)}
@@ -391,7 +388,7 @@ export default class TemplateEditor extends React.Component {
     const {
       controlData: originalControlData,
       fetchControl = {},
-      locale
+      i18n
     } = this.props
     const { fetchData } = fetchControl
     return (
@@ -406,13 +403,13 @@ export default class TemplateEditor extends React.Component {
         showEditor={showEditor}
         isCustomName={isCustomName}
         isLoaded={isLoaded}
-        locale={locale}
+        i18n={i18n}
       />
     )
   }
 
   handleControlChange(control, controlData, creationView, isCustomName) {
-    const { locale } = this.props
+    const { i18n } = this.props
     const {
       template,
       templateYAML,
@@ -444,7 +441,7 @@ export default class TemplateEditor extends React.Component {
       otherYAMLTabs,
       controlData,
       isFinalValidate,
-      locale
+      i18n
     )
     highlightAllChanges(
       this.editors,
@@ -470,7 +467,7 @@ export default class TemplateEditor extends React.Component {
   }
 
   handleGroupChange(control, controlData, creationView, inx) {
-    const { locale } = this.props
+    const { i18n } = this.props
     const {
       showEditor,
       editor,
@@ -488,7 +485,7 @@ export default class TemplateEditor extends React.Component {
       const newGroup = initializeControls(
         cd,
         editor,
-        locale,
+        i18n,
         control.nextUniqueGroupID,
         true
       )
@@ -519,7 +516,7 @@ export default class TemplateEditor extends React.Component {
       otherYAMLTabs,
       controlData,
       isFinalValidate,
-      locale
+      i18n
     )
     highlightAllChanges(
       this.editors,
@@ -572,7 +569,7 @@ export default class TemplateEditor extends React.Component {
 
   // change editor mode based on what card is selected
   changeEditorMode(control, controlData) {
-    const { locale } = this.props
+    const { i18n } = this.props
     let { template } = this.props
     const { editStack, otherYAMLTabs, editor } = this.state
     let { templateYAML, templateObject, templateResources } = this.state
@@ -611,7 +608,7 @@ export default class TemplateEditor extends React.Component {
             cd.groupControlData = groupControlData
           })
         }
-        controlData = initializeControls(controlData, editor, locale)
+        controlData = initializeControls(controlData, editor, i18n)
       }
 
       // replace template and regenerate templateYAML and highlight diffs
@@ -713,7 +710,7 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderEditor() {
-    const { locale, type = 'unknown', title } = this.props
+    const { i18n, type = 'unknown', title } = this.props
     const {
       hasUndo,
       hasRedo,
@@ -731,7 +728,7 @@ export default class TemplateEditor extends React.Component {
           handleShowSecretChange={this.handleShowSecrets.bind(this)}
           showSecrets={showSecrets}
           type={type}
-          locale={locale}
+          i18n={i18n}
         >
           <EditorBar
             title={title}
@@ -742,6 +739,7 @@ export default class TemplateEditor extends React.Component {
             gotoEditorLine={this.gotoEditorLine}
             handleEditorCommand={this.handleEditorCommand}
             handleSearchChange={this.handleSearchChange}
+            i18n={i18n}
           />
         </EditorHeader>
         {updateMessage && (
@@ -751,8 +749,8 @@ export default class TemplateEditor extends React.Component {
               kind={updateMsgKind}
               title={
                 updateMsgKind === 'error'
-                  ? msgs.get(`error.create.${type}`, locale)
-                  : msgs.get(`success.create.${type}.check`, locale)
+                  ? i18n(`error.create.${type}`)
+                  : i18n(`success.create.${type}.check`)
               }
               iconDescription=""
               subtitle={updateMessage}
@@ -957,7 +955,7 @@ export default class TemplateEditor extends React.Component {
   };
 
   handleParse = yaml => {
-    const { locale } = this.props
+    const { i18n } = this.props
     const {
       otherYAMLTabs,
       activeYAMLEditor,
@@ -989,7 +987,7 @@ export default class TemplateEditor extends React.Component {
       otherYAMLTabs,
       controlData,
       isFinalValidate,
-      locale
+      i18n
     )
     if (notifications.length > 0) {
       notifications = []
@@ -999,7 +997,7 @@ export default class TemplateEditor extends React.Component {
             notifications.push({
               id: 'error',
               kind: 'error',
-              exception: msgs.get('error.create.syntax', [text], locale),
+              exception: i18n('error.create.syntax', [text]),
               row,
               editor,
               tabInx
@@ -1047,7 +1045,7 @@ export default class TemplateEditor extends React.Component {
   handleUpdateMessageClosed = () => this.setState({ updateMessage: '' });
 
   getResourceJSON() {
-    const { locale } = this.context
+    const { i18n } = this.props
     const { templateYAML, controlData, otherYAMLTabs, editStack } = this.state
     let canCreate = false
     const {
@@ -1061,7 +1059,7 @@ export default class TemplateEditor extends React.Component {
       otherYAMLTabs,
       controlData,
       true,
-      locale
+      i18n
     )
     let notifications = []
     if (hasSyntaxExceptions || hasValidationExceptions) {
@@ -1070,7 +1068,7 @@ export default class TemplateEditor extends React.Component {
           notifications.push({
             id: 'error',
             kind: 'error',
-            exception: msgs.get('error.create.syntax', [text], locale),
+            exception: i18n('error.create.syntax', [text]),
             row,
             editor,
             tabInx,
@@ -1151,7 +1149,7 @@ export default class TemplateEditor extends React.Component {
   };
 
   renderEditButton(isLoaded) {
-    const { portals = {}, locale } = this.props
+    const { portals = {}, i18n } = this.props
     const { editBtn } = portals
     if (editBtn && isLoaded) {
       const portal = document.getElementById(editBtn)
@@ -1171,15 +1169,15 @@ export default class TemplateEditor extends React.Component {
             <ToggleSmall
               id="edit-yaml"
               key={`is${showEditor}`}
-              ariaLabel={msgs.get('edit.yaml.on', locale)}
+              ariaLabel={i18n('edit.yaml.on')}
               defaultToggled={showEditor}
               onChange={() => {}}
               onToggle={handleToggle}
             />
             <div className="switch-label">
               {showEditor
-                ? msgs.get('edit.yaml.on', locale)
-                : msgs.get('edit.yaml.off', locale)}
+                ? i18n('edit.yaml.on')
+                : i18n('edit.yaml.off')}
             </div>
           </div>,
           portal
@@ -1191,12 +1189,12 @@ export default class TemplateEditor extends React.Component {
 
   renderCreateButton(isLoaded) {
     const { isEditing } = this.state
-    const { portals = {}, createControl, locale } = this.props
+    const { portals = {}, createControl, i18n } = this.props
     const { createBtn } = portals
     if (createControl && createBtn && isLoaded) {
       const { hasPermissions = true } = createControl
       const titleText = !hasPermissions
-        ? msgs.get('button.save.access.denied', locale)
+        ? i18n('button.save.access.denied')
         : undefined
       let disableButton = true
       if (this.isDirty && hasPermissions) {
@@ -1204,8 +1202,8 @@ export default class TemplateEditor extends React.Component {
       }
       const portal = document.getElementById(createBtn)
       const label = isEditing
-        ? msgs.get('button.update', locale)
-        : msgs.get('button.create', locale)
+        ? i18n('button.update')
+        : i18n('button.create')
       const button = (
         <Button
           id={createBtn}
@@ -1243,7 +1241,7 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderCancelButton() {
-    const { portals = {}, createControl, locale } = this.props
+    const { portals = {}, createControl, i18n } = this.props
     const { cancelBtn } = portals
     if (createControl && cancelBtn) {
       const portal = document.getElementById(cancelBtn)
@@ -1251,7 +1249,7 @@ export default class TemplateEditor extends React.Component {
         const { cancelCreate } = createControl
         return ReactDOM.createPortal(
           <Button id={cancelBtn} onClick={cancelCreate} kind={'secondary'}>
-            {msgs.get('button.cancel', locale)}
+            {i18n('button.cancel')}
           </Button>,
           portal
         )
@@ -1261,10 +1259,10 @@ export default class TemplateEditor extends React.Component {
   }
 
   resetEditor() {
-    const { template, controlData: initialControlData, locale } = this.props
+    const { template, controlData: initialControlData, i18n } = this.props
     const { editStack = {}, resetInx, editor } = this.state
     const cd = _.cloneDeep(initialControlData)
-    const controlData = initializeControls(cd, editor, locale)
+    const controlData = initializeControls(cd, editor, i18n)
     const otherYAMLTabs = []
     if (editStack.initialized) {
       delete editStack.initialized

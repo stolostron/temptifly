@@ -1,7 +1,6 @@
 'use strict'
 
 import { ControlMode, parseYAML, reverseTemplate } from './source-utils'
-import msgs from '../../nls/platform.properties'
 import _ from 'lodash'
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -14,7 +13,7 @@ export function validateControls(
   otherYAMLTabs = [],
   controlData,
   isFinalValidate,
-  locale
+  i18n
 ) {
   // parse all yamls
   const results = parseYAML(templateYAML)
@@ -23,7 +22,7 @@ export function validateControls(
 
   // update active values in controls
   if (exceptions.length === 0) {
-    reverseTemplate(controlData, parsed, null, locale)
+    reverseTemplate(controlData, parsed, null, i18n)
   }
 
   const templateObjectMap = { '<<main>>': parsed }
@@ -69,7 +68,7 @@ export function validateControls(
             templateObjectMap,
             templateExceptionMap,
             isFinalValidate,
-            locale
+            i18n
           )
           break
 
@@ -80,7 +79,7 @@ export function validateControls(
             templateObjectMap,
             templateExceptionMap,
             isFinalValidate,
-            locale
+            i18n
           )
           break
 
@@ -91,7 +90,7 @@ export function validateControls(
             templateObjectMap,
             templateExceptionMap,
             isFinalValidate,
-            locale
+            i18n
           )
           break
         }
@@ -156,7 +155,7 @@ const validateGroupControl = (
   templateObjectMap,
   templateExceptionMap,
   isFinalValidate,
-  locale
+  i18n
 ) => {
   group.forEach(controlData => {
     controlData.forEach(control => {
@@ -167,7 +166,7 @@ const validateGroupControl = (
         templateObjectMap,
         templateExceptionMap,
         isFinalValidate,
-        locale
+        i18n
       )
     })
   })
@@ -178,7 +177,7 @@ const validateTableControl = (
   templateObjectMap,
   templateExceptionMap,
   isFinalValidate,
-  locale
+  i18n
 ) => {
   const {
     active: rows,
@@ -207,7 +206,7 @@ const validateTableControl = (
           templateObjectMap,
           templateExceptionMap,
           isFinalValidate,
-          locale
+          i18n
         )
         row[key] = control.active
         const promptOnly = control.mode === ControlMode.PROMPT_ONLY
@@ -233,14 +232,12 @@ const validateTableControl = (
     })
   })
   if (exceptions.length > 0) {
-    table.exception = msgs.get(
-      `creation.ocp.validation.errors${hidden ? '.hidden' : ''}`,
-      locale
-    )
+    table.exception = i18n(
+      `creation.ocp.validation.errors${hidden ? '.hidden' : ''}`)
   } else if (typeof tester === 'function') {
     const exception = tester(rows)
     if (exception) {
-      table.exception = msgs.get(exception, locale)
+      table.exception = i18n(exception)
     }
   }
 }
@@ -251,7 +248,7 @@ const validateControl = (
   templateObjectMap,
   templateExceptionMap,
   isFinalValidate,
-  locale
+  i18n
 ) => {
   // if final validation before creating template, if this value is required, throw error
   const { type, isHidden } = control
@@ -278,7 +275,7 @@ const validateControl = (
       if (required && (!active || (type === 'cards' && active.length === 0))) {
         let row = 0
         const msg = notification ? notification : 'creation.missing.input'
-        control.exception = msgs.get(msg, [name], locale)
+        control.exception = i18n(msg, [name])
         const { sourcePath } = control
         if (sourcePath) {
           //({ exceptions } = templateExceptionMap[tabId])
@@ -310,7 +307,7 @@ const validateControl = (
         templateObjectMap,
         templateExceptionMap,
         isFinalValidate,
-        locale
+        i18n
       )
       break
     case 'checkbox':
@@ -318,7 +315,7 @@ const validateControl = (
         control,
         templateObjectMap,
         templateExceptionMap,
-        locale
+        i18n
       )
       break
     case 'cards':
@@ -326,7 +323,7 @@ const validateControl = (
         control,
         templateObjectMap,
         templateExceptionMap,
-        locale
+        i18n
       )
       break
     case 'singleselect':
@@ -334,7 +331,7 @@ const validateControl = (
         control,
         templateObjectMap,
         templateExceptionMap,
-        locale
+        i18n
       )
       break
     case 'multiselect':
@@ -342,7 +339,7 @@ const validateControl = (
         control,
         templateObjectMap,
         templateExceptionMap,
-        locale
+        i18n
       )
       break
     case 'table':
@@ -350,7 +347,7 @@ const validateControl = (
         control,
         templateObjectMap,
         templateExceptionMap,
-        locale
+        i18n
       )
       break
     }
@@ -383,7 +380,7 @@ const validateTextControl = (
   templateObjectMap,
   templateExceptionMap,
   isFinalValidate,
-  locale
+  i18n
 ) => {
   const {
     id,
@@ -409,20 +406,20 @@ const validateTextControl = (
   control.active = active
   const { exceptions } = templateExceptionMap['<<main>>']
   if (active === undefined) {
-    addException(sourcePath, exceptions, locale)
+    addException(sourcePath, exceptions, i18n)
   } else if (active || isFinalValidate) {
     let exception
     if (active) {
       if (contextTester) {
-        exception = contextTester(active, templateObjectMap, locale)
+        exception = contextTester(active, templateObjectMap, i18n)
       } else if (tester && !tester.test(active)) {
         if (active.length > 50) {
           active = `${active.substr(0, 25)}...${active.substr(-25)}`
         }
-        exception = msgs.get(notification, [active], locale)
+        exception = i18n(notification, [active])
       }
     } else {
-      exception = msgs.get('validation.missing.value', [name], locale)
+      exception = i18n('validation.missing.value', [name])
     }
     if (exception) {
       control.exception = exception
@@ -445,20 +442,18 @@ const validateSingleSelectControl = (
   control,
   templateObjectMap,
   templateExceptionMap,
-  locale
+  i18n
 ) => {
   const { active, available = [], sourcePath = {} } = control
   const { exceptions } = templateExceptionMap['<<main>>']
   if (!active) {
-    addException(sourcePath, exceptions, locale)
+    addException(sourcePath, exceptions, i18n)
   } else if (
     available.findIndex(avail => active.indexOf(avail) !== -1) === -1
   ) {
-    control.exception = msgs.get(
+    control.exception = i18n(
       'validation.bad.value',
-      [active, _.get(control, 'available')],
-      locale
-    )
+      [active, _.get(control, 'available')])
     exceptions.push({
       row: getRow(sourcePath),
       column: 0,
@@ -472,11 +467,11 @@ const validateCardsControl = (
   control,
   templateObjectMap,
   templateExceptionMap,
-  locale
+  i18n
 ) => {
   const { active, validation: { required, notification } } = control
   if (required && !active) {
-    control.exception = msgs.get(notification, locale)
+    control.exception = i18n(notification)
   }
 }
 
@@ -484,19 +479,17 @@ const validateCheckboxControl = (
   control,
   templateObjectMap,
   templateExceptionMap,
-  locale
+  i18n
 ) => {
   const { active, available, sourcePath } = control
   const { exceptions } = templateExceptionMap['<<main>>']
   if (!active) {
-    addException(sourcePath, exceptions, locale)
+    addException(sourcePath, exceptions, i18n)
   }
   if (available.indexOf(active) === -1) {
-    control.exception = msgs.get(
+    control.exception = i18n(
       'validation.bad.value',
-      [getKey(''), available.join(', ')],
-      locale
-    )
+      [getKey(''), available.join(', ')])
     exceptions.push({
       row: getRow(sourcePath),
       column: 0,
@@ -510,7 +503,7 @@ const validateMultiSelectControl = (
   control,
   templateObjectMap,
   templateExceptionMap,
-  locale
+  i18n
 ) => {
   const { hasKeyLabels, hasReplacements } = control
   if (hasKeyLabels) {
@@ -518,21 +511,21 @@ const validateMultiSelectControl = (
       control,
       templateObjectMap,
       templateExceptionMap,
-      locale
+      i18n
     )
   } else if (hasReplacements) {
     validateMultiSelectReplacementControl(
       control,
       templateObjectMap,
       templateExceptionMap,
-      locale
+      i18n
     )
   } else {
     validateMultiSelectStringControl(
       control,
       templateObjectMap,
       templateExceptionMap,
-      locale
+      i18n
     )
   }
 }
@@ -541,12 +534,12 @@ const validateMultiSelectStringControl = (
   control,
   templateObjectMap,
   templateExceptionMap,
-  locale
+  i18n
 ) => {
   const { active, sourcePath } = control
   const { exceptions } = templateExceptionMap['<<main>>']
   if (active === null) {
-    addException(sourcePath, exceptions, locale)
+    addException(sourcePath, exceptions, i18n)
   }
 }
 
@@ -554,12 +547,12 @@ const validateMultiSelectLabelControl = (
   control,
   templateObjectMap,
   templateExceptionMap,
-  locale
+  i18n
 ) => {
   const { active, sourcePath } = control
   const { exceptions } = templateExceptionMap['<<main>>']
   if (!active) {
-    addException(sourcePath, exceptions, locale)
+    addException(sourcePath, exceptions, i18n)
   }
 }
 
@@ -567,20 +560,20 @@ const validateMultiSelectReplacementControl = (
   control,
   templateObjectMap,
   templateExceptionMap,
-  locale
+  i18n
 ) => {
   const { active, sourcePath } = control
   const { exceptions } = templateExceptionMap['<<main>>']
   if (!active) {
-    addException(sourcePath, exceptions, locale)
+    addException(sourcePath, exceptions, i18n)
   }
 }
 
-const addException = (sourcePath, exceptions, locale) => {
+const addException = (sourcePath, exceptions, i18n) => {
   exceptions.push({
     row: getRow(sourcePath),
     column: 0,
-    text: msgs.get('validation.missing.resource', locale),
+    text: i18n('validation.missing.resource'),
     type: 'error'
   })
 }

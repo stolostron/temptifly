@@ -5,7 +5,6 @@ import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import { Tag } from 'carbon-components-react'
 import Tooltip from '../components/Tooltip'
-import msgs from '../../nls/platform.properties'
 import _ from 'lodash'
 
 class ControlPanelAccordion extends React.Component {
@@ -13,7 +12,7 @@ class ControlPanelAccordion extends React.Component {
     control: PropTypes.object,
     controlData: PropTypes.array,
     controlId: PropTypes.string,
-    locale: PropTypes.string
+    i18n: PropTypes.func
   };
 
   constructor(props) {
@@ -26,7 +25,7 @@ class ControlPanelAccordion extends React.Component {
   };
 
   render() {
-    const { controlId, locale, control, controlData } = this.props
+    const { controlId, i18n, control, controlData } = this.props
     const {
       title,
       subtitle,
@@ -40,7 +39,7 @@ class ControlPanelAccordion extends React.Component {
     } = control
     let { info } = control
     if (typeof info === 'function') {
-      info = info(control, controlData, this.context.locale)
+      info = info(control, controlData, i18n)
     }
 
     const handleCollapse = () => {
@@ -73,7 +72,7 @@ class ControlPanelAccordion extends React.Component {
         handleCollapse()
       }
     }
-    const text = msgs.get('creation.ocp.toggle', locale)
+    const text = i18n('creation.ocp.toggle')
     const titleClasses = classNames({
       'creation-view-controls-title': true,
       overline,
@@ -104,7 +103,7 @@ class ControlPanelAccordion extends React.Component {
         >
           {note && (
             <div className="creation-view-controls-note">
-              {msgs.get(note, locale)}
+              {i18n(note)}
             </div>
           )}
           {label && (
@@ -127,10 +126,10 @@ class ControlPanelAccordion extends React.Component {
               )}
               <div className="creation-view-controls-title-main-name">
                 {label}
-                {!info && <Tooltip control={control} locale={locale} />}
+                {!info && <Tooltip control={control} i18n={i18n} />}
                 {techPreview && (
                   <div variant="primary" className="techPreviewTag">
-                    {msgs.get('creation.app.section.techPreview', locale)}
+                    {i18n('creation.app.section.techPreview')}
                   </div>
                 )}
                 <span className="creation-view-controls-title-main-summary">

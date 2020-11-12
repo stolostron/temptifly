@@ -11,7 +11,6 @@ import {
   Notification,
   Icon
 } from 'carbon-components-react'
-import msgs from '../../nls/platform.properties'
 import { ControlMode } from '../utils/source-utils'
 import '../../graphics/diagramIcons.svg'
 import _ from 'lodash'
@@ -30,7 +29,7 @@ const {
   TableCell
 } = DataTable
 
-const translateWithId = (locale, id) => msgs.get(id, locale)
+const translateWithId = (i18n, id) => i18n(id)
 
 const add = 'table.actions.add'
 const remove = 'table.actions.remove'
@@ -46,7 +45,7 @@ class ControlPanelTable extends React.Component {
     control: PropTypes.object,
     fetchData: PropTypes.object,
     handleChange: PropTypes.func,
-    locale: PropTypes.string
+    i18n: PropTypes.func
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -98,10 +97,10 @@ class ControlPanelTable extends React.Component {
   }
 
   getRows() {
-    const { locale, control } = this.props
+    const { i18n, control } = this.props
     const { prompts = {}, sortTable, active } = control
     const { deletePrompt = '' } = prompts
-    const text = msgs.get(deletePrompt, locale)
+    const text = i18n(deletePrompt)
     const { controlData, available = [] } = control
     const columns = controlData
       .filter(({ mode }) => mode !== ControlMode.PROMPT_ONLY)
@@ -170,7 +169,7 @@ class ControlPanelTable extends React.Component {
   };
 
   render() {
-    const { control, locale } = this.props
+    const { control, i18n } = this.props
     const { exception } = control
     const { page = 1, pageSize } = this.state
     let rows = this.getRows()
@@ -195,16 +194,14 @@ class ControlPanelTable extends React.Component {
           page={page}
           disabled={pageSize >= totalFilteredItems}
           isLastPage={pageSize >= totalFilteredItems}
-          itemsPerPageText={msgs.get('pagination.itemsPerPage', locale)}
+          itemsPerPageText={i18n('pagination.itemsPerPage')}
           pageRangeText={(current, total) =>
-            msgs.get('pagination.pageRange', [current, total], locale)
+            i18n('pagination.pageRange', [current, total])
           }
           itemRangeText={(min, max, total) =>
-            `${msgs.get('pagination.itemRange', [min, max], locale)} ${msgs.get(
+            `${i18n('pagination.itemRange', [min, max])} ${i18n(
               'pagination.itemRangeDescription',
-              [total],
-              locale
-            )}`
+              [total])}`
           }
           pageInputDisabled={pageSize >= totalFilteredItems}
         />
@@ -218,7 +215,7 @@ class ControlPanelTable extends React.Component {
   }
 
   renderTree(rows) {
-    const { control, locale } = this.props
+    const { control, i18n } = this.props
     const { isLoading, isFailed, active, prompts = {}, available } = control
     const headers = this.getHeaders()
     if (isFailed) {
@@ -227,7 +224,7 @@ class ControlPanelTable extends React.Component {
           title=""
           className="overview-notification"
           kind="error"
-          subtitle={msgs.get('overview.error.default', locale)}
+          subtitle={i18n('overview.error.default')}
         />
       )
     } else if (isLoading) {
@@ -253,8 +250,7 @@ class ControlPanelTable extends React.Component {
       let { actions } = prompts
       actions = React.Children.map(actions, action => {
         return React.cloneElement(action, {
-          appendTable: this.handleTableAction.bind(this, add),
-          locale
+          appendTable: this.handleTableAction.bind(this, add)
         })
       })
       const activeSet = new Set(Object.keys(_.keyBy(active, 'id')))
@@ -267,7 +263,7 @@ class ControlPanelTable extends React.Component {
             return (
               <TableContainer>
                 <TableToolbar
-                  aria-label={msgs.get('table.toolbar.description', locale)}
+                  aria-label={i18n('table.toolbar.description')}
                 >
                   <TableToolbarSearch
                     onChange={({ target }) =>
@@ -277,9 +273,9 @@ class ControlPanelTable extends React.Component {
                       })
                     }
                     id="resource-search-bar"
-                    translateWithId={translateWithId.bind(null, locale)}
+                    translateWithId={translateWithId.bind(null, i18n)}
                     value={searchValue}
-                    placeHolderText={msgs.get('search.label', locale)}
+                    placeHolderText={i18n('search.label')}
                   />
                   <TableToolbarContent>{actions}</TableToolbarContent>
                 </TableToolbar>
@@ -304,14 +300,12 @@ class ControlPanelTable extends React.Component {
                         <th scope={'col'} key={header.key}>
                           {header.key !== 'action' ? (
                             <button
-                              title={msgs.get(
+                              title={i18n(
                                 `svg.description.${
                                   !sortColumn || sortDirection === 'desc'
                                     ? 'asc'
                                     : 'desc'
-                                }`,
-                                locale
-                              )}
+                                }`)}
                               onClick={this.handleSort(header.key)}
                               className={`bx--table-sort-v2${
                                 sortDirection === 'asc'
@@ -330,14 +324,12 @@ class ControlPanelTable extends React.Component {
                               <Icon
                                 className="bx--table-sort-v2__icon"
                                 name="caret--down"
-                                description={msgs.get(
+                                description={i18n(
                                   `svg.description.${
                                     !sortColumn || sortDirection === 'desc'
                                       ? 'asc'
                                       : 'desc'
-                                  }`,
-                                  locale
-                                )}
+                                  }`)}
                               />
                             </button>
                           ) : null}

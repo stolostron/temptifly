@@ -10,7 +10,7 @@ class ControlPanelNumber extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    locale: PropTypes.string
+    i18n: PropTypes.func
   };
 
   constructor(props) {
@@ -23,7 +23,7 @@ class ControlPanelNumber extends React.Component {
   };
 
   render() {
-    const { controlId, locale, control } = this.props
+    const { controlId, i18n, control } = this.props
     const { name, initial, exception, validation } = control
 
     return (
@@ -40,7 +40,7 @@ class ControlPanelNumber extends React.Component {
             {validation.required ? (
               <div className="creation-view-controls-required">*</div>
             ) : null}
-            <Tooltip control={control} locale={locale} />
+            <Tooltip control={control} i18n={i18n} />
           </label>
           <NumberInput
             allowEmpty

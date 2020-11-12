@@ -10,7 +10,7 @@ class ControlPanelCheckbox extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    locale: PropTypes.string
+    i18n: PropTypes.func
   };
 
   constructor(props) {
@@ -23,7 +23,7 @@ class ControlPanelCheckbox extends React.Component {
   };
 
   render() {
-    const { controlId, locale, control } = this.props
+    const { controlId, i18n, control } = this.props
     const { name, active, disabled = false } = control
     return (
       <React.Fragment>
@@ -41,7 +41,7 @@ class ControlPanelCheckbox extends React.Component {
             onChange={this.handleChange.bind(this, control)}
           />
           <div style={{ height: '20px' }}>{name}</div>
-          <Tooltip control={control} locale={locale} />
+          <Tooltip control={control} i18n={i18n} />
         </div>
       </React.Fragment>
     )

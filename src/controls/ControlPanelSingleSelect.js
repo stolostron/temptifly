@@ -8,7 +8,6 @@ import {
   InlineLoading
 } from 'carbon-components-react'
 import Tooltip from '../components/Tooltip'
-import msgs from '../../nls/platform.properties'
 import _ from 'lodash'
 
 class ControlPanelSingleSelect extends React.Component {
@@ -16,7 +15,7 @@ class ControlPanelSingleSelect extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    locale: PropTypes.string
+    i18n: PropTypes.func
   };
 
   constructor(props) {
@@ -29,7 +28,7 @@ class ControlPanelSingleSelect extends React.Component {
   };
 
   render() {
-    const { controlId, locale, control } = this.props
+    const { controlId, i18n, control } = this.props
     const {
       name,
       placeholder = '',
@@ -41,17 +40,13 @@ class ControlPanelSingleSelect extends React.Component {
     let { active } = control
     if (!active) {
       if (isLoading) {
-        active = msgs.get(
-          _.get(control, 'fetchAvailable.loadingDesc', 'resource.loading'),
-          locale
-        )
+        active = i18n(
+          _.get(control, 'fetchAvailable.loadingDesc', 'resource.loading'))
       } else if (isFailed) {
-        active = msgs.get('resource.error', locale)
+        active = i18n('resource.error')
       } else if (available.length === 0) {
-        active = msgs.get(
-          _.get(control, 'fetchAvailable.emptyDesc', 'resource.none'),
-          locale
-        )
+        active = i18n(
+          _.get(control, 'fetchAvailable.emptyDesc', 'resource.none'))
       }
     }
     const key = `${controlId}-${name}-${available.join('-')}`
@@ -66,7 +61,7 @@ class ControlPanelSingleSelect extends React.Component {
             {validation.required ? (
               <div className="creation-view-controls-required">*</div>
             ) : null}
-            <Tooltip control={control} locale={locale} />
+            <Tooltip control={control} i18n={i18n} />
           </div>
           {isLoading ? (
             <div className="creation-view-controls-singleselect-loading">

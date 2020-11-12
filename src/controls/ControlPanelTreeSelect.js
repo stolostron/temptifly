@@ -13,7 +13,7 @@ class ControlPanelTreeSelect extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    locale: PropTypes.string
+    i18n: PropTypes.func
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -181,7 +181,7 @@ class ControlPanelTreeSelect extends React.Component {
   }
 
   render() {
-    const { controlId, control, locale } = this.props
+    const { controlId, control, i18n } = this.props
     const { name, availableMap = {}, validation } = control
     const {
       isOpen,
@@ -213,7 +213,7 @@ class ControlPanelTreeSelect extends React.Component {
             {validation.required ? (
               <div className="creation-view-controls-required">*</div>
             ) : null}
-            <Tooltip control={control} locale={locale} />
+            <Tooltip control={control} i18n={i18n} />
           </div>
           <div id={controlId}>
             <div

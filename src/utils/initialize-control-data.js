@@ -1,6 +1,5 @@
 'use strict'
 
-import msgs from '../../nls/platform.properties'
 import _ from 'lodash'
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -8,7 +7,7 @@ import _ from 'lodash'
 ///////////////////////////////////////////////////////////////////////////////
 export const initializeControlData = (
   initialControlData,
-  locale,
+  i18n,
   uniqueGroupID,
   inGroup
 ) => {
@@ -27,7 +26,7 @@ export const initializeControlData = (
         active.push(
           initializeControlData(
             controlData,
-            locale,
+            i18n,
             control.nextUniqueGroupID,
             true
           )
@@ -37,7 +36,7 @@ export const initializeControlData = (
       return control
     }
     default:
-      return initialControl(control, locale)
+      return initialControl(control, i18n)
     }
   })
 
@@ -61,7 +60,7 @@ export const initializeControlData = (
 ///////////////////////////////////////////////////////////////////////////////
 // initialze each control
 ///////////////////////////////////////////////////////////////////////////////
-const initialControl = (control, locale) => {
+const initialControl = (control, i18n) => {
   const { type, isInitialized } = control
   if (!isInitialized) {
     control = Object.assign({}, control)
@@ -73,7 +72,7 @@ const initialControl = (control, locale) => {
     initializeControlUserData(control)
 
     // convert i18n message keys to messages
-    initializeMsgs(control, locale)
+    initializeMsgs(control, i18n)
 
     // intialize choices available for a control
     initializeAvailableChoices(type, control)
@@ -113,7 +112,7 @@ const initializeControlUserData = control => {
   }
 }
 
-const initializeMsgs = (control, locale) => {
+const initializeMsgs = (control, i18n) => {
   const { type, controlData, available } = control
   const keys = [
     'name',
@@ -127,7 +126,7 @@ const initializeMsgs = (control, locale) => {
   ]
   keys.forEach(key => {
     if (typeof control[key] === 'string') {
-      control[key] = msgs.get(control[key], locale)
+      control[key] = i18n(control[key])
     }
   })
   const properties = ['available', 'active']
@@ -138,7 +137,7 @@ const initializeMsgs = (control, locale) => {
         keys.forEach(key => {
           if (item[key] && item[key].split('.').length > 2) {
             if (typeof item[key] === 'string') {
-              item[key] = msgs.get(item[key], locale)
+              item[key] = i18n(item[key])
             }
           }
         })
@@ -150,7 +149,7 @@ const initializeMsgs = (control, locale) => {
   if (type === 'table' && controlData) {
     controlData.forEach(ctrl => {
       if (!ctrl.isInitialized) {
-        initializeMsgs(ctrl, locale)
+        initializeMsgs(ctrl, i18n)
         ctrl.isInitialized = true
       }
     })
@@ -162,7 +161,7 @@ const initializeMsgs = (control, locale) => {
       if (change.insertControlData) {
         change.insertControlData.forEach(ctrl => {
           if (!ctrl.isInitialized) {
-            initializeMsgs(ctrl, locale)
+            initializeMsgs(ctrl, i18n)
             ctrl.isInitialized = true
           }
         })

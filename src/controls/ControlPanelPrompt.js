@@ -13,14 +13,13 @@ import {
 } from 'carbon-components-react'
 import _ from 'lodash'
 import '../../graphics/diagramIcons.svg'
-import msgs from '../../nls/platform.properties'
 
 class ControlPanelPrompt extends React.Component {
   static propTypes = {
     control: PropTypes.object,
     fetchData: PropTypes.object,
     handleAddActive: PropTypes.func,
-    locale: PropTypes.string
+    i18n: PropTypes.func
   };
 
   constructor(props) {
@@ -80,8 +79,8 @@ class ControlPanelPrompt extends React.Component {
   renderLink(control) {
     const { prompts } = control
     const { prompt, url, id } = prompts
-    const { locale } = this.props
-    const text = msgs.get(prompt, locale)
+    const { i18n } = this.props
+    const text = i18n(prompt)
     return (
       <React.Fragment>
         <div className="creation-view-controls-add-value-container bottom-right">
@@ -96,8 +95,8 @@ class ControlPanelPrompt extends React.Component {
   renderButton(control) {
     const { prompts } = control
     const { prompt } = prompts
-    const { locale } = this.props
-    const text = msgs.get(prompt, locale)
+    const { i18n } = this.props
+    const text = i18n(prompt)
     const handleEdit = () => {
       const { showEditor } = this.state
       this.setState({ showEditor: !showEditor })
@@ -128,8 +127,8 @@ class ControlPanelPrompt extends React.Component {
   renderCombobox(control) {
     const { available, prompts } = control
     const { prompt } = prompts
-    const { locale } = this.props
-    const text = msgs.get(prompt, locale)
+    const { i18n } = this.props
+    const text = i18n(prompt)
     const handleChange = () => {
       const { showEditor } = this.state
       this.setState({ showEditor: !showEditor })
@@ -161,7 +160,7 @@ class ControlPanelPrompt extends React.Component {
 
   renderMultiSelect = () => {
     const { activeItemsSet } = this.state
-    const { control, locale } = this.props
+    const { control, i18n } = this.props
     const {
       available = [],
       active = [],
@@ -175,14 +174,12 @@ class ControlPanelPrompt extends React.Component {
           title=""
           className="overview-notification"
           kind="error"
-          subtitle={msgs.get('overview.error.default', locale)}
+          subtitle={i18n('overview.error.default')}
         />
       )
     }
-    const loading = msgs.get(
-      _.get(control, 'fetchAvailable.loadingDesc', 'resource.loading'),
-      locale
-    )
+    const loading = i18n(
+      _.get(control, 'fetchAvailable.loadingDesc', 'resource.loading'))
     return (
       <div className="creation-view-controls-add-combobox">
         {isLoading || !activeItemsSet ? (
@@ -195,7 +192,7 @@ class ControlPanelPrompt extends React.Component {
             initialSelectedItems={active}
             itemToString={bma => _.get(bma, 'hostName')}
             items={available}
-            placeholder={msgs.get(prompts.prompt, this.props.locale)}
+            placeholder={i18n(prompts.prompt)}
             type="default"
             onChange={({ selectedItems }) =>
               this.props.handleAddActive(selectedItems)

@@ -4,7 +4,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Icon, Tag, TextInput } from 'carbon-components-react'
 import Tooltip from '../components/Tooltip'
-import msgs from '../../nls/platform.properties'
 import _ from 'lodash'
 
 export const DNS_LABEL = '[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?'
@@ -21,7 +20,7 @@ class ControlPanelLabels extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    locale: PropTypes.string
+    i18n: PropTypes.func
   };
 
   constructor(props) {
@@ -34,7 +33,7 @@ class ControlPanelLabels extends React.Component {
   }
 
   render() {
-    const { controlId, locale, control } = this.props
+    const { controlId, i18n, control } = this.props
     const { name, active = [] } = control
     const formatted = active.map(({ key, value: v }) => `${key}=${v}`)
     const { value, invalid, invalidText } = this.state
@@ -43,7 +42,7 @@ class ControlPanelLabels extends React.Component {
         <div className="creation-view-controls-labels">
           <div className="creation-view-controls-labels-title">
             {name}
-            <Tooltip control={control} locale={locale} />
+            <Tooltip control={control} i18n={i18n} />
           </div>
           <div className="creation-view-controls-labels-container">
             {formatted.map((label, inx) => {
@@ -52,7 +51,7 @@ class ControlPanelLabels extends React.Component {
                   {label}
                   <Icon
                     className="closeIcon"
-                    description={msgs.get('delete.label', locale)}
+                    description={i18n('delete.label')}
                     name="icon--close"
                     onClick={this.handleDelete.bind(this, inx)}
                   />
@@ -66,7 +65,7 @@ class ControlPanelLabels extends React.Component {
                 labelText=""
                 invalid={invalid}
                 invalidText={invalidText}
-                placeholder={msgs.get('enter.add.label', locale)}
+                placeholder={i18n('enter.add.label')}
                 value={value}
                 onBlur={this.handleBlur.bind(this)}
                 onKeyDown={this.handleKeyDown.bind(this)}
@@ -75,7 +74,7 @@ class ControlPanelLabels extends React.Component {
               {value && (
                 <Icon
                   className="closeIcon"
-                  description={msgs.get('cancel.label.create', locale)}
+                  description={i18n('cancel.label.create')}
                   name="icon--close"
                   onClick={this.cancelLabel.bind(this)}
                 />
@@ -95,7 +94,7 @@ class ControlPanelLabels extends React.Component {
   }
 
   handleChange(event) {
-    const { control, locale } = this.props
+    const { control, i18n } = this.props
     const { active = [] } = control
     let value = event.target.value
     if (value === ',') {
@@ -104,17 +103,15 @@ class ControlPanelLabels extends React.Component {
     let invalid = !regex.test(value)
     let invalidText = ''
     if (invalid) {
-      invalidText = msgs.get('enter.add.label', locale)
+      invalidText = i18n('enter.add.label')
     } else {
       const match = regex.exec(value)
       const map = _.keyBy(active, 'key')
       if (map[match[KEY_CAPTURE_GROUP_INDEX]]) {
         invalid = true
-        invalidText = msgs.get(
+        invalidText = i18n(
           'enter.duplicate.key',
-          [match[KEY_CAPTURE_GROUP_INDEX]],
-          locale
-        )
+          [match[KEY_CAPTURE_GROUP_INDEX]])
       }
     }
     this.setState({ value, invalid, invalidText })

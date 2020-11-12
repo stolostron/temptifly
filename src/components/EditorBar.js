@@ -6,7 +6,6 @@ import classNames from 'classnames'
 import { Search } from 'carbon-components-react'
 import '../scss/editor-bar.scss'
 import '../../graphics/diagramIcons.svg'
-import msgs from '../../nls/platform.properties'
 
 class EditorButton extends React.Component {
   static propTypes = {
@@ -68,6 +67,7 @@ class EditorBar extends React.Component {
     handleSearchChange: PropTypes.func,
     hasRedo: PropTypes.bool,
     hasUndo: PropTypes.bool,
+    i18n: PropTypes.func,
     title: PropTypes.string,
     type: PropTypes.string
   };
@@ -90,20 +90,19 @@ class EditorBar extends React.Component {
   };
 
   render() {
-    const { locale } = this.context
-    const { hasUndo, hasRedo, type, title } = this.props
+    const { hasUndo, hasRedo, type, title, i18n } = this.props
     const { searchName } = this.state
 
     const undoButtons = [
       {
         command: 'undo',
-        tooltip: msgs.get('editor.bar.undo', locale),
+        tooltip: i18n('editor.bar.undo'),
         icon: 'undo',
         disabled: !hasUndo
       },
       {
         command: 'redo',
-        tooltip: msgs.get('editor.bar.redo', locale),
+        tooltip: i18n('editor.bar.redo'),
         icon: 'redo',
         disabled: !hasRedo
       }
@@ -112,13 +111,13 @@ class EditorBar extends React.Component {
     const nextButtons = [
       {
         command: 'previous',
-        tooltip: msgs.get('editor.bar.previous', locale),
+        tooltip: i18n('editor.bar.previous'),
         icon: 'previous',
         disabled: !searchName
       },
       {
         command: 'next',
-        tooltip: msgs.get('editor.bar.next', locale),
+        tooltip: i18n('editor.bar.next'),
         icon: 'next',
         disabled: !searchName
       }
@@ -127,7 +126,7 @@ class EditorBar extends React.Component {
     const resetButtons = [
       {
         command: 'restore',
-        tooltip: msgs.get('editor.bar.reset', locale),
+        tooltip: i18n('editor.bar.reset'),
         disabled: !hasUndo && !hasRedo
       }
     ]
@@ -135,12 +134,12 @@ class EditorBar extends React.Component {
     const closeButtons = [
       {
         command: 'close',
-        tooltip: msgs.get('editor.bar.close', locale),
+        tooltip: i18n('editor.bar.close'),
         icon: 'close'
       }
     ]
 
-    const searchTitle = msgs.get('find.label', locale)
+    const searchTitle = i18n('find.label')
     return (
       <div className="editor-bar">
         <div className="editor-bar-group">

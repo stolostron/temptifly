@@ -1,6 +1,5 @@
 'use strict'
 
-import msgs from '../../nls/platform.properties'
 import _ from 'lodash'
 import IPCIDR from 'ip-cidr'
 import { Address4, Address6 } from 'ip-address'
@@ -11,19 +10,17 @@ const IP_ADDRESS_TESTER = {
 
 const getCIDRContextTexter = (cidrFieldKey, sourcePath) => {
   const { tabId, path } = sourcePath
-  return (value, templateObjectMap, locale) => {
+  return (value, templateObjectMap, i18n) => {
     if (!IP_ADDRESS_TESTER.test(value)) {
-      return msgs.get('creation.ocp.cluster.valid.ip', locale)
+      return i18n('creation.ocp.cluster.valid.ip')
     }
     const cidrString = _.get(templateObjectMap[tabId], path) || ''
     const cidr = new IPCIDR(cidrString.toString())
     if (cidr.isValid() && !cidr.contains(value)) {
-      const cidrFieldName = msgs.get(cidrFieldKey)
-      return msgs.get(
+      const cidrFieldName = i18n(cidrFieldKey)
+      return i18n(
         'creation.ocp.cluster.valid.cidr.membership',
-        [cidrFieldName, cidrString],
-        locale
-      )
+        [cidrFieldName, cidrString])
     }
     return null
   }
@@ -123,51 +120,51 @@ export const VALID_REPOPATH =
   '^.+/[A-Za-z0-9]+(/[A-Za-z0-9-_\\.]*[A-Za-z0-9]+)*$'
 const VALID_REPOPATH_TESTER = new RegExp(VALID_REPOPATH)
 
-export const IMAGE_MIRROR_VALIDATOR = (value, locale) => {
+export const IMAGE_MIRROR_VALIDATOR = (value, i18n) => {
   if (typeof value !== 'string' || value.length === 0) {
     return null
   }
   const dnsName = value.split(':', 2)
-  const errDnsName = BASE_DNS_NAME_VALIDATOR(dnsName[0], locale)
+  const errDnsName = BASE_DNS_NAME_VALIDATOR(dnsName[0], i18n)
   if (errDnsName) {
     return errDnsName
   }
   if (dnsName.length === 1) {
-    return msgs.get('creation.ocp.cluster.valid.imageregistrymirror')
+    return i18n('creation.ocp.cluster.valid.imageregistrymirror')
   }
   const port = dnsName[1].split('/', 2)
   if (
     (port.length === 1 && port[0].length === 0) ||
     !VALIDATE_NUMERIC.tester.test(port[0])
   ) {
-    return msgs.get('creation.ocp.cluster.valid.port')
+    return i18n('creation.ocp.cluster.valid.port')
   }
   if (port.length === 1) {
-    return msgs.get('creation.ocp.cluster.valid.imageregistrymirror')
+    return i18n('creation.ocp.cluster.valid.imageregistrymirror')
   }
   if (!VALID_REPOPATH_TESTER.test(value)) {
-    return msgs.get('creation.ocp.cluster.valid.repopath')
+    return i18n('creation.ocp.cluster.valid.repopath')
   }
   return null
 }
 
-export const BASE_DNS_NAME_VALIDATOR = (value, locale) => {
+export const BASE_DNS_NAME_VALIDATOR = (value, i18n) => {
   if (
     value &&
     value.startsWith('.') &&
     VALID_DNS_NAME_TESTER.test(value.substr(1))
   ) {
-    return msgs.get('formerror.valid.baseDNSPeriod', locale)
+    return i18n('formerror.valid.baseDNSPeriod')
   }
   if (!VALID_DNS_NAME_TESTER.test(value)) {
-    return msgs.get('formerror.valid.name', locale)
+    return i18n('formerror.valid.name')
   }
   return null
 }
 
 export const VALIDATE_BASE_DNS_NAME_REQUIRED = {
-  contextTester: (value, templateObjectMap, locale) => {
-    return BASE_DNS_NAME_VALIDATOR(value, locale)
+  contextTester: (value, templateObjectMap, i18n) => {
+    return BASE_DNS_NAME_VALIDATOR(value, i18n)
   },
   notification: 'creation.ocp.cluster.missing.input',
   required: true

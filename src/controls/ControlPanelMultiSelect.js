@@ -4,14 +4,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { MultiSelect } from 'carbon-components-react'
 import Tooltip from '../components/Tooltip'
-import msgs from '../../nls/platform.properties'
 
 class ControlPanelMultiSelect extends React.Component {
   static propTypes = {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    locale: PropTypes.string
+    i18n: PropTypes.string
   };
 
   constructor(props) {
@@ -24,7 +23,7 @@ class ControlPanelMultiSelect extends React.Component {
   };
 
   render() {
-    const { controlId, locale, control } = this.props
+    const { controlId, i18n, control } = this.props
     const { name, placeholder: ph = '' } = control
 
     // see if we need to add user additions to available (from editing the yaml file)
@@ -36,7 +35,7 @@ class ControlPanelMultiSelect extends React.Component {
         availableMap = { ...userMap, ...availableMap }
       } else {
         // if user edited the source, we can't automatically update it
-        active = available = [msgs.get('creation.view.policy.custom', locale)]
+        active = available = [i18n('creation.view.policy.custom')]
         availableMap = undefined
       }
     }
@@ -69,7 +68,7 @@ class ControlPanelMultiSelect extends React.Component {
             htmlFor={controlId}
           >
             {name}
-            <Tooltip control={control} locale={locale} />
+            <Tooltip control={control} i18n={i18n} />
           </label>
           <MultiSelect.Filterable
             key={key}
