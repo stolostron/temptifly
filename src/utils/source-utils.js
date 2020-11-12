@@ -59,10 +59,8 @@ export function reverseTemplate(controlData, templateObject) {
           shift(templateObject)
         }
       })
-    } else if (reverse) {
-      if (typeof shift === 'function') {
-        reverse(control, templateObject)
-      }
+    } else if (typeof reverse === 'function') {
+      reverse(control, templateObject)
     }
   }
   controlData.forEach(control => {
