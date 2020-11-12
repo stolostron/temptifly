@@ -43,7 +43,6 @@
     "js-yaml": "^3.12.0",
     "lodash": "^4.17.11",
     "log4js": "^6.3.0",
-    "node-i18n-util": "^1.0.2",
     "null-loader": "^3.0.0",
     "nconf": "^0.10.0",
     "prop-types": "^15.6.1",

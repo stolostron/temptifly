@@ -195,12 +195,5 @@ module.exports = {
         revision: (new GitRevisionPlugin()).commithash()
       }
     })
-  ],
-
-  resolveLoader: {
-    modules: [
-      path.join(__dirname, 'node_modules'),
-      path.join(__dirname, 'node_modules/node-i18n-util/lib') // properties-loader
-    ]
-  }
+  ]
 }
