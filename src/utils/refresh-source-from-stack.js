@@ -93,11 +93,11 @@ const updateCustomIdMap = editStack => {
 }
 
 const intializeControls = (editStack, controlData) => {
-  const { customResources, editor, locale } = editStack
+  const { customResources, editor, i18n } = editStack
   const { templateObject } = generateSourceFromResources(customResources)
 
   // determine the controls for this resource
-  discoverControls(controlData, templateObject, editor, locale)
+  discoverControls(controlData, templateObject, editor, i18n)
 
   // refresh the values from the template for these controls
   reverseTemplate(controlData, templateObject)

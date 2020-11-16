@@ -17,13 +17,13 @@ export const ControlMode = Object.freeze({
 export const initializeControls = (
   initialControlData,
   editor,
-  locale,
+  i18n,
   uniqueGroupID,
   inGroup
 ) => {
   const controlData = initializeControlData(
     initialControlData,
-    locale,
+    i18n,
     uniqueGroupID,
     inGroup
   )
@@ -32,16 +32,16 @@ export const initializeControls = (
 }
 
 // from an edit resource, discover # of groups, card selections
-export function discoverControls(controlData, templateObject, editor, locale) {
+export function discoverControls(controlData, templateObject, editor, i18n) {
   templateObject = _.cloneDeep(templateObject)
   const discoverControl = control => {
     const { discover } = control
     if (discover) {
-      discover(control, controlData, templateObject, editor, locale)
+      discover(control, controlData, templateObject, editor, i18n)
     }
   }
   controlData.forEach(control => {
-    discoverControl(control)
+    discoverControl(control, i18n)
   })
 }
 
