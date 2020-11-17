@@ -49,7 +49,7 @@ class ControlPanelPrompt extends React.Component {
 
   render() {
     const { control } = this.props
-    const { id, prompts } = control
+    const { id, prompts={} } = control
     const { type } = prompts
     switch (type) {
     case 'link':

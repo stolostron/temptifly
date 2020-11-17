@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ControlPanel component renders as expected 1`] = `
+<div
+  className="creation-view-controls-container"
+>
+  <div
+    className="creation-view-controls showEditor"
+    onScroll={[Function]}
+  >
+    <div
+      id="notifications"
+    />
+    <div
+      className="content"
+    >
+      <div
+        aria-label={undefined}
+        className="creation-view-controls-title"
+        id="main-"
+        onClick={[Function]}
+        onKeyPress={[Function]}
+        role="button"
+        tabIndex="0"
+        title={undefined}
+      >
+        <div
+          className="creation-view-controls-note"
+        />
+        <div
+          className="creation-view-controls-title-normal-container"
+        />
+      </div>
+      <div
+        className="creation-view-controls-section"
+      >
+        <div
+          className="creation-view-controls-skeleton"
+        >
+          <label
+            className="creation-view-controls-textbox-title"
+            htmlFor="name"
+          >
+            creation.app.name
+          </label>
+          <p
+            className="bx--skeleton__text"
+            id="name"
+            style={
+              Object {
+                "width": "100%",
+              }
+            }
+          />
+        </div>
+        <div
+          className="creation-view-controls-skeleton"
+        >
+          <label
+            className="creation-view-controls-textbox-title"
+            htmlFor="namespace"
+          >
+            creation.app.namespace
+          </label>
+          <p
+            className="bx--skeleton__text"
+            id="namespace"
+            style={
+              Object {
+                "width": "100%",
+              }
+            }
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="creation-view-controls-container-blurr bottom"
+  />
+</div>
+`;

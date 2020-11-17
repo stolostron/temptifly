@@ -5,8 +5,6 @@ var path = require('path'),
     AssetsPlugin = require('assets-webpack-plugin'),
     FileManagerPlugin = require('filemanager-webpack-plugin'),
     WebpackMd5Hash = require('webpack-md5-hash'),
-    GitRevisionPlugin = require('git-revision-webpack-plugin'),
-    VersionFile = require('webpack-version-file'),
     config = require('./config'),
     CompressionPlugin = require('compression-webpack-plugin'),
     MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
@@ -184,15 +182,6 @@ module.exports = {
         copy: [
           { source: 'graphics/*.svg', destination: 'public/graphics'},
         ]
-      }
-    }),
-    new VersionFile({
-      output: './public/version.txt',
-      package: './package.json',
-      template: './version.ejs',
-      data: {
-        date: new Date(),
-        revision: (new GitRevisionPlugin()).commithash()
       }
     })
   ]

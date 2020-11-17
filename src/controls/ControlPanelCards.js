@@ -48,7 +48,7 @@ class ControlPanelCards extends React.Component {
 
   render() {
     const { i18n, control, showEditor } = this.props
-    const { available, availableMap } = control
+    const { available=[], availableMap } = control
     const { collapsed } = this.state
     let { active } = control
     active = active||[]
@@ -95,7 +95,8 @@ class ControlPanelCards extends React.Component {
   }
 
   renderTitle(control) {
-    const { title, collapsable, validation: { required } } = control
+    const { title, collapsable, validation={} } = control
+    const { required } = validation
     if (title && collapsable) {
       const handleCollapse = () => {
         this.setState(prevState => {

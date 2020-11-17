@@ -170,7 +170,7 @@ class ControlPanelTreeSelect extends React.Component {
     this.addAvailableMapHelper(available, availableMap)
   }
 
-  addAvailableMapHelper(available, availableMap) {
+  addAvailableMapHelper(available=[], availableMap) {
     available.forEach(({ children, value, description }) => {
       if (children) {
         this.addAvailableMapHelper(children, availableMap)
@@ -182,7 +182,7 @@ class ControlPanelTreeSelect extends React.Component {
 
   render() {
     const { controlId, control, i18n } = this.props
-    const { name, availableMap = {}, validation } = control
+    const { name, availableMap = {}, validation={} } = control
     const {
       isOpen,
       active,

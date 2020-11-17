@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditorHeader component renders as expected 1`] = `
+<div
+  className="creation-view-yaml-header"
+>
+  <div
+    aria-label={undefined}
+    className="creation-view-yaml-header-toolbar"
+    id={undefined}
+    role="region"
+  />
+</div>
+`;

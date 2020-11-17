@@ -35,7 +35,7 @@ class ControlPanelComboBox extends React.Component {
       userData = [],
       availableMap,
       exception,
-      validation,
+      validation={},
       hasReplacements,
       isFailed,
       disabled,
@@ -43,7 +43,7 @@ class ControlPanelComboBox extends React.Component {
     } = control
     let { isLoading } = control
     const { controlData } = this.props
-    let { active, available, placeholder = '' } = control
+    let { active, available=[], placeholder = '' } = control
     let loadingMsg
     if (fetchAvailable) {
       if (isLoading) {

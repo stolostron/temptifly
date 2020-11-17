@@ -39,6 +39,9 @@ class ControlPanelMultiSelect extends React.Component {
         availableMap = undefined
       }
     }
+    if (!Array.isArray(active)) {
+      active=[]
+    }
 
     // place holder
     let placeholder = ph

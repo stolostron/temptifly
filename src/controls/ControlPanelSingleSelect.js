@@ -33,7 +33,7 @@ class ControlPanelSingleSelect extends React.Component {
       name,
       placeholder = '',
       available = [],
-      validation,
+      validation = {},
       isLoading,
       isFailed
     } = control

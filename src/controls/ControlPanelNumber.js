@@ -24,7 +24,7 @@ class ControlPanelNumber extends React.Component {
 
   render() {
     const { controlId, i18n, control } = this.props
-    const { name, initial, exception, validation } = control
+    const { name, initial, exception, validation={} } = control
 
     return (
       <React.Fragment>

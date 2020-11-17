@@ -216,7 +216,11 @@ class ControlPanelTable extends React.Component {
 
   renderTree(rows) {
     const { control, i18n } = this.props
-    const { isLoading, isFailed, active, prompts = {}, available } = control
+    const { isLoading, isFailed, prompts = {}, available } = control
+    let { active } = control
+    if (!Array.isArray(active)) {
+      active = []
+    }
     const headers = this.getHeaders()
     if (isFailed) {
       return (
@@ -238,7 +242,7 @@ class ControlPanelTable extends React.Component {
           zebra={false}
         />
       )
-    } else {
+    } else if (active.length > 0) {
       const { id, exceptions = [] } = control
       const {
         sortDirection,

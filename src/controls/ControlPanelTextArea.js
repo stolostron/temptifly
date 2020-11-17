@@ -24,7 +24,7 @@ class ControlPanelTextArea extends React.Component {
 
   render() {
     const { controlId, i18n, control } = this.props
-    const { name, active: value, exception, validation } = control
+    const { name, active: value, exception, validation = {} } = control
     return (
       <React.Fragment>
         <div

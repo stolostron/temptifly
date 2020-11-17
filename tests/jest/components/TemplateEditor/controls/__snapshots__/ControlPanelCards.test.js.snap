@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ControlPanelCards component renders as expected 1`] = `
+<div
+  className="creation-view-controls-card-container"
+>
+  <div
+    className="mcx--grid-container"
+  >
+    <div
+      className="bx--grid"
+    >
+      <div
+        className="mcx--providers-container bx--row"
+      />
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ControlPanelSkeleton component renders as expected 1`] = `
+<div
+  className="creation-view-controls-skeleton"
+>
+  <label
+    className="creation-view-controls-textbox-title"
+    htmlFor="controlId"
+  >
+    creation.app.name
+  </label>
+  <p
+    className="bx--skeleton__text"
+    id="controlId"
+    style={
+      Object {
+        "width": "100%",
+      }
+    }
+  />
+</div>
+`;
