@@ -1,0 +1,152 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ControlPanelTreeSelect component renders as expected 1`] = `
+<div
+  className="creation-view-controls-treeselect"
+>
+  <div
+    className="creation-view-controls-treeselect-title"
+  >
+    creation.app.name
+    <div
+      className="bx--tooltip__label"
+    >
+      
+      <div
+        aria-expanded={false}
+        aria-haspopup="true"
+        aria-label="tooltip"
+        className="bx--tooltip__trigger"
+        id=""
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onMouseOut={[Function]}
+        onMouseOver={[Function]}
+        role="button"
+        tabIndex={0}
+        title=""
+      >
+        <svg
+          alt="tooltip"
+          aria-label="tooltip"
+          className={undefined}
+          fill={undefined}
+          fillRule="evenodd"
+          height="16"
+          name={undefined}
+          role="img"
+          style={undefined}
+          viewBox="0 0 16 16"
+          width="16"
+        >
+          <title>
+            
+          </title>
+          <path
+            d="M8,14.5 C11.5898509,14.5 14.5,11.5898509 14.5,8 C14.5,4.41014913 11.5898509,1.5 8,1.5 C4.41014913,1.5 1.5,4.41014913 1.5,8 C1.5,11.5898509 4.41014913,14.5 8,14.5 Z M8,16 C3.581722,16 0,12.418278 0,8 C0,3.581722 3.581722,0 8,0 C12.418278,0 16,3.581722 16,8 C16,12.418278 12.418278,16 8,16 Z"
+          />
+          <polygon
+            points="9 13 7 13 7 7 9 7"
+          />
+          <circle
+            cx="8"
+            cy="4"
+            r="1"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div
+    id="controlId"
+  >
+    <div
+      aria-label="Choose an item"
+      className="bx--dropdown bx--list-box"
+      role="listbox"
+      tabIndex="0"
+    >
+      <div
+        aria-expanded={false}
+        aria-haspopup="true"
+        aria-label="Open menu"
+        className=""
+        data-toggle="true"
+        onClick={[Function]}
+        onKeyPress={[Function]}
+        role="button"
+        tabIndex="0"
+        type="button"
+      >
+        <input
+          aria-autocomplete="list"
+          aria-controls="controlId-creation.app.name-"
+          aria-expanded="true"
+          aria-label="ListBox input field"
+          autoComplete="new-password"
+          className="bx--text-input"
+          id="downshift-0-input"
+          onChange={[Function]}
+          onFocus={[Function]}
+          onKeyDown={[Function]}
+          placeholder=""
+          role="combobox"
+          spellCheck="false"
+          value="test"
+        />
+        <div
+          className="bx--list-box__selection"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="button"
+          tabIndex="0"
+          title="Clear selected item"
+        >
+          <svg
+            alt="Clear selected item"
+            aria-label="Clear selected item"
+            focusable="false"
+            height="10"
+            role="img"
+            viewBox="0 0 10 10"
+            width="10"
+          >
+            <title>
+              Clear selected item
+            </title>
+            <path
+              d="M6.32 5L10 8.68 8.68 10 5 6.32 1.32 10 0 8.68 3.68 5 0 1.32 1.32 0 5 3.68 8.68 0 10 1.32 6.32 5z"
+            />
+          </svg>
+        </div>
+        <div
+          className="bx--list-box__menu-icon"
+          onClick={[Function]}
+          onKeyPress={[Function]}
+          role="button"
+          tabIndex="0"
+        >
+          <svg
+            alt="Open menu"
+            aria-label="Open menu"
+            fillRule="evenodd"
+            height="5"
+            role="img"
+            viewBox="0 0 10 5"
+            width="10"
+          >
+            <title>
+              Close menu
+            </title>
+            <path
+              d="M0 0l5 4.998L10 0z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

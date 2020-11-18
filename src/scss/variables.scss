@@ -1,0 +1,51 @@
+// animation
+$animation__ease-in: cubic-bezier(0.25, 0, 1, 1) !default;
+$animation__ease-out: cubic-bezier(0, 0, 0.25, 1) !default;
+$animation__standard: cubic-bezier(0.5, 0, 0.1, 1) !default;
+
+// secondary header
+$secondary-header-top: 3.082rem !default;
+$secondary-header-min-height: 4.125rem !default;
+$secondary-header-max-height: 8.5rem !default;
+
+$control-max-width-with-editor: 600px !default; /* card width must be multiple of this */
+$control-max-width-without-editor: 600px !default; /* card width must be multiple of this */
+
+//These are grc own colors not in carbon
+$grc__color__gray: #6f7878 !default;
+$grc__color__critical: #e0182d !default;
+$grc_view_filter: #DFEBF1 !default;
+$grc_color_blue: #3F71EC !default;
+$grc_color_light_gray: #cccccc !default;
+$grc_color_dark_blue: #30588c !default;
+$grc_color_radar_blue: #0082C1 !default;
+$grc_color_radar_green: #13B9B9 !default;
+$grc_color_radar_legend: #50565B !default;
+$grc_color_finding_high: #E62325 !default;
+$grc_color_finding_medium: #FEC233 !default;
+$grc_color_finding_low: #A0A0A0 !default;
+$grc_highlight_background: rgba(85,150,230, 0.1) !default;
+$grc_highlight_background_2: rgba(85,150,230, 0.02) !default;
+$grc_focus_shaldow_color: #7cc7ff !default;
+$grc_focus_shaldow_width: 3px;
+
+//Custom coloring for label forms and modals. Not in Carbon Colors.
+$tag_background_blue: #E2EAF4 !default;
+
+//These are carbon colors in previous version but will not in latest carbon 10
+$ibm-colors__gray--40: #a4a4a4 !default;
+$color__blue-51: #0066CC !default;
+$color__gray-1: #DFE3E6 !default;
+$color__navy-gray-8: #dfe6eb !default;
+$color__green-40: #5aa700 !default;
+$color__white: #ffffff !default;
+$color__red-50: #e71d32 !default;
+$color__blue-50: #4178be !default;
+$color__blue-30: #5aaafa !default;
+$color__yellow-30: #efc100 !default;
+$color__blue-40: #5596e6 !default;
+$color__teal-20: #6eedd8 !default;
+$color__blue-90: #152935 !default;
+$color__navy-gray-6: #5A6872 !default;
+$color__navy-gray-7: #8c9ba5 !default;
+$color__white: #fff !default;

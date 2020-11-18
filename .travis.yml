@@ -1,0 +1,24 @@
+language: node_js
+node_js:
+  - "8"
+
+before_script:
+  - |
+    if [[ ! -d "test-output" ]]; then
+      mkdir test-output
+    fi
+  - |
+    sudo add-apt-repository ppa:git-core/ppa -y
+    sudo apt-get update
+    sudo apt-get install git -y
+    git --version
+
+script:
+  - npm test
+
+deploy:
+  provider: script
+  script: "cp .npmrc.template $HOME/.npmrc && npx semantic-release && npm run deploy"
+  skip_cleanup: true
+  on:
+    branch: master

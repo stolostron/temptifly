@@ -1,0 +1,181 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ControlPanelTable component renders as expected 1`] = `
+<div
+  className="creation-view-controls-table-container"
+>
+  <div
+    className="creation-view-controls-table"
+  />
+  <div
+    className="bx--pagination"
+    disabled={true}
+  >
+    <div
+      className="bx--pagination__left"
+    >
+      <span
+        className="bx--pagination__text"
+      >
+        Items per page:
+      </span>
+      <div
+        className="bx--form-item"
+      >
+        <div
+          className="bx--select bx--select--inline"
+        >
+          <label
+            className="bx--label bx--visually-hidden"
+            htmlFor="bx-pagination-select-resource-table-pagination"
+          >
+            Items per page:
+          </label>
+          <select
+            aria-invalid={undefined}
+            className="bx--select-input"
+            data-invalid={undefined}
+            disabled={undefined}
+            id="bx-pagination-select-resource-table-pagination"
+            onChange={[Function]}
+            value={5}
+          >
+            <option
+              className="bx--select-option"
+              disabled={false}
+              hidden={false}
+              value={5}
+            >
+              5
+            </option>
+            <option
+              className="bx--select-option"
+              disabled={false}
+              hidden={false}
+              value={10}
+            >
+              10
+            </option>
+            <option
+              className="bx--select-option"
+              disabled={false}
+              hidden={false}
+              value={20}
+            >
+              20
+            </option>
+            <option
+              className="bx--select-option"
+              disabled={false}
+              hidden={false}
+              value={50}
+            >
+              50
+            </option>
+            <option
+              className="bx--select-option"
+              disabled={false}
+              hidden={false}
+              value={75}
+            >
+              75
+            </option>
+            <option
+              className="bx--select-option"
+              disabled={false}
+              hidden={false}
+              value={100}
+            >
+              100
+            </option>
+          </select>
+          <svg
+            alt="open list of options"
+            aria-label="open list of options"
+            className="bx--select__arrow"
+            fill={undefined}
+            fillRule="evenodd"
+            height="5"
+            name={undefined}
+            role="img"
+            style={undefined}
+            viewBox="0 0 10 5"
+            width="10"
+          >
+            <title>
+              open list of options
+            </title>
+            <path
+              d="M0 0l5 4.998L10 0z"
+            />
+          </svg>
+        </div>
+      </div>
+      <span
+        className="bx--pagination__text"
+      >
+         |  
+        undefined undefined
+      </span>
+    </div>
+    <div
+      className="bx--pagination__right bx--pagination--inline"
+    >
+      <button
+        aria-label="Previous page"
+        className="bx--pagination__button bx--pagination__button--backward bx--pagination__button--no-index"
+        disabled={true}
+        onClick={[Function]}
+      >
+        <svg
+          alt="Previous page"
+          aria-label="Previous page"
+          className="bx--pagination__button-icon"
+          fill={undefined}
+          fillRule="evenodd"
+          height="12"
+          name={undefined}
+          role="img"
+          style={undefined}
+          viewBox="0 0 7 12"
+          width="7"
+        >
+          <title>
+            Previous page
+          </title>
+          <path
+            d="M1.45 6.002L7 11.27l-.685.726L0 6.003 6.315 0 7 .726z"
+          />
+        </svg>
+      </button>
+      <button
+        aria-label="Next page"
+        className="bx--pagination__button bx--pagination__button--forward"
+        disabled={true}
+        onClick={[Function]}
+      >
+        <svg
+          alt="Next page"
+          aria-label="Next page"
+          className="bx--pagination__button-icon"
+          fill={undefined}
+          fillRule="evenodd"
+          height="12"
+          name={undefined}
+          role="img"
+          style={undefined}
+          viewBox="0 0 7 12"
+          width="7"
+        >
+          <title>
+            Next page
+          </title>
+          <path
+            d="M5.569 5.994L0 .726.687 0l6.336 5.994-6.335 6.002L0 11.27z"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+`;

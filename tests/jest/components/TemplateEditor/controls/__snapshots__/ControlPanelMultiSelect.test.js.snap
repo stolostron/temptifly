@@ -1,0 +1,133 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ControlPanelMultiSelect component renders as expected 1`] = `
+<div
+  className="creation-view-controls-multiselect"
+>
+  <label
+    className="creation-view-controls-multiselect-title"
+    htmlFor="controlId"
+  >
+    creation.app.name
+    <div
+      className="bx--tooltip__label"
+    >
+      
+      <div
+        aria-expanded={false}
+        aria-haspopup="true"
+        aria-label="tooltip"
+        className="bx--tooltip__trigger"
+        id=""
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onMouseOut={[Function]}
+        onMouseOver={[Function]}
+        role="button"
+        tabIndex={0}
+        title=""
+      >
+        <svg
+          alt="tooltip"
+          aria-label="tooltip"
+          className={undefined}
+          fill={undefined}
+          fillRule="evenodd"
+          height="16"
+          name={undefined}
+          role="img"
+          style={undefined}
+          viewBox="0 0 16 16"
+          width="16"
+        >
+          <title>
+            
+          </title>
+          <path
+            d="M8,14.5 C11.5898509,14.5 14.5,11.5898509 14.5,8 C14.5,4.41014913 11.5898509,1.5 8,1.5 C4.41014913,1.5 1.5,4.41014913 1.5,8 C1.5,11.5898509 4.41014913,14.5 8,14.5 Z M8,16 C3.581722,16 0,12.418278 0,8 C0,3.581722 3.581722,0 8,0 C12.418278,0 16,3.581722 16,8 C16,12.418278 12.418278,16 8,16 Z"
+          />
+          <polygon
+            points="9 13 7 13 7 7 9 7"
+          />
+          <circle
+            cx="8"
+            cy="4"
+            r="1"
+          />
+        </svg>
+      </div>
+    </div>
+  </label>
+  <div
+    aria-invalid={undefined}
+    aria-label="Choose an item"
+    className="bx--multi-select bx--combo-box bx--list-box"
+    data-invalid={undefined}
+    onClick={[Function]}
+    onKeyDown={[Function]}
+    role="listbox"
+    tabIndex="-1"
+  >
+    <div
+      aria-controls={null}
+      aria-expanded={false}
+      aria-haspopup={true}
+      aria-label="open menu"
+      aria-owns={null}
+      className="bx--list-box__field"
+      data-toggle={true}
+      disabled={false}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onKeyDown={[Function]}
+      role="button"
+      tabIndex="0"
+      type="button"
+    >
+      <input
+        aria-activedescendant={null}
+        aria-autocomplete="list"
+        aria-expanded={false}
+        autoComplete="off"
+        className="bx--text-input"
+        disabled={false}
+        id="controlId"
+        onBlur={[Function]}
+        onChange={[Function]}
+        onKeyDown={[Function]}
+        placeholder=""
+        role="combobox"
+        value=""
+      />
+      
+      <div
+        className="bx--list-box__menu-icon"
+      >
+        <svg
+          alt="Open menu"
+          aria-label="Open menu"
+          className={undefined}
+          fill={undefined}
+          fillRule="evenodd"
+          focusable="false"
+          height="5"
+          name={undefined}
+          role="img"
+          style={undefined}
+          viewBox="0 0 10 5"
+          width="10"
+        >
+          <title>
+            Open menu
+          </title>
+          <path
+            d="M0 0l5 4.998L10 0z"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,15 @@
+.vscode
+.idea
+*.log
+.DS_Store
+node_modules
+public
+dll
+test-reports
+coverage
+jestTestLogs.tap
+config/config-development.json
+test-output
+storybook-static
+/lint.errors
+/.project
