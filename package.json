@@ -5,6 +5,8 @@
   "license": "Apache-2.0",
   "main": "src/index.js",
   "scripts": {
+    "build": "npm run clean && webpack --progress",
+    "clean": "del-cli dist/*",
     "lint": "eslint --ext .jsx,.js .",
     "lint:fix": "eslint --ext .jsx,.js --fix .",
     "test": "jest --silent",
@@ -76,6 +78,7 @@
     "compression-webpack-plugin": "^1.1.11",
     "cross-fetch": "^3.0.4",
     "css-loader": "^0.28.11",
+    "babel-plugin-dev-expression": "^0.2.1",
     "del-cli": "^1.1.0",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.6.0",
