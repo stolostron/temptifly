@@ -8,8 +8,8 @@ dll
 test-reports
 coverage
 jestTestLogs.tap
-config/config-development.json
 test-output
 storybook-static
-/lint.errors
-/.project
+test-report.xml
+lint.errors
+.project

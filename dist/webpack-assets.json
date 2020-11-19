@@ -1,0 +1,10 @@
+{
+  "main": {
+    "js": "main.js",
+    "css": "css/main.css"
+  },
+  "": {
+    "ttf": "assets/codicon.ttf",
+    "js": "0.js"
+  }
+}
