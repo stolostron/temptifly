@@ -4,7 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import Tooltip from '../components/Tooltip'
-import '../../graphics/diagramIcons.svg'
+import '../../graphics/icons.svg'
 import _ from 'lodash'
 
 class ControlPanelCards extends React.Component {
@@ -189,7 +189,7 @@ const ControlPanelCard = ({
         {selected && (
           <div className="card-checkmark">
             <svg width="16px" height="16px">
-              <use href={'#diagramIcons_checkmark'} />
+              <use href={'#icons_checkmark'} />
             </svg>
           </div>
         )}

@@ -20,7 +20,7 @@ import ControlPanelLabels from './ControlPanelLabels'
 import ControlPanelPrompt from './ControlPanelPrompt'
 import ControlPanelSkeleton from './ControlPanelSkeleton'
 import '../scss/control-panel.scss'
-import '../../graphics/diagramIcons.svg'
+import '../../graphics/icons.svg'
 
 class ControlPanel extends React.Component {
   static propTypes = {
@@ -620,7 +620,7 @@ class ControlPanel extends React.Component {
         onKeyPress={handleGroupChangeKey}
       >
         <svg className="icon">
-          <use href={'#diagramIcons_trash'} />
+          <use href={'#icons_trash'} />
         </svg>
       </div>
     )
@@ -652,7 +652,7 @@ class ControlPanel extends React.Component {
         >
           {text}
           <svg className="icon">
-            <use href={'#diagramIcons_add'} />
+            <use href={'#icons_add'} />
           </svg>
         </div>
       </div>

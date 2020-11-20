@@ -30,7 +30,7 @@ import EditorBar from './components/EditorBar'
 import YamlEditor from './components/YamlEditor'
 import TooltipContainer from './components/TooltipContainer'
 import './scss/template-editor.scss'
-import '../graphics/diagramIcons.svg'
+import '../graphics/icons.svg'
 import _ from 'lodash'
 
 const TEMPLATE_EDITOR_OPEN_COOKIE = 'template-editor-open-cookie'

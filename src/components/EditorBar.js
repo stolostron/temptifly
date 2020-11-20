@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Search } from 'carbon-components-react'
 import '../scss/editor-bar.scss'
-import '../../graphics/diagramIcons.svg'
+import '../../graphics/icons.svg'
 
 class EditorButton extends React.Component {
   static propTypes = {
@@ -50,7 +50,7 @@ class EditorButton extends React.Component {
         >
           {icon ? (
             <svg>
-              <use href={`#diagramIcons_${icon}`} />
+              <use href={`#icons_${icon}`} />
             </svg>
           ) : (
             <div>{tooltip}</div>
