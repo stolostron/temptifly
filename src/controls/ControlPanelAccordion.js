@@ -115,7 +115,7 @@ class ControlPanelAccordion extends React.Component {
                   }
                 >
                   <svg className="icon">
-                    <use href="#diagramIcons_caret--up" />
+                    <use href="#icons_caret--up" />
                   </svg>
                 </div>
               )}

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "This repo contains template-editor components.",
   "license": "Apache-2.0",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "npm run clean && webpack --progress",
     "clean": "del-cli dist/*",
@@ -17,6 +17,7 @@
     "url": "git+https://github.com/open-cluster-management/ui-components.git"
   },
   "keywords": [
+    "editor",
     "template"
   ],
   "dependencies": {

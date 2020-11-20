@@ -12,7 +12,7 @@ import {
   InlineLoading
 } from 'carbon-components-react'
 import _ from 'lodash'
-import '../../graphics/diagramIcons.svg'
+import '../../graphics/icons.svg'
 
 class ControlPanelPrompt extends React.Component {
   static propTypes = {
@@ -118,7 +118,7 @@ class ControlPanelPrompt extends React.Component {
       >
         {text}
         <svg className="icon">
-          <use href={'#diagramIcons_add'} />
+          <use href={'#icons_add'} />
         </svg>
       </div>
     )
