@@ -46,7 +46,7 @@ exports[`EditorBar component renders as expected 1`] = `
         >
           <svg>
             <use
-              href="#diagramIcons_undo"
+              href="#icons_undo"
             />
           </svg>
         </div>
@@ -61,7 +61,7 @@ exports[`EditorBar component renders as expected 1`] = `
         >
           <svg>
             <use
-              href="#diagramIcons_redo"
+              href="#icons_redo"
             />
           </svg>
         </div>
@@ -154,7 +154,7 @@ exports[`EditorBar component renders as expected 1`] = `
           >
             <svg>
               <use
-                href="#diagramIcons_previous"
+                href="#icons_previous"
               />
             </svg>
           </div>
@@ -169,7 +169,7 @@ exports[`EditorBar component renders as expected 1`] = `
           >
             <svg>
               <use
-                href="#diagramIcons_next"
+                href="#icons_next"
               />
             </svg>
           </div>
@@ -194,7 +194,7 @@ exports[`EditorBar component renders as expected 1`] = `
       >
         <svg>
           <use
-            href="#diagramIcons_close"
+            href="#icons_close"
           />
         </svg>
       </div>
