@@ -98,7 +98,7 @@ class ControlPanelTable extends React.Component {
 
   getRows() {
     const { i18n, control } = this.props
-    const { prompts = {}, sortTable, active=[] } = control
+    const { prompts = {}, sortTable, active } = control
     const { deletePrompt = '' } = prompts
     const text = i18n(deletePrompt)
     const { controlData, available = [] } = control
@@ -286,7 +286,7 @@ class ControlPanelTable extends React.Component {
                 <Table className="resource-table" zebra={false}>
                   <TableHead>
                     <TableRow>
-                      <TableSelectAll
+                      {active.length > 0 && <TableSelectAll
                         id={'selectAll'}
                         ariaLabel={'tableSelectAllRow'}
                         name={'tableSelectAllRow'}
@@ -299,7 +299,7 @@ class ControlPanelTable extends React.Component {
                           active.length === available.length
                         }
                         onSelect={this.handleSelect.bind(this, null)}
-                      />
+                      />}
                       {_headers.map(header => (
                         <th scope={'col'} key={header.key}>
                           {header.key !== 'action' ? (

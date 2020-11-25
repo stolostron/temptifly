@@ -4,7 +4,7 @@ import React from 'react'
 import ControlPanelTable from '../../../../../src/controls/ControlPanelTable'
 import renderer from 'react-test-renderer'
 
-import { control } from '../../TestingData'
+import { tableControl } from '../../TestingData'
 
 describe('ControlPanelTable component', () => {
   it('renders as expected', () => {
@@ -13,7 +13,8 @@ describe('ControlPanelTable component', () => {
     const component = renderer.create(
       <ControlPanelTable
         key={'key'}
-        control={control}
+        control={tableControl}
+        fetchData={fn}
         controlId={'controlId'}
         handleChange={fn}
         i18n={fn}
