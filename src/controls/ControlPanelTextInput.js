@@ -38,7 +38,7 @@ class ControlPanelTextInput extends React.Component {
     if (!placeholder) {
       placeholder = i18n(
         'creation.ocp.cluster.enter.value',
-        [name.toLowerCase()]
+        [name ? name.toLowerCase() : '']
       )
     }
 
