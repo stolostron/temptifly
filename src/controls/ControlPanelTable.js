@@ -98,7 +98,7 @@ class ControlPanelTable extends React.Component {
 
   getRows() {
     const { i18n, control } = this.props
-    const { prompts = {}, sortTable, active } = control
+    const { prompts = {}, sortTable, active=[] } = control
     const { deletePrompt = '' } = prompts
     const text = i18n(deletePrompt)
     const { controlData, available = [] } = control
