@@ -68,12 +68,22 @@ export const generateSourceFromTemplate = (
   let yaml = template(templateData) || ''
   yaml = replaceSnippetMap(yaml, snippetMap)
 
+  // if show secrets is off, create the templateObject with secrets
   const parsed = parseYAML(yaml)
+  let templateObject = parsed.parsed
+  if (yaml) {
+    templateData.showSecrets = true
+    let yamlWithSecrets = template(templateData) || ''
+    yamlWithSecrets = replaceSnippetMap(yamlWithSecrets, snippetMap)
+    templateObject = parseYAML(yamlWithSecrets).parsed
+  }
+
   return {
     templateYAML: yaml,
-    templateObject: parsed.parsed,
+    templateObject,
     templateResources: parsed.resources
   }
+
 }
 
 const generateTemplateData = (
