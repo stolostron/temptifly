@@ -242,7 +242,7 @@ class ControlPanelTable extends React.Component {
           zebra={false}
         />
       )
-    } else if (active.length > 0) {
+    } else {
       const { id, exceptions = [] } = control
       const {
         sortDirection,
@@ -286,7 +286,7 @@ class ControlPanelTable extends React.Component {
                 <Table className="resource-table" zebra={false}>
                   <TableHead>
                     <TableRow>
-                      <TableSelectAll
+                      {active.length > 0 && <TableSelectAll
                         id={'selectAll'}
                         ariaLabel={'tableSelectAllRow'}
                         name={'tableSelectAllRow'}
@@ -299,7 +299,7 @@ class ControlPanelTable extends React.Component {
                           active.length === available.length
                         }
                         onSelect={this.handleSelect.bind(this, null)}
-                      />
+                      />}
                       {_headers.map(header => (
                         <th scope={'col'} key={header.key}>
                           {header.key !== 'action' ? (

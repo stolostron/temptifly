@@ -37,3 +37,19 @@ export const controlData = [
     syncedSuffix: '-ns'
   }
 ]
+
+
+export const tableControl =
+{
+  id: 'hosts',
+  type: 'table',
+  summaryKey: 'hostName', // when table is collapsed, collapsed summary is composed of a list of this table value
+  controlData: [
+    ///////////////////////  host name  /////////////////////////////////////
+    {
+      name: 'creation.ocp.host.name',
+      id: 'hostName',
+      type: 'text',
+    },
+  ]
+}

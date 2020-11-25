@@ -36,8 +36,12 @@ class ControlPanelTextInput extends React.Component {
     // if placeholder missing, create one
     let { placeholder } = control
     if (!placeholder) {
-      placeholder = i18n('creation.ocp.cluster.enter.value')
+      placeholder = i18n(
+        'creation.ocp.cluster.enter.value',
+        [name ? name.toLowerCase() : '']
+      )
     }
+
     return (
       <React.Fragment>
         <div
