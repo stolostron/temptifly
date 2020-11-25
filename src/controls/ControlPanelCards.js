@@ -150,7 +150,7 @@ const ControlPanelCard = ({
   selected,
   i18n
 }) => {
-  const { id, disabled, logo, title, tooltip, learnMore } = choice
+  const { disabled, logo, title, tooltip, learnMore } = choice
   const cardClasses = classNames({
     'mcx--create-cluster-page__provider-card': true,
     'mcx--create-cluster-page__provider-card-isSelected': selected,
@@ -167,6 +167,7 @@ const ControlPanelCard = ({
   const half = title.substring(0, title.length / 2).lastIndexOf(' ')
   const title1 = title.substring(0, half)
   const title2 = title.substring(half)
+  const id = title.replace(/\s+/g, '-').toLowerCase()
   return (
     <div
       className={wrapperClasses}
