@@ -182,14 +182,14 @@ const validateTableControl = (
   const {
     active: rows,
     controlData,
-    sourcePath: { tabId = '<<main>>', paths },
+    //sourcePath: { tabId = '<<main>>', paths },
     validation: { tester },
     exceptions
   } = table
   const controlDataMap = _.keyBy(controlData, 'id')
   let hidden = false
-  rows.forEach((row, inx) => {
-    const pathMap = paths[inx]
+  rows.forEach((row) => {
+    //const pathMap = paths[inx]
     Object.entries(row).forEach(([key, active]) => {
       if (
         controlDataMap[key] &&
@@ -197,7 +197,7 @@ const validateTableControl = (
       ) {
         const control = {
           ...controlDataMap[key],
-          sourcePath: { tabId, path: pathMap ? pathMap[key] : '' },
+          //sourcePath: { tabId, path: pathMap ? pathMap[key] : '' },
           active
         }
         validateControl(

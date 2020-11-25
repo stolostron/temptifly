@@ -242,7 +242,7 @@ class ControlPanelTable extends React.Component {
           zebra={false}
         />
       )
-    } else if (active.length > 0) {
+    } else {
       const { id, exceptions = [] } = control
       const {
         sortDirection,
