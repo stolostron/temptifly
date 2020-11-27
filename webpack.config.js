@@ -29,10 +29,7 @@ module.exports = {
           fallback: 'style-loader',
           use: [
             {
-              loader: 'css-loader?sourceMap',
-              options: {
-                minimize: true
-              }
+              loader: 'css-loader?sourceMap'
             },
             {
               loader: 'postcss-loader?sourceMap',
