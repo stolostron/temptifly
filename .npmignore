@@ -1,0 +1,10 @@
+src
+tests
+test-output
+test-report.xml
+node_modules
+graphics
+.project
+.travis.yml
+sonar-project.properties
+lint.errors
