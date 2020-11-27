@@ -5,6 +5,7 @@
 node_modules
 public
 dll
+dist
 test-reports
 coverage
 jestTestLogs.tap

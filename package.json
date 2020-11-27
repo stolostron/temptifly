@@ -1,6 +1,6 @@
 {
   "name": "temptifly",
-  "version": "0.1.1",
+  "version": "0.1.6",
   "description": "Side-by-side template editor",
   "main": "dist/index.js",
   "directories": {
@@ -12,7 +12,8 @@
     "lint": "eslint --ext .jsx,.js .",
     "lint:fix": "eslint --ext .jsx,.js --fix .",
     "test": "jest --silent",
-    "test:update-snapshot": "jest --updateSnapshot"
+    "test:update-snapshot": "jest --updateSnapshot",
+    "publish": "npm publish --access public"
   },
   "repository": {
     "type": "git",
