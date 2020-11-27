@@ -7,7 +7,6 @@ const overpassTest = /overpass-.*\.(woff2?|ttf|eot|otf)(\?.*$|$)/
 
 module.exports = {
   context: __dirname,
-  devtool: 'source-map',
   entry: './src/index.js',
   output: {
     filename: 'index.js',
