@@ -1,2 +1,2 @@
 # temptifly
-template editor and topology
+template editor
