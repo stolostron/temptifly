@@ -1,5 +1,4 @@
-@import 'node_modules/carbon-components/scss/globals/scss/_colors';
-@import 'variables';
+@import "node_modules/carbon-components/scss/globals/scss/_colors";
 
 .template-page-content {
   display: flex;
@@ -35,13 +34,21 @@
 
           &.top {
             top: 0;
-            background-image: linear-gradient(to top, rgba(244, 247, 251, 0), rgba(240, 240, 240, 1) 90%);
+            background-image: linear-gradient(
+              to top,
+              rgba(244, 247, 251, 0),
+              rgba(240, 240, 240, 1) 90%
+            );
             display: none;
           }
 
           &.bottom {
             bottom: 0;
-            background-image: linear-gradient(to bottom, rgba(244, 247, 251, 0), rgba(240, 240, 240, 1) 90%);
+            background-image: linear-gradient(
+              to bottom,
+              rgba(244, 247, 251, 0),
+              rgba(240, 240, 240, 1) 90%
+            );
           }
         }
       }
@@ -75,7 +82,7 @@
 
   .Resizer {
     width: 0;
-    opacity: .2;
+    opacity: 0.2;
     z-index: 1;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -90,8 +97,8 @@
   }
 
   .Resizer:hover {
-    -webkit-transition: all .2s ease;
-    transition: all .2s ease;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
   }
 
   .Resizer.vertical:hover {
