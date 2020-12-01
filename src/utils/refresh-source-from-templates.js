@@ -2,7 +2,30 @@
 
 import { parseYAML } from './source-utils'
 import { Base64 } from 'js-base64'
+import {
+  caseFn,
+  defaultFn,
+  if_eqFn,
+  if_existsFn,
+  if_gtFn,
+  if_neFn,
+  if_orFn,
+  switchFn
+} from '../helpers'
 import _ from 'lodash'
+
+const helpers = {
+  helpers: {
+    case: caseFn,
+    default: defaultFn,
+    if_eq: if_eqFn,
+    if_exists: if_existsFn,
+    if_gt: if_gtFn,
+    if_ne: if_neFn,
+    if_or: if_orFn,
+    switch: switchFn
+  }
+}
 
 export const generateSourceFromTemplate = (
   template,
@@ -65,7 +88,7 @@ export const generateSourceFromTemplate = (
   // generate the yaml!!
   // make sure the code snippets align with the yaml around it
   /////////////////////////////////////////////////////////
-  let yaml = template(templateData) || ''
+  let yaml = template(templateData, helpers) || ''
   yaml = replaceSnippetMap(yaml, snippetMap)
 
   // if show secrets is off, create the templateObject with secrets
@@ -73,7 +96,7 @@ export const generateSourceFromTemplate = (
   let templateObject = parsed.parsed
   if (yaml) {
     templateData.showSecrets = true
-    let yamlWithSecrets = template(templateData) || ''
+    let yamlWithSecrets = template(templateData, helpers) || ''
     yamlWithSecrets = replaceSnippetMap(yamlWithSecrets, snippetMap)
     templateObject = parseYAML(yamlWithSecrets).parsed
   }
@@ -258,7 +281,7 @@ const addCodeSnippetsTemplateData = (
             const typeOf = typeof partial
             if (typeOf === 'string' || typeOf === 'function') {
               let snippet =
-                typeOf === 'string' ? partial : partial(templateData)
+                typeOf === 'string' ? partial : partial(templateData, helpers)
               snippet = snippet.trim().replace(/^\s*$(?:\r\n?|\n)/gm, '')
               let arr = templateData[_id]
               if (!arr) {
