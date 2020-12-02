@@ -52,6 +52,7 @@
     "ip-address": "^6.3.0",
     "ip-cidr": "^2.0.11",
     "js-yaml": "^3.13.1",
+    "loadable-components": "^1.4.0",
     "lodash": "^4.17.15",
     "mime-types": "^2.1.18",
     "monaco-editor": "^0.20.0",
