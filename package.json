@@ -1,16 +1,14 @@
 {
   "name": "temptifly",
-  "version": "0.1.7",
+  "version": "0.1.9",
   "description": "Side-by-side template editor",
   "main": "dist/index.js",
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
     "build": "npm run clean && webpack --progress",
     "clean": "del-cli dist/*",
     "lint": "eslint --ext .jsx,.js .",
-    "lint:fix": "eslint --ext .jsx,.js --fix .",
+    "lint:fix": "npm run stylefmt && eslint --ext .jsx,.js --fix .",
+    "stylefmt": "prettier --write src/**/*.scss",
     "test": "jest --silent",
     "test:update-snapshot": "jest --updateSnapshot",
     "publish": "npm publish --access public"
@@ -54,6 +52,7 @@
     "ip-address": "^6.3.0",
     "ip-cidr": "^2.0.11",
     "js-yaml": "^3.13.1",
+    "loadable-components": "^1.4.0",
     "lodash": "^4.17.15",
     "mime-types": "^2.1.18",
     "monaco-editor": "^0.20.0",
@@ -109,6 +108,7 @@
     "jsonfile": "^4.0.0",
     "node-sass": "^4.8.3",
     "postcss-loader": "^2.1.4",
+    "prettier": "^2.1.2",
     "resolve-url-loader": "^3.1.2",
     "sass-loader": "^7.3.1",
     "style-loader": "^0.21.0",

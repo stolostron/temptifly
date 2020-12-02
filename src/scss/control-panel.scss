@@ -1,6 +1,7 @@
-@import 'node_modules/carbon-components/scss/globals/scss/_colors';
-@import './variables.scss';
-$acm_background_color: #F0F0F0 !default;
+@import "node_modules/carbon-components/scss/globals/scss/_colors";
+$acm_background_color: #f0f0f0 !default;
+$control-max-width-with-editor: 600px !default;
+$control-max-width-without-editor: 600px !default;
 
 @keyframes flash {
   0% {
@@ -77,7 +78,7 @@ $acm_background_color: #F0F0F0 !default;
     border: none;
 
     .info-icon {
-      box-shadow: 0 0 0 $grc_focus_shaldow_width $grc_focus_shaldow_color;
+      box-shadow: 0 0 0 3px #7cc7ff;
       outline: 0.0625rem solid transparent;
       border: none;
     }
@@ -105,7 +106,7 @@ $acm_background_color: #F0F0F0 !default;
       cursor: default;
       display: flex;
       padding-bottom: 2rem;
-      font-size: .875rem;
+      font-size: 0.875rem;
       font-weight: 400;
     }
 
@@ -291,7 +292,7 @@ $acm_background_color: #F0F0F0 !default;
       }
     }
 
-    .bx--list-box input[role='combobox'] {
+    .bx--list-box input[role="combobox"] {
       font-weight: 400;
       cursor: pointer;
 
@@ -392,7 +393,7 @@ $acm_background_color: #F0F0F0 !default;
         }
       }
 
-      .bx--list-box input[role='combobox'] {
+      .bx--list-box input[role="combobox"] {
         margin-left: 16px;
       }
 
@@ -437,7 +438,7 @@ $acm_background_color: #F0F0F0 !default;
     &-table {
       .bx--toolbar-content > div {
         & > .bx--btn {
-        margin-left: 10px;
+          margin-left: 10px;
           border-radius: 3px;
           height: 24px;
           font-size: 16px;
@@ -445,7 +446,7 @@ $acm_background_color: #F0F0F0 !default;
           padding: 16px;
           display: inline-flex;
         }
-  
+
         & > .bx--btn--primary {
           background-color: $color__white;
           color: $color__blue-51;
@@ -453,7 +454,9 @@ $acm_background_color: #F0F0F0 !default;
           border-width: 1px;
           margin: 2px;
           margin-right: 12px;
-          &:hover, &:active, &:focus {
+          &:hover,
+          &:active,
+          &:focus {
             background-color: unset;
             color: $color__blue-51;
             box-shadow: 0 0 0 2px $color__blue-51;
@@ -529,9 +532,9 @@ $acm_background_color: #F0F0F0 !default;
           background-color: #e2eaf4;
           white-space: nowrap;
           line-height: 20px;
-          padding: .7rem;
-          font-size: .8rem;
-          margin: 0 .2rem;
+          padding: 0.7rem;
+          font-size: 0.8rem;
+          margin: 0 0.2rem;
 
           .closeIcon {
             cursor: pointer;
@@ -634,13 +637,13 @@ $acm_background_color: #F0F0F0 !default;
           text-overflow: ellipsis;
         }
 
-        &.bx--combo-box input[role='combobox'] {
+        &.bx--combo-box input[role="combobox"] {
           cursor: default;
           text-overflow: ellipsis;
 
           &:focus {
             cursor: text;
-            box-shadow: 0 0 0 $grc_focus_shaldow_width $grc_focus_shaldow_color;
+            box-shadow: 0 0 0 3px #7cc7ff;
             outline: 0.0625rem solid transparent;
             border: none;
           }

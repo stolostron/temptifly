@@ -1,20 +1,17 @@
-@import 'node_modules/carbon-components/scss/globals/scss/_colors';
-@import 'variables';
-
+@import "node_modules/carbon-components/scss/globals/scss/_colors";
 
 .creation-view-yaml {
-
   &-header {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
     color: white;
-    background-color: #25282C;
+    background-color: #25282c;
 
     &-toolbar {
       display: flex;
       align-items: center;
-      border-bottom: 1px solid #55585C;
+      border-bottom: 1px solid #55585c;
       height: 100%;
     }
 
@@ -23,11 +20,11 @@
       align-items: center;
       height: 48px;
       margin: 0 10px;
-      
+
       .bx--form-item.bx--checkbox-wrapper:first-of-type {
         margin: 0;
       }
-      
+
       > div {
         white-space: nowrap;
         font-weight: normal;
@@ -50,27 +47,26 @@
           width: 140px;
           padding: 0 0 6px 0;
           margin-left: 0;
-          
+
           &:not(.bx--tabs__nav-item--selected) {
-            opacity: .4;
+            opacity: 0.4;
             border-bottom: 2px solid white;
           }
         }
-      
+
         .bx--tabs__nav-link {
           padding-left: 30px;
           color: white;
           font-weight: 100;
-          opacity: .7;
+          opacity: 0.7;
         }
-                   
-        .bx--tabs__nav-item--selected .bx--tabs__nav-link  {
+
+        .bx--tabs__nav-item--selected .bx--tabs__nav-link {
           font-weight: bold;
           opacity: 1;
         }
-      
       }
-      border-bottom: 1px solid #55585C;
+      border-bottom: 1px solid #55585c;
       height: 30px;
     }
   }

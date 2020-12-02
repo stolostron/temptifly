@@ -2,6 +2,7 @@
 
 import React from 'react'
 import ReactDOM from 'react-dom'
+import loadable from 'loadable-components'
 import { Prompt } from 'react-router-dom'
 import SplitPane from 'react-split-pane'
 import classNames from 'classnames'
@@ -27,11 +28,12 @@ import {
 import ControlPanel from './controls/ControlPanel'
 import EditorHeader from './components/EditorHeader'
 import EditorBar from './components/EditorBar'
-import YamlEditor from './components/YamlEditor'
 import TooltipContainer from './components/TooltipContainer'
 import './scss/template-editor.scss'
 import '../graphics/icons.svg'
 import _ from 'lodash'
+
+export const YamlEditor = loadable(() => import(/* webpackChunkName: "YamlEditor" */ './components/YamlEditor'))
 
 const TEMPLATE_EDITOR_OPEN_COOKIE = 'template-editor-open-cookie'
 const TEMPLATE_EDITOR_SHOW_SECRETS_COOKIE =
