@@ -34,7 +34,8 @@ class ControlPanel extends React.Component {
     isLoaded: PropTypes.bool,
     notifications: PropTypes.array,
     originalControlData: PropTypes.array,
-    showEditor: PropTypes.bool
+    showEditor: PropTypes.bool,
+    showPortals: PropTypes.object
   };
 
   constructor(props) {
@@ -84,6 +85,7 @@ class ControlPanel extends React.Component {
           ref={this.setCreationViewRef}
           onScroll={this.refreshFading.bind(this)}
         >
+          {this.renderPortals()}
           {this.renderNotifications()}
           <div className="content">
             {this.renderControlSections(controlData)}
@@ -527,6 +529,20 @@ class ControlPanel extends React.Component {
   handleControlChange(control) {
     const { controlData } = this.props
     this.props.handleControlChange(control, controlData)
+  }
+
+  renderPortals() {
+    const { showPortals } = this.props
+    if (showPortals) {
+      return (
+        <div className='creation-view-portals'>
+          {Object.values(showPortals).map(id => {
+            return (<div id={id} key={id} />)
+          })}
+        </div>
+      )
+    }
+    return null
   }
 
   renderNotifications() {

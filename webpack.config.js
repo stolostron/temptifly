@@ -68,6 +68,15 @@ module.exports = {
         loader: 'null-loader',
       },
       {
+        test: [/\.hbs$/],
+        loader: 'handlebars-loader',
+        query: {
+          precompileOptions: {
+            knownHelpersOnly: false
+          }
+        }
+      },
+      {
         // Resolve to an empty module for overpass fonts included in SASS files.
         // This way file-loader won't parse them. Make sure this is BELOW the
         // file-loader rule.

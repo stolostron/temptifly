@@ -25,6 +25,16 @@ $control-max-width-without-editor: 600px !default;
     margin-left: 10px;
   }
 
+  .creation-view-portals {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    > div {
+      margin-right: 25px;
+    }
+  }
+
   .creation-view-controls {
     .content {
       margin-left: 26px;
