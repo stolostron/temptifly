@@ -4,7 +4,7 @@ import {
   VALIDATE_ALPHANUMERIC,
   VALID_REPOPATH,
   VALIDATE_URL
-} from 'temptifly'
+} from '../../src/utils/validation-types' //'temptifly'
 
 
 const githubChannelData = [
