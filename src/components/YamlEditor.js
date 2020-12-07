@@ -10,7 +10,7 @@ class YamlEditor extends React.Component {
 
     const { editor, onYamlChange } = this.props
     this.state = {
-      editor: React.cloneElement(editor, {
+      editor: editor && React.cloneElement(editor, {
         language: 'yaml',
         theme: 'console',
         height: '100%',
@@ -101,7 +101,7 @@ class YamlEditor extends React.Component {
         className="yamlEditorContainer"
         style={{ display: hide ? 'none' : 'block', minHeight: '100px' }}
       >
-        {React.cloneElement(editor, {value: yaml})}
+        {editor && React.cloneElement(editor, {value: yaml})}
       </div>
     )
   }

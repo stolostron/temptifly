@@ -11,7 +11,6 @@ exports[`ControlPanelTable component renders as expected 1`] = `
       className="bx--data-table-v2-container"
     >
       <section
-        aria-label={undefined}
         className="bx--table-toolbar"
       >
         <div
@@ -26,12 +25,9 @@ exports[`ControlPanelTable component renders as expected 1`] = `
               alt="Provide a description that will be used as the title"
               aria-label="Provide a description that will be used as the title"
               className="bx--search-magnifier"
-              fill={undefined}
               fillRule="evenodd"
               height="16"
-              name={undefined}
               role="img"
-              style={undefined}
               viewBox="0 0 16 16"
               width="16"
             >
@@ -56,7 +52,6 @@ exports[`ControlPanelTable component renders as expected 1`] = `
               value=""
             />
             <button
-              aria-label={undefined}
               className="bx--search-close bx--search-close--hidden"
               onClick={[Function]}
               type="button"
@@ -64,13 +59,9 @@ exports[`ControlPanelTable component renders as expected 1`] = `
               <svg
                 alt="Provide a description that will be used as the title"
                 aria-label="Provide a description that will be used as the title"
-                className={undefined}
-                fill={undefined}
                 fillRule="evenodd"
                 height="16"
-                name={undefined}
                 role="img"
-                style={undefined}
                 viewBox="0 0 16 16"
                 width="16"
               >
@@ -91,12 +82,8 @@ exports[`ControlPanelTable component renders as expected 1`] = `
       <table
         className="bx--data-table-v2 resource-table"
       >
-        <thead
-          className={undefined}
-        >
-          <tr
-            className={undefined}
-          >
+        <thead>
+          <tr>
             <th
               scope="col"
             >
@@ -104,7 +91,6 @@ exports[`ControlPanelTable component renders as expected 1`] = `
                 className="bx--table-sort-v2 bx--table-sort-v2--ascending"
                 data-key="hostName"
                 onClick={[Function]}
-                title={undefined}
               >
                 <span
                   className="bx--table-header-label"
@@ -115,12 +101,10 @@ exports[`ControlPanelTable component renders as expected 1`] = `
                   alt="Provide a description that will be used as the title"
                   aria-label="Provide a description that will be used as the title"
                   className="bx--table-sort-v2__icon"
-                  fill={undefined}
                   fillRule="evenodd"
                   height="5"
                   name="caret--down"
                   role="img"
-                  style={undefined}
                   viewBox="0 0 10 5"
                   width="10"
                 >
@@ -138,9 +122,7 @@ exports[`ControlPanelTable component renders as expected 1`] = `
             />
           </tr>
         </thead>
-        <tbody
-          className={undefined}
-        />
+        <tbody />
       </table>
     </div>
   </div>
@@ -169,10 +151,7 @@ exports[`ControlPanelTable component renders as expected 1`] = `
             Items per page:
           </label>
           <select
-            aria-invalid={undefined}
             className="bx--select-input"
-            data-invalid={undefined}
-            disabled={undefined}
             id="bx-pagination-select-resource-table-pagination"
             onChange={[Function]}
             value={5}
@@ -230,12 +209,9 @@ exports[`ControlPanelTable component renders as expected 1`] = `
             alt="open list of options"
             aria-label="open list of options"
             className="bx--select__arrow"
-            fill={undefined}
             fillRule="evenodd"
             height="5"
-            name={undefined}
             role="img"
-            style={undefined}
             viewBox="0 0 10 5"
             width="10"
           >
@@ -258,27 +234,27 @@ exports[`ControlPanelTable component renders as expected 1`] = `
     <div
       className="bx--pagination__right bx--pagination--inline"
     >
+      <span
+        className="bx--pagination__text"
+      />
       <button
-        aria-label="Previous page"
+        aria-label="Backward"
         className="bx--pagination__button bx--pagination__button--backward bx--pagination__button--no-index"
         disabled={true}
         onClick={[Function]}
       >
         <svg
-          alt="Previous page"
-          aria-label="Previous page"
+          alt="Backward"
+          aria-label="Backward"
           className="bx--pagination__button-icon"
-          fill={undefined}
           fillRule="evenodd"
           height="12"
-          name={undefined}
           role="img"
-          style={undefined}
           viewBox="0 0 7 12"
           width="7"
         >
           <title>
-            Previous page
+            Backward
           </title>
           <path
             d="M1.45 6.002L7 11.27l-.685.726L0 6.003 6.315 0 7 .726z"
@@ -286,26 +262,23 @@ exports[`ControlPanelTable component renders as expected 1`] = `
         </svg>
       </button>
       <button
-        aria-label="Next page"
+        aria-label="Forward"
         className="bx--pagination__button bx--pagination__button--forward"
         disabled={true}
         onClick={[Function]}
       >
         <svg
-          alt="Next page"
-          aria-label="Next page"
+          alt="Forward"
+          aria-label="Forward"
           className="bx--pagination__button-icon"
-          fill={undefined}
           fillRule="evenodd"
           height="12"
-          name={undefined}
           role="img"
-          style={undefined}
           viewBox="0 0 7 12"
           width="7"
         >
           <title>
-            Next page
+            Forward
           </title>
           <path
             d="M5.569 5.994L0 .726.687 0l6.336 5.994-6.335 6.002L0 11.27z"

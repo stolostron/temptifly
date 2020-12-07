@@ -21,13 +21,11 @@ exports[`EditorBar component renders as expected 1`] = `
         className="editor-bar-section"
       >
         <div
-          aria-label={undefined}
           className="editor-bar-button restore"
           onClick={[Function]}
           onKeyPress={[Function]}
           role="button"
           tabIndex={0}
-          title={undefined}
         >
           <div />
         </div>
@@ -36,13 +34,11 @@ exports[`EditorBar component renders as expected 1`] = `
         className="editor-bar-section"
       >
         <div
-          aria-label={undefined}
           className="editor-bar-button undo disabled"
           onClick={[Function]}
           onKeyPress={[Function]}
           role="button"
           tabIndex={0}
-          title={undefined}
         >
           <svg>
             <use
@@ -51,13 +47,11 @@ exports[`EditorBar component renders as expected 1`] = `
           </svg>
         </div>
         <div
-          aria-label={undefined}
           className="editor-bar-button redo"
           onClick={[Function]}
           onKeyPress={[Function]}
           role="button"
           tabIndex={0}
-          title={undefined}
         >
           <svg>
             <use
@@ -70,9 +64,7 @@ exports[`EditorBar component renders as expected 1`] = `
         className="editor-bar-section"
       >
         <div
-          aria-label={undefined}
           className="editor-bar-search"
-          id={undefined}
           role="region"
         >
           <div
@@ -84,12 +76,9 @@ exports[`EditorBar component renders as expected 1`] = `
               alt=""
               aria-label=""
               className="bx--search-magnifier"
-              fill={undefined}
               fillRule="evenodd"
               height="16"
-              name={undefined}
               role="img"
-              style={undefined}
               viewBox="0 0 16 16"
               width="16"
             >
@@ -108,7 +97,6 @@ exports[`EditorBar component renders as expected 1`] = `
               
             </label>
             <input
-              aria-label={undefined}
               className="bx--search-input"
               id="template-editor-search-undefined"
               onChange={[Function]}
@@ -116,7 +104,6 @@ exports[`EditorBar component renders as expected 1`] = `
               type="text"
             />
             <button
-              aria-label={undefined}
               className="bx--search-close bx--search-close--hidden"
               onClick={[Function]}
               type="button"
@@ -124,13 +111,9 @@ exports[`EditorBar component renders as expected 1`] = `
               <svg
                 alt="Provide a description that will be used as the title"
                 aria-label="Provide a description that will be used as the title"
-                className={undefined}
-                fill={undefined}
                 fillRule="evenodd"
                 height="16"
-                name={undefined}
                 role="img"
-                style={undefined}
                 viewBox="0 0 16 16"
                 width="16"
               >
@@ -144,13 +127,11 @@ exports[`EditorBar component renders as expected 1`] = `
             </button>
           </div>
           <div
-            aria-label={undefined}
             className="editor-bar-button previous disabled"
             onClick={[Function]}
             onKeyPress={[Function]}
             role="button"
             tabIndex={0}
-            title={undefined}
           >
             <svg>
               <use
@@ -159,13 +140,11 @@ exports[`EditorBar component renders as expected 1`] = `
             </svg>
           </div>
           <div
-            aria-label={undefined}
             className="editor-bar-button next disabled"
             onClick={[Function]}
             onKeyPress={[Function]}
             role="button"
             tabIndex={0}
-            title={undefined}
           >
             <svg>
               <use
@@ -184,13 +163,11 @@ exports[`EditorBar component renders as expected 1`] = `
       className="editor-bar-section"
     >
       <div
-        aria-label={undefined}
         className="editor-bar-button close"
         onClick={[Function]}
         onKeyPress={[Function]}
         role="button"
         tabIndex={0}
-        title={undefined}
       >
         <svg>
           <use
