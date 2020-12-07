@@ -3,7 +3,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Checkbox } from 'carbon-components-react'
-import { Tooltip, getSourcePath, removeVs } from 'temptifly'
+import {
+  getSourcePath, removeVs
+} from '../../src/utils/source-utils' //'temptifly'
+import Tooltip from '../../src/components/Tooltip' //'temptifly'
 import './style.scss'
 import _ from 'lodash'
 

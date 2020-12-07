@@ -3,7 +3,7 @@
 import {
   initializeControls,
   getSourcePath
-} from 'temptifly'
+} from '../../src/utils/source-utils' //'temptifly'
 import _ from 'lodash'
 
 //only called when editing an existing application

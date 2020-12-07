@@ -9,12 +9,14 @@ exports[`ControlPanelTreeSelect component renders as expected 1`] = `
   >
     creation.app.name
     <div
-      className="bx--tooltip__trigger"
+      className="bx--tooltip__label"
     >
       
       <div
         aria-expanded={false}
         aria-haspopup="true"
+        aria-label="tooltip"
+        className="bx--tooltip__trigger"
         id=""
         onBlur={[Function]}
         onClick={[Function]}
@@ -24,13 +26,18 @@ exports[`ControlPanelTreeSelect component renders as expected 1`] = `
         onMouseOver={[Function]}
         role="button"
         tabIndex={0}
+        title=""
       >
         <svg
           alt="tooltip"
           aria-label="tooltip"
+          className={undefined}
+          fill={undefined}
           fillRule="evenodd"
           height="16"
+          name={undefined}
           role="img"
+          style={undefined}
           viewBox="0 0 16 16"
           width="16"
         >

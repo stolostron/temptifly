@@ -10,12 +10,14 @@ exports[`ControlPanelNumber component renders as expected 1`] = `
   >
     creation.app.name
     <div
-      className="bx--tooltip__trigger"
+      className="bx--tooltip__label"
     >
       
       <div
         aria-expanded={false}
         aria-haspopup="true"
+        aria-label="tooltip"
+        className="bx--tooltip__trigger"
         id=""
         onBlur={[Function]}
         onClick={[Function]}
@@ -25,13 +27,18 @@ exports[`ControlPanelNumber component renders as expected 1`] = `
         onMouseOver={[Function]}
         role="button"
         tabIndex={0}
+        title=""
       >
         <svg
           alt="tooltip"
           aria-label="tooltip"
+          className={undefined}
+          fill={undefined}
           fillRule="evenodd"
           height="16"
+          name={undefined}
           role="img"
+          style={undefined}
           viewBox="0 0 16 16"
           width="16"
         >
@@ -57,24 +64,31 @@ exports[`ControlPanelNumber component renders as expected 1`] = `
     className="bx--form-item"
   >
     <div
-      className="bx--number"
+      className="bx--number bx--number--helpertext"
     >
       <div
         className="bx--number__controls"
       >
         <button
+          aria-atomic="true"
+          aria-label="Increment number"
+          aria-live="polite"
           className="bx--number__control-btn up-icon"
           disabled={false}
           onClick={[Function]}
+          title="Increment number"
           type="button"
         >
           <svg
             alt="choose a number"
             aria-label="choose a number"
             className="up-icon"
+            fill={undefined}
             fillRule="evenodd"
             height="5"
+            name={undefined}
             role="img"
+            style={undefined}
             viewBox="0 0 10 5"
             width="10"
           >
@@ -87,18 +101,25 @@ exports[`ControlPanelNumber component renders as expected 1`] = `
           </svg>
         </button>
         <button
+          aria-atomic="true"
+          aria-label="Decrement number"
+          aria-live="polite"
           className="bx--number__control-btn down-icon"
           disabled={false}
           onClick={[Function]}
+          title="Decrement number"
           type="button"
         >
           <svg
             alt="choose a number"
             aria-label="choose a number"
             className="down-icon"
+            fill={undefined}
             fillRule="evenodd"
             height="5"
+            name={undefined}
             role="img"
+            style={undefined}
             viewBox="0 0 10 5"
             width="10"
           >
@@ -118,6 +139,9 @@ exports[`ControlPanelNumber component renders as expected 1`] = `
          
       </label>
       <input
+        aria-describedby="controlId-error-id"
+        aria-invalid={null}
+        data-invalid={null}
         disabled={false}
         id="controlId"
         max={100}

@@ -9,12 +9,14 @@ exports[`ControlPanelComboBox component renders as expected 1`] = `
   >
     creation.app.name
     <div
-      className="bx--tooltip__trigger"
+      className="bx--tooltip__label"
     >
       
       <div
         aria-expanded={false}
         aria-haspopup="true"
+        aria-label="tooltip"
+        className="bx--tooltip__trigger"
         id=""
         onBlur={[Function]}
         onClick={[Function]}
@@ -24,13 +26,18 @@ exports[`ControlPanelComboBox component renders as expected 1`] = `
         onMouseOver={[Function]}
         role="button"
         tabIndex={0}
+        title=""
       >
         <svg
           alt="tooltip"
           aria-label="tooltip"
+          className={undefined}
+          fill={undefined}
           fillRule="evenodd"
           height="16"
+          name={undefined}
           role="img"
+          style={undefined}
           viewBox="0 0 16 16"
           width="16"
         >
@@ -53,17 +60,21 @@ exports[`ControlPanelComboBox component renders as expected 1`] = `
     </div>
   </div>
   <div
+    aria-invalid={undefined}
     aria-label="Choose an item"
-    className="bx--combo-box bx--list-box"
+    className="bx--form-item bx--combo-box bx--list-box"
+    data-invalid={undefined}
     onClick={[Function]}
     onKeyDown={[Function]}
     role="listbox"
-    tabIndex="0"
+    tabIndex={null}
   >
     <div
+      aria-controls={null}
       aria-expanded={false}
       aria-haspopup={true}
       aria-label="open menu"
+      aria-owns={null}
       className="bx--list-box__field"
       data-toggle={true}
       disabled={false}
@@ -87,6 +98,7 @@ exports[`ControlPanelComboBox component renders as expected 1`] = `
         onChange={[Function]}
         onFocus={[Function]}
         onKeyDown={[Function]}
+        placeholder={undefined}
         role="combobox"
         selecteditem="test"
         spellCheck={false}
@@ -103,10 +115,14 @@ exports[`ControlPanelComboBox component renders as expected 1`] = `
         <svg
           alt="Clear selected item"
           aria-label="Clear selected item"
+          className={undefined}
+          fill={undefined}
           fillRule="evenodd"
           focusable="false"
           height="10"
+          name={undefined}
           role="img"
+          style={undefined}
           viewBox="0 0 10 10"
           width="10"
         >
@@ -124,9 +140,14 @@ exports[`ControlPanelComboBox component renders as expected 1`] = `
         <svg
           alt="Open menu"
           aria-label="Open menu"
+          className={undefined}
+          fill={undefined}
           fillRule="evenodd"
+          focusable="false"
           height="5"
+          name={undefined}
           role="img"
+          style={undefined}
           viewBox="0 0 10 5"
           width="10"
         >
