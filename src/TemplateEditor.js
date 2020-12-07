@@ -57,6 +57,7 @@ export default class TemplateEditor extends React.Component {
     }),
     history: PropTypes.object,
     i18n: PropTypes.func,
+    monacoEditor: PropTypes.element,
     portals: PropTypes.object.isRequired,
     savedFormData: PropTypes.oneOfType([
       PropTypes.object,
@@ -69,7 +70,7 @@ export default class TemplateEditor extends React.Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { createControl = {}, type, i18n } = props
+    const { monacoEditor, createControl = {}, type, i18n } = props
 
     // update notifications
     let { notifications } = state
@@ -128,7 +129,7 @@ export default class TemplateEditor extends React.Component {
     const { fetchControl } = props
     const { isLoaded, isFailed } = fetchControl || { isLoaded: true }
     const showEditor =
-      isLoaded && !!localStorage.getItem(TEMPLATE_EDITOR_OPEN_COOKIE)
+      monacoEditor && isLoaded && !!localStorage.getItem(TEMPLATE_EDITOR_OPEN_COOKIE)
     let newState = { isLoaded, isFailed, showEditor }
 
     // has control data been initialized?
@@ -766,10 +767,12 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderEditors = () => {
+    const { monacoEditor } = this.props
     const { activeYAMLEditor, otherYAMLTabs, templateYAML } = this.state
     return (
       <React.Fragment>
         <YamlEditor
+          editor={monacoEditor}
           key={'main'}
           hide={activeYAMLEditor !== 0}
           width={'100%'}
@@ -782,6 +785,7 @@ export default class TemplateEditor extends React.Component {
         {otherYAMLTabs.map(({ id, templateYAML: yaml }, inx) => {
           return (
             <YamlEditor
+              editor={monacoEditor}
               id={id}
               key={id}
               hide={activeYAMLEditor !== inx + 1}
@@ -1151,9 +1155,9 @@ export default class TemplateEditor extends React.Component {
   };
 
   renderEditButton(isLoaded) {
-    const { portals = {}, i18n } = this.props
+    const { monacoEditor, portals = {}, i18n } = this.props
     const { editBtn } = portals
-    if (editBtn && isLoaded) {
+    if (monacoEditor && editBtn && isLoaded) {
       const portal = document.getElementById(editBtn)
       if (portal) {
         const { showEditor } = this.state
