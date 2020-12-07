@@ -93,7 +93,7 @@ export const VALIDATE_MAC_ADDRESS = {
 }
 
 export const VALIDATE_ALPHANUMERIC = {
-  tester: new RegExp('^[A-Za-z0-9-_]+$'),
+  tester: new RegExp('^[A-Za-z0-9-_./]+$'),
   notification: 'creation.valid.alphanumeric',
   required: false
 }
