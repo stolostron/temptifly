@@ -5,7 +5,14 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Search } from 'carbon-components-react'
 import '../scss/editor-bar.scss'
-import '../../graphics/icons.svg'
+import {
+    CloseIcon,
+    UndoIcon,
+    RedoIcon,
+    NextIcon,
+    PreviousIcon,
+} from '../icons/Icons'
+
 
 class EditorButton extends React.Component {
   static propTypes = {
@@ -28,6 +35,21 @@ class EditorButton extends React.Component {
     }
   };
 
+  renderIcon = icon => {
+    switch(icon) {
+      case 'close':
+        return <CloseIcon />
+      case 'undo':
+        return <UndoIcon />
+      case 'redo':
+        return <RedoIcon />
+      case 'next':
+        return <NextIcon />
+      case 'previous':
+        return <PreviousIcon />
+    }
+  };
+  
   render() {
     const { button: { disabled, tooltip, icon, spacer, command } } = this.props
     if (spacer) {
@@ -48,11 +70,9 @@ class EditorButton extends React.Component {
           onClick={this.handleClick}
           onKeyPress={this.handleKeyPress}
         >
-          {icon ? (
-            <svg>
-              <use href={`#icons_${icon}`} />
-            </svg>
-          ) : (
+          {icon ? 
+            this.renderIcon(icon)
+           : (
             <div>{tooltip}</div>
           )}
         </div>

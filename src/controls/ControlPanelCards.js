@@ -4,8 +4,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import Tooltip from '../components/Tooltip'
-import '../../graphics/icons.svg'
 import _ from 'lodash'
+import {
+    CheckmarkIcon,
+} from '../icons/Icons'
 
 class ControlPanelCards extends React.Component {
   static propTypes = {
@@ -189,9 +191,7 @@ const ControlPanelCard = ({
         </div>
         {selected && (
           <div className="card-checkmark">
-            <svg width="16px" height="16px">
-              <use href={'#icons_checkmark'} />
-            </svg>
+            <CheckmarkIcon />
           </div>
         )}
         {tooltip &&

@@ -30,7 +30,6 @@ import EditorHeader from './components/EditorHeader'
 import EditorBar from './components/EditorBar'
 import TooltipContainer from './components/TooltipContainer'
 import './scss/template-editor.scss'
-import '../graphics/icons.svg'
 import templateExample from '../example/templates/template.hbs'
 import controlDataExample from '../example/controlData/ControlData'
 import _ from 'lodash'
@@ -242,6 +241,7 @@ export default class TemplateEditor extends React.Component {
         }).bind(this)
       }
     }
+    
     this.selectedTab = 0
     this.isDirty = false
     this.firstGoToLinePerformed = false
@@ -549,7 +549,7 @@ export default class TemplateEditor extends React.Component {
 
     this.setState({
       controlData,
-      template,
+      template: template || templateExample,
       templateYAML,
       templateObject,
       templateResources,
@@ -1256,8 +1256,8 @@ export default class TemplateEditor extends React.Component {
   }
 
   resetEditor() {
-    const { template, controlData: initialControlData } = this.props
-    const { editStack = {}, resetInx, editor, i18n } = this.state
+    const { controlData: initialControlData } = this.props
+    const { template, editStack = {}, resetInx, editor, i18n } = this.state
     const cd = _.cloneDeep(initialControlData || controlDataExample)
     const controlData = initializeControls(cd, editor, i18n)
     const otherYAMLTabs = []
@@ -1272,7 +1272,7 @@ export default class TemplateEditor extends React.Component {
     )
     this.setState({
       isCustomName: false,
-      template: this.props.template,
+      template,
       controlData,
       activeYAMLEditor: 0,
       exceptions: [],

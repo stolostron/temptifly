@@ -1,7 +1,6 @@
 var path = require('path'),
     webpack = require('webpack'),
-    ExtractTextPlugin = require('extract-text-webpack-plugin'),
-    FileManagerPlugin = require('filemanager-webpack-plugin')
+    ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 const overpassTest = /overpass-.*\.(woff2?|ttf|eot|otf)(\?.*$|$)/
 
@@ -58,11 +57,6 @@ module.exports = {
         use: ['style-loader', 'css-loader']
       },
       {
-        test: /\.svg$/,
-        include: path.resolve(__dirname, './graphics'),
-        use: ['svg-sprite-loader']
-      },
-      {
         test: /\.(png|jpg|jpeg|gif|svg|woff2?|ttf|eot|otf)(\?.*$|$)/,
         exclude: [overpassTest, path.resolve(__dirname, './graphics')],
         loader: 'null-loader',
@@ -97,13 +91,6 @@ module.exports = {
     }),
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
-    }),
-    new FileManagerPlugin({
-      onEnd: {
-        copy: [
-          { source: 'graphics/*.svg', destination: 'dist'},
-        ]
-      }
     })
   ]
 }

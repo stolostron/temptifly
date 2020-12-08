@@ -12,7 +12,9 @@ import {
   InlineLoading
 } from 'carbon-components-react'
 import _ from 'lodash'
-import '../../graphics/icons.svg'
+import {
+    AddIcon,
+} from '../icons/Icons'
 
 class ControlPanelPrompt extends React.Component {
   static propTypes = {
@@ -117,9 +119,7 @@ class ControlPanelPrompt extends React.Component {
         onKeyPress={handleEditKey}
       >
         {text}
-        <svg className="icon">
-          <use href={'#icons_add'} />
-        </svg>
+        <AddIcon />
       </div>
     )
   }

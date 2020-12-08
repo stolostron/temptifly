@@ -20,7 +20,10 @@ import ControlPanelLabels from './ControlPanelLabels'
 import ControlPanelPrompt from './ControlPanelPrompt'
 import ControlPanelSkeleton from './ControlPanelSkeleton'
 import '../scss/control-panel.scss'
-import '../../graphics/icons.svg'
+import {
+    TrashIcon,
+    AddIcon,
+} from '../icons/Icons'
 
 class ControlPanel extends React.Component {
   static propTypes = {
@@ -639,9 +642,7 @@ class ControlPanel extends React.Component {
         onClick={handleGroupChange}
         onKeyPress={handleGroupChangeKey}
       >
-        <svg className="icon">
-          <use href={'#icons_trash'} />
-        </svg>
+        <TrashIcon />
       </div>
     )
   }
@@ -671,9 +672,7 @@ class ControlPanel extends React.Component {
           onKeyPress={handleGroupChangeKey}
         >
           {text}
-          <svg className="icon">
-            <use href={'#icons_add'} />
-          </svg>
+          <AddIcon className='icon'/>
         </div>
       </div>
     )

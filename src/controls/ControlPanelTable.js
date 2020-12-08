@@ -12,7 +12,9 @@ import {
   Icon
 } from 'carbon-components-react'
 import { ControlMode } from '../utils/source-utils'
-import '../../graphics/icons.svg'
+import {
+    TrashIcon,
+} from '../icons/Icons'
 import _ from 'lodash'
 
 const {
@@ -142,9 +144,7 @@ class ControlPanelTable extends React.Component {
             onClick={handleDeleteRow}
             onKeyPress={handleDeleteRowKey}
           >
-            <svg className="icon">
-              <use href={'#icons_trash'} />
-            </svg>
+            <TrashIcon />
           </div>
         )
       }
