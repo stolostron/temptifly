@@ -77,3 +77,11 @@ export const CheckmarkIcon = () => (
     </g>
   </svg>
 )
+
+export const CaretIcon = () => (
+  <svg width="16px" height="16px" viewBox="0 0 12 8" version="1.1" role="presentation">
+    <g>
+      <path d="M1.4 7.5L6 2.8l4.6 4.7L12 6.1 6 0 0 6.1z"/>
+    </g>
+  </svg>
+)

@@ -1,4 +1,6 @@
 @import "node_modules/carbon-components/scss/globals/scss/_colors";
+@import "./control-panel-cards.scss";
+
 $acm_background_color: #f0f0f0 !default;
 $control-max-width-with-editor: 600px !default;
 $control-max-width-without-editor: 600px !default;
@@ -173,7 +175,7 @@ $control-max-width-without-editor: 600px !default;
           position: absolute;
           left: -24px;
 
-          .icon {
+          > svg {
             margin: 0 6px;
             width: 12px;
             height: 12px;
@@ -237,7 +239,7 @@ $control-max-width-without-editor: 600px !default;
 
         .creation-view-controls-title-main {
           &-collapse-button {
-            .icon {
+            > svg {
               transform: rotate(-180deg);
             }
           }
@@ -749,7 +751,7 @@ $control-max-width-without-editor: 600px !default;
         left: unset;
 
         &.collapsed {
-          .icon {
+          > svg {
             transform: rotate(-180deg);
           }
         }

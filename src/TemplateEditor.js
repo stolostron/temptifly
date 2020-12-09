@@ -255,7 +255,7 @@ export default class TemplateEditor extends React.Component {
     this.handleNewEditorMode = this.handleNewEditorMode.bind(this)
     this.handleControlChange = this.handleControlChange.bind(this)
     this.handleGroupChange = this.handleGroupChange.bind(this)
-    const { type = 'unknown' } = this.props
+    const { type = 'main' } = this.props
     this.splitterSizeCookie = `TEMPLATE-EDITOR-SPLITTER-SIZE-${type.toUpperCase()}`
     this.beforeUnloadFunc = (event => {
       if (this.isDirty) {
@@ -703,7 +703,7 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderEditor() {
-    const { type = 'unknown', title='YAML' } = this.props
+    const { type = 'main', title='YAML' } = this.props
     const {
       hasUndo,
       hasRedo,

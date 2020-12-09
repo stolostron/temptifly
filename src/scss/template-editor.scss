@@ -1,3 +1,4 @@
+@import "node_modules/carbon-components/scss/globals/scss/styles";
 @import "node_modules/carbon-components/scss/globals/scss/_colors";
 
 .template-page-content {
@@ -125,7 +126,7 @@
   display: flex;
   align-items: center;
 
-  .icon {
+  > svg {
     margin-left: 8px;
     width: 13px;
     height: 13px;

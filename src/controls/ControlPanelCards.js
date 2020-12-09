@@ -166,6 +166,16 @@ const ControlPanelCard = ({
       handleOnClick(evt, type)
     }
   }
+  let image=null
+  switch (typeof logo) {
+    case 'string':
+      image=<img src={logo} alt={title} />
+      break
+    case 'object':
+      image=logo
+      break
+  }
+
   const half = title.substring(0, title.length / 2).lastIndexOf(' ')
   const title1 = title.substring(0, half)
   const title2 = title.substring(half)
@@ -183,7 +193,7 @@ const ControlPanelCard = ({
     >
       <div className={'mcx--provider-card-container'}>
         <div className={cardClasses}>
-          <img src={logo} alt={title} />
+          {image}
           <p className={'mcx--create-cluster-page__provider-card-title'}>
             {title1}
             <span>{title2}</span>

@@ -6,6 +6,9 @@ import PropTypes from 'prop-types'
 import { Tag } from 'carbon-components-react'
 import Tooltip from '../components/Tooltip'
 import _ from 'lodash'
+import {
+    CaretIcon,
+} from '../icons/Icons'
 
 class ControlPanelAccordion extends React.Component {
   static propTypes = {
@@ -114,9 +117,7 @@ class ControlPanelAccordion extends React.Component {
                     'creation-view-controls-title-main-collapse-button'
                   }
                 >
-                  <svg className="icon">
-                    <use href="#icons_caret--up" />
-                  </svg>
+                  <CaretIcon />
                 </div>
               )}
               {numbered && (
