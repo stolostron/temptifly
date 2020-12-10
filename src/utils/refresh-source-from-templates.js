@@ -1,6 +1,7 @@
 'use strict'
 
 import { parseYAML } from './source-utils'
+import { setSourcePaths } from './initialize-control-functions'
 import { Base64 } from 'js-base64'
 import {
   caseFn,
@@ -90,6 +91,11 @@ export const generateSourceFromTemplate = (
   /////////////////////////////////////////////////////////
   let yaml = template(templateData, helpers) || ''
   yaml = replaceSnippetMap(yaml, snippetMap)
+
+  // need to connect changes in source with the active value in the control
+  // 1. by adding a reverse path to the control definition --or--
+  // 2. by adding a ## controlId to the end of the template line with the value
+  yaml = setSourcePaths(yaml, otherYAMLTabs, controlData)
 
   // if show secrets is off, create the templateObject with secrets
   const parsed = parseYAML(yaml)

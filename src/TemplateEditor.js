@@ -52,6 +52,7 @@ export default class TemplateEditor extends React.Component {
     createControl: PropTypes.shape({
       hasPermissions: PropTypes.bool,
       createResource: PropTypes.func,
+      pauseCreate: PropTypes.func,
       cancelCreate: PropTypes.func,
       creationStatus: PropTypes.string,
       creationMsg: PropTypes.array
@@ -232,6 +233,7 @@ export default class TemplateEditor extends React.Component {
       hasUndo: false,
       hasRedo: false,
       resetInx: 0,
+      hasPauseCreate: !!_.get(props, 'createControl.pauseCreate'),
       editor: {
         forceUpdate: (() => {
           this.forceUpdate()
@@ -257,13 +259,15 @@ export default class TemplateEditor extends React.Component {
     this.handleGroupChange = this.handleGroupChange.bind(this)
     const { type = 'main' } = this.props
     this.splitterSizeCookie = `TEMPLATE-EDITOR-SPLITTER-SIZE-${type.toUpperCase()}`
-    this.beforeUnloadFunc = (event => {
-      if (this.isDirty) {
-        event.preventDefault()
-        event.returnValue = this.isDirty
-      }
-    }).bind(this)
-    window.addEventListener('beforeunload', this.beforeUnloadFunc)
+    if (!this.state.hasPauseCreate) {
+      this.beforeUnloadFunc = (event => {
+        if (this.isDirty) {
+          event.preventDefault()
+          event.returnValue = this.isDirty
+        }
+      }).bind(this)      
+      window.addEventListener('beforeunload', this.beforeUnloadFunc)
+    }
   }
 
   componentDidMount() {
@@ -276,6 +280,11 @@ export default class TemplateEditor extends React.Component {
   }
 
   componentWillUnmount() {
+    const { createControl={} } = this.props
+    if (createControl.pauseCreate) {
+      const { controlData } = this.state
+      createControl.pauseCreate(controlData)
+    }
     window.removeEventListener('beforeunload', this.beforeUnloadFunc)
   }
 
@@ -308,7 +317,7 @@ export default class TemplateEditor extends React.Component {
   };
 
   render() {
-    const { isLoaded, isFailed, showEditor, resetInx, i18n } = this.state
+    const { isLoaded, isFailed, showEditor, resetInx, hasPauseCreate, i18n } = this.state
     if (!showEditor) {
       this.editors = []
     }
@@ -333,10 +342,10 @@ export default class TemplateEditor extends React.Component {
         className={viewClasses}
         ref={this.setContainerRef}
       >
-        <Prompt
+        {!hasPauseCreate && <Prompt
           when={this.isDirty}
           message={i18n('changes.maybe.lost')}
-        />
+        />}
         {this.renderSplitEditor(isLoaded)}
         {this.renderEditButton(isLoaded)}
         {this.renderCreateButton(isLoaded)}
