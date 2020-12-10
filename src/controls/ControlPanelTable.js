@@ -55,8 +55,8 @@ class ControlPanelTable extends React.Component {
     const { id, isLoaded, available } = control
     const { pageSize } = state
     localStorage.setItem(`table-${id}-page-size`, pageSize)
-    if (isLoaded && !state.originalSet) {
-      return { originalSet: new Set(Object.keys(_.keyBy(available, 'id'))) }
+    if (!state.originalSet) {
+      return { originalSet: new Set(isLoaded ? Object.keys(_.keyBy(available, 'id')) : []) }
     }
     return null
   }
@@ -527,7 +527,12 @@ class ControlPanelTable extends React.Component {
 
   handleTableAction(action, data) {
     const { control } = this.props
-    const { active, available } = control
+    const { active } = control
+    let { available } = control
+    if (!Array.isArray(available)) {
+      control.available = []
+      available = control.available
+    }
     const existingMap = _.keyBy(available, ({ hostName, hostNamespace }) => {
       return `${hostName}-${hostNamespace}`
     })

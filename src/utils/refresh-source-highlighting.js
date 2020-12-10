@@ -206,9 +206,11 @@ export const highlightAllChanges = (
         const tabContainer = document.querySelector(
           '.creation-view-yaml-header-tabs'
         )
-        const tabs = tabContainer.getElementsByClassName('bx--tabs__nav-link')
-        if (tabs.length > 0) {
-          tabs[changedTab].click()
+        if (tabContainer) {
+          const tabs = tabContainer.getElementsByClassName('bx--tabs__nav-link')
+          if (tabs.length > 0) {
+            tabs[changedTab].click()
+          }
         }
       }
       if (editorOnTab) {

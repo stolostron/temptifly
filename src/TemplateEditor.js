@@ -1186,9 +1186,9 @@ export default class TemplateEditor extends React.Component {
 
   renderCreateButton(isLoaded) {
     const { isEditing } = this.state
-    const { portals, createControl, i18n } = this.props
+    const { portals, createControl={}, i18n } = this.props
     const { createBtn } = portals || Portals
-    if (createControl && createBtn && isLoaded) {
+    if (createBtn && isLoaded) {
       const { hasPermissions = true } = createControl
       const titleText = !hasPermissions
         ? (i18n ? i18n('button.save.access.denied') : 'Denied')
@@ -1238,9 +1238,9 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderCancelButton() {
-    const { portals, createControl, i18n } = this.props
+    const { portals, createControl={}, i18n } = this.props
     const { cancelBtn } = portals || Portals
-    if (createControl && cancelBtn) {
+    if (cancelBtn) {
       const portal = document.getElementById(cancelBtn)
       if (portal) {
         const { cancelCreate } = createControl
