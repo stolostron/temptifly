@@ -189,7 +189,7 @@ $control-max-width-without-editor: 600px !default;
           white-space: nowrap;
           max-width: 600px;
           overflow: hidden;
-          text-overflow: ellipsis;
+          text-overflow: hidden;
         }
 
         &-summary {
@@ -242,6 +242,10 @@ $control-max-width-without-editor: 600px !default;
             > svg {
               transform: rotate(-180deg);
             }
+          }
+          
+          &-name {
+            text-overflow: ellipsis;
           }
 
           &-summary {
