@@ -160,7 +160,10 @@ class ControlPanelAccordion extends React.Component {
     )
   }
 
-  getSummary(content = [], summary, ignoreEmpty) {
+  getSummary(content, summary, ignoreEmpty) {
+    if (!Array.isArray(content)) {
+      content = []
+    }
     content.forEach(
       ({
         id,

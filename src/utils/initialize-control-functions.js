@@ -73,8 +73,8 @@ const initialControl = (control, editor) => {
       control.active = value
       if (typeof control.onSelect === 'function') {
         control.onSelect()
-        editor.forceUpdate()
       }
+      editor.forceUpdate()
     }
 
     const setActiveVal = (ctrl, path, templateObject) => {
@@ -83,7 +83,7 @@ const initialControl = (control, editor) => {
         sourcePath = getSourcePath(path)
       } else if (ctrl.sourcePaths) {
         sourcePath = ctrl.sourcePaths.path
-        if (sourcePath.endsWith('.$v')) {
+        if (typeof sourcePath === 'string' && sourcePath.endsWith('.$v')) {
           sourcePath = sourcePath.substring(0, sourcePath.length-3)
         }
       }

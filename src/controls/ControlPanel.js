@@ -199,14 +199,27 @@ class ControlPanel extends React.Component {
         variables = variables(control, this.props.controlData)
       }
       if (!control.exception) {
-        return (
-          <Query query={query} key={id} variables={variables}>
-            {result => {
-              setAvailable(control, result)
-              return this.renderControlWithPrompt(id, type, control, grpId)
-            }}
-          </Query>
-        )
+        if (typeof query === 'function') {
+          if (!control.isLoaded) {
+            setAvailable(control, {loading:true})
+            query().then(data=>{
+               setAvailable(control, {loading:false, data})
+               control.setActive()
+            }).catch((err) => {
+               setAvailable(control, {loading:false, error:err})
+               control.setActive()
+            })
+          }
+        } else {
+          return (
+            <Query query={query} key={id} variables={variables}>
+              {result => {
+                setAvailable(control, result)
+                return this.renderControlWithPrompt(id, type, control, grpId)
+              }}
+            </Query>
+          )
+        }
       }
     }
     return this.renderControlWithPrompt(id, type, control, grpId)
