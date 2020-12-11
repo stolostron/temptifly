@@ -201,14 +201,16 @@ class ControlPanel extends React.Component {
       if (!control.exception) {
         if (typeof query === 'function') {
           if (!control.isLoaded) {
-            setAvailable(control, {loading:true})
-            query().then(data=>{
-               setAvailable(control, {loading:false, data})
-               control.setActive()
-            }).catch((err) => {
-               setAvailable(control, {loading:false, error:err})
-               control.setActive()
-            })
+            if (!control.isLoading) {
+              setAvailable(control, {loading:true})
+              query().then(data=>{
+                 setAvailable(control, {loading:false, data})
+                 control.setActive()
+              }).catch((err) => {
+                 setAvailable(control, {loading:false, error:err})
+                 control.setActive()
+              })
+            }
           }
         } else {
           return (

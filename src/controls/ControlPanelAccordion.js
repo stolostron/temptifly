@@ -191,9 +191,11 @@ class ControlPanelAccordion extends React.Component {
             summary.push(active || initial)
             break
           case 'table':
-            active.forEach(a => {
-              summary.push(a[key])
-            })
+            if (Array.isArray(active)) {
+              active.forEach(a => {
+                summary.push(a[key])
+              })
+            }
             break
           case 'labels':
             active.forEach(({ key: k, value }) => {

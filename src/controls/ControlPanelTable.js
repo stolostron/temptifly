@@ -527,8 +527,11 @@ class ControlPanelTable extends React.Component {
 
   handleTableAction(action, data) {
     const { control } = this.props
-    const { active } = control
-    let { available } = control
+    let { active, available } = control
+    if (!Array.isArray(active)) {
+      control.active = []
+      active = control.active
+    }
     if (!Array.isArray(available)) {
       control.available = []
       available = control.available

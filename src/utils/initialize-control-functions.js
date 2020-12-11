@@ -1,6 +1,6 @@
 'use strict'
 
-import { parseYAML, getSourcePath } from './source-utils'
+import { parseYAML, getSourcePath, removeVs } from './source-utils'
 import _ from 'lodash'
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -104,7 +104,7 @@ const initialControl = (control, editor) => {
           break
         }
         if (active) {
-          ctrl.active = active.$v
+          ctrl.active = removeVs(active.$v)
           ctrl.sourcePath = active
         }
       }

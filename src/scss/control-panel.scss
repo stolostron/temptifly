@@ -567,6 +567,7 @@ $control-max-width-without-editor: 600px !default;
 
       &-edit-container {
         position: relative;
+        width: 100%;
 
         .closeIcon {
           cursor: pointer;
