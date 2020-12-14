@@ -1,6 +1,7 @@
 var path = require('path'),
     webpack = require('webpack'),
-    ExtractTextPlugin = require('extract-text-webpack-plugin')
+    ExtractTextPlugin = require('extract-text-webpack-plugin'),
+    FileManagerPlugin = require('filemanager-webpack-plugin')
 
 const overpassTest = /overpass-.*\.(woff2?|ttf|eot|otf)(\?.*$|$)/
 
@@ -91,6 +92,14 @@ module.exports = {
     }),
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
+    }),
+    new FileManagerPlugin({
+      onEnd: {
+        copy: [
+          { source: 'src/index.d.ts', destination: 'dist' }
+        ]
+      }
     })
+
   ]
 }

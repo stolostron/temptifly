@@ -2,7 +2,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { BrowserRouter, Link } from 'react-router-dom'
 import {
   Icon,
   ComboBox,
@@ -86,9 +86,11 @@ class ControlPanelPrompt extends React.Component {
     return (
       <React.Fragment>
         <div className="creation-view-controls-add-value-container bottom-right">
-          <Link to={url} id={id} className="creation-view-controls-add-button">
-            {text}
-          </Link>
+          <BrowserRouter forceRefresh={true}>
+            <Link to={url} id={id} className="creation-view-controls-add-button">
+              {text}
+            </Link>
+          </BrowserRouter>
         </div>
       </React.Fragment>
     )
