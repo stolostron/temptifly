@@ -243,7 +243,7 @@ export default class TemplateEditor extends React.Component {
         }).bind(this)
       }
     }
-    
+
     this.selectedTab = 0
     this.isDirty = false
     this.firstGoToLinePerformed = false
@@ -265,7 +265,7 @@ export default class TemplateEditor extends React.Component {
           event.preventDefault()
           event.returnValue = this.isDirty
         }
-      }).bind(this)      
+      }).bind(this)
       window.addEventListener('beforeunload', this.beforeUnloadFunc)
     }
   }

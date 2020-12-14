@@ -13,7 +13,7 @@ import {
 } from 'carbon-components-react'
 import { ControlMode } from '../utils/source-utils'
 import {
-    TrashIcon,
+  TrashIcon,
 } from '../icons/Icons'
 import _ from 'lodash'
 

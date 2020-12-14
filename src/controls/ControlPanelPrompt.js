@@ -13,7 +13,7 @@ import {
 } from 'carbon-components-react'
 import _ from 'lodash'
 import {
-    AddIcon,
+  AddIcon,
 } from '../icons/Icons'
 
 class ControlPanelPrompt extends React.Component {

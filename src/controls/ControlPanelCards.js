@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import Tooltip from '../components/Tooltip'
 import _ from 'lodash'
 import {
-    CheckmarkIcon,
+  CheckmarkIcon,
 } from '../icons/Icons'
 
 class ControlPanelCards extends React.Component {
@@ -168,12 +168,12 @@ const ControlPanelCard = ({
   }
   let image=null
   switch (typeof logo) {
-    case 'string':
-      image=<img src={logo} alt={title} />
-      break
-    case 'object':
-      image=logo
-      break
+  case 'string':
+    image=<img src={logo} alt={title} />
+    break
+  case 'object':
+    image=logo
+    break
   }
 
   const half = title.substring(0, title.length / 2).lastIndexOf(' ')

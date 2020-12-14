@@ -7,7 +7,7 @@ import { Tag } from 'carbon-components-react'
 import Tooltip from '../components/Tooltip'
 import _ from 'lodash'
 import {
-    CaretIcon,
+  CaretIcon,
 } from '../icons/Icons'
 
 class ControlPanelAccordion extends React.Component {

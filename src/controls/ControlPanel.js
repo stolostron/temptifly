@@ -21,8 +21,8 @@ import ControlPanelPrompt from './ControlPanelPrompt'
 import ControlPanelSkeleton from './ControlPanelSkeleton'
 import '../scss/control-panel.scss'
 import {
-    TrashIcon,
-    AddIcon,
+  TrashIcon,
+  AddIcon,
 } from '../icons/Icons'
 
 class ControlPanel extends React.Component {
@@ -204,11 +204,11 @@ class ControlPanel extends React.Component {
             if (!control.isLoading) {
               setAvailable(control, {loading:true})
               query().then(data=>{
-                 setAvailable(control, {loading:false, data})
-                 control.forceUpdate()
+                setAvailable(control, {loading:false, data})
+                control.forceUpdate()
               }).catch((err) => {
-                 setAvailable(control, {loading:false, error:err})
-                 control.forceUpdate()
+                setAvailable(control, {loading:false, error:err})
+                control.forceUpdate()
               })
             }
           }
@@ -687,7 +687,7 @@ class ControlPanel extends React.Component {
           onKeyPress={handleGroupChangeKey}
         >
           {text}
-          <AddIcon className='icon'/>
+          <AddIcon className='icon' />
         </div>
       </div>
     )

@@ -103,7 +103,7 @@ const initialControl = (control, editor) => {
             active.$v = !!active.$v
           }
           break
-  
+
         default:
           break
         }
@@ -130,9 +130,9 @@ const initialControl = (control, editor) => {
         break
       }
     } else {
-        control.reverse = (ctrl, templateObject) => {
-          setActiveVal(ctrl, null, templateObject)
-        }
+      control.reverse = (ctrl, templateObject) => {
+        setActiveVal(ctrl, null, templateObject)
+      }
     }
   }
 }
