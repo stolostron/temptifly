@@ -10,8 +10,7 @@
     "lint:fix": "npm run stylefmt && eslint --ext .jsx,.js --fix .",
     "stylefmt": "prettier --write src/**/*.scss",
     "test": "jest --silent",
-    "test:update-snapshot": "jest --updateSnapshot",
-    "publish": "npm publish --access public"
+    "test:update-snapshot": "jest --updateSnapshot"
   },
   "repository": {
     "type": "git",
