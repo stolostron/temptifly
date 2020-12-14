@@ -69,6 +69,10 @@ const initialControl = (control, editor) => {
       control.summarize = control.summarize.bind(null, control, lastestData)
     }
 
+    control.forceUpdate = () => {
+      editor.forceUpdate()
+    }
+
     control.setActive = value => {
       control.active = value
       if (typeof control.onSelect === 'function') {

@@ -205,10 +205,10 @@ class ControlPanel extends React.Component {
               setAvailable(control, {loading:true})
               query().then(data=>{
                  setAvailable(control, {loading:false, data})
-                 control.setActive()
+                 control.forceUpdate()
               }).catch((err) => {
                  setAvailable(control, {loading:false, error:err})
-                 control.setActive()
+                 control.forceUpdate()
               })
             }
           }

@@ -396,7 +396,7 @@ class ControlPanelTable extends React.Component {
     const column = this.headerMap[header]
     if (column) {
       const { type, available } = column
-      const { control: { active } } = this.props
+      const { control: { active=[] } } = this.props
       const rinx = active.findIndex(({ id }) => id === rid)
       const cactive = _.get(active, `${rinx}.${header}`)
       switch (type) {
@@ -462,7 +462,7 @@ class ControlPanelTable extends React.Component {
     const { control } = this.props
     const { available, controlData } = control
 
-    let { active } = control
+    let { active=[] } = control
     const availableMap = _.keyBy(available, 'id')
     if (id) {
       if (!active.find(item => item.id === id)) {
