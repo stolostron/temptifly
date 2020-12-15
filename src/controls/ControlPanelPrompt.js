@@ -2,7 +2,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { BrowserRouter, Link } from 'react-router-dom'
 import {
   Icon,
   ComboBox,
@@ -12,7 +12,9 @@ import {
   InlineLoading
 } from 'carbon-components-react'
 import _ from 'lodash'
-import '../../graphics/icons.svg'
+import {
+  AddIcon,
+} from '../icons/Icons'
 
 class ControlPanelPrompt extends React.Component {
   static propTypes = {
@@ -84,9 +86,11 @@ class ControlPanelPrompt extends React.Component {
     return (
       <React.Fragment>
         <div className="creation-view-controls-add-value-container bottom-right">
-          <Link to={url} id={id} className="creation-view-controls-add-button">
-            {text}
-          </Link>
+          <BrowserRouter forceRefresh={true}>
+            <Link to={url} id={id} className="creation-view-controls-add-button">
+              {text}
+            </Link>
+          </BrowserRouter>
         </div>
       </React.Fragment>
     )
@@ -117,9 +121,7 @@ class ControlPanelPrompt extends React.Component {
         onKeyPress={handleEditKey}
       >
         {text}
-        <svg className="icon">
-          <use href={'#icons_add'} />
-        </svg>
+        <AddIcon />
       </div>
     )
   }

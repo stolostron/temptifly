@@ -20,7 +20,10 @@ import ControlPanelLabels from './ControlPanelLabels'
 import ControlPanelPrompt from './ControlPanelPrompt'
 import ControlPanelSkeleton from './ControlPanelSkeleton'
 import '../scss/control-panel.scss'
-import '../../graphics/icons.svg'
+import {
+  TrashIcon,
+  AddIcon,
+} from '../icons/Icons'
 
 class ControlPanel extends React.Component {
   static propTypes = {
@@ -34,7 +37,8 @@ class ControlPanel extends React.Component {
     isLoaded: PropTypes.bool,
     notifications: PropTypes.array,
     originalControlData: PropTypes.array,
-    showEditor: PropTypes.bool
+    showEditor: PropTypes.bool,
+    showPortals: PropTypes.object
   };
 
   constructor(props) {
@@ -84,6 +88,7 @@ class ControlPanel extends React.Component {
           ref={this.setCreationViewRef}
           onScroll={this.refreshFading.bind(this)}
         >
+          {this.renderPortals()}
           {this.renderNotifications()}
           <div className="content">
             {this.renderControlSections(controlData)}
@@ -194,14 +199,29 @@ class ControlPanel extends React.Component {
         variables = variables(control, this.props.controlData)
       }
       if (!control.exception) {
-        return (
-          <Query query={query} key={id} variables={variables}>
-            {result => {
-              setAvailable(control, result)
-              return this.renderControlWithPrompt(id, type, control, grpId)
-            }}
-          </Query>
-        )
+        if (typeof query === 'function') {
+          if (!control.isLoaded) {
+            if (!control.isLoading) {
+              setAvailable(control, {loading:true})
+              query().then(data=>{
+                setAvailable(control, {loading:false, data})
+                control.forceUpdate()
+              }).catch((err) => {
+                setAvailable(control, {loading:false, error:err})
+                control.forceUpdate()
+              })
+            }
+          }
+        } else {
+          return (
+            <Query query={query} key={id} variables={variables}>
+              {result => {
+                setAvailable(control, result)
+                return this.renderControlWithPrompt(id, type, control, grpId)
+              }}
+            </Query>
+          )
+        }
       }
     }
     return this.renderControlWithPrompt(id, type, control, grpId)
@@ -529,6 +549,20 @@ class ControlPanel extends React.Component {
     this.props.handleControlChange(control, controlData)
   }
 
+  renderPortals() {
+    const { showPortals } = this.props
+    if (showPortals) {
+      return (
+        <div className='creation-view-portals'>
+          {Object.values(showPortals).map(id => {
+            return (<div id={id} key={id} />)
+          })}
+        </div>
+      )
+    }
+    return null
+  }
+
   renderNotifications() {
     const { notifications = [] } = this.props
     if (notifications.length > 0) {
@@ -623,9 +657,7 @@ class ControlPanel extends React.Component {
         onClick={handleGroupChange}
         onKeyPress={handleGroupChangeKey}
       >
-        <svg className="icon">
-          <use href={'#icons_trash'} />
-        </svg>
+        <TrashIcon />
       </div>
     )
   }
@@ -655,9 +687,7 @@ class ControlPanel extends React.Component {
           onKeyPress={handleGroupChangeKey}
         >
           {text}
-          <svg className="icon">
-            <use href={'#icons_add'} />
-          </svg>
+          <AddIcon className='icon' />
         </div>
       </div>
     )

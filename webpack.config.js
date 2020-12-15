@@ -59,14 +59,18 @@ module.exports = {
         use: ['style-loader', 'css-loader']
       },
       {
-        test: /\.svg$/,
-        include: path.resolve(__dirname, './graphics'),
-        use: ['svg-sprite-loader']
-      },
-      {
         test: /\.(png|jpg|jpeg|gif|svg|woff2?|ttf|eot|otf)(\?.*$|$)/,
         exclude: [overpassTest, path.resolve(__dirname, './graphics')],
         loader: 'null-loader',
+      },
+      {
+        test: [/\.hbs$/],
+        loader: 'handlebars-loader',
+        query: {
+          precompileOptions: {
+            knownHelpersOnly: false
+          }
+        }
       },
       {
         // Resolve to an empty module for overpass fonts included in SASS files.
@@ -93,9 +97,10 @@ module.exports = {
     new FileManagerPlugin({
       onEnd: {
         copy: [
-          { source: 'graphics/*.svg', destination: 'dist'},
+          { source: 'src/index.d.ts', destination: 'dist' }
         ]
       }
     })
+
   ]
 }

@@ -9,17 +9,7 @@ exports[`YamlEditor renders as expected 1 1`] = `
       "minHeight": "100px",
     }
   }
->
-  <div
-    className="react-monaco-editor-container"
-    style={
-      Object {
-        "height": "100%",
-        "width": "100%",
-      }
-    }
-  />
-</div>
+/>
 `;
 
 exports[`YamlEditor renders as expected 2 1`] = `
@@ -31,15 +21,5 @@ exports[`YamlEditor renders as expected 2 1`] = `
       "minHeight": "100px",
     }
   }
->
-  <div
-    className="react-monaco-editor-container"
-    style={
-      Object {
-        "height": "100%",
-        "width": "100%",
-      }
-    }
-  />
-</div>
+/>
 `;

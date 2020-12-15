@@ -12,7 +12,9 @@ import {
   Icon
 } from 'carbon-components-react'
 import { ControlMode } from '../utils/source-utils'
-import '../../graphics/icons.svg'
+import {
+  TrashIcon,
+} from '../icons/Icons'
 import _ from 'lodash'
 
 const {
@@ -53,8 +55,8 @@ class ControlPanelTable extends React.Component {
     const { id, isLoaded, available } = control
     const { pageSize } = state
     localStorage.setItem(`table-${id}-page-size`, pageSize)
-    if (isLoaded && !state.originalSet) {
-      return { originalSet: new Set(Object.keys(_.keyBy(available, 'id'))) }
+    if (!state.originalSet) {
+      return { originalSet: new Set(isLoaded ? Object.keys(_.keyBy(available, 'id')) : []) }
     }
     return null
   }
@@ -142,9 +144,7 @@ class ControlPanelTable extends React.Component {
             onClick={handleDeleteRow}
             onKeyPress={handleDeleteRowKey}
           >
-            <svg className="icon">
-              <use href={'#icons_trash'} />
-            </svg>
+            <TrashIcon />
           </div>
         )
       }
@@ -396,7 +396,7 @@ class ControlPanelTable extends React.Component {
     const column = this.headerMap[header]
     if (column) {
       const { type, available } = column
-      const { control: { active } } = this.props
+      const { control: { active=[] } } = this.props
       const rinx = active.findIndex(({ id }) => id === rid)
       const cactive = _.get(active, `${rinx}.${header}`)
       switch (type) {
@@ -462,7 +462,7 @@ class ControlPanelTable extends React.Component {
     const { control } = this.props
     const { available, controlData } = control
 
-    let { active } = control
+    let { active=[] } = control
     const availableMap = _.keyBy(available, 'id')
     if (id) {
       if (!active.find(item => item.id === id)) {
@@ -527,7 +527,15 @@ class ControlPanelTable extends React.Component {
 
   handleTableAction(action, data) {
     const { control } = this.props
-    const { active, available } = control
+    let { active, available } = control
+    if (!Array.isArray(active)) {
+      control.active = []
+      active = control.active
+    }
+    if (!Array.isArray(available)) {
+      control.available = []
+      available = control.available
+    }
     const existingMap = _.keyBy(available, ({ hostName, hostNamespace }) => {
       return `${hostName}-${hostNamespace}`
     })

@@ -188,49 +188,51 @@ const validateTableControl = (
   } = table
   const controlDataMap = _.keyBy(controlData, 'id')
   let hidden = false
-  rows.forEach((row) => {
-    //const pathMap = paths[inx]
-    Object.entries(row).forEach(([key, active]) => {
-      if (
-        controlDataMap[key] &&
-        (typeof active !== 'string' || !active.trim().startsWith('#'))
-      ) {
-        const control = {
-          ...controlDataMap[key],
-          //sourcePath: { tabId, path: pathMap ? pathMap[key] : '' },
-          active
-        }
-        validateControl(
-          control,
-          controlData,
-          templateObjectMap,
-          templateExceptionMap,
-          isFinalValidate,
-          i18n
-        )
-        row[key] = control.active
-        const promptOnly = control.mode === ControlMode.PROMPT_ONLY
-        if (control.exception) {
-          // add exception to cell in table
-          let exception = exceptions.find(
-            ({ exception: _exception }) => _exception === control.exception
+  if (Array.isArray(rows)) {
+    rows.forEach((row) => {
+      //const pathMap = paths[inx]
+      Object.entries(row).forEach(([key, active]) => {
+        if (
+          controlDataMap[key] &&
+          (typeof active !== 'string' || !active.trim().startsWith('#'))
+        ) {
+          const control = {
+            ...controlDataMap[key],
+            //sourcePath: { tabId, path: pathMap ? pathMap[key] : '' },
+            active
+          }
+          validateControl(
+            control,
+            controlData,
+            templateObjectMap,
+            templateExceptionMap,
+            isFinalValidate,
+            i18n
           )
-          if (!exception) {
-            exception = {
-              exception: control.exception,
-              cells: []
+          row[key] = control.active
+          const promptOnly = control.mode === ControlMode.PROMPT_ONLY
+          if (control.exception) {
+            // add exception to cell in table
+            let exception = exceptions.find(
+              ({ exception: _exception }) => _exception === control.exception
+            )
+            if (!exception) {
+              exception = {
+                exception: control.exception,
+                cells: []
+              }
+              exceptions.push(exception)
             }
-            exceptions.push(exception)
-          }
-          if (!promptOnly) {
-            exception.cells.push(`${key}-${row.id}`)
-          } else {
-            hidden = true
+            if (!promptOnly) {
+              exception.cells.push(`${key}-${row.id}`)
+            } else {
+              hidden = true
+            }
           }
         }
-      }
+      })
     })
-  })
+  }
   if (exceptions.length > 0) {
     table.exception = i18n(
       `creation.ocp.validation.errors${hidden ? '.hidden' : ''}`)

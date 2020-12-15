@@ -6,6 +6,9 @@ import PropTypes from 'prop-types'
 import { Tag } from 'carbon-components-react'
 import Tooltip from '../components/Tooltip'
 import _ from 'lodash'
+import {
+  CaretIcon,
+} from '../icons/Icons'
 
 class ControlPanelAccordion extends React.Component {
   static propTypes = {
@@ -114,9 +117,7 @@ class ControlPanelAccordion extends React.Component {
                     'creation-view-controls-title-main-collapse-button'
                   }
                 >
-                  <svg className="icon">
-                    <use href="#icons_caret--up" />
-                  </svg>
+                  <CaretIcon />
                 </div>
               )}
               {numbered && (
@@ -159,7 +160,10 @@ class ControlPanelAccordion extends React.Component {
     )
   }
 
-  getSummary(content = [], summary, ignoreEmpty) {
+  getSummary(content, summary, ignoreEmpty) {
+    if (!Array.isArray(content)) {
+      content = []
+    }
     content.forEach(
       ({
         id,
@@ -187,9 +191,11 @@ class ControlPanelAccordion extends React.Component {
             summary.push(active || initial)
             break
           case 'table':
-            active.forEach(a => {
-              summary.push(a[key])
-            })
+            if (Array.isArray(active)) {
+              active.forEach(a => {
+                summary.push(a[key])
+              })
+            }
             break
           case 'labels':
             active.forEach(({ key: k, value }) => {

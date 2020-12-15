@@ -1,0 +1,51 @@
+{{! ========================================================== }}
+{{! ========================================================== }}
+{{! ==================Comment ================================ }}
+{{! ========================================================== }}
+{{! ========================================================== }}
+apiVersion: v1                    
+kind: Namespace
+metadata:
+  name: {{{namespace}}}                             
+---
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  name: {{{name}}}
+  namespace: {{{namespace}}}
+spec:
+  componentKinds:
+  - group: apps.open-cluster-management.io
+    kind: Subscription
+  descriptor: {}
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values: 
+          - {{{name}}}
+
+{{#each channels}}
+
+{{#switch channelType}}
+
+{{#case 'github'}}
+{{>templateGit 
+  channelName=../channelName 
+  channelNamespace=../channelNamespace 
+  channelNamespaceExists=../channelNamespaceExists 
+  githubURL=../githubURL 
+  githubUser=../githubUser 
+  githubAccessId=../githubAccessId 
+  githubBranch=../githubBranch 
+  githubPath=../githubPath
+  gitReconcileOption=../gitReconcileOption  
+  gitInsecureSkipVerify=../gitInsecureSkipVerify
+  ansibleSecretName=../ansibleSecretName
+  selfLinks=../selfLinks
+  uniqueGroupID=../uniqueGroupID
+}}
+{{/case}}
+
+{{/switch}}
+{{/each}}

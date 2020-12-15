@@ -5,7 +5,14 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Search } from 'carbon-components-react'
 import '../scss/editor-bar.scss'
-import '../../graphics/icons.svg'
+import {
+  CloseIcon,
+  UndoIcon,
+  RedoIcon,
+  NextIcon,
+  PreviousIcon,
+} from '../icons/Icons'
+
 
 class EditorButton extends React.Component {
   static propTypes = {
@@ -25,6 +32,21 @@ class EditorButton extends React.Component {
   handleKeyPress = e => {
     if (e.key === 'Enter') {
       this.props.handleClick(this.props.command)
+    }
+  };
+
+  renderIcon = icon => {
+    switch(icon) {
+    case 'close':
+      return <CloseIcon />
+    case 'undo':
+      return <UndoIcon />
+    case 'redo':
+      return <RedoIcon />
+    case 'next':
+      return <NextIcon />
+    case 'previous':
+      return <PreviousIcon />
     }
   };
 
@@ -48,13 +70,11 @@ class EditorButton extends React.Component {
           onClick={this.handleClick}
           onKeyPress={this.handleKeyPress}
         >
-          {icon ? (
-            <svg>
-              <use href={`#icons_${icon}`} />
-            </svg>
-          ) : (
-            <div>{tooltip}</div>
-          )}
+          {icon ?
+            this.renderIcon(icon)
+            : (
+              <div>{tooltip}</div>
+            )}
         </div>
       )
     }
@@ -96,13 +116,13 @@ class EditorBar extends React.Component {
     const undoButtons = [
       {
         command: 'undo',
-        tooltip: i18n('editor.bar.undo'),
+        tooltip: i18n ? i18n('editor.bar.undo') : 'Undo',
         icon: 'undo',
         disabled: !hasUndo
       },
       {
         command: 'redo',
-        tooltip: i18n('editor.bar.redo'),
+        tooltip: i18n ? i18n('editor.bar.redo') : 'Redo',
         icon: 'redo',
         disabled: !hasRedo
       }
@@ -111,13 +131,13 @@ class EditorBar extends React.Component {
     const nextButtons = [
       {
         command: 'previous',
-        tooltip: i18n('editor.bar.previous'),
+        tooltip: i18n ? i18n('editor.bar.previous') : 'Previous',
         icon: 'previous',
         disabled: !searchName
       },
       {
         command: 'next',
-        tooltip: i18n('editor.bar.next'),
+        tooltip: i18n ? i18n('editor.bar.next') : 'Next',
         icon: 'next',
         disabled: !searchName
       }
@@ -126,7 +146,7 @@ class EditorBar extends React.Component {
     const resetButtons = [
       {
         command: 'restore',
-        tooltip: i18n('editor.bar.reset'),
+        tooltip: i18n ? i18n('editor.bar.reset') : 'Reset',
         disabled: !hasUndo && !hasRedo
       }
     ]
@@ -134,12 +154,12 @@ class EditorBar extends React.Component {
     const closeButtons = [
       {
         command: 'close',
-        tooltip: i18n('editor.bar.close'),
+        tooltip: i18n ? i18n('editor.bar.close') : 'Close',
         icon: 'close'
       }
     ]
 
-    const searchTitle = i18n('find.label')
+    const searchTitle = i18n ? i18n('find.label') : 'Find'
     return (
       <div className="editor-bar">
         <div className="editor-bar-group">
