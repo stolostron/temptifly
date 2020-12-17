@@ -18,6 +18,24 @@ class ControlPanelCards extends React.Component {
     showEditor: PropTypes.bool
   };
 
+  static getDerivedStateFromProps(props, state) {
+    const { initialized } = state
+    if (!initialized) {
+      const { control } = props
+      const { active, collapseCardsControlOnSelect } = control
+      if (typeof active === 'function') {
+        const activeID = control.active(control, props.fetchData)
+        if (activeID) {
+          props.handleChange(activeID)
+        } else {
+          control.active = []
+        }
+      }
+      return { collapsed: collapseCardsControlOnSelect && !_.isEmpty(active), initialized: true}
+    }
+    return null
+  }
+
   constructor(props) {
     super(props)
     const { control } = props
@@ -32,20 +50,6 @@ class ControlPanelCards extends React.Component {
 
   setControlRef = (control, ref) => {
     this.multiSelect = control.ref = ref
-  };
-
-  UNSAFE_componentWillMount() {
-    const { control } = this.props
-    const { active, collapseCardsControlOnSelect } = control
-    if (typeof active === 'function') {
-      const activeID = control.active(control, this.props.fetchData)
-      if (activeID) {
-        this.props.handleChange(activeID)
-      } else {
-        control.active = []
-      }
-    }
-    this.setState({ collapsed: collapseCardsControlOnSelect && !_.isEmpty(active) })
   }
 
   render() {

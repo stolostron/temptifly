@@ -10,7 +10,7 @@ class ControlPanelMultiSelect extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    i18n: PropTypes.string
+    i18n: PropTypes.func
   };
 
   constructor(props) {
