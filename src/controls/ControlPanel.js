@@ -581,7 +581,14 @@ class ControlPanel extends React.Component {
             if (ref || controlId) {
               ref = document.getElementById(controlId) || ref
               if (ref) {
-                ref.scrollIntoView({ behavior: 'smooth', block: 'center' })
+
+                // uncollapse all parents
+                let parent = ref.parentNode
+                while (parent && !parent.classList.contains('creation-view-controls')) {
+                  parent.classList.remove('collapsed')
+                  parent = parent.parentNode
+                }
+                ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
               }
             } else if (editor && row) {
               const tabContainer = document.querySelector(
