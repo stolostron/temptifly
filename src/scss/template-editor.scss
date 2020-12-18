@@ -1,172 +1,168 @@
-.temptifly {
-  @import "node_modules/carbon-components/scss/globals/scss/styles";
-  @import "node_modules/carbon-components/scss/globals/scss/_colors";
+.temptifly,
+.creation-view {
+  display: flex;
+  position: relative;
+  margin-top: -10px;
 
-  .creation-view {
-    display: flex;
-    position: relative;
-    margin-top: -10px;
+  &.showEditor {
+    margin: -50px 0 -3.125rem 0;
+  }
 
+  .creation-view-split-container {
     &.showEditor {
-      margin: -50px 0 -3.125rem 0;
-    }
+      height: calc(100vh - 200px);
 
-    .creation-view-split-container {
-      &.showEditor {
+      .creation-view-controls-container {
         height: calc(100vh - 200px);
+        position: relative;
+        padding-top: 40px;
 
-        .creation-view-controls-container {
-          height: calc(100vh - 200px);
-          position: relative;
-          padding-top: 40px;
+        &-blurr {
+          position: absolute;
+          z-index: 1;
+          right: 0;
+          left: 0;
+          pointer-events: none;
+          height: 1em;
 
-          &-blurr {
-            position: absolute;
-            z-index: 1;
-            right: 0;
-            left: 0;
-            pointer-events: none;
-            height: 1em;
-
-            &.top {
-              top: 0;
-              background-image: linear-gradient(
-                to top,
-                rgba(244, 247, 251, 0),
-                rgba(240, 240, 240, 1) 90%
-              );
-              display: none;
-            }
-
-            &.bottom {
-              bottom: 0;
-              background-image: linear-gradient(
-                to bottom,
-                rgba(244, 247, 251, 0),
-                rgba(240, 240, 240, 1) 90%
-              );
-            }
-          }
-        }
-
-        .creation-view-yaml {
-          height: calc(100% - 10px);
-          position: relative;
-
-          &.hasTabs {
-            height: calc(100% - 30px);
-          }
-
-          &-notification {
-            position: absolute;
+          &.top {
             top: 0;
-            right: 0;
-            z-index: 1000;
-
-            .bx--inline-notification {
-              background-color: white;
-            }
+            background-image: linear-gradient(
+              to top,
+              rgba(244, 247, 251, 0),
+              rgba(240, 240, 240, 1) 90%
+            );
+            display: none;
           }
 
-          .yamlEditorContainer {
-            width: 100%;
-            height: 100%;
+          &.bottom {
+            bottom: 0;
+            background-image: linear-gradient(
+              to bottom,
+              rgba(244, 247, 251, 0),
+              rgba(240, 240, 240, 1) 90%
+            );
           }
         }
       }
-    }
 
-    .Resizer {
-      width: 0;
-      opacity: 0.2;
-      z-index: 1;
-      -moz-box-sizing: border-box;
-      -webkit-box-sizing: border-box;
-      box-sizing: border-box;
-      -moz-background-clip: padding;
-      -webkit-background-clip: padding;
-      background-clip: padding-box;
-      border-left: 3px solid rgba(255, 255, 255, 0);
-      border-right: 3px solid rgba(255, 255, 255, 0);
-      cursor: col-resize;
-      margin: 0 5px;
-    }
+      .creation-view-yaml {
+        height: calc(100% - 10px);
+        position: relative;
 
-    .Resizer:hover {
-      -webkit-transition: all 0.2s ease;
-      transition: all 0.2s ease;
-    }
+        &.hasTabs {
+          height: calc(100% - 30px);
+        }
 
-    .Resizer.vertical:hover {
-      background: rgba(0, 0, 0, 0.5);
+        &-notification {
+          position: absolute;
+          top: 0;
+          right: 0;
+          z-index: 1000;
+
+          .bx--inline-notification {
+            background-color: white;
+          }
+        }
+
+        .yamlEditorContainer {
+          width: 100%;
+          height: 100%;
+        }
+      }
     }
   }
 
-  .edit-button {
-    cursor: pointer;
-    margin-left: 30px;
+  .Resizer {
+    width: 0;
+    opacity: 0.2;
+    z-index: 1;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding;
+    background-clip: padding-box;
+    border-left: 3px solid rgba(255, 255, 255, 0);
+    border-right: 3px solid rgba(255, 255, 255, 0);
+    cursor: col-resize;
+    margin: 0 5px;
+  }
+
+  .Resizer:hover {
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+  }
+
+  .Resizer.vertical:hover {
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.edit-button {
+  cursor: pointer;
+  margin-left: 30px;
+  font-size: 12px;
+
+  .icon {
+    margin: 0 6px;
+    width: 9px;
+    height: 9px;
+  }
+}
+
+.editor-collapse-button {
+  font-size: 12px;
+  cursor: pointer;
+  color: #3d70b2;
+  display: flex;
+  align-items: center;
+
+  > svg {
+    margin-left: 8px;
+    width: 13px;
+    height: 13px;
+    stroke: #3d70b2;
+  }
+}
+
+.edit-template-switch {
+  display: flex;
+  margin-left: 16px;
+  align-items: center;
+
+  .bx--form-item {
+    min-width: 0;
+  }
+
+  .switch-label {
+    margin-left: 8px;
     font-size: 12px;
-
-    .icon {
-      margin: 0 6px;
-      width: 9px;
-      height: 9px;
-    }
   }
+}
 
-  .editor-collapse-button {
-    font-size: 12px;
-    cursor: pointer;
-    color: #3d70b2;
-    display: flex;
-    align-items: center;
+.monaco-editor .monaco-editor-hover {
+  color: #cccccc;
+  padding: 6px 10px;
+  margin-left: 24px;
 
-    > svg {
-      margin-left: 8px;
-      width: 13px;
-      height: 13px;
-      stroke: #3d70b2;
-    }
+  p {
+    font-size: 14px;
+    font-family: RedHatText;
   }
+}
 
-  .edit-template-switch {
-    display: flex;
-    margin-left: 16px;
-    align-items: center;
+.errorDecoration {
+  margin-left: 6px;
+  height: 14px !important;
+  width: 14px !important;
+  cursor: pointer;
+  z-index: 1000;
+  background: url("data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' width='14' height='14'><g fill='red'><circle cx='8' cy='8' r='8' fill='white' fill-opacity='1'/><path d='M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zM5.1 13.3L3.5 12 11 2.6l1.5 1.2-7.4 9.5z'/> </g></svg>");
+}
 
-    .bx--form-item {
-      min-width: 0;
-    }
-
-    .switch-label {
-      margin-left: 8px;
-      font-size: 12px;
-    }
-  }
-
-  .monaco-editor .monaco-editor-hover {
-    color: #cccccc;
-    padding: 6px 10px;
-    margin-left: 24px;
-
-    p {
-      font-size: 14px;
-      font-family: RedHatText;
-    }
-  }
-
-  .errorDecoration {
-    margin-left: 6px;
-    height: 14px !important;
-    width: 14px !important;
-    cursor: pointer;
-    z-index: 1000;
-    background: url("data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' width='14' height='14'><g fill='red'><circle cx='8' cy='8' r='8' fill='white' fill-opacity='1'/><path d='M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zM5.1 13.3L3.5 12 11 2.6l1.5 1.2-7.4 9.5z'/> </g></svg>");
-  }
-
-  .insertedLineDecoration {
-    background: #87d4ecab;
-    width: 6px !important;
-    margin-left: 12px;
-  }
+.insertedLineDecoration {
+  background: #87d4ecab;
+  width: 6px !important;
+  margin-left: 12px;
 }
