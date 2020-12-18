@@ -312,6 +312,7 @@
       .bx--list-box input[role="combobox"] {
         font-weight: 400;
         cursor: pointer;
+        width: 90%;
 
         &:focus {
           cursor: text;
