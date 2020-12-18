@@ -2,7 +2,7 @@
 
 exports[`TemplateEditor component renders as expected 1`] = `
 <div
-  className="temptifly creation-view"
+  className="temptifly"
 >
   <div
     className="creation-view-split-container"
