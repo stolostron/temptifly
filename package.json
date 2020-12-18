@@ -27,6 +27,8 @@
   },
   "homepage": "https://github.com/open-cluster-management/temptifly#readme",
   "dependencies": {
+    "@patternfly/react-core": "^4.84.4",
+    "@patternfly/react-table": "^4.19.45",
     "@patternfly/react-tokens": "2.8.13",
     "apollo-client": "^2.2.8",
     "babel-jest": "^23.4.0",

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { TextInput } from 'carbon-components-react'
+import { TextInput } from '@patternfly/react-core'
 import Tooltip from '../components/Tooltip'
 
 class ControlPanelTextInput extends React.Component {
@@ -80,7 +80,7 @@ class ControlPanelTextInput extends React.Component {
 
   handleChange(id, evt) {
     const { control, handleChange } = this.props
-    control.active = evt.target.value
+    control.active = evt
     handleChange(evt)
   }
 }

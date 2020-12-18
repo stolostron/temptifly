@@ -1,26 +1,21 @@
 $acm_background_color: #f0f0f0 !default;
 $color__white: #ffffff !default;
 
-.bx--number input[type="number"] {
-  background-color: $color__white;
-}
-.bx--list-box__menu {
-  background-color: $color__white;
-}
-.bx--list-box__field {
-  background-color: $color__white;
+.tf--row {
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.mcx {
+.tf {
   &--grid-container {
     max-width: calc(100vw - 350px);
-    .bx--grid {
+    .tf--grid {
       margin-left: 0px;
       margin-right: 5%;
       padding-left: 0px;
       padding-right: 0px;
     }
-    .bx--row {
+    .tf--row {
       margin: 0;
     }
   }
@@ -37,8 +32,8 @@ $color__white: #ffffff !default;
     .bx--accordion {
       &__content {
         padding-left: 1rem;
-        .mcx--label-editor {
-          .mcx--label-separator {
+        .tf--label-editor {
+          .tf--label-separator {
             line-height: 2.3rem;
             margin-right: 5px;
             margin-left: 5px;
@@ -48,7 +43,7 @@ $color__white: #ffffff !default;
             min-width: 450px;
             margin-bottom: 25px;
           }
-          .mcx--form-field {
+          .tf--form-field {
             margin-right: 0;
             min-width: 450px;
           }
@@ -70,13 +65,13 @@ $color__white: #ffffff !default;
         }
       }
     }
-    .mcx--parameters__accordion {
+    .tf--parameters__accordion {
       .bx--accordion__title {
         font-weight: 500;
         font-size: 1.5rem;
       }
     }
-    .mcx--form-field {
+    .tf--form-field {
       &__wrapper {
         margin-bottom: 30px;
         .bx--number {
@@ -87,7 +82,7 @@ $color__white: #ffffff !default;
       padding: 10px;
       margin-right: 40px;
     }
-    .mcx--select {
+    .tf--select {
       min-width: 450px;
       margin-bottom: 8px;
       margin-right: 40px;
@@ -100,7 +95,7 @@ $color__white: #ffffff !default;
         right: 2rem;
       }
     }
-    .mcx-placeholder {
+    .tf-placeholder {
       min-width: 450px;
     }
   }
@@ -128,7 +123,7 @@ $color__white: #ffffff !default;
     width: 163px;
   }
   &--create-cluster-page {
-    .mcx--progress-panel {
+    .tf--progress-panel {
       position: fixed;
       top: 3.082rem;
       right: 5px;
@@ -165,7 +160,7 @@ $color__white: #ffffff !default;
         }
       }
     }
-    .mcx--export-link {
+    .tf--export-link {
       position: fixed;
       width: 200px;
       top: 7.082rem;

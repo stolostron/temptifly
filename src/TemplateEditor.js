@@ -8,11 +8,13 @@ import SplitPane from 'react-split-pane'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import {
-  Button,
   Notification,
   InlineNotification,
-  ToggleSmall
 } from 'carbon-components-react'
+import {
+  Button,
+  Switch
+} from '@patternfly/react-core'
 import {
   initializeControls,
   generateSource,
@@ -1169,22 +1171,16 @@ export default class TemplateEditor extends React.Component {
           this.setState({ showEditor: !showEditor })
         }
         this.renderedPortals = true
-        const label = showEditor
-          ? (i18n ? i18n('edit.yaml.on') : 'Show Yaml')
-          : (i18n ? i18n('edit.yaml.off') : 'Hide Yaml')
         return ReactDOM.createPortal(
           <div className="edit-template-switch">
-            <ToggleSmall
+            <Switch
               id="edit-yaml"
               key={`is${showEditor}`}
-              ariaLabel={label}
-              defaultToggled={showEditor}
-              onChange={() => {}}
-              onToggle={handleToggle}
+              isChecked={showEditor}
+              label={i18n ? i18n('edit.yaml.on') : 'Show Yaml'}
+              labelOff={i18n ? i18n('edit.yaml.off') : 'Hide Yaml'}
+              onChange={handleToggle}
             />
-            <div className="switch-label">
-              {label}
-            </div>
           </div>,
           portal
         )
