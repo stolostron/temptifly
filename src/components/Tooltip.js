@@ -18,6 +18,7 @@ class Tooltip extends React.PureComponent {
         showIcon={true}
         direction="top"
         tabIndex={0}
+        clickToOpen={true}
         triggerText=""
         triggerId=""
         icon={{
