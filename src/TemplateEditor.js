@@ -334,7 +334,6 @@ export default class TemplateEditor extends React.Component {
     }
     const viewClasses = classNames({
       'temptifly': true,
-      'creation-view': true,
       showEditor
     })
     return (
