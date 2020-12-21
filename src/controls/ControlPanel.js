@@ -77,6 +77,7 @@ class ControlPanel extends React.Component {
     const { controlData, showEditor } = this.props
     const controlClasses = classNames({
       'creation-view-controls': true,
+      'pf-c-form': true,
       showEditor
     })
 
