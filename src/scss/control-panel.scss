@@ -743,6 +743,10 @@ $control-max-width-without-editor: 800px !default;
       font-size: 0.875rem;
       position: relative;
 
+      .pf-c-form__group-label {
+        padding: 0;
+      }
+      
       .bx--form-item {
         flex: 0;
       }
