@@ -27,7 +27,6 @@ class ControlPanelLabels extends React.Component {
     super(props)
     this.state = {
       value: '',
-      invalid: false,
       invalidText: ''
     }
   }
@@ -36,7 +35,7 @@ class ControlPanelLabels extends React.Component {
     const { controlId, i18n, control } = this.props
     const { name, active = [], tooltip, validation={} } = control
     const formatted = active.map(({ key, value: v }) => `${key}=${v}`)
-    const { value, invalid, invalidText } = this.state
+    const { value, invalidText } = this.state
     const validated = invalidText ? 'error' : undefined
     return (
       <React.Fragment>
@@ -70,26 +69,26 @@ class ControlPanelLabels extends React.Component {
             }
           >
 
-          <div className="creation-view-controls-labels-container">
-            {formatted.map((label, inx) => {
-              return (
-                <Label key={label} onClose={this.handleDelete.bind(this, inx)}>
-                  {label}
-                </Label>
-              )
-            })}
-            <div className="creation-view-controls-labels-edit-container">
-              <TextInput
-                id={controlId}
-                placeholder={i18n('enter.add.label')}
-                validated={validated}
-                value={value}
-                onBlur={this.handleBlur.bind(this)}
-                onKeyDown={this.handleKeyDown.bind(this)}
-                onChange={this.handleChange.bind(this)}
-              />
+            <div className="creation-view-controls-labels-container">
+              {formatted.map((label, inx) => {
+                return (
+                  <Label key={label} onClose={this.handleDelete.bind(this, inx)}>
+                    {label}
+                  </Label>
+                )
+              })}
+              <div className="creation-view-controls-labels-edit-container">
+                <TextInput
+                  id={controlId}
+                  placeholder={i18n('enter.add.label')}
+                  validated={validated}
+                  value={value}
+                  onBlur={this.handleBlur.bind(this)}
+                  onKeyDown={this.handleKeyDown.bind(this)}
+                  onChange={this.handleChange.bind(this)}
+                />
+              </div>
             </div>
-          </div>
           </FormGroup>
         </div>
       </React.Fragment>
@@ -123,7 +122,7 @@ class ControlPanelLabels extends React.Component {
           [match[KEY_CAPTURE_GROUP_INDEX]])
       }
     }
-    this.setState({ value, invalid, invalidText })
+    this.setState({ value, invalidText })
   }
 
   handleKeyDown(event) {

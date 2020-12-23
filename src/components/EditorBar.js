@@ -3,7 +3,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { SearchInput } from '@patternfly/react-core';
+import { SearchInput } from '@patternfly/react-core'
 import '../scss/editor-bar.scss'
 import {
   CloseIcon,

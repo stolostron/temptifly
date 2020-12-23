@@ -82,16 +82,15 @@
         &::before {
           border: none;
         }
-        
+
         .pf-c-search-input__icon {
-          color: #6D736E;
+          color: #6d736e;
         }
-        
       }
-      
+
       .pf-c-search-input__text-input {
         color: white;
-        
+
         &::placeholder {
           color: white;
           opacity: 0.5;
@@ -100,9 +99,9 @@
           outline: none;
         }
       }
-      
+
       .pf-c-search-input__clear button {
-          color: white;
+        color: white;
       }
     }
   }

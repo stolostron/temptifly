@@ -10,7 +10,6 @@ class ControlPanelNumber extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    i18n: PropTypes.func
   };
 
   constructor(props) {
@@ -23,7 +22,7 @@ class ControlPanelNumber extends React.Component {
   };
 
   render() {
-    const { controlId, i18n, control, handleChange } = this.props
+    const { controlId, control, handleChange } = this.props
     const { name, initial, exception, validation={}, tooltip } = control
     let { active } = control
     active = active || initial

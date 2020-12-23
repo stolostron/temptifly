@@ -10,7 +10,6 @@ class ControlPanelCheckbox extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    i18n: PropTypes.func
   };
 
   constructor(props) {
@@ -23,27 +22,27 @@ class ControlPanelCheckbox extends React.Component {
   };
 
   render() {
-    const { controlId, i18n, control, handleChange } = this.props
+    const { controlId, control, handleChange } = this.props
     const { name, active, tooltip, disabled = false } = control
-    
+
     const onChange = () => {
       control.active = !active
       handleChange()
     }
-    
+
     return (
       <React.Fragment>
         <div
           className="creation-view-controls-checkbox"
           ref={this.setControlRef.bind(this, control)}
         >
-          <Checkbox 
-            aria-label={name} 
+          <Checkbox
+            aria-label={name}
             id={controlId}
             isChecked={active}
             isDisabled={disabled}
             onChange={onChange}
-          />        
+          />
           <FormGroup
             id={`${controlId}-label`}
             label={name}
