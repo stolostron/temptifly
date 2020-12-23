@@ -30,8 +30,10 @@ class ControlPanelNumber extends React.Component {
     const nActive = parseInt(active, 10)
 
     const onChange = (value) => {
-      control.active = value.toString()
-      handleChange()
+      if (value>0) {
+        control.active = value.toString()
+        handleChange()
+      }
     }
 
     const validated = exception ? 'error' : undefined
@@ -85,6 +87,7 @@ class ControlPanelNumber extends React.Component {
                   className="pf-c-form-control"
                   type="number"
                   value={active}
+                  pattern="[0-9]*"
                   name="number-input-default-name"
                   onFocus={e => {
                     e.target.select()
