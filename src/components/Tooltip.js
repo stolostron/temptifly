@@ -11,8 +11,8 @@ class Tooltip extends React.PureComponent {
   };
 
   render() {
-    const { control, i18n } = this.props
-    const { controlId, tooltip, learnMore } = control
+    const { control } = this.props
+    const { controlId, tooltip } = control
     return tooltip ? (
       <Popover
         id={`${controlId}-label-help-popover`}

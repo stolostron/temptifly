@@ -14,7 +14,6 @@ class ControlPanelTreeSelect extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    i18n: PropTypes.func
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -182,7 +181,7 @@ class ControlPanelTreeSelect extends React.Component {
   }
 
   render() {
-    const { controlId, control, i18n } = this.props
+    const { controlId, control } = this.props
     const { name, availableMap = {}, validation={}, exception, tooltip } = control
     const {
       isOpen,
