@@ -14,18 +14,18 @@ class Tooltip extends React.PureComponent {
     const { control, i18n } = this.props
     const { controlId, tooltip, learnMore } = control
     return tooltip ? (
-        <Popover
-          id={`${controlId}-label-help-popover`}
-          bodyContent={tooltip}
+      <Popover
+        id={`${controlId}-label-help-popover`}
+        bodyContent={tooltip}
+      >
+        <button
+          id={`${controlId}-label-help-button`}
+          aria-label="More info"
+          onClick={(e) => e.preventDefault()}
+          className="pf-c-form__group-label-help"
         >
-          <button
-            id={`${controlId}-label-help-button`}
-            aria-label="More info"
-            onClick={(e) => e.preventDefault()}
-            className="pf-c-form__group-label-help"
-          >
-            <HelpIcon noVerticalAlign />
-          </button>
+          <HelpIcon noVerticalAlign />
+        </button>
       </Popover>
     ) : null
   }
