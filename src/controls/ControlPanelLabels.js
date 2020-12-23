@@ -41,7 +41,6 @@ class ControlPanelLabels extends React.Component {
     return (
       <React.Fragment>
         <div className="creation-view-controls-labels">
-        
           <FormGroup
             id={`${controlId}-label`}
             label={name}
@@ -91,21 +90,11 @@ class ControlPanelLabels extends React.Component {
               />
             </div>
           </div>
-
-
           </FormGroup>
         </div>
       </React.Fragment>
     )
   }
-//              {value && (
-//                <Icon
-//                  className="closeIcon"
-//                  description={i18n('cancel.label.create')}
-//                  name="icon--close"
-//                  onClick={this.cancelLabel.bind(this)}
-//                />
-//              )}
 
   handleDelete(inx) {
     const { control, handleChange } = this.props
