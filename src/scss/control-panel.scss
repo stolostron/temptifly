@@ -43,6 +43,7 @@ $control-max-width-without-editor: 800px !default;
 
   .creation-view-controls {
     display: flex;
+    flex-direction: column;
 
     .content {
       margin-left: 26px;
@@ -109,6 +110,14 @@ $control-max-width-without-editor: 800px !default;
 
   .bx--inline-notification {
     cursor: pointer;
+  }
+
+  .pf-c-alert {
+    max-width: 1000px;
+
+    h4 {
+      margin: 0;
+    }
   }
 
   .bx--tooltip--icon__top:after,

@@ -8,12 +8,9 @@ import SplitPane from 'react-split-pane'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import {
-  Notification,
-  InlineNotification,
-} from 'carbon-components-react'
-import {
   Button,
-  Switch
+  Switch,
+  Alert
 } from '@patternfly/react-core'
 import {
   initializeControls,
@@ -228,7 +225,6 @@ export default class TemplateEditor extends React.Component {
       previouslySelectedCards: [],
       notifications: [],
       otherYAMLTabs: [],
-      updateMessage: '',
       /* eslint-disable-next-line react/no-unused-state */
       hasFormExceptions: false,
       isFinalValidate: false,
@@ -326,11 +322,9 @@ export default class TemplateEditor extends React.Component {
 
     if (isLoaded && isFailed) {
       return (
-        <Notification
-          title=""
-          className="overview-notification"
-          kind="error"
-          subtitle={i18n('overview.error.default')}
+        <Alert
+          variant={'danger'}
+          title={i18n('overview.error.default')}
         />
       )
     }
@@ -719,8 +713,6 @@ export default class TemplateEditor extends React.Component {
       hasUndo,
       hasRedo,
       exceptions,
-      updateMessage,
-      updateMsgKind,
       otherYAMLTabs,
       showSecrets,
       i18n
@@ -747,22 +739,6 @@ export default class TemplateEditor extends React.Component {
             i18n={this.props.i18n}
           />
         </EditorHeader>
-        {updateMessage && (
-          <div className="creation-view-yaml-notification">
-            <InlineNotification
-              key={updateMessage}
-              kind={updateMsgKind}
-              title={
-                updateMsgKind === 'error'
-                  ? i18n(`error.create.${type}`)
-                  : i18n(`success.create.${type}.check`)
-              }
-              iconDescription=""
-              subtitle={updateMessage}
-              onCloseButtonClick={this.handleUpdateMessageClosed}
-            />
-          </div>
-        )}
         {this.renderEditors()}
       </div>
     )
@@ -1056,8 +1032,6 @@ export default class TemplateEditor extends React.Component {
     return templateYAML // for jest test
   };
 
-  handleUpdateMessageClosed = () => this.setState({ updateMessage: '' });
-
   getResourceJSON() {
     const { templateYAML, controlData, otherYAMLTabs, editStack, i18n } = this.state
     let canCreate = false
@@ -1216,8 +1190,8 @@ export default class TemplateEditor extends React.Component {
         <Button
           id={createBtn}
           onClick={this.handleCreateResource.bind(this)}
-          kind={'primary'}
-          disabled={disableButton}
+          variant={'primary'}
+          isDisabled={disableButton}
         >
           {label}
         </Button>
@@ -1256,7 +1230,7 @@ export default class TemplateEditor extends React.Component {
       if (portal) {
         const { cancelCreate } = createControl
         return ReactDOM.createPortal(
-          <Button id={cancelBtn} onClick={cancelCreate} kind={'secondary'}>
+          <Button id={cancelBtn} onClick={cancelCreate} variant={'secondary'}>
             {i18n ? i18n('button.cancel') : 'Cancel'}
           </Button>,
           portal
@@ -1290,7 +1264,6 @@ export default class TemplateEditor extends React.Component {
       previouslySelectedCards: [],
       notifications: [],
       otherYAMLTabs,
-      updateMessage: '',
       hasUndo: false,
       hasRedo: false,
       isFinalValidate: false,

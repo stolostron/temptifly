@@ -3,7 +3,7 @@
 import React from 'react'
 import { Query } from 'react-apollo'
 import PropTypes from 'prop-types'
-import { Notification } from 'carbon-components-react'
+import { Alert, AlertActionLink } from '@patternfly/react-core'
 import classNames from 'classnames'
 import ControlPanelAccordion from './ControlPanelAccordion'
 import ControlPanelTextInput from './ControlPanelTextInput'
@@ -608,30 +608,25 @@ class ControlPanel extends React.Component {
               }, 0)
             }
           }
-          const handleKeyPress = e => {
-            if (e.key === 'Enter') {
-              handleClick()
-            }
+
+          let variant = 'success'
+          switch (kind) {
+          case 'error':
+            variant='danger'
           }
           return (
-            <div
-              id="notifications"
-              key={exception}
-              role="button"
-              onClick={handleClick}
-              tabIndex="0"
-              aria-label={exception}
-              onKeyDown={handleKeyPress}
-            >
-              <Notification
-                key={id}
-                title=""
-                className="persistent notification"
-                subtitle={exception}
-                kind={kind}
-              />
-            </div>
+            <Alert
+              key={id}
+              variant={variant}
+              title={exception}
+              actionLinks={
+                <React.Fragment>
+                  <AlertActionLink onClick={handleClick}>View details</AlertActionLink>
+                </React.Fragment>
+              }
+            />
           )
+
         }
       )
     }
