@@ -42,6 +42,8 @@ $control-max-width-without-editor: 800px !default;
   }
 
   .creation-view-controls {
+    display: flex;
+    
     .content {
       margin-left: 26px;
     }
@@ -583,6 +585,7 @@ $control-max-width-without-editor: 800px !default;
       &-edit-container {
         position: relative;
         width: 100%;
+        margin-top: 10px;
 
         .closeIcon {
           cursor: pointer;

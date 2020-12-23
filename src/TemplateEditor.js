@@ -952,6 +952,12 @@ export default class TemplateEditor extends React.Component {
       } else {
         this.selections = null
         this.selectionIndex = -1
+        editor.setSelections([{
+          positionColumn: 0,
+          positionLineNumber: 0,
+          selectionStartColumn: 0,
+          selectionStartLineNumber: 0
+        }])
       }
       this.nameSearch = searchName
       this.nameSearchMode = searchName.length > 0
