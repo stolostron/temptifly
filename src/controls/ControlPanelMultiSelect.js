@@ -2,8 +2,15 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { MultiSelect } from 'carbon-components-react'
-import Tooltip from '../components/Tooltip'
+import {
+  FormGroup,
+  Popover,
+  Select,
+  SelectOption,
+  SelectVariant,
+  Spinner } from '@patternfly/react-core'
+import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
+import _ from 'lodash'
 
 class ControlPanelMultiSelect extends React.Component {
   static propTypes = {
@@ -15,7 +22,9 @@ class ControlPanelMultiSelect extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      open: false
+    }
   }
 
   setControlRef = (control, ref) => {
@@ -23,29 +32,32 @@ class ControlPanelMultiSelect extends React.Component {
   };
 
   render() {
-    const { controlId, i18n, control } = this.props
-    const { name, placeholder: ph = '' } = control
-
-    // see if we need to add user additions to available (from editing the yaml file)
-    const { userData, userMap, hasCapturedUserSource } = control
-    let { active = [], available, availableMap } = control
-    if (userData) {
-      if (!hasCapturedUserSource) {
-        available = [...userData, ...available]
-        availableMap = { ...userMap, ...availableMap }
+    const { open } = this.state
+    const { controlId, i18n, control, handleChange } = this.props
+    const {
+      name,
+      available = [],
+      validation = {},
+      exception,
+      tooltip,
+      disabled,
+      isLoading,
+      isFailed
+    } = control
+    let { active, placeholder = '' } = control
+    if (!active) {
+      if (isLoading) {
+        active = i18n(
+          _.get(control, 'fetchAvailable.loadingDesc', 'resource.loading'))
+      } else if (isFailed) {
+        active = i18n('resource.error')
+      } else if (available.length === 0) {
+        active = i18n(
+          _.get(control, 'fetchAvailable.emptyDesc', 'resource.none'))
       } else {
-        // if user edited the source, we can't automatically update it
-        active = available = [i18n('creation.view.policy.custom')]
-        availableMap = undefined
+        active = []
       }
-    }
-    if (!Array.isArray(active)) {
-      active=[]
-    }
-
-    // place holder
-    let placeholder = ph
-    if (active.length > 0) {
+    } else if (active.length > 0) {
       const activeKeys = []
       active.forEach(k => {
         if (typeof availableMap === 'object' && availableMap[k]) {
@@ -57,73 +69,108 @@ class ControlPanelMultiSelect extends React.Component {
       })
       placeholder = activeKeys.join(', ')
     }
-
-    // change key if active changes so that carbon component is re-created with new initial values
-    const key = `${controlId}-${active.join('-')}`
+    
+    const setOpen = (open) => {
+      this.setState({open})
+    }
+    
+    const onChange = (value) => {
+      if (value) {
+        if (active.includes(value)) {
+          active = active.filter(item => item !== value)
+        } else {
+          active = [...active, value]
+        }        
+      } else {
+        active = []
+      }
+      control.active = active
+      handleChange()
+    }
+    
+    this.options = available.map((item, inx)=>{
+      /* eslint-disable-next-line react/no-array-index-key */
+      return <SelectOption key={inx} value={item} />
+    })
+    
+    const onFilter = evt => {
+      const textInput = evt.target.value;
+      if (textInput === '') {
+        return this.options;
+      } else {
+        return this.options.filter(item => {
+          return item.props.value.toLowerCase().includes(textInput.toLowerCase());
+        })
+      }
+    }
+    
+    const validated = exception ? 'error' : undefined
     return (
       <React.Fragment>
         <div
-          className="creation-view-controls-multiselect"
+          className="creation-view-controls-singleselect"
           ref={this.setControlRef.bind(this, control)}
         >
-          <label
-            className="creation-view-controls-multiselect-title"
-            htmlFor={controlId}
+          <FormGroup
+            id={`${controlId}-label`}
+            label={name}
+            isRequired={validation.required}
+            fieldId={controlId}
+            helperTextInvalid={exception}
+            validated={validated}
+            labelIcon={
+              /* istanbul ignore next */
+              tooltip ? (
+                <Popover
+                  id={`${controlId}-label-help-popover`}
+                  bodyContent={tooltip}
+                >
+                  <button
+                    id={`${controlId}-label-help-button`}
+                    aria-label="More info"
+                    onClick={(e) => e.preventDefault()}
+                    className="pf-c-form__group-label-help"
+                  >
+                    <HelpIcon noVerticalAlign />
+                  </button>
+                </Popover>
+              ) : (
+                <React.Fragment />
+              )
+            }
           >
-            {name}
-            <Tooltip control={control} i18n={i18n} />
-          </label>
-          <MultiSelect.Filterable
-            key={key}
-            id={controlId}
-            items={available}
-            initialSelectedItems={active}
-            placeholder={placeholder}
-            itemToString={item => item}
-            sortItems={items => items}
-            onChange={this.handleSelectionChange.bind(this)}
-          />
+            {isLoading ? (
+              <div className="creation-view-controls-singleselect-loading">
+                <Spinner size="md" />
+                <div>{active}</div>
+              </div>
+            ) : (
+              <Select
+                ariaLabelledBy={`${controlId}-label`}
+                spellCheck={false}
+                isOpen={open}
+                onToggle={() => {setOpen(!open)}}
+                variant={SelectVariant.checkbox}
+                onSelect={(_event, value) => {onChange(value)}}
+                selections={active}
+                onClear={() => {onChange(undefined)}}
+                placeholderText={placeholder}
+                isDisabled={disabled}
+                onFilter={onFilter}
+                hasInlineFilter
+              >
+                {this.options}
+              </Select>
+            )}
+            {validated === 'error' ? (
+              <div style={{ borderTop: '1.75px solid red', paddingBottom: '6px', maxWidth: '800px' }}></div>
+            ) : (
+              <React.Fragment />
+            )}
+          </FormGroup>
         </div>
       </React.Fragment>
     )
-  }
-
-  handleSelectionChange(evt) {
-    const { control } = this.props
-    const { isOneSelection } = control
-    if (isOneSelection) {
-      // close on one selection
-      this.handleChange(evt)
-    } else {
-      // close when user clicks outside of menu
-      // unfortunately MultiSelect.Filterable doesn't have an onClose
-      this.multiSelect.selectedItems = evt.selectedItems
-      const menu = this.multiSelect.getElementsByClassName(
-        'bx--list-box__menu'
-      )
-      if (menu && menu.length > 0) {
-        if (!this.multiSelect.observer) {
-          this.multiSelect.observer = new MutationObserver(() => {
-            this.handleChange({
-              selectedItems: this.multiSelect.selectedItems
-            })
-            this.multiSelect.observer.disconnect()
-            delete this.multiSelect.observer
-          })
-          this.multiSelect.observer.observe(menu[0].parentNode, {
-            childList: true
-          })
-        }
-      } else if (!this.multiSelect.observer) {
-        this.handleChange({ selectedItems: this.multiSelect.selectedItems })
-      }
-    }
-  }
-
-  handleChange(evt) {
-    const { control, handleChange } = this.props
-    control.active = evt.selectedItems
-    handleChange(evt)
   }
 }
 
