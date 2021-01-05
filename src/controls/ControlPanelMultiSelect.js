@@ -38,6 +38,7 @@ class ControlPanelMultiSelect extends React.Component {
       name,
       available = [],
       validation = {},
+      availableMap,
       exception,
       tooltip,
       disabled,
@@ -69,41 +70,41 @@ class ControlPanelMultiSelect extends React.Component {
       })
       placeholder = activeKeys.join(', ')
     }
-    
+
     const setOpen = (open) => {
       this.setState({open})
     }
-    
+
     const onChange = (value) => {
       if (value) {
         if (active.includes(value)) {
           active = active.filter(item => item !== value)
         } else {
           active = [...active, value]
-        }        
+        }
       } else {
         active = []
       }
       control.active = active
       handleChange()
     }
-    
+
     this.options = available.map((item, inx)=>{
       /* eslint-disable-next-line react/no-array-index-key */
       return <SelectOption key={inx} value={item} />
     })
-    
+
     const onFilter = evt => {
-      const textInput = evt.target.value;
+      const textInput = evt.target.value
       if (textInput === '') {
-        return this.options;
+        return this.options
       } else {
         return this.options.filter(item => {
-          return item.props.value.toLowerCase().includes(textInput.toLowerCase());
+          return item.props.value.toLowerCase().includes(textInput.toLowerCase())
         })
       }
     }
-    
+
     const validated = exception ? 'error' : undefined
     return (
       <React.Fragment>

@@ -1,34 +1,96 @@
 'use strict'
 
+
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  ComboBox,
-  DropdownSkeleton,
-  InlineLoading
-} from 'carbon-components-react'
-import Tooltip from '../components/Tooltip'
+import classNames from 'classnames'
+import { FormGroup, Popover } from '@patternfly/react-core'
+import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import _ from 'lodash'
 
 class ControlPanelComboBox extends React.Component {
   static propTypes = {
     control: PropTypes.object,
-    controlData: PropTypes.array,
     controlId: PropTypes.string,
     handleControlChange: PropTypes.func,
-    i18n: PropTypes.func
+    i18n: PropTypes.func,
   };
+
+  static getDerivedStateFromProps(props, state) {
+    const { control, handleControlChange } = props
+    const handleComboChange = selectedItem => {
+      control.active = selectedItem
+      handleControlChange()
+    }
+    const { active } = control
+    const { currentSelection } = state
+    let {
+      isOpen,
+      searchText
+    } = state
+
+    /////////////////////////////////////////////////////////////
+    // search mode
+    if (searchText && searchText.length) {
+      // nothing selected, filter list
+      if (currentSelection === undefined) {
+        if (active !== searchText) {
+          handleComboChange(searchText)
+        }
+      } else {
+        // handle change
+        handleComboChange(currentSelection)
+        isOpen = false
+        searchText = null
+      }
+    } else if (currentSelection !== undefined) {
+      // handle change
+      handleComboChange(currentSelection)
+      searchText = null
+      isOpen = false
+    }
+    return {
+      active,
+      currentSelection: undefined,
+      isOpen,
+      searchText
+    }
+  }
 
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      isOpen: false,
+      searchText: null
+    }
+    this.onDocClick = (event) => {
+      const clickedOnToggle = this.parentRef && this.parentRef.contains(event.target)
+      const clickedWithinMenu = this.menuRef && this.menuRef.contains && this.menuRef.contains(event.target)
+      if (this.state.isOpen && !(clickedOnToggle || clickedWithinMenu)) {
+        this.setState({isOpen: false})
+      }
+    }
+  }
+  componentDidMount() {
+    document.addEventListener('mousedown', this.onDocClick)
+  }
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.onDocClick)
   }
 
-  setControlRef = (control, ref) => {
-    control.ref = ref
+  setParentRef = (ref) => {
+    this.parentRef = ref
+  };
+
+  setMenuRef = (ref) => {
+    this.menuRef = ref
   };
 
   render() {
+    const {
+      isOpen,
+      searchText,
+    } = this.state
     const { controlId, i18n, control } = this.props
     const {
       name,
@@ -38,11 +100,10 @@ class ControlPanelComboBox extends React.Component {
       validation={},
       hasReplacements,
       isFailed,
-      disabled,
-      fetchAvailable
+      fetchAvailable,
+      tooltip
     } = control
     let { isLoading } = control
-    const { controlData } = this.props
     let { active, available=[], placeholder = '' } = control
     let loadingMsg
     if (fetchAvailable) {
@@ -90,133 +151,271 @@ class ControlPanelComboBox extends React.Component {
       isLoading = false
     }
 
-    // comboboxes need an array of {label, id}
-    const items = available.map((label, inx) => {
+    let currentAvailable = available
+    if (!isLoading && searchText && searchText.length) {
+      const findText = searchText.toLowerCase()
+      currentAvailable = available.filter(item => {
+        return item.toLowerCase().includes(findText)
+      })
+      if (currentAvailable.length===0) {
+        currentAvailable = available
+      }
+    }
+    const items = currentAvailable.map((label, inx) => {
       return { label, id: inx }
     })
-    const initialSelectedItem = items.find(item => item.label === active)
-
+    //const initialSelectedItem = items.find(item => item.label === active)
     const key = `${controlId}-${name}-${active}`
+    const toggleClasses = classNames({
+      'tf--list-box__menu-icon': true,
+      'tf--list-box__menu-icon--open': isOpen
+    })
+    const aria = isOpen ? 'Close menu' : 'Open menu'
+    const validated = exception ? 'error' : undefined
     return (
       <React.Fragment>
-        <div
-          className="creation-view-controls-singleselect"
-          ref={this.setControlRef.bind(this, control)}
-        >
-          <div className="creation-view-controls-multiselect-title">
-            {name}
-            {validation.required ? (
-              <div className="creation-view-controls-required">*</div>
-            ) : null}
-            <Tooltip control={control} i18n={i18n} />
-          </div>
-          {isLoading && !active ? (
-            <div className="creation-view-controls-singleselect-loading">
-              <DropdownSkeleton />
-              <InlineLoading description={loadingMsg} />
-            </div>
-          ) : (
-            <ComboBox
-              id={controlId}
-              key={key}
-              items={items}
-              itemToString={item => (item ? item.label : '')}
-              initialSelectedItem={initialSelectedItem}
-              selecteditem={active}
-              spellCheck={false}
-              disabled={disabled}
-              ref={ref => {
-                if (ref) {
-                  const input = _.get(ref, 'textInput.current')
-                  if (input) {
-                    input.autocomplete = 'off'
-                    input.addEventListener('keyup', e => {
-                      if (e.key === 'Enter' && control.typing) {
-                        this.handleComboboxChange(
-                          control,
-                          userData,
-                          controlData
+        <div className="creation-view-controls-treeselect">
+          <FormGroup
+            id={`${controlId}-label`}
+            label={name}
+            isRequired={validation.required}
+            fieldId={controlId}
+            helperTextInvalid={exception}
+            validated={validated}
+            labelIcon={
+              /* istanbul ignore next */
+              tooltip ? (
+                <Popover
+                  id={`${controlId}-label-help-popover`}
+                  bodyContent={tooltip}
+                >
+                  <button
+                    id={`${controlId}-label-help-button`}
+                    aria-label="More info"
+                    onClick={(e) => e.preventDefault()}
+                    className="pf-c-form__group-label-help"
+                  >
+                    <HelpIcon noVerticalAlign />
+                  </button>
+                </Popover>
+              ) : (
+                <React.Fragment />
+              )
+            }
+          >
+            <div id={controlId}>
+              <div
+                role="listbox"
+                aria-label="Choose an item"
+                tabIndex="0"
+                className="tf--list-box"
+              >
+                <div
+                  role="button"
+                  className=""
+                  tabIndex="0"
+                  type="button"
+                  aria-label={aria}
+                  aria-expanded={isOpen}
+                  aria-haspopup="true"
+                  data-toggle="true"
+                  onClick={this.clickToggle.bind(this)}
+                  onKeyPress={this.pressToggle.bind(this)}
+                >
+                  <input
+                    className="pf-c-form-control"
+                    aria-label="ListBox input field"
+                    spellCheck="false"
+                    role="combobox"
+                    aria-controls={key}
+                    aria-autocomplete="list"
+                    aria-expanded="true"
+                    autoComplete="new-password"
+                    id="downshift-0-input"
+                    placeholder=""
+                    ref={this.setParentRef}
+                    style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}
+                    value={searchText !== null ? searchText : active}
+                    onKeyUp={this.pressUp.bind(this)}
+                    onKeyDown={this.pressDown.bind(this)}
+                    onChange={evt =>
+                      this.setState({ searchText: evt.currentTarget.value })
+                    }
+                  />
+                  <div
+                    role="button"
+                    className="tf--list-box__selection"
+                    tabIndex="0"
+                    title="Clear selected item"
+                    onClick={this.clickClear.bind(this)}
+                    onKeyPress={this.pressClear.bind(this)}
+                  >
+                    <svg
+                      height="10"
+                      role="img"
+                      viewBox="0 0 10 10"
+                      width="10"
+                      focusable="false"
+                      aria-label="Clear selected item"
+                      alt="Clear selected item"
+                    >
+                      <title>Clear selected item</title>
+                      <path d="M6.32 5L10 8.68 8.68 10 5 6.32 1.32 10 0 8.68 3.68 5 0 1.32 1.32 0 5 3.68 8.68 0 10 1.32 6.32 5z" />
+                    </svg>
+                  </div>
+                  <div
+                    role="button"
+                    tabIndex="0"
+                    className={toggleClasses}
+                    onClick={this.clickToggle.bind(this)}
+                    onKeyPress={this.pressToggle.bind(this)}
+                  >
+                    <svg
+                      fillRule="evenodd"
+                      height="5"
+                      role="img"
+                      viewBox="0 0 10 5"
+                      width="10"
+                      alt={aria}
+                      aria-label={aria}
+                    >
+                      <title>Close menu</title>
+                      <path d="M0 0l5 4.998L10 0z" />
+                    </svg>
+                  </div>
+                </div>
+                {isOpen && (
+                  <div className="tf--list-box__menu" key={key} id={key} ref={this.setMenuRef} >
+                    {items.map(
+                      ({ label, id }) => {
+                        const itemClasses = classNames({
+                          'tf--list-box__menu-item': true,
+                          searching: searchText,
+                        })
+                        return (
+                          <div
+                            role="button"
+                            key={label}
+                            className={itemClasses}
+                            id={`downshift-0-item-${id}`}
+                            tabIndex="0"
+                            onClick={this.clickSelect.bind(this, label)}
+                            onKeyPress={this.pressSelect.bind(this, label)}
+                          >
+                            {this.renderLabel(label, searchText)}
+                          </div>
                         )
                       }
-                    })
-                  }
-                }
-              }}
-              invalid={!!exception}
-              invalidText={exception}
-              placeholder={placeholder}
-              onChange={() => {}}
-              onFocus={e => {
-                e.target.select()
-              }}
-              onInputChange={this.handleComboboxTyping.bind(
-                this,
-                control,
-                userData,
-                available
-              )}
-            />
-          )}
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </FormGroup>
         </div>
       </React.Fragment>
     )
   }
 
-  handleComboboxTyping(control, userData, available, evt) {
-    const { controlData } = this.props
-
-    // if menu is still open, user is typing
-    const menu = control.ref.getElementsByClassName('bx--list-box__menu')
-    if (menu && menu.length > 0) {
-      // user clicked selection, kill any typing
-      menu[0].addEventListener(
-        'click',
-        () => {
-          delete control.typing
-        },
-        true
+  renderLabel(label, searchText) {
+    const inx =
+      searchText &&
+      searchText.length &&
+      label.toLowerCase().indexOf(searchText.toLowerCase())
+    if (inx !== null && inx >= 0) {
+      label = [
+        label.substr(0, inx),
+        label.substr(inx, searchText.length),
+        label.substr(inx + searchText.length)
+      ]
+      return (
+        <React.Fragment>
+          {label[0]}
+          <b>{label[1]}</b>
+          {label[2]}
+        </React.Fragment>
       )
-
-      // user is typing something--filter the list
-      Array.from(
-        menu[0].getElementsByClassName('bx--list-box__menu-item')
-      ).forEach((item, inx) => {
-        if (available[inx].indexOf(evt) === -1) {
-          item.innerHTML = available[inx]
-          item.style.display = 'none'
-        } else {
-          item.innerHTML = available[inx].replace(
-            new RegExp(evt, 'gi'),
-            found => {
-              return '<b>' + found + '</b>'
-            }
-          )
-          item.style.display = ''
-        }
-      })
-      control.typing = evt.trim()
     } else {
-      control.active = evt.trim()
-      this.handleComboboxChange(control, userData, controlData)
+      return <React.Fragment>{label}</React.Fragment>
     }
   }
 
-  handleComboboxChange(control, userData, controlData) {
-    // if user typed something
-    if (control.typing) {
-      userData.push(control.typing)
-      control.userData = userData
-      control.active = control.typing
-
-      // if this combobox is fetched from server, make sure whatever user types in has an availableMap entry
-      const setAvailableMap = _.get(control, 'fetchAvailable.setAvailableMap')
-      if (setAvailableMap) {
-        setAvailableMap(control)
-      }
+  pressUp(e) {
+    if (e.key === 'Enter' && this.state.searchText) {
+      const { searchText } = this.state
+      const { control, handleControlChange } = this.props
+      control.userData = control.userData || []
+      control.userData.push(searchText)
+      control.active = searchText
+      handleControlChange()
+      this.setState({
+        currentSelection: undefined,
+        isOpen:false,
+        searchText: null
+      })
     }
+  }
 
-    this.props.handleControlChange(control, controlData)
-    delete control.typing
+  pressDown(e) {
+    if (e.key === 'Escape') {
+      this.clickClear()
+    }
+  }
+
+  pressToggle(e) {
+    if (e.key === 'Enter') {
+      this.clickToggle()
+    } else if (e.key === 'Escape') {
+      this.clickClear()
+    }
+  }
+
+  clickToggle(e) {
+    if (e) {
+      e.stopPropagation()
+    }
+    if (!this.state.searchText) {
+      this.setState(preState => {
+        let {
+          currentAvailable,
+          currentSelection,
+          searchText,
+          isOpen
+        } = preState
+        isOpen = !isOpen
+        if (!isOpen) {
+          currentAvailable = []
+          currentSelection = undefined
+          searchText = null
+        }
+        return {
+          currentAvailable,
+          currentSelection,
+          searchText,
+          isOpen
+        }
+      })
+    }
+  }
+
+  pressSelect(label, e) {
+    if (e.key === 'Enter') {
+      this.clickSelect(label)
+    }
+  }
+
+  clickSelect(label) {
+    this.setState({ currentSelection: label })
+  }
+
+  pressClear(inx, e) {
+    if (e && e.key === 'Enter') {
+      this.clickClear()
+    }
+  }
+
+  clickClear() {
+    this.setState({ searchText: '' })
   }
 }
 

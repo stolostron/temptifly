@@ -161,7 +161,30 @@ class ControlPanelTreeSelect extends React.Component {
     }
     // create active map
     this.addAvailableMap(props)
+    this.onDocClick = (event) => {
+      const clickedOnToggle = this.parentRef && this.parentRef.contains(event.target)
+      const clickedWithinMenu = this.menuRef && this.menuRef.contains && this.menuRef.contains(event.target)
+      if (this.state.isOpen && !(clickedOnToggle || clickedWithinMenu)) {
+        this.setState({isOpen: false})
+      }
+    }
   }
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this.onDocClick)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.onDocClick)
+  }
+
+  setParentRef = (ref) => {
+    this.parentRef = ref
+  };
+
+  setMenuRef = (ref) => {
+    this.menuRef = ref
+  };
 
   addAvailableMap(props) {
     const { control } = props
@@ -259,6 +282,7 @@ class ControlPanelTreeSelect extends React.Component {
                   <input
                     className="pf-c-form-control"
                     aria-label="ListBox input field"
+                    ref={this.setParentRef}
                     spellCheck="false"
                     role="combobox"
                     aria-controls={key}
@@ -320,7 +344,7 @@ class ControlPanelTreeSelect extends React.Component {
                   </div>
                 </div>
                 {isOpen && (
-                  <div className="tf--list-box__menu" key={key} id={key}>
+                  <div className="tf--list-box__menu" key={key} id={key}  ref={this.setMenuRef}>
                     {currentAvailable.map(
                       ({ branch, instance, indent = 0 }, inx) => {
                         const itemClasses = classNames({
