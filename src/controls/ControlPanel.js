@@ -491,14 +491,14 @@ class ControlPanel extends React.Component {
     }
 
     // syncing values
-    if (syncWith) {
+    if (syncWith && control.groupControlData) {
       // whatever is typed into this control, also put in other control
       const syncControl = control.groupControlData.find(
         ({ id }) => id === syncWith
       )
       syncControl.active = `${control.active}${syncControl.syncedSuffix || ''}`
     }
-    if (syncedWith) {
+    if (syncedWith && control.groupControlData) {
       // if another control is synced with this control and
       // user is typing a value here directly, remove sync
       const syncedControl = control.groupControlData.find(

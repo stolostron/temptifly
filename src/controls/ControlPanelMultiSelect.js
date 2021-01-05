@@ -58,7 +58,7 @@ class ControlPanelMultiSelect extends React.Component {
       } else {
         active = []
       }
-    } else if (active.length > 0) {
+    } else if (Array.isArray(active) && active.length > 0) {
       const activeKeys = []
       active.forEach(k => {
         if (typeof availableMap === 'object' && availableMap[k]) {

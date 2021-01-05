@@ -5,13 +5,13 @@ exports[`ControlPanelCards component renders as expected 1`] = `
   className="creation-view-controls-card-container"
 >
   <div
-    className="mcx--grid-container"
+    className="tf--grid-container"
   >
     <div
-      className="bx--grid"
+      className="tf--grid"
     >
       <div
-        className="mcx--providers-container bx--row"
+        className="tf--providers-container tf--row"
       />
     </div>
   </div>

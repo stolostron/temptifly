@@ -24,7 +24,7 @@ module.exports = {
       },
       {
         test: [/\.s?css$/],
-        exclude: [path.resolve(__dirname, './node_modules/monaco-editor'), /node_modules\/(?!(@patternfly)\/).*/],
+        exclude: /node_modules/,
         loader: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
@@ -54,9 +54,9 @@ module.exports = {
         })
       },
       {
-        test: /\.css$/,
-        include: path.resolve(__dirname, './node_modules/monaco-editor'),
-        use: ['style-loader', 'css-loader']
+        test: /\.s?css$/,
+        include: path.resolve(__dirname, './node_modules/@patternfly'),
+        loader: 'null-loader'
       },
       {
         test: /\.(png|jpg|jpeg|gif|svg|woff2?|ttf|eot|otf)(\?.*$|$)/,

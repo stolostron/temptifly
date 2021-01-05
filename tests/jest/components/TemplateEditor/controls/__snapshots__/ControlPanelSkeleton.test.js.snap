@@ -10,14 +10,13 @@ exports[`ControlPanelSkeleton component renders as expected 1`] = `
   >
     creation.app.name
   </label>
-  <p
-    className="bx--skeleton__text"
+  <div
+    className="pf-c-skeleton"
     id="controlId"
-    style={
-      Object {
-        "width": "100%",
-      }
-    }
-  />
+  >
+    <span
+      className="pf-u-screen-reader"
+    />
+  </div>
 </div>
 `;
