@@ -185,6 +185,7 @@ $container-max-width-with-editor: 650px !default;
         display: flex;
         align-items: center;
         position: relative;
+        line-height: 28px;
 
         &.subtitle {
           color: $color__navy-gray-6;
@@ -277,6 +278,7 @@ $container-max-width-with-editor: 650px !default;
     }
 
     &-singleselect,
+    &-combobox,
     &-treeselect {
       &-loading {
         position: relative;
@@ -658,6 +660,7 @@ $container-max-width-with-editor: 650px !default;
     &-textbox,
     &-multiselect,
     &-singleselect,
+    &-combobox,
     &-treeselect,
     &-select,
     &-textarea,
@@ -830,6 +833,7 @@ $container-max-width-with-editor: 650px !default;
         }
       }
 
+      .pf-c-form-control,
       .bx--list-box__field,
       .bx--text-input,
       .bx--list-box,
@@ -923,6 +927,18 @@ $container-max-width-with-editor: 650px !default;
       .pf-c-select,
       .pf-c-form-control {
         max-width: $control-max-width-with-editor;
+
+        &.input {
+          padding: 0;
+        }
+
+        .pf-c-combo-control {
+          width: 90%;
+          height: 100%;
+          border: none;
+          text-overflow: ellipsis;
+          padding-left: 6px;
+        }
       }
     }
 

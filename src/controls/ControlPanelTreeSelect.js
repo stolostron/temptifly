@@ -6,6 +6,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { FormGroup, Popover } from '@patternfly/react-core'
+import TimesCircleIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import _ from 'lodash'
 
@@ -319,18 +320,7 @@ class ControlPanelTreeSelect extends React.Component {
                     onClick={this.clickClear.bind(this)}
                     onKeyPress={this.pressClear.bind(this)}
                   >
-                    <svg
-                      height="10"
-                      role="img"
-                      viewBox="0 0 10 10"
-                      width="10"
-                      focusable="false"
-                      aria-label="Clear selected item"
-                      alt="Clear selected item"
-                    >
-                      <title>Clear selected item</title>
-                      <path d="M6.32 5L10 8.68 8.68 10 5 6.32 1.32 10 0 8.68 3.68 5 0 1.32 1.32 0 5 3.68 8.68 0 10 1.32 6.32 5z" />
-                    </svg>
+                    <TimesCircleIcon aria-hidden />
                   </div>
                   <div
                     role="button"

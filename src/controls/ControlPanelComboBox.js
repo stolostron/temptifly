@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { FormGroup, Popover } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
+import TimesCircleIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
 import _ from 'lodash'
 
 class ControlPanelComboBox extends React.Component {
@@ -64,7 +65,7 @@ class ControlPanelComboBox extends React.Component {
       searchText: null
     }
     this.onDocClick = (event) => {
-      const clickedOnToggle = this.parentRef && this.parentRef.contains(event.target)
+      const clickedOnToggle = this.inputRef && this.inputRef.contains(event.target)
       const clickedWithinMenu = this.menuRef && this.menuRef.contains && this.menuRef.contains(event.target)
       const clickedWithinClear = this.clearRef && this.clearRef.contains && this.clearRef.contains(event.target)
       const clickedWithinToggle = this.toggleRef && this.toggleRef.contains && this.toggleRef.contains(event.target)
@@ -72,6 +73,7 @@ class ControlPanelComboBox extends React.Component {
         this.setState({isOpen: false})
       }
     }
+    this.onDocClick = this.onDocClick.bind(this)
   }
   componentDidMount() {
     document.addEventListener('mousedown', this.onDocClick)
@@ -80,8 +82,8 @@ class ControlPanelComboBox extends React.Component {
     document.removeEventListener('mousedown', this.onDocClick)
   }
 
-  setParentRef = (ref) => {
-    this.parentRef = ref
+  setInputRef = (ref) => {
+    this.inputRef = ref
   };
 
   setMenuRef = (ref) => {
@@ -182,9 +184,10 @@ class ControlPanelComboBox extends React.Component {
     })
     const aria = isOpen ? 'Close menu' : 'Open menu'
     const validated = exception ? 'error' : undefined
+    const value = searchText || active || ''
     return (
       <React.Fragment>
-        <div className="creation-view-controls-treeselect">
+        <div className="creation-view-controls-combobox">
           <FormGroup
             id={`${controlId}-label`}
             label={name}
@@ -232,25 +235,27 @@ class ControlPanelComboBox extends React.Component {
                   onClick={this.clickToggle.bind(this)}
                   onKeyPress={this.pressToggle.bind(this)}
                 >
-                  <input
-                    className="pf-c-form-control"
-                    aria-label="ListBox input field"
-                    spellCheck="false"
-                    role="combobox"
-                    aria-controls={key}
-                    aria-expanded="true"
-                    autoComplete="new-password"
-                    id={`${controlId}-input`}
-                    placeholder={placeholder}
-                    ref={this.setParentRef}
-                    style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}
-                    value={searchText !== null ? searchText : active}
-                    onKeyUp={this.pressUp.bind(this)}
-                    onKeyDown={this.pressDown.bind(this)}
-                    onChange={evt =>
-                      this.setState({ searchText: evt.currentTarget.value })
-                    }
-                  />
+                  <div className="pf-c-form-control input">
+                    <input
+                      className="pf-c-combo-control"
+                      aria-label="ListBox input field"
+                      spellCheck="false"
+                      role="combobox"
+                      aria-controls={key}
+                      aria-expanded="true"
+                      autoComplete="new-password"
+                      id={`${controlId}-${Math.random()}-input`}
+                      placeholder={placeholder}
+                      ref={this.setInputRef}
+                      style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}
+                      value={value}
+                      onKeyUp={this.pressUp.bind(this)}
+                      onKeyDown={this.pressDown.bind(this)}
+                      onChange={evt =>
+                        this.setState({ searchText: evt.currentTarget.value })
+                      }
+                    />
+                  </div>
                   {(searchText || active) && <div
                     role="button"
                     className="tf--list-box__selection"
@@ -260,18 +265,7 @@ class ControlPanelComboBox extends React.Component {
                     onClick={this.clickClear.bind(this)}
                     onKeyPress={this.pressClear.bind(this)}
                   >
-                    <svg
-                      height="10"
-                      role="img"
-                      viewBox="0 0 10 10"
-                      width="10"
-                      focusable="false"
-                      aria-label="Clear selected item"
-                      alt="Clear selected item"
-                    >
-                      <title>Clear selected item</title>
-                      <path d="M6.32 5L10 8.68 8.68 10 5 6.32 1.32 10 0 8.68 3.68 5 0 1.32 1.32 0 5 3.68 8.68 0 10 1.32 6.32 5z" />
-                    </svg>
+                    <TimesCircleIcon aria-hidden />
                   </div>}
                   <div
                     role="button"
@@ -295,7 +289,7 @@ class ControlPanelComboBox extends React.Component {
                     </svg>
                   </div>
                 </div>
-                {(isOpen || searchText)  && (
+                {isOpen && (
                   <div className="tf--list-box__menu" key={key} id={key} ref={this.setMenuRef} >
                     {items.map(
                       ({ label, id }) => {

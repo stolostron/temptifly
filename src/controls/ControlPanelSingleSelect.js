@@ -36,7 +36,7 @@ class ControlPanelSingleSelect extends React.Component {
     const { controlId, i18n, control, handleChange } = this.props
     const {
       name,
-      placeholder = '',
+      active='',
       available = [],
       validation = {},
       exception,
@@ -45,15 +45,15 @@ class ControlPanelSingleSelect extends React.Component {
       isLoading,
       isFailed
     } = control
-    let { active } = control
-    if (!active) {
+    let { placeholder='' } = control
+    if (!placeholder) {
       if (isLoading) {
-        active = i18n(
+        placeholder = i18n(
           _.get(control, 'fetchAvailable.loadingDesc', 'resource.loading'))
       } else if (isFailed) {
-        active = i18n('resource.error')
+        placeholder = i18n('resource.error')
       } else if (available.length === 0) {
-        active = i18n(
+        placeholder = i18n(
           _.get(control, 'fetchAvailable.emptyDesc', 'resource.none'))
       }
     }
