@@ -66,7 +66,9 @@ class ControlPanelComboBox extends React.Component {
     this.onDocClick = (event) => {
       const clickedOnToggle = this.parentRef && this.parentRef.contains(event.target)
       const clickedWithinMenu = this.menuRef && this.menuRef.contains && this.menuRef.contains(event.target)
-      if (this.state.isOpen && !(clickedOnToggle || clickedWithinMenu)) {
+      const clickedWithinClear = this.clearRef && this.clearRef.contains && this.clearRef.contains(event.target)
+      const clickedWithinToggle = this.toggleRef && this.toggleRef.contains && this.toggleRef.contains(event.target)
+      if (this.state.isOpen && !(clickedOnToggle || clickedWithinMenu || clickedWithinClear || clickedWithinToggle)) {
         this.setState({isOpen: false})
       }
     }
@@ -84,6 +86,14 @@ class ControlPanelComboBox extends React.Component {
 
   setMenuRef = (ref) => {
     this.menuRef = ref
+  };
+
+  setClearRef = (ref) => {
+    this.clearRef = ref
+  };
+
+  setToggleRef = (ref) => {
+    this.toggleRef = ref
   };
 
   render() {
@@ -228,11 +238,10 @@ class ControlPanelComboBox extends React.Component {
                     spellCheck="false"
                     role="combobox"
                     aria-controls={key}
-                    aria-autocomplete="list"
                     aria-expanded="true"
                     autoComplete="new-password"
-                    id="downshift-0-input"
-                    placeholder=""
+                    id={`${controlId}-input`}
+                    placeholder={placeholder}
                     ref={this.setParentRef}
                     style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}
                     value={searchText !== null ? searchText : active}
@@ -242,11 +251,12 @@ class ControlPanelComboBox extends React.Component {
                       this.setState({ searchText: evt.currentTarget.value })
                     }
                   />
-                  <div
+                  {(searchText || active) && <div
                     role="button"
                     className="tf--list-box__selection"
                     tabIndex="0"
                     title="Clear selected item"
+                    ref={this.setClearRef}
                     onClick={this.clickClear.bind(this)}
                     onKeyPress={this.pressClear.bind(this)}
                   >
@@ -262,11 +272,12 @@ class ControlPanelComboBox extends React.Component {
                       <title>Clear selected item</title>
                       <path d="M6.32 5L10 8.68 8.68 10 5 6.32 1.32 10 0 8.68 3.68 5 0 1.32 1.32 0 5 3.68 8.68 0 10 1.32 6.32 5z" />
                     </svg>
-                  </div>
+                  </div>}
                   <div
                     role="button"
                     tabIndex="0"
                     className={toggleClasses}
+                    ref={this.setToggleRef}
                     onClick={this.clickToggle.bind(this)}
                     onKeyPress={this.pressToggle.bind(this)}
                   >
@@ -284,7 +295,7 @@ class ControlPanelComboBox extends React.Component {
                     </svg>
                   </div>
                 </div>
-                {isOpen && (
+                {(isOpen || searchText)  && (
                   <div className="tf--list-box__menu" key={key} id={key} ref={this.setMenuRef} >
                     {items.map(
                       ({ label, id }) => {
@@ -297,7 +308,7 @@ class ControlPanelComboBox extends React.Component {
                             role="button"
                             key={label}
                             className={itemClasses}
-                            id={`downshift-0-item-${id}`}
+                            id={`${controlId}-item-${id}`}
                             tabIndex="0"
                             onClick={this.clickSelect.bind(this, label)}
                             onKeyPress={this.pressSelect.bind(this, label)}
@@ -374,7 +385,9 @@ class ControlPanelComboBox extends React.Component {
     if (e) {
       e.stopPropagation()
     }
-    if (!this.state.searchText) {
+    const clickedWithinClear = e && this.clearRef && this.clearRef.contains && this.clearRef.contains(e.target)
+    const clickedWithinToggle = e && this.toggleRef && this.toggleRef.contains && this.toggleRef.contains(event.target)
+    if (!(this.state.searchText || clickedWithinClear) || clickedWithinToggle) {
       this.setState(preState => {
         let {
           currentAvailable,
@@ -416,6 +429,9 @@ class ControlPanelComboBox extends React.Component {
 
   clickClear() {
     this.setState({ searchText: '' })
+    const { control, handleControlChange } = this.props
+    control.active = ''
+    handleControlChange()
   }
 }
 

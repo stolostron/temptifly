@@ -164,7 +164,9 @@ class ControlPanelTreeSelect extends React.Component {
     this.onDocClick = (event) => {
       const clickedOnToggle = this.parentRef && this.parentRef.contains(event.target)
       const clickedWithinMenu = this.menuRef && this.menuRef.contains && this.menuRef.contains(event.target)
-      if (this.state.isOpen && !(clickedOnToggle || clickedWithinMenu)) {
+      const clickedWithinClear = this.clearRef && this.clearRef.contains && this.clearRef.contains(event.target)
+      const clickedWithinToggle = this.toggleRef && this.toggleRef.contains && this.toggleRef.contains(event.target)
+      if (this.state.isOpen && !(clickedOnToggle || clickedWithinMenu || clickedWithinClear || clickedWithinToggle)) {
         this.setState({isOpen: false})
       }
     }
@@ -184,6 +186,14 @@ class ControlPanelTreeSelect extends React.Component {
 
   setMenuRef = (ref) => {
     this.menuRef = ref
+  };
+
+  setClearRef = (ref) => {
+    this.clearRef = ref
+  };
+
+  setToggleRef = (ref) => {
+    this.toggleRef = ref
   };
 
   addAvailableMap(props) {
@@ -286,10 +296,9 @@ class ControlPanelTreeSelect extends React.Component {
                     spellCheck="false"
                     role="combobox"
                     aria-controls={key}
-                    aria-autocomplete="list"
                     aria-expanded="true"
                     autoComplete="new-password"
-                    id="downshift-0-input"
+                    id={`${controlId}-input`}
                     placeholder=""
                     style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}
                     value={searchText !== null ? searchText : currentActive}
@@ -306,6 +315,7 @@ class ControlPanelTreeSelect extends React.Component {
                     className="tf--list-box__selection"
                     tabIndex="0"
                     title="Clear selected item"
+                    ref={this.setClearRef}
                     onClick={this.clickClear.bind(this)}
                     onKeyPress={this.pressClear.bind(this)}
                   >
@@ -326,6 +336,7 @@ class ControlPanelTreeSelect extends React.Component {
                     role="button"
                     tabIndex="0"
                     className={toggleClasses}
+                    ref={this.setToggleRef}
                     onClick={this.clickToggle.bind(this)}
                     onKeyPress={this.pressToggle.bind(this)}
                   >
@@ -359,7 +370,7 @@ class ControlPanelTreeSelect extends React.Component {
                             role="button"
                             key={label}
                             className={itemClasses}
-                            id={`downshift-0-item-${inx}`}
+                            id={`${controlId}-item-${inx}`}
                             tabIndex="0"
                             style={{
                               textIndent: `${indent}px`,
@@ -424,8 +435,9 @@ class ControlPanelTreeSelect extends React.Component {
     if (e) {
       e.stopPropagation()
     }
-    const { searchText: st } = this.state
-    if (!st) {
+    const clickedWithinClear = e && this.clearRef && this.clearRef.contains && this.clearRef.contains(e.target)
+    const clickedWithinToggle = e && this.toggleRef && this.toggleRef.contains && this.toggleRef.contains(event.target)
+    if (!(this.state.searchText || clickedWithinClear) || clickedWithinToggle) {
       this.setState(preState => {
         let {
           currentAvailable,

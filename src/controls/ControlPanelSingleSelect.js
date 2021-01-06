@@ -65,6 +65,7 @@ class ControlPanelSingleSelect extends React.Component {
       handleChange()
     }
     const validated = exception ? 'error' : undefined
+    const key = `${controlId}-${name}-${available.join('-')}`
     return (
       <React.Fragment>
         <div
@@ -106,8 +107,11 @@ class ControlPanelSingleSelect extends React.Component {
               </div>
             ) : (
               <Select
+                id={controlId}
+                key={key}
                 aria-labelledby={`${controlId}-label`}
                 spellCheck={false}
+                autoComplete="new-password"
                 isOpen={open}
                 onToggle={() => {setOpen(!open)}}
                 variant={SelectVariant.typeahead}
