@@ -24,7 +24,7 @@ module.exports = {
       },
       {
         test: [/\.s?css$/],
-        exclude: [path.resolve(__dirname, './node_modules/monaco-editor'), /node_modules\/(?!(@patternfly)\/).*/],
+        exclude: /node_modules/,
         loader: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
@@ -54,9 +54,9 @@ module.exports = {
         })
       },
       {
-        test: /\.css$/,
-        include: path.resolve(__dirname, './node_modules/monaco-editor'),
-        use: ['style-loader', 'css-loader']
+        test: /\.s?css$/,
+        include: path.resolve(__dirname, './node_modules/@patternfly'),
+        loader: 'null-loader'
       },
       {
         test: /\.(png|jpg|jpeg|gif|svg|woff2?|ttf|eot|otf)(\?.*$|$)/,
@@ -102,5 +102,29 @@ module.exports = {
       }
     })
 
-  ]
+  ],
+
+  resolve: {
+    alias: {
+      'react': path.resolve(__dirname, './node_modules/react'),
+      'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
+      '@patternfly/react-core': path.resolve(__dirname, './node_modules/@patternfly/react-core'),
+    }
+  },
+  externals: {
+    // Don't bundle react or react-dom or patternfly
+    react: {
+      commonjs: 'react',
+      commonjs2: 'react'
+    },
+    'react-dom': {
+      commonjs: 'react-dom',
+      commonjs2: 'react-dom'
+    },
+    '@patternfly/react-core': {
+      commonjs: '@patternfly/react-core',
+      commonjs2: '@patternfly/react-core',
+    }
+
+  }
 }

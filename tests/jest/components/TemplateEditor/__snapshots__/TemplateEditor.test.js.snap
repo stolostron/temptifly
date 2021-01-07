@@ -11,7 +11,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
       className="creation-view-controls-container"
     >
       <div
-        className="creation-view-controls"
+        className="creation-view-controls pf-c-form"
         onScroll={[Function]}
       >
         <div
@@ -48,25 +48,30 @@ exports[`TemplateEditor component renders as expected 1`] = `
                 }
               }
             >
-              <label
-                className="creation-view-controls-textbox-title"
-                htmlFor="name"
-              />
               <div
-                className="bx--form-item"
+                className="pf-c-form__group"
+                id="eman-label"
               >
-                <input
-                  autoComplete="new-password"
-                  className="bx--text-input bx--text__input"
-                  disabled={false}
-                  id="name"
-                  onChange={[Function]}
-                  onClick={[Function]}
-                  placeholder={undefined}
-                  spellCheck={false}
-                  type="text"
-                  value=""
-                />
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <input
+                    aria-invalid={false}
+                    aria-label={null}
+                    className="pf-c-form-control"
+                    disabled={false}
+                    id="eman"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    onFocus={[Function]}
+                    placeholder={undefined}
+                    readOnly={false}
+                    required={false}
+                    type="text"
+                    value=""
+                  />
+                  
+                </div>
               </div>
             </div>
             <div
@@ -77,25 +82,30 @@ exports[`TemplateEditor component renders as expected 1`] = `
                 }
               }
             >
-              <label
-                className="creation-view-controls-textbox-title"
-                htmlFor="namespace"
-              />
               <div
-                className="bx--form-item"
+                className="pf-c-form__group"
+                id="emanspace-label"
               >
-                <input
-                  autoComplete="new-password"
-                  className="bx--text-input bx--text__input"
-                  disabled={false}
-                  id="namespace"
-                  onChange={[Function]}
-                  onClick={[Function]}
-                  placeholder={undefined}
-                  spellCheck={false}
-                  type="text"
-                  value=""
-                />
+                <div
+                  className="pf-c-form__group-control"
+                >
+                  <input
+                    aria-invalid={false}
+                    aria-label={null}
+                    className="pf-c-form-control"
+                    disabled={false}
+                    id="emanspace"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    onFocus={[Function]}
+                    placeholder={undefined}
+                    readOnly={false}
+                    required={false}
+                    type="text"
+                    value=""
+                  />
+                  
+                </div>
               </div>
             </div>
           </div>

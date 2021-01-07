@@ -2,7 +2,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { SkeletonText } from 'carbon-components-react'
+import { Skeleton } from '@patternfly/react-core'
 
 class ControlPanelSkeleton extends React.Component {
   static propTypes = {
@@ -27,7 +27,7 @@ class ControlPanelSkeleton extends React.Component {
           >
             {name}
           </label>
-          <SkeletonText id={controlId} />
+          <Skeleton id={controlId} />
         </div>
       </React.Fragment>
     )

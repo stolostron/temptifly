@@ -3,7 +3,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { Search } from 'carbon-components-react'
+import { SearchInput } from '@patternfly/react-core'
 import '../scss/editor-bar.scss'
 import {
   CloseIcon,
@@ -103,10 +103,14 @@ class EditorBar extends React.Component {
     this.props.handleEditorCommand(command)
   };
 
-  handleSearch = ({ target }) => {
-    const searchName = target.value || ''
+  handleSearch = (searchName) => {
     this.props.handleSearchChange(searchName)
     this.setState({ searchName })
+  };
+
+  handleClear = () => {
+    this.props.handleSearchChange('')
+    this.setState({ searchName: '' })
   };
 
   render() {
@@ -200,13 +204,13 @@ class EditorBar extends React.Component {
                 aria-label={searchTitle}
                 id={searchTitle}
               >
-                <Search
+                <SearchInput
                   id={`template-editor-search-${type}`}
-                  labelText=""
+                  value={searchName}
                   aria-label={searchTitle}
-                  placeHolderText={searchTitle}
-                  small={true}
+                  placeholder={searchTitle}
                   onChange={this.handleSearch}
+                  onClear={this.handleClear}
                 />
                 {nextButtons.map(button => {
                   const { command } = button

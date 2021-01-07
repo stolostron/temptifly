@@ -3,7 +3,7 @@
 import React from 'react'
 import { Query } from 'react-apollo'
 import PropTypes from 'prop-types'
-import { Notification } from 'carbon-components-react'
+import { Alert, AlertActionLink } from '@patternfly/react-core'
 import classNames from 'classnames'
 import ControlPanelAccordion from './ControlPanelAccordion'
 import ControlPanelTextInput from './ControlPanelTextInput'
@@ -15,9 +15,9 @@ import ControlPanelSingleSelect from './ControlPanelSingleSelect'
 import ControlPanelTreeSelect from './ControlPanelTreeSelect'
 import ControlPanelMultiSelect from './ControlPanelMultiSelect'
 import ControlPanelCards from './ControlPanelCards'
-import ControlPanelTable from './ControlPanelTable'
+//import ControlPanelTable from './ControlPanelTable'
 import ControlPanelLabels from './ControlPanelLabels'
-import ControlPanelPrompt from './ControlPanelPrompt'
+//import ControlPanelPrompt from './ControlPanelPrompt'
 import ControlPanelSkeleton from './ControlPanelSkeleton'
 import '../scss/control-panel.scss'
 import {
@@ -77,6 +77,7 @@ class ControlPanel extends React.Component {
     const { controlData, showEditor } = this.props
     const controlClasses = classNames({
       'creation-view-controls': true,
+      'pf-c-form': true,
       showEditor
     })
 
@@ -229,38 +230,7 @@ class ControlPanel extends React.Component {
 
   // if data for 'available' is fetched from server, use apollo component
   renderControlWithPrompt(id, type, control, grpId) {
-    const { prompts } = control
-    if (prompts) {
-      const { positionAboveControl } = prompts
-      if (positionAboveControl) {
-        return (
-          <React.Fragment key={id}>
-            {this.renderControlPrompt(control)}
-            {this.renderControl(id, type, control, grpId)}
-          </React.Fragment>
-        )
-      } else {
-        return (
-          <React.Fragment key={id}>
-            {this.renderControl(id, type, control, grpId)}
-            {this.renderControlPrompt(control)}
-          </React.Fragment>
-        )
-      }
-    }
     return this.renderControl(id, type, control, grpId)
-  }
-
-  renderControlPrompt(control) {
-    const { i18n, fetchData } = this.props
-    return (
-      <ControlPanelPrompt
-        control={control}
-        handleAddActive={items => this.handleAddActive(control, items)}
-        i18n={i18n}
-        fetchData={fetchData}
-      />
-    )
   }
 
   handleAddActive = (control, items) => {
@@ -283,7 +253,7 @@ class ControlPanel extends React.Component {
     ) {
       return null
     }
-    const controlId = `${id}${grpId}`
+    const controlId = `${id}${grpId}`.replace('name', 'eman').replace('address', 'sserdda')
     control.controlId = controlId
     if (!isLoaded && !['title', 'section', 'hidden'].includes(type)) {
       return (
@@ -392,16 +362,6 @@ class ControlPanel extends React.Component {
           fetchData={this.props.fetchData}
         />
       )
-    case 'table':
-      return (
-        <ControlPanelTable
-          key={controlId}
-          controlId={controlId}
-          control={control}
-          handleChange={this.handleControlChange.bind(this, control)}
-          i18n={i18n}
-        />
-      )
     case 'labels':
       return (
         <ControlPanelLabels
@@ -490,14 +450,14 @@ class ControlPanel extends React.Component {
     }
 
     // syncing values
-    if (syncWith) {
+    if (syncWith && control.groupControlData) {
       // whatever is typed into this control, also put in other control
       const syncControl = control.groupControlData.find(
         ({ id }) => id === syncWith
       )
       syncControl.active = `${control.active}${syncControl.syncedSuffix || ''}`
     }
-    if (syncedWith) {
+    if (syncedWith && control.groupControlData) {
       // if another control is synced with this control and
       // user is typing a value here directly, remove sync
       const syncedControl = control.groupControlData.find(
@@ -607,30 +567,25 @@ class ControlPanel extends React.Component {
               }, 0)
             }
           }
-          const handleKeyPress = e => {
-            if (e.key === 'Enter') {
-              handleClick()
-            }
+
+          let variant = 'success'
+          switch (kind) {
+          case 'error':
+            variant='danger'
           }
           return (
-            <div
-              id="notifications"
-              key={exception}
-              role="button"
-              onClick={handleClick}
-              tabIndex="0"
-              aria-label={exception}
-              onKeyDown={handleKeyPress}
-            >
-              <Notification
-                key={id}
-                title=""
-                className="persistent notification"
-                subtitle={exception}
-                kind={kind}
-              />
-            </div>
+            <Alert
+              key={id}
+              variant={variant}
+              title={exception}
+              actionLinks={
+                <React.Fragment>
+                  <AlertActionLink onClick={handleClick}>View details</AlertActionLink>
+                </React.Fragment>
+              }
+            />
           )
+
         }
       )
     }

@@ -3,7 +3,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { Tab, Tabs, Checkbox } from 'carbon-components-react'
+import { Checkbox } from '@patternfly/react-core'
 import '../scss/editor-header.scss'
 
 class EditorHeader extends React.Component {
@@ -49,27 +49,42 @@ class EditorHeader extends React.Component {
     )
   }
 
+  setTabsRef = ref => {
+    this.tabsRef = ref
+  };
+
   renderEditorTabs = otherYAMLTabs => {
     const { type = 'unknown', handleTabChange } = this.props
+
+    const onClick = (e, tab) => {
+      Array.from(this.tabsRef.children)
+        .forEach((child, inx)=>child.classList.toggle('tf--tabs__nav-item--selected', inx===tab))
+      handleTabChange(tab)
+    }
     return (
-      <Tabs selected={0} aria-label={'Select template'}>
-        <Tab
-          label={type}
-          key="main"
-          id="main"
-          onClick={handleTabChange.bind(this, 0)}
-        />
-        {otherYAMLTabs.map(({ id }, inx) => {
-          return (
-            <Tab
-              label={id}
-              key={id}
-              id={id}
-              onClick={handleTabChange.bind(this, inx + 1)}
-            />
-          )
-        })}
-      </Tabs>
+      <nav aria-label="Select template" className="tf--tabs" role="navigation">
+        <ul role="tablist" className="tf--tabs__nav" ref={this.setTabsRef}>
+          <li id="main" role="presentation" tabIndex="-1"
+            className="tf--tabs__nav-item tf--tabs__nav-item--selected"
+            onClick={(e)=>onClick(e, 0)}>
+            <a className="tf--tabs__nav-link"
+              href="#" role="tab" tabIndex="0" aria-selected="true">
+              {type}
+            </a>
+          </li>
+          {otherYAMLTabs.map(({ id }, inx) => {
+            return (
+              <li id={id} key={id} role="presentation" tabIndex="-1" className="tf--tabs__nav-item"
+                onClick={(e)=>onClick(e, inx+1)}>
+                <a className="tf--tabs__nav-link"
+                  href="#" role="tab" tabIndex="0" aria-selected="false">
+                  {id}
+                </a>
+              </li>
+            )
+          })}
+        </ul>
+      </nav>
     )
   };
 
@@ -78,11 +93,9 @@ class EditorHeader extends React.Component {
     return (
       <div className="creation-view-yaml-header-secrets">
         <Checkbox
+          aria-label="show-secrets"
           id="show-secrets"
-          className="checkbox"
-          hideLabel
-          labelText=""
-          checked={showSecrets}
+          isChecked={showSecrets}
           onChange={handleShowSecretChange}
         />
         <div>{i18n('editor.show.secrets')}</div>

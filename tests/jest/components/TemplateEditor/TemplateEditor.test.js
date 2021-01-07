@@ -52,11 +52,11 @@ describe('on control change function', () => {
     }
 
     wrapper
-      .find('#name')
+      .find('#eman')
       .at(0)
       .simulate('change', evt)
     wrapper
-      .find('#namespace')
+      .find('#emanspace')
       .at(0)
       .simulate('change', evt)
 

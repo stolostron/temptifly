@@ -2,8 +2,8 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { TextInput } from 'carbon-components-react'
-import Tooltip from '../components/Tooltip'
+import { FormGroup, TextInput, Popover } from '@patternfly/react-core'
+import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 
 class ControlPanelTextInput extends React.Component {
   static propTypes = {
@@ -29,6 +29,7 @@ class ControlPanelTextInput extends React.Component {
       type,
       active: value,
       exception,
+      tooltip,
       validation = {},
       disabled
     } = control
@@ -42,6 +43,7 @@ class ControlPanelTextInput extends React.Component {
       )
     }
 
+    const validated = exception ? 'error' : undefined
     return (
       <React.Fragment>
         <div
@@ -49,30 +51,44 @@ class ControlPanelTextInput extends React.Component {
           style={{ display: '' }}
           ref={this.setControlRef.bind(this, control)}
         >
-          <label
-            className="creation-view-controls-textbox-title"
-            htmlFor={controlId}
+          <FormGroup
+            id={`${controlId}-label`}
+            label={name}
+            isRequired={validation.required}
+            fieldId={controlId}
+            helperTextInvalid={exception}
+            validated={validated}
+            labelIcon={
+              /* istanbul ignore next */
+              tooltip ? (
+                <Popover
+                  id={`${controlId}-label-help-popover`}
+                  bodyContent={tooltip}
+                >
+                  <button
+                    id={`${controlId}-label-help-button`}
+                    aria-label="More info"
+                    onClick={(e) => e.preventDefault()}
+                    className="pf-c-form__group-label-help"
+                  >
+                    <HelpIcon noVerticalAlign />
+                  </button>
+                </Popover>
+              ) : (
+                <React.Fragment />
+              )
+            }
           >
-            {name}
-            {validation.required ? (
-              <div className="creation-view-controls-required">*</div>
-            ) : null}
-            <Tooltip control={control} i18n={i18n} />
-          </label>
-          <TextInput
-            id={controlId}
-            hideLabel
-            spellCheck={false}
-            disabled={disabled}
-            type={type}
-            autoComplete={'new-password'}
-            labelText=""
-            invalid={!!exception}
-            invalidText={exception}
-            placeholder={placeholder}
-            value={value || ''}
-            onChange={this.handleChange.bind(this, control)}
-          />
+            <TextInput
+              id={controlId}
+              isDisabled={disabled}
+              type={type}
+              placeholder={placeholder}
+              validated={validated}
+              value={value || ''}
+              onChange={this.handleChange.bind(this, control)}
+            />
+          </FormGroup>
         </div>
       </React.Fragment>
     )
@@ -80,7 +96,7 @@ class ControlPanelTextInput extends React.Component {
 
   handleChange(id, evt) {
     const { control, handleChange } = this.props
-    control.active = evt.target.value
+    control.active = evt
     handleChange(evt)
   }
 }

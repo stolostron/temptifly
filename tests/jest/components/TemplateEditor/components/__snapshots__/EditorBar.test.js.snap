@@ -122,72 +122,43 @@ exports[`EditorBar component renders as expected 1`] = `
           role="region"
         >
           <div
-            aria-labelledby="template-editor-search-undefined-label"
-            className="bx--search bx--search--sm"
-            role="search"
+            className="pf-c-search-input"
+            id="template-editor-search-undefined"
           >
-            <svg
-              alt=""
-              aria-label=""
-              className="bx--search-magnifier"
-              fill={undefined}
-              fillRule="evenodd"
-              height="16"
-              name={undefined}
-              role="img"
-              style={undefined}
-              viewBox="0 0 16 16"
-              width="16"
+            <span
+              className="pf-c-search-input__text"
             >
-              <title>
-                
-              </title>
-              <path
-                d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zm4.936-1.27l4.563 4.557-.707.708-4.563-4.558a6.5 6.5 0 1 1 .707-.707z"
-              />
-            </svg>
-            <label
-              className="bx--label"
-              htmlFor="template-editor-search-undefined"
-              id="template-editor-search-undefined-label"
-            >
-              
-            </label>
-            <input
-              aria-label={undefined}
-              className="bx--search-input"
-              id="template-editor-search-undefined"
-              onChange={[Function]}
-              placeholder=""
-              type="text"
-            />
-            <button
-              aria-label={undefined}
-              className="bx--search-close bx--search-close--hidden"
-              onClick={[Function]}
-              type="button"
-            >
-              <svg
-                alt="Provide a description that will be used as the title"
-                aria-label="Provide a description that will be used as the title"
-                className={undefined}
-                fill={undefined}
-                fillRule="evenodd"
-                height="16"
-                name={undefined}
-                role="img"
-                style={undefined}
-                viewBox="0 0 16 16"
-                width="16"
+              <span
+                className="pf-c-search-input__icon"
               >
-                <title>
-                  Provide a description that will be used as the title
-                </title>
-                <path
-                  d="M8 6.586L5.879 4.464 4.464 5.88 6.586 8l-2.122 2.121 1.415 1.415L8 9.414l2.121 2.122 1.415-1.415L9.414 8l2.122-2.121-1.415-1.415L8 6.586zM8 16A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"
-                />
-              </svg>
-            </button>
+                <svg
+                  aria-hidden={true}
+                  aria-labelledby={null}
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style={
+                    Object {
+                      "verticalAlign": "-0.125em",
+                    }
+                  }
+                  viewBox="0 0 512 512"
+                  width="1em"
+                >
+                  <path
+                    d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+                  />
+                </svg>
+              </span>
+              <input
+                aria-label="Search input"
+                className="pf-c-search-input__text-input"
+                onChange={[Function]}
+                placeholder={undefined}
+                value=""
+              />
+            </span>
+            
           </div>
           <div
             aria-label={undefined}
