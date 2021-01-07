@@ -115,15 +115,11 @@ module.exports = {
     // Don't bundle react or react-dom or patternfly
     react: {
       commonjs: 'react',
-      commonjs2: 'react',
-      amd: 'React',
-      root: 'React'
+      commonjs2: 'react'
     },
     'react-dom': {
       commonjs: 'react-dom',
-      commonjs2: 'react-dom',
-      amd: 'ReactDOM',
-      root: 'ReactDOM'
+      commonjs2: 'react-dom'
     },
     '@patternfly/react-core': {
       commonjs: '@patternfly/react-core',
