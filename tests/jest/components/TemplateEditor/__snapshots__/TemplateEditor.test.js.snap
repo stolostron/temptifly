@@ -21,12 +21,14 @@ exports[`TemplateEditor component renders as expected 1`] = `
           className="content"
         >
           <div
+            aria-label={undefined}
             className="creation-view-controls-title"
             id="main-"
             onClick={[Function]}
             onKeyPress={[Function]}
             role="button"
             tabIndex="0"
+            title={undefined}
           >
             <div
               className="creation-view-controls-note"
@@ -62,6 +64,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                     onBlur={[Function]}
                     onChange={[Function]}
                     onFocus={[Function]}
+                    placeholder={undefined}
                     readOnly={false}
                     required={false}
                     type="text"
@@ -95,6 +98,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                     onBlur={[Function]}
                     onChange={[Function]}
                     onFocus={[Function]}
+                    placeholder={undefined}
                     readOnly={false}
                     required={false}
                     type="text"
