@@ -108,10 +108,11 @@ module.exports = {
     alias: {
       'react': path.resolve(__dirname, './node_modules/react'),
       'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
+      '@patternfly/react-core': path.resolve(__dirname, './node_modules/@patternfly/react-core'),
     }
   },
   externals: {
-    // Don't bundle react or react-dom
+    // Don't bundle react or react-dom or patternfly
     react: {
       commonjs: 'react',
       commonjs2: 'react',
@@ -123,6 +124,11 @@ module.exports = {
       commonjs2: 'react-dom',
       amd: 'ReactDOM',
       root: 'ReactDOM'
+    },
+    '@patternfly/react-core': {
+      commonjs: '@patternfly/react-core',
+      commonjs2: '@patternfly/react-core',
     }
+
   }
 }
