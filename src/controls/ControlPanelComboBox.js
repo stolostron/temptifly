@@ -7,6 +7,7 @@ import classNames from 'classnames'
 import { FormGroup, Popover } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import TimesCircleIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
+import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon'
 import _ from 'lodash'
 
 class ControlPanelComboBox extends React.Component {
@@ -177,7 +178,6 @@ class ControlPanelComboBox extends React.Component {
     const items = currentAvailable.map((label, inx) => {
       return { label, id: inx }
     })
-    //const initialSelectedItem = items.find(item => item.label === active)
     const key = `${controlId}-${name}-${active}`
     const toggleClasses = classNames({
       'tf--list-box__menu-icon': true,
@@ -314,7 +314,7 @@ class ControlPanelComboBox extends React.Component {
                             onClick={this.clickSelect.bind(this, label)}
                             onKeyPress={this.pressSelect.bind(this, label)}
                           >
-                            {this.renderLabel(label, searchText)}
+                            {this.renderLabel(label, searchText, active)}
                           </div>
                         )
                       }
@@ -329,7 +329,7 @@ class ControlPanelComboBox extends React.Component {
     )
   }
 
-  renderLabel(label, searchText) {
+  renderLabel(label, searchText, active) {
     const inx =
       searchText &&
       searchText.length &&
@@ -348,7 +348,14 @@ class ControlPanelComboBox extends React.Component {
         </React.Fragment>
       )
     } else {
-      return <React.Fragment>{label}</React.Fragment>
+      return (
+        <React.Fragment>
+          {label}
+          {label===active && <span className="tf-select__menu-item-icon">
+            <CheckIcon aria-hidden />
+          </span>}
+        </React.Fragment>
+      )
     }
   }
 

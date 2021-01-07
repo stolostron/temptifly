@@ -104,6 +104,22 @@ $container-max-width-with-editor: 650px !default;
     background-color: #e0e0e0;
   }
 
+  .pf-c-form-control {
+    max-width: $control-max-width-with-editor;
+
+    &.input {
+      padding: 0;
+    }
+
+    .pf-c-combo-control {
+      width: 90%;
+      height: 100%;
+      border: none;
+      text-overflow: ellipsis;
+      padding-left: 6px;
+    }
+  }
+
   .pf-c-form__helper-text {
     max-width: $control-max-width-with-editor;
   }
@@ -365,6 +381,7 @@ $container-max-width-with-editor: 650px !default;
             height: 2rem;
             padding: 0 1rem;
             cursor: pointer;
+            position: relative;
 
             &:hover {
               background-color: rgba(85, 150, 230, 0.1);
@@ -380,6 +397,13 @@ $container-max-width-with-editor: 650px !default;
 
             &.tf--list-box__menu-branch {
               font-weight: 700;
+            }
+
+            .tf-select__menu-item-icon {
+              position: absolute;
+              right: 10px;
+              color: #06c;
+              font-size: 10px;
             }
           }
         }
@@ -938,18 +962,6 @@ $container-max-width-with-editor: 650px !default;
       .pf-c-select,
       .pf-c-form-control {
         max-width: $control-max-width-with-editor;
-
-        &.input {
-          padding: 0;
-        }
-
-        .pf-c-combo-control {
-          width: 90%;
-          height: 100%;
-          border: none;
-          text-overflow: ellipsis;
-          padding-left: 6px;
-        }
       }
     }
 
