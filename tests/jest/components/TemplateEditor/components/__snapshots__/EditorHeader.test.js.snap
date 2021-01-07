@@ -5,9 +5,7 @@ exports[`EditorHeader component renders as expected 1`] = `
   className="creation-view-yaml-header"
 >
   <div
-    aria-label={undefined}
     className="creation-view-yaml-header-toolbar"
-    id={undefined}
     role="region"
   />
 </div>

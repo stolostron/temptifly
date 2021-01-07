@@ -251,7 +251,7 @@ class ControlPanelComboBox extends React.Component {
                       aria-controls={key}
                       aria-expanded="true"
                       autoComplete="new-password"
-                      id={`${controlId}-${Math.random()}-input`}
+                      id={`${controlId}-input`}
                       placeholder={placeholder}
                       ref={this.setInputRef}
                       style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}

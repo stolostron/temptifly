@@ -253,7 +253,7 @@ class ControlPanel extends React.Component {
     ) {
       return null
     }
-    const controlId = `${id}${grpId}`
+    const controlId = `${id}${grpId}`.replace('name', 'eman').replace('address', 'sserdda')
     control.controlId = controlId
     if (!isLoaded && !['title', 'section', 'hidden'].includes(type)) {
       return (

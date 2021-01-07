@@ -15,14 +15,12 @@ exports[`ControlPanel component renders as expected 1`] = `
       className="content"
     >
       <div
-        aria-label={undefined}
         className="creation-view-controls-title"
         id="main-"
         onClick={[Function]}
         onKeyPress={[Function]}
         role="button"
         tabIndex="0"
-        title={undefined}
       >
         <div
           className="creation-view-controls-note"
@@ -39,13 +37,13 @@ exports[`ControlPanel component renders as expected 1`] = `
         >
           <label
             className="creation-view-controls-textbox-title"
-            htmlFor="name"
+            htmlFor="eman"
           >
             creation.app.name
           </label>
           <div
             className="pf-c-skeleton"
-            id="name"
+            id="eman"
           >
             <span
               className="pf-u-screen-reader"
@@ -57,13 +55,13 @@ exports[`ControlPanel component renders as expected 1`] = `
         >
           <label
             className="creation-view-controls-textbox-title"
-            htmlFor="namespace"
+            htmlFor="emanspace"
           >
             creation.app.namespace
           </label>
           <div
             className="pf-c-skeleton"
-            id="namespace"
+            id="emanspace"
           >
             <span
               className="pf-u-screen-reader"

@@ -21,14 +21,12 @@ exports[`TemplateEditor component renders as expected 1`] = `
           className="content"
         >
           <div
-            aria-label={undefined}
             className="creation-view-controls-title"
             id="main-"
             onClick={[Function]}
             onKeyPress={[Function]}
             role="button"
             tabIndex="0"
-            title={undefined}
           >
             <div
               className="creation-view-controls-note"
@@ -50,7 +48,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
             >
               <div
                 className="pf-c-form__group"
-                id="name-label"
+                id="eman-label"
               >
                 <div
                   className="pf-c-form__group-control"
@@ -60,11 +58,10 @@ exports[`TemplateEditor component renders as expected 1`] = `
                     aria-label={null}
                     className="pf-c-form-control"
                     disabled={false}
-                    id="name"
+                    id="eman"
                     onBlur={[Function]}
                     onChange={[Function]}
                     onFocus={[Function]}
-                    placeholder={undefined}
                     readOnly={false}
                     required={false}
                     type="text"
@@ -84,7 +81,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
             >
               <div
                 className="pf-c-form__group"
-                id="namespace-label"
+                id="emanspace-label"
               >
                 <div
                   className="pf-c-form__group-control"
@@ -94,11 +91,10 @@ exports[`TemplateEditor component renders as expected 1`] = `
                     aria-label={null}
                     className="pf-c-form-control"
                     disabled={false}
-                    id="namespace"
+                    id="emanspace"
                     onBlur={[Function]}
                     onChange={[Function]}
                     onFocus={[Function]}
-                    placeholder={undefined}
                     readOnly={false}
                     required={false}
                     type="text"
