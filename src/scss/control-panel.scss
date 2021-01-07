@@ -93,6 +93,17 @@ $container-max-width-with-editor: 650px !default;
     max-height: 0;
   }
 
+  .pf-c-skeleton {
+    max-width: $control-max-width-with-editor;
+    height: 40px;
+    background-color: #e0e0e0;
+  }
+
+  .pf-c-form-control.disabled,
+  .pf-c-form-control:disabled {
+    background-color: #e0e0e0;
+  }
+
   .pf-c-form__helper-text {
     max-width: $control-max-width-with-editor;
   }

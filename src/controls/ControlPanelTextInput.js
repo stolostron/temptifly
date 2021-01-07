@@ -81,7 +81,7 @@ class ControlPanelTextInput extends React.Component {
           >
             <TextInput
               id={controlId}
-              disabled={disabled}
+              isDisabled={disabled}
               type={type}
               placeholder={placeholder}
               validated={validated}

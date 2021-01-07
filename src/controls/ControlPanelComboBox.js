@@ -113,6 +113,7 @@ class ControlPanelComboBox extends React.Component {
       hasReplacements,
       isFailed,
       fetchAvailable,
+      disabled,
       tooltip
     } = control
     let { isLoading } = control
@@ -182,6 +183,11 @@ class ControlPanelComboBox extends React.Component {
       'tf--list-box__menu-icon': true,
       'tf--list-box__menu-icon--open': isOpen
     })
+    const inputClasses = classNames({
+      'pf-c-form-control': true,
+      'input': true,
+      'disabled': disabled
+    })
     const aria = isOpen ? 'Close menu' : 'Open menu'
     const validated = exception ? 'error' : undefined
     const value = searchText || active || ''
@@ -235,12 +241,13 @@ class ControlPanelComboBox extends React.Component {
                   onClick={this.clickToggle.bind(this)}
                   onKeyPress={this.pressToggle.bind(this)}
                 >
-                  <div className="pf-c-form-control input">
+                  <div className={inputClasses}>
                     <input
                       className="pf-c-combo-control"
                       aria-label="ListBox input field"
                       spellCheck="false"
                       role="combobox"
+                      disabled={disabled}
                       aria-controls={key}
                       aria-expanded="true"
                       autoComplete="new-password"
@@ -256,7 +263,7 @@ class ControlPanelComboBox extends React.Component {
                       }
                     />
                   </div>
-                  {(searchText || active) && <div
+                  {!disabled && (searchText || active) && <div
                     role="button"
                     className="tf--list-box__selection"
                     tabIndex="0"
@@ -267,7 +274,7 @@ class ControlPanelComboBox extends React.Component {
                   >
                     <TimesCircleIcon aria-hidden />
                   </div>}
-                  <div
+                  {!disabled && <div
                     role="button"
                     tabIndex="0"
                     className={toggleClasses}
@@ -287,9 +294,9 @@ class ControlPanelComboBox extends React.Component {
                       <title>Close menu</title>
                       <path d="M0 0l5 4.998L10 0z" />
                     </svg>
-                  </div>
+                  </div>}
                 </div>
-                {isOpen && (
+                {!disabled && isOpen && (
                   <div className="tf--list-box__menu" key={key} id={key} ref={this.setMenuRef} >
                     {items.map(
                       ({ label, id }) => {

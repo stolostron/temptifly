@@ -216,7 +216,7 @@ class ControlPanelTreeSelect extends React.Component {
 
   render() {
     const { controlId, control } = this.props
-    const { name, availableMap = {}, validation={}, exception, tooltip } = control
+    const { name, availableMap = {}, validation={}, exception, disabled, tooltip } = control
     const {
       isOpen,
       active,
@@ -240,6 +240,11 @@ class ControlPanelTreeSelect extends React.Component {
       })
       .join('-')}`
     const validated = exception ? 'error' : undefined
+    const inputClasses = classNames({
+      'pf-c-form-control': true,
+      'input': true,
+      'disabled': disabled
+    })
     return (
       <React.Fragment>
         <div className="creation-view-controls-treeselect">
@@ -280,7 +285,7 @@ class ControlPanelTreeSelect extends React.Component {
               >
                 <div
                   role="button"
-                  className=""
+                  className={inputClasses}
                   tabIndex="0"
                   type="button"
                   aria-label={aria}
@@ -297,6 +302,7 @@ class ControlPanelTreeSelect extends React.Component {
                     spellCheck="false"
                     role="combobox"
                     aria-controls={key}
+                    disabled={disabled}
                     aria-expanded="true"
                     autoComplete="new-password"
                     id={`${controlId}-input`}
@@ -311,7 +317,7 @@ class ControlPanelTreeSelect extends React.Component {
                       this.setState({ searchText: evt.currentTarget.value })
                     }
                   />
-                  <div
+                  {!disabled && <div
                     role="button"
                     className="tf--list-box__selection"
                     tabIndex="0"
@@ -321,8 +327,8 @@ class ControlPanelTreeSelect extends React.Component {
                     onKeyPress={this.pressClear.bind(this)}
                   >
                     <TimesCircleIcon aria-hidden />
-                  </div>
-                  <div
+                  </div>}
+                  {!disabled &&<div
                     role="button"
                     tabIndex="0"
                     className={toggleClasses}
@@ -342,9 +348,9 @@ class ControlPanelTreeSelect extends React.Component {
                       <title>Close menu</title>
                       <path d="M0 0l5 4.998L10 0z" />
                     </svg>
-                  </div>
+                  </div>}
                 </div>
-                {isOpen && (
+                {!disabled && isOpen && (
                   <div className="tf--list-box__menu" key={key} id={key}  ref={this.setMenuRef}>
                     {currentAvailable.map(
                       ({ branch, instance, indent = 0 }, inx) => {

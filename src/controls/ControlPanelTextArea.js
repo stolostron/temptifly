@@ -81,7 +81,7 @@ class ControlPanelTextArea extends React.Component {
           >
             <TextArea
               id={controlId}
-              disabled={disabled}
+              isDisabled={disabled}
               type={type}
               placeholder={placeholder}
               validated={validated}

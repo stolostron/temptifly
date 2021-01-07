@@ -21,7 +21,10 @@ class Tooltip extends React.PureComponent {
         <button
           id={`${controlId}-label-help-button`}
           aria-label="More info"
-          onClick={(e) => e.preventDefault()}
+          onClick={e => {
+            e.preventDefault()
+            e.stopPropagation()
+          }}
           className="pf-c-form__group-label-help"
         >
           <HelpIcon noVerticalAlign />
