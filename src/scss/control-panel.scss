@@ -868,6 +868,7 @@ $container-max-width-with-editor: 650px !default;
         }
       }
 
+      .pf-c-select__toggle,
       .pf-c-form-control,
       .bx--list-box__field,
       .bx--text-input,
@@ -1019,7 +1020,7 @@ $container-max-width-with-editor: 650px !default;
     .tf--grid-container.small {
       .tf--grid {
         .tf--providers-container.tf--row {
-          max-width: $control-max-width-with-editor;
+          max-width: 800px;
         }
       }
 
