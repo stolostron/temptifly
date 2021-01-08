@@ -5,7 +5,7 @@ exports[`ControlPanel component renders as expected 1`] = `
   className="creation-view-controls-container"
 >
   <div
-    className="creation-view-controls showEditor"
+    className="creation-view-controls pf-c-form showEditor"
     onScroll={[Function]}
   >
     <div
@@ -39,38 +39,36 @@ exports[`ControlPanel component renders as expected 1`] = `
         >
           <label
             className="creation-view-controls-textbox-title"
-            htmlFor="name"
+            htmlFor="eman"
           >
             creation.app.name
           </label>
-          <p
-            className="bx--skeleton__text"
-            id="name"
-            style={
-              Object {
-                "width": "100%",
-              }
-            }
-          />
+          <div
+            className="pf-c-skeleton"
+            id="eman"
+          >
+            <span
+              className="pf-u-screen-reader"
+            />
+          </div>
         </div>
         <div
           className="creation-view-controls-skeleton"
         >
           <label
             className="creation-view-controls-textbox-title"
-            htmlFor="namespace"
+            htmlFor="emanspace"
           >
             creation.app.namespace
           </label>
-          <p
-            className="bx--skeleton__text"
-            id="namespace"
-            style={
-              Object {
-                "width": "100%",
-              }
-            }
-          />
+          <div
+            className="pf-c-skeleton"
+            id="emanspace"
+          >
+            <span
+              className="pf-u-screen-reader"
+            />
+          </div>
         </div>
       </div>
     </div>

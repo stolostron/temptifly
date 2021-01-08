@@ -59,7 +59,7 @@ class ControlPanelCards extends React.Component {
     let { active } = control
     active = active||[]
     const gridClasses = classNames({
-      'mcx--grid-container': true,
+      'tf--grid-container': true,
       small: showEditor
     })
     return (
@@ -69,9 +69,9 @@ class ControlPanelCards extends React.Component {
           ref={this.setControlRef.bind(this, control)}
         >
           <div className={gridClasses}>
-            <div className={'bx--grid'}>
+            <div className={'tf--grid'}>
               {this.renderTitle(control)}
-              <div className={'mcx--providers-container bx--row'}>
+              <div className={'tf--providers-container tf--row'}>
                 {available
                   .filter(id => {
                     return (
@@ -158,12 +158,12 @@ const ControlPanelCard = ({
 }) => {
   const { disabled, logo, title, tooltip, learnMore } = choice
   const cardClasses = classNames({
-    'mcx--create-cluster-page__provider-card': true,
-    'mcx--create-cluster-page__provider-card-isSelected': selected,
-    'mcx--create-cluster-page__provider-card-isDisabled': disabled
+    'tf--create-cluster-page__provider-card': true,
+    'tf--create-cluster-page__provider-card-isSelected': selected,
+    'tf--create-cluster-page__provider-card-isDisabled': disabled
   })
-  const wrapperClasses = classNames('mcx--provider-card', {
-    'mcx--provider-card-isDisabled': disabled
+  const wrapperClasses = classNames('tf--provider-card', {
+    'tf--provider-card-isDisabled': disabled
   })
   const handleClick = evt => {
     if (!disabled) {
@@ -195,10 +195,10 @@ const ControlPanelCard = ({
       aria-label={title}
       onKeyDown={handleClick}
     >
-      <div className={'mcx--provider-card-container'}>
+      <div className={'tf--provider-card-container'}>
         <div className={cardClasses}>
           {image}
-          <p className={'mcx--create-cluster-page__provider-card-title'}>
+          <p className={'tf--create-cluster-page__provider-card-title'}>
             {title1}
             <span>{title2}</span>
           </p>

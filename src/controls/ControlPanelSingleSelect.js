@@ -3,11 +3,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  DropdownV2,
-  DropdownSkeleton,
-  InlineLoading
-} from 'carbon-components-react'
-import Tooltip from '../components/Tooltip'
+  FormGroup,
+  Popover,
+  Select,
+  SelectOption,
+  SelectVariant,
+  Spinner } from '@patternfly/react-core'
+import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import _ from 'lodash'
 
 class ControlPanelSingleSelect extends React.Component {
@@ -20,7 +22,9 @@ class ControlPanelSingleSelect extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      open: false
+    }
   }
 
   setControlRef = (control, ref) => {
@@ -28,27 +32,39 @@ class ControlPanelSingleSelect extends React.Component {
   };
 
   render() {
-    const { controlId, i18n, control } = this.props
+    const { open } = this.state
+    const { controlId, i18n, control, handleChange } = this.props
     const {
       name,
-      placeholder = '',
+      active='',
       available = [],
       validation = {},
+      exception,
+      tooltip,
+      disabled,
       isLoading,
       isFailed
     } = control
-    let { active } = control
-    if (!active) {
+    let { placeholder='' } = control
+    if (!placeholder) {
       if (isLoading) {
-        active = i18n(
+        placeholder = i18n(
           _.get(control, 'fetchAvailable.loadingDesc', 'resource.loading'))
       } else if (isFailed) {
-        active = i18n('resource.error')
+        placeholder = i18n('resource.error')
       } else if (available.length === 0) {
-        active = i18n(
+        placeholder = i18n(
           _.get(control, 'fetchAvailable.emptyDesc', 'resource.none'))
       }
     }
+    const setOpen = (open) => {
+      this.setState({open})
+    }
+    const onChange = (value) => {
+      control.active = value
+      handleChange()
+    }
+    const validated = exception ? 'error' : undefined
     const key = `${controlId}-${name}-${available.join('-')}`
     return (
       <React.Fragment>
@@ -56,37 +72,73 @@ class ControlPanelSingleSelect extends React.Component {
           className="creation-view-controls-singleselect"
           ref={this.setControlRef.bind(this, control)}
         >
-          <div className="creation-view-controls-multiselect-title">
-            {name}
-            {validation.required ? (
-              <div className="creation-view-controls-required">*</div>
-            ) : null}
-            <Tooltip control={control} i18n={i18n} />
-          </div>
-          {isLoading ? (
-            <div className="creation-view-controls-singleselect-loading">
-              <DropdownSkeleton />
-              <InlineLoading description={active} />
-            </div>
-          ) : (
-            <div id={controlId}>
-              <DropdownV2
+          <FormGroup
+            id={`${controlId}-label`}
+            label={name}
+            isRequired={validation.required}
+            fieldId={controlId}
+            helperTextInvalid={exception}
+            validated={validated}
+            labelIcon={
+              /* istanbul ignore next */
+              tooltip ? (
+                <Popover
+                  id={`${controlId}-label-help-popover`}
+                  bodyContent={tooltip}
+                >
+                  <button
+                    id={`${controlId}-label-help-button`}
+                    aria-label="More info"
+                    onClick={(e) => e.preventDefault()}
+                    className="pf-c-form__group-label-help"
+                  >
+                    <HelpIcon noVerticalAlign />
+                  </button>
+                </Popover>
+              ) : (
+                <React.Fragment />
+              )
+            }
+          >
+            {isLoading ? (
+              <div className="creation-view-controls-singleselect-loading">
+                <Spinner size="md" />
+                <div>{active}</div>
+              </div>
+            ) : (
+              <Select
+                id={controlId}
                 key={key}
-                items={available}
-                label={active || placeholder}
-                onChange={this.handleChange.bind(this, control)}
-              />
-            </div>
-          )}
+                aria-labelledby={`${controlId}-label`}
+                spellCheck={false}
+                autoComplete="new-password"
+                isOpen={open}
+                onToggle={() => {setOpen(!open)}}
+                variant={SelectVariant.typeahead}
+                onSelect={(_event, value) => {
+                  onChange(value)
+                  setOpen(false)
+                }}
+                selections={active}
+                onClear={() => {onChange(undefined)}}
+                placeholderText={placeholder}
+                isDisabled={disabled}
+              >
+                {available.map((item, inx)=>{
+                  /* eslint-disable-next-line react/no-array-index-key */
+                  return <SelectOption key={inx} value={item} />
+                })}
+              </Select>
+            )}
+            {validated === 'error' ? (
+              <div style={{ borderTop: '1.75px solid red', paddingBottom: '6px', maxWidth: '800px' }}></div>
+            ) : (
+              <React.Fragment />
+            )}
+          </FormGroup>
         </div>
       </React.Fragment>
     )
-  }
-
-  handleChange(id, evt) {
-    const { control, handleChange } = this.props
-    control.active = evt.selectedItem
-    handleChange(evt)
   }
 }
 

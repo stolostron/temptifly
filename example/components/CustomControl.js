@@ -2,7 +2,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Checkbox } from 'carbon-components-react'
+import { Checkbox } from '@patternfly/react-core'
 import {
   getSourcePath, removeVs
 } from '../../src/utils/source-utils' //'temptifly'

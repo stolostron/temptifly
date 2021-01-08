@@ -9,10 +9,9 @@ import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import {
   Button,
-  Notification,
-  InlineNotification,
-  ToggleSmall
-} from 'carbon-components-react'
+  Switch,
+  Alert
+} from '@patternfly/react-core'
 import {
   initializeControls,
   generateSource,
@@ -226,7 +225,6 @@ export default class TemplateEditor extends React.Component {
       previouslySelectedCards: [],
       notifications: [],
       otherYAMLTabs: [],
-      updateMessage: '',
       /* eslint-disable-next-line react/no-unused-state */
       hasFormExceptions: false,
       isFinalValidate: false,
@@ -324,11 +322,9 @@ export default class TemplateEditor extends React.Component {
 
     if (isLoaded && isFailed) {
       return (
-        <Notification
-          title=""
-          className="overview-notification"
-          kind="error"
-          subtitle={i18n('overview.error.default')}
+        <Alert
+          variant={'danger'}
+          title={i18n('overview.error.default')}
         />
       )
     }
@@ -717,8 +713,6 @@ export default class TemplateEditor extends React.Component {
       hasUndo,
       hasRedo,
       exceptions,
-      updateMessage,
-      updateMsgKind,
       otherYAMLTabs,
       showSecrets,
       i18n
@@ -745,22 +739,6 @@ export default class TemplateEditor extends React.Component {
             i18n={this.props.i18n}
           />
         </EditorHeader>
-        {updateMessage && (
-          <div className="creation-view-yaml-notification">
-            <InlineNotification
-              key={updateMessage}
-              kind={updateMsgKind}
-              title={
-                updateMsgKind === 'error'
-                  ? i18n(`error.create.${type}`)
-                  : i18n(`success.create.${type}.check`)
-              }
-              iconDescription=""
-              subtitle={updateMessage}
-              onCloseButtonClick={this.handleUpdateMessageClosed}
-            />
-          </div>
-        )}
         {this.renderEditors()}
       </div>
     )
@@ -950,6 +928,12 @@ export default class TemplateEditor extends React.Component {
       } else {
         this.selections = null
         this.selectionIndex = -1
+        editor.setSelections([{
+          positionColumn: 0,
+          positionLineNumber: 0,
+          selectionStartColumn: 0,
+          selectionStartLineNumber: 0
+        }])
       }
       this.nameSearch = searchName
       this.nameSearchMode = searchName.length > 0
@@ -1047,8 +1031,6 @@ export default class TemplateEditor extends React.Component {
 
     return templateYAML // for jest test
   };
-
-  handleUpdateMessageClosed = () => this.setState({ updateMessage: '' });
 
   getResourceJSON() {
     const { templateYAML, controlData, otherYAMLTabs, editStack, i18n } = this.state
@@ -1169,22 +1151,16 @@ export default class TemplateEditor extends React.Component {
           this.setState({ showEditor: !showEditor })
         }
         this.renderedPortals = true
-        const label = showEditor
-          ? (i18n ? i18n('edit.yaml.on') : 'Show Yaml')
-          : (i18n ? i18n('edit.yaml.off') : 'Hide Yaml')
         return ReactDOM.createPortal(
           <div className="edit-template-switch">
-            <ToggleSmall
+            <Switch
               id="edit-yaml"
               key={`is${showEditor}`}
-              ariaLabel={label}
-              defaultToggled={showEditor}
-              onChange={() => {}}
-              onToggle={handleToggle}
+              isChecked={showEditor}
+              label={i18n ? i18n('edit.yaml.on') : 'Show Yaml'}
+              labelOff={i18n ? i18n('edit.yaml.off') : 'Hide Yaml'}
+              onChange={handleToggle}
             />
-            <div className="switch-label">
-              {label}
-            </div>
           </div>,
           portal
         )
@@ -1214,8 +1190,8 @@ export default class TemplateEditor extends React.Component {
         <Button
           id={createBtn}
           onClick={this.handleCreateResource.bind(this)}
-          kind={'primary'}
-          disabled={disableButton}
+          variant={'primary'}
+          isDisabled={disableButton}
         >
           {label}
         </Button>
@@ -1254,7 +1230,7 @@ export default class TemplateEditor extends React.Component {
       if (portal) {
         const { cancelCreate } = createControl
         return ReactDOM.createPortal(
-          <Button id={cancelBtn} onClick={cancelCreate} kind={'secondary'}>
+          <Button id={cancelBtn} onClick={cancelCreate} variant={'secondary'}>
             {i18n ? i18n('button.cancel') : 'Cancel'}
           </Button>,
           portal
@@ -1288,7 +1264,6 @@ export default class TemplateEditor extends React.Component {
       previouslySelectedCards: [],
       notifications: [],
       otherYAMLTabs,
-      updateMessage: '',
       hasUndo: false,
       hasRedo: false,
       isFinalValidate: false,

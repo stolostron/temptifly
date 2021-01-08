@@ -2,8 +2,8 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Icon, Tag, TextInput } from 'carbon-components-react'
-import Tooltip from '../components/Tooltip'
+import { FormGroup, TextInput, Label, Popover } from '@patternfly/react-core'
+import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import _ from 'lodash'
 
 export const DNS_LABEL = '[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?'
@@ -27,60 +27,69 @@ class ControlPanelLabels extends React.Component {
     super(props)
     this.state = {
       value: '',
-      invalid: false,
       invalidText: ''
     }
   }
 
   render() {
     const { controlId, i18n, control } = this.props
-    const { name, active = [] } = control
+    const { name, active = [], tooltip, validation={} } = control
     const formatted = active.map(({ key, value: v }) => `${key}=${v}`)
-    const { value, invalid, invalidText } = this.state
+    const { value, invalidText } = this.state
+    const validated = invalidText ? 'error' : undefined
     return (
       <React.Fragment>
         <div className="creation-view-controls-labels">
-          <div className="creation-view-controls-labels-title">
-            {name}
-            <Tooltip control={control} i18n={i18n} />
-          </div>
-          <div className="creation-view-controls-labels-container">
-            {formatted.map((label, inx) => {
-              return (
-                <Tag key={label} type="custom">
-                  {label}
-                  <Icon
-                    className="closeIcon"
-                    description={i18n('delete.label')}
-                    name="icon--close"
-                    onClick={this.handleDelete.bind(this, inx)}
-                  />
-                </Tag>
+          <FormGroup
+            id={`${controlId}-label`}
+            label={name}
+            isRequired={validation.required}
+            fieldId={controlId}
+            helperTextInvalid={invalidText}
+            validated={validated}
+            labelIcon={
+              /* istanbul ignore next */
+              tooltip ? (
+                <Popover
+                  id={`${controlId}-label-help-popover`}
+                  bodyContent={tooltip}
+                >
+                  <button
+                    id={`${controlId}-label-help-button`}
+                    aria-label="More info"
+                    onClick={(e) => e.preventDefault()}
+                    className="pf-c-form__group-label-help"
+                  >
+                    <HelpIcon noVerticalAlign />
+                  </button>
+                </Popover>
+              ) : (
+                <React.Fragment />
               )
-            })}
-            <div className="creation-view-controls-labels-edit-container">
-              <TextInput
-                id={controlId}
-                hideLabel
-                labelText=""
-                invalid={invalid}
-                invalidText={invalidText}
-                placeholder={i18n('enter.add.label')}
-                value={value}
-                onBlur={this.handleBlur.bind(this)}
-                onKeyDown={this.handleKeyDown.bind(this)}
-                onChange={this.handleChange.bind(this)}
-              />
-              {value && (
-                <Icon
-                  className="closeIcon"
-                  description={i18n('cancel.label.create')}
-                  name="icon--close"
-                  onClick={this.cancelLabel.bind(this)}
+            }
+          >
+
+            <div className="creation-view-controls-labels-container">
+              {formatted.map((label, inx) => {
+                return (
+                  <Label key={label} onClose={this.handleDelete.bind(this, inx)}>
+                    {label}
+                  </Label>
+                )
+              })}
+              <div className="creation-view-controls-labels-edit-container">
+                <TextInput
+                  id={controlId}
+                  placeholder={i18n('enter.add.label')}
+                  validated={validated}
+                  value={value}
+                  onBlur={this.handleBlur.bind(this)}
+                  onKeyDown={this.handleKeyDown.bind(this)}
+                  onChange={this.handleChange.bind(this)}
                 />
-              )}
+              </div>
             </div>
-          </div>
+          </FormGroup>
         </div>
       </React.Fragment>
     )
@@ -93,10 +102,9 @@ class ControlPanelLabels extends React.Component {
     handleChange(control)
   }
 
-  handleChange(event) {
+  handleChange(value) {
     const { control, i18n } = this.props
     const { active = [] } = control
-    let value = event.target.value
     if (value === ',') {
       value = ''
     }
@@ -114,7 +122,7 @@ class ControlPanelLabels extends React.Component {
           [match[KEY_CAPTURE_GROUP_INDEX]])
       }
     }
-    this.setState({ value, invalid, invalidText })
+    this.setState({ value, invalidText })
   }
 
   handleKeyDown(event) {

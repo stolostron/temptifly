@@ -3,8 +3,8 @@
 import React from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
-import { Tag } from 'carbon-components-react'
-import Tooltip from '../components/Tooltip'
+import { Badge, Popover } from '@patternfly/react-core'
+import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import _ from 'lodash'
 import {
   CaretIcon,
@@ -32,6 +32,7 @@ class ControlPanelAccordion extends React.Component {
     const {
       title,
       subtitle,
+      tooltip,
       note,
       overline,
       numbered,
@@ -44,7 +45,6 @@ class ControlPanelAccordion extends React.Component {
     if (typeof info === 'function') {
       info = info(control, controlData, i18n)
     }
-
     const handleCollapse = () => {
       if (control.sectionRef && collapsable) {
         const isCollapsed = control.sectionRef.classList.contains('collapsed')
@@ -127,7 +127,24 @@ class ControlPanelAccordion extends React.Component {
               )}
               <div className="creation-view-controls-title-main-name">
                 {label}
-                {!info && <Tooltip control={control} i18n={i18n} />}
+                {!info && tooltip &&
+                  <Popover
+                    id={`${controlId}-label-help-popover`}
+                    bodyContent={tooltip}
+                  >
+                    <button
+                      id={`${controlId}-label-help-button`}
+                      aria-label="More info"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                      }}
+                      className="pf-c-form__group-label-help"
+                    >
+                      <HelpIcon noVerticalAlign />
+                    </button>
+                  </Popover>
+                }
                 {techPreview && (
                   <div variant="primary" className="techPreviewTag">
                     {i18n('creation.app.section.techPreview')}
@@ -136,14 +153,14 @@ class ControlPanelAccordion extends React.Component {
                 <span className="creation-view-controls-title-main-summary">
                   {summary.map((tag, inx) => {
                     return (
-                      <Tag
+                      <Badge
                         /* eslint-disable-next-line react/no-array-index-key */
                         key={`${id}-${tag}-${inx}`}
                         className="tag"
                         type="custom"
                       >
                         {tag}
-                      </Tag>
+                      </Badge>
                     )
                   })}
                 </span>

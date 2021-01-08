@@ -1,4 +1,5 @@
 @import "./control-panel-cards.scss";
+@import "./control-panel-controls.scss";
 
 $color__blue-51: #3d70b2 !default;
 $color__navy-gray-6: #5a6872 !default;
@@ -6,6 +7,7 @@ $color__navy-gray-8: #dfe6eb !default;
 $acm_background_color: #f0f0f0 !default;
 $control-max-width-with-editor: 600px !default;
 $control-max-width-without-editor: 600px !default;
+$container-max-width-with-editor: 650px !default;
 
 @keyframes flash {
   0% {
@@ -41,6 +43,9 @@ $control-max-width-without-editor: 600px !default;
   }
 
   .creation-view-controls {
+    display: flex;
+    flex-direction: column;
+
     .content {
       margin-left: 26px;
     }
@@ -66,6 +71,7 @@ $control-max-width-without-editor: 600px !default;
       padding: 20px;
       max-width: 700px;
 
+      .pf-c-form-control,
       .bx--list-box__field,
       .bx--text-input,
       .bx--list-box,
@@ -87,6 +93,37 @@ $control-max-width-without-editor: 600px !default;
     max-height: 0;
   }
 
+  .pf-c-skeleton {
+    max-width: $control-max-width-with-editor;
+    height: 40px;
+    background-color: #e0e0e0;
+  }
+
+  .pf-c-form-control.disabled,
+  .pf-c-form-control:disabled {
+    background-color: #e0e0e0;
+  }
+
+  .pf-c-form-control {
+    max-width: $control-max-width-with-editor;
+
+    &.input {
+      padding: 0;
+    }
+
+    .pf-c-combo-control {
+      width: 90%;
+      height: 100%;
+      border: none;
+      text-overflow: ellipsis;
+      padding-left: 6px;
+    }
+  }
+
+  .pf-c-form__helper-text {
+    max-width: $control-max-width-with-editor;
+  }
+
   .bx--tooltip--icon__top:focus {
     box-shadow: none;
     outline: none;
@@ -101,6 +138,14 @@ $control-max-width-without-editor: 600px !default;
 
   .bx--inline-notification {
     cursor: pointer;
+  }
+
+  .pf-c-alert {
+    max-width: 1000px;
+
+    h4 {
+      margin: 0;
+    }
   }
 
   .bx--tooltip--icon__top:after,
@@ -167,6 +212,7 @@ $control-max-width-without-editor: 600px !default;
         display: flex;
         align-items: center;
         position: relative;
+        line-height: 28px;
 
         &.subtitle {
           color: $color__navy-gray-6;
@@ -188,7 +234,7 @@ $control-max-width-without-editor: 600px !default;
         }
 
         &-name {
-          height: 26px;
+          height: 32px;
           white-space: nowrap;
           max-width: 600px;
           overflow: hidden;
@@ -259,13 +305,18 @@ $control-max-width-without-editor: 600px !default;
     }
 
     &-singleselect,
+    &-combobox,
     &-treeselect {
       &-loading {
         position: relative;
+        background-color: white;
+        padding: 5px 8px 5px 30px;
+        max-width: $control-max-width-with-editor;
+        border-bottom: 1px solid #8a8d90;
 
-        .bx--inline-loading {
+        .pf-c-spinner {
           position: absolute;
-          top: 4px;
+          top: 6px;
           left: 4px;
         }
 
@@ -274,39 +325,87 @@ $control-max-width-without-editor: 600px !default;
         }
       }
 
-      .bx--list-box {
-        .bx--list-box__field {
-          span.bx--list-box__label {
-            color: $color__navy-gray-6;
-            text-overflow: ellipsis;
+      .tf--list-box {
+        position: relative;
+        box-shadow: 0 1px 0 0 #5a6872;
+        cursor: pointer;
+        width: $control-max-width-with-editor;
+        max-width: $control-max-width-with-editor;
+
+        .tf--list-box__selection {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          height: 100%;
+          right: 1.625rem;
+          padding: 0 1rem;
+          cursor: pointer;
+
+          svg {
+            height: 100%;
           }
         }
 
-        .bx--text-input::placeholder {
-          color: $color__navy-gray-6;
+        .tf--list-box__menu-icon {
+          position: absolute;
+          top: 0;
+          right: 0;
+          padding: 0 1rem;
+          height: 100%;
+          cursor: pointer;
+
+          svg {
+            height: 100%;
+          }
         }
-      }
-
-      .bx--list-box__menu-item {
-        white-space: pre;
-
-        .bx--text-input {
-          cursor: pointer !important;
+        .tf--list-box__menu-icon--open {
+          transform: rotate(180deg);
         }
 
-        b {
-          color: black;
-          font-weight: bold;
-          font-size: 14px;
-          text-indent: 0px;
-        }
-      }
-    }
+        .tf--list-box__menu {
+          box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.1);
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 2.5rem;
+          width: 100%;
+          overflow-y: auto;
+          background-color: #fff;
+          max-height: 14rem;
+          z-index: 500;
+          cursor: pointer;
 
-    &-textarea {
-      .bx--form-item {
-        textarea {
-          background-color: white;
+          .tf--list-box__menu-item {
+            display: flex;
+            align-items: center;
+            height: 2rem;
+            padding: 0 1rem;
+            cursor: pointer;
+            position: relative;
+
+            &:hover {
+              background-color: rgba(85, 150, 230, 0.1);
+              outline: 1px solid transparent;
+            }
+
+            b {
+              color: black;
+              font-weight: bold;
+              font-size: 16px;
+              text-indent: 0px;
+            }
+
+            &.tf--list-box__menu-branch {
+              font-weight: 700;
+            }
+
+            .tf-select__menu-item-icon {
+              position: absolute;
+              right: 10px;
+              color: #06c;
+              font-size: 10px;
+            }
+          }
         }
       }
     }
@@ -330,9 +429,17 @@ $control-max-width-without-editor: 600px !default;
       }
     }
 
+    &-textarea {
+      .bx--form-item {
+        textarea {
+          background-color: white;
+        }
+      }
+    }
+
     &-add-value-container {
       display: flex;
-      max-width: 600px;
+      max-width: $control-max-width-with-editor;
       margin: 20px 0 24px 20px;
 
       &.bottom-right {
@@ -417,6 +524,7 @@ $control-max-width-without-editor: 600px !default;
         margin-left: 16px;
       }
 
+      .pf-c-select,
       .bx--list-box {
         max-width: $control-max-width-without-editor;
         background-color: white;
@@ -539,7 +647,7 @@ $control-max-width-without-editor: 600px !default;
       }
 
       &-container {
-        max-width: 600px;
+        max-width: $control-max-width-with-editor;
         min-height: 40px;
         background-color: white;
         box-shadow: 0 1px 0 0 #5a6872;
@@ -572,6 +680,7 @@ $control-max-width-without-editor: 600px !default;
       &-edit-container {
         position: relative;
         width: 100%;
+        margin-top: 10px;
 
         .closeIcon {
           cursor: pointer;
@@ -586,6 +695,7 @@ $control-max-width-without-editor: 600px !default;
     &-textbox,
     &-multiselect,
     &-singleselect,
+    &-combobox,
     &-treeselect,
     &-select,
     &-textarea,
@@ -611,7 +721,7 @@ $control-max-width-without-editor: 600px !default;
       }
 
       .bx--number {
-        width: 600px;
+        width: $control-max-width-with-editor;
 
         .bx--number__controls {
           top: 1.1rem;
@@ -622,11 +732,17 @@ $control-max-width-without-editor: 600px !default;
         height: 2.4rem;
       }
 
+      .pf-c-select,
       .bx--list-box__field,
       .bx--text-input,
       .bx--list-box {
         width: $control-max-width-without-editor;
         background-color: white;
+
+        .pf-c-select__menu {
+          padding-left: 0;
+          margin-left: 0;
+        }
       }
 
       .bx--list-box {
@@ -673,7 +789,7 @@ $control-max-width-without-editor: 600px !default;
     }
 
     &-treeselect {
-      .bx--list-box__menu-branch {
+      .tf--list-box__menu-branch {
         font-weight: bold;
         text-decoration: none;
 
@@ -726,6 +842,10 @@ $control-max-width-without-editor: 600px !default;
       font-size: 0.875rem;
       position: relative;
 
+      .pf-c-form__group-label {
+        padding: 0;
+      }
+
       .bx--form-item {
         flex: 0;
       }
@@ -733,7 +853,7 @@ $control-max-width-without-editor: 600px !default;
 
     .creation-view-group-container {
       position: relative;
-      max-width: 650px;
+      max-width: $container-max-width-with-editor;
       border: 1px solid #dfe0e3;
       background: white;
       box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
@@ -748,6 +868,7 @@ $control-max-width-without-editor: 600px !default;
         }
       }
 
+      .pf-c-form-control,
       .bx--list-box__field,
       .bx--text-input,
       .bx--list-box,
@@ -784,7 +905,7 @@ $control-max-width-without-editor: 600px !default;
         text-align: center;
       }
 
-      .mcx--create-cluster-page__provider-card {
+      .tf--create-cluster-page__provider-card {
         background-color: $acm_background_color;
         border: 1px solid #dfe3e6;
         display: flex;
@@ -793,8 +914,8 @@ $control-max-width-without-editor: 600px !default;
       }
     }
 
-    .mcx--grid-container {
-      .mcx--provider-card-container {
+    .tf--grid-container {
+      .tf--provider-card-container {
         position: relative;
 
         .card-checkmark {
@@ -806,14 +927,14 @@ $control-max-width-without-editor: 600px !default;
         }
       }
 
-      .mcx--create-cluster-page__provider-card {
+      .tf--create-cluster-page__provider-card {
         &-isDisabled {
           pointer-events: none;
           opacity: 0.5;
         }
       }
 
-      .mcx--provider-card-isDisabled {
+      .tf--provider-card-isDisabled {
         pointer-events: none;
         opacity: 0.5;
       }
@@ -835,23 +956,18 @@ $control-max-width-without-editor: 600px !default;
       }
 
       .creation-view-controls-add-value-container {
-        max-width: 600px;
-      }
-
-      .bx--list-box__field,
-      .bx--text-input,
-      .bx--list-box {
         max-width: $control-max-width-with-editor;
       }
 
-      .bx--text-area {
+      .pf-c-select,
+      .pf-c-form-control {
         max-width: $control-max-width-with-editor;
       }
     }
 
     &.showEditor,
-    .mcx--grid-container {
-      .bx--grid {
+    .tf--grid-container {
+      .tf--grid {
         margin-right: 2%;
         width: 100%;
 
@@ -860,22 +976,22 @@ $control-max-width-without-editor: 600px !default;
           display: flex;
         }
 
-        .mcx--providers-container.bx--row {
+        .tf--providers-container.tf--row {
           max-width: 1000px;
         }
       }
 
-      .mcx--provider-card {
+      .tf--provider-card {
         margin: 10px 16px 0 0;
 
-        .mcx--provider-card-container {
+        .tf--provider-card-container {
           width: 260px;
 
-          .mcx--create-cluster-page__provider-card-isSelected {
+          .tf--create-cluster-page__provider-card-isSelected {
             border: 1px solid #3d70b2;
           }
 
-          .mcx--create-cluster-page__provider-card {
+          .tf--create-cluster-page__provider-card {
             width: 260px;
             height: 80px;
             margin: 0 10px 10px 0;
@@ -888,7 +1004,7 @@ $control-max-width-without-editor: 600px !default;
             }
           }
 
-          .mcx--create-cluster-page__provider-card-title {
+          .tf--create-cluster-page__provider-card-title {
             font-size: 14px;
             text-align: left;
             width: 160px;
@@ -900,18 +1016,18 @@ $control-max-width-without-editor: 600px !default;
       }
     }
 
-    .mcx--grid-container.small {
-      .bx--grid {
-        .mcx--providers-container.bx--row {
-          max-width: 800px;
+    .tf--grid-container.small {
+      .tf--grid {
+        .tf--providers-container.tf--row {
+          max-width: $control-max-width-with-editor;
         }
       }
 
-      .mcx--provider-card {
-        .mcx--provider-card-container {
+      .tf--provider-card {
+        .tf--provider-card-container {
           width: 220px;
 
-          .mcx--create-cluster-page__provider-card {
+          .tf--create-cluster-page__provider-card {
             width: 220px;
             height: 70px;
           }

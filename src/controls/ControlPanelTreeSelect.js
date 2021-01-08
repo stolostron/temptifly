@@ -5,7 +5,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import Tooltip from '../components/Tooltip'
+import { FormGroup, Popover } from '@patternfly/react-core'
+import TimesCircleIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
+import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import _ from 'lodash'
 
 class ControlPanelTreeSelect extends React.Component {
@@ -13,7 +15,6 @@ class ControlPanelTreeSelect extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    i18n: PropTypes.func
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -161,7 +162,40 @@ class ControlPanelTreeSelect extends React.Component {
     }
     // create active map
     this.addAvailableMap(props)
+    this.onDocClick = (event) => {
+      const clickedOnToggle = this.parentRef && this.parentRef.contains(event.target)
+      const clickedWithinMenu = this.menuRef && this.menuRef.contains && this.menuRef.contains(event.target)
+      const clickedWithinClear = this.clearRef && this.clearRef.contains && this.clearRef.contains(event.target)
+      const clickedWithinToggle = this.toggleRef && this.toggleRef.contains && this.toggleRef.contains(event.target)
+      if (this.state.isOpen && !(clickedOnToggle || clickedWithinMenu || clickedWithinClear || clickedWithinToggle)) {
+        this.setState({isOpen: false})
+      }
+    }
   }
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this.onDocClick)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.onDocClick)
+  }
+
+  setParentRef = (ref) => {
+    this.parentRef = ref
+  };
+
+  setMenuRef = (ref) => {
+    this.menuRef = ref
+  };
+
+  setClearRef = (ref) => {
+    this.clearRef = ref
+  };
+
+  setToggleRef = (ref) => {
+    this.toggleRef = ref
+  };
 
   addAvailableMap(props) {
     const { control } = props
@@ -181,8 +215,8 @@ class ControlPanelTreeSelect extends React.Component {
   }
 
   render() {
-    const { controlId, control, i18n } = this.props
-    const { name, availableMap = {}, validation={} } = control
+    const { controlId, control } = this.props
+    const { name, availableMap = {}, validation={}, exception, disabled, tooltip } = control
     const {
       isOpen,
       active,
@@ -195,8 +229,8 @@ class ControlPanelTreeSelect extends React.Component {
       : active
 
     const toggleClasses = classNames({
-      'bx--list-box__menu-icon': true,
-      'bx--list-box__menu-icon--open': isOpen
+      'tf--list-box__menu-icon': true,
+      'tf--list-box__menu-icon--open': isOpen
     })
 
     const aria = isOpen ? 'Close menu' : 'Open menu'
@@ -205,131 +239,152 @@ class ControlPanelTreeSelect extends React.Component {
         return branch || instance
       })
       .join('-')}`
+    const validated = exception ? 'error' : undefined
+    const inputClasses = classNames({
+      'pf-c-form-control': true,
+      'input': true,
+      'disabled': disabled
+    })
     return (
       <React.Fragment>
         <div className="creation-view-controls-treeselect">
-          <div className="creation-view-controls-treeselect-title">
-            {name}
-            {validation.required ? (
-              <div className="creation-view-controls-required">*</div>
-            ) : null}
-            <Tooltip control={control} i18n={i18n} />
-          </div>
-          <div id={controlId}>
-            <div
-              role="listbox"
-              aria-label="Choose an item"
-              tabIndex="0"
-              className="bx--dropdown bx--list-box"
-            >
-              <div
-                role="button"
-                className=""
-                tabIndex="0"
-                type="button"
-                aria-label={aria}
-                aria-expanded={isOpen}
-                aria-haspopup="true"
-                data-toggle="true"
-                onClick={this.clickToggle.bind(this)}
-                onKeyPress={this.pressToggle.bind(this)}
-              >
-                <input
-                  className="bx--text-input"
-                  aria-label="ListBox input field"
-                  spellCheck="false"
-                  role="combobox"
-                  aria-controls={key}
-                  aria-autocomplete="list"
-                  aria-expanded="true"
-                  autoComplete="new-password"
-                  id="downshift-0-input"
-                  placeholder=""
-                  value={searchText !== null ? searchText : currentActive}
-                  onFocus={e => {
-                    e.target.select()
-                  }}
-                  onKeyDown={this.pressPress.bind(this)}
-                  onChange={evt =>
-                    this.setState({ searchText: evt.currentTarget.value })
-                  }
-                />
-                <div
-                  role="button"
-                  className="bx--list-box__selection"
-                  tabIndex="0"
-                  title="Clear selected item"
-                  onClick={this.clickClear.bind(this)}
-                  onKeyPress={this.pressClear.bind(this)}
+          <FormGroup
+            id={`${controlId}-label`}
+            label={name}
+            isRequired={validation.required}
+            fieldId={controlId}
+            helperTextInvalid={exception}
+            validated={validated}
+            labelIcon={
+              /* istanbul ignore next */
+              tooltip ? (
+                <Popover
+                  id={`${controlId}-label-help-popover`}
+                  bodyContent={tooltip}
                 >
-                  <svg
-                    height="10"
-                    role="img"
-                    viewBox="0 0 10 10"
-                    width="10"
-                    focusable="false"
-                    aria-label="Clear selected item"
-                    alt="Clear selected item"
+                  <button
+                    id={`${controlId}-label-help-button`}
+                    aria-label="More info"
+                    onClick={(e) => e.preventDefault()}
+                    className="pf-c-form__group-label-help"
                   >
-                    <title>Clear selected item</title>
-                    <path d="M6.32 5L10 8.68 8.68 10 5 6.32 1.32 10 0 8.68 3.68 5 0 1.32 1.32 0 5 3.68 8.68 0 10 1.32 6.32 5z" />
-                  </svg>
-                </div>
+                    <HelpIcon noVerticalAlign />
+                  </button>
+                </Popover>
+              ) : (
+                <React.Fragment />
+              )
+            }
+          >
+            <div id={controlId}>
+              <div
+                role="listbox"
+                aria-label="Choose an item"
+                tabIndex="0"
+                className="tf--list-box"
+              >
                 <div
                   role="button"
+                  className={inputClasses}
                   tabIndex="0"
-                  className={toggleClasses}
+                  type="button"
+                  aria-label={aria}
+                  aria-expanded={isOpen}
+                  aria-haspopup="true"
+                  data-toggle="true"
                   onClick={this.clickToggle.bind(this)}
                   onKeyPress={this.pressToggle.bind(this)}
                 >
-                  <svg
-                    fillRule="evenodd"
-                    height="5"
-                    role="img"
-                    viewBox="0 0 10 5"
-                    width="10"
-                    alt={aria}
-                    aria-label={aria}
-                  >
-                    <title>Close menu</title>
-                    <path d="M0 0l5 4.998L10 0z" />
-                  </svg>
-                </div>
-              </div>
-              {isOpen && (
-                <div className="bx--list-box__menu" key={key} id={key}>
-                  {currentAvailable.map(
-                    ({ branch, instance, indent = 0 }, inx) => {
-                      const itemClasses = classNames({
-                        'bx--list-box__menu-item': true,
-                        'bx--list-box__menu-branch': branch,
-                        searching: searchText,
-                        open: inx < indexes.length
-                      })
-                      const label = branch || instance
-                      return (
-                        <div
-                          role="button"
-                          key={label}
-                          className={itemClasses}
-                          id={`downshift-0-item-${inx}`}
-                          tabIndex="0"
-                          style={{
-                            textIndent: `${indent}px`,
-                            whiteSpace: 'pre'
-                          }}
-                          onClick={this.clickSelect.bind(this, inx)}
-                          onKeyPress={this.pressSelect.bind(this, inx)}
-                        >
-                          {this.renderLabel(label, searchText)}
-                        </div>
-                      )
+                  <input
+                    className="pf-c-form-control"
+                    aria-label="ListBox input field"
+                    ref={this.setParentRef}
+                    spellCheck="false"
+                    role="combobox"
+                    aria-controls={key}
+                    disabled={disabled}
+                    aria-expanded="true"
+                    autoComplete="new-password"
+                    id={`${controlId}-input`}
+                    placeholder=""
+                    style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}
+                    value={searchText !== null ? searchText : currentActive}
+                    onFocus={e => {
+                      e.target.select()
+                    }}
+                    onKeyDown={this.pressPress.bind(this)}
+                    onChange={evt =>
+                      this.setState({ searchText: evt.currentTarget.value })
                     }
-                  )}
+                  />
+                  {!disabled && <div
+                    role="button"
+                    className="tf--list-box__selection"
+                    tabIndex="0"
+                    title="Clear selected item"
+                    ref={this.setClearRef}
+                    onClick={this.clickClear.bind(this)}
+                    onKeyPress={this.pressClear.bind(this)}
+                  >
+                    <TimesCircleIcon aria-hidden />
+                  </div>}
+                  {!disabled &&<div
+                    role="button"
+                    tabIndex="0"
+                    className={toggleClasses}
+                    ref={this.setToggleRef}
+                    onClick={this.clickToggle.bind(this)}
+                    onKeyPress={this.pressToggle.bind(this)}
+                  >
+                    <svg
+                      fillRule="evenodd"
+                      height="5"
+                      role="img"
+                      viewBox="0 0 10 5"
+                      width="10"
+                      alt={aria}
+                      aria-label={aria}
+                    >
+                      <title>Close menu</title>
+                      <path d="M0 0l5 4.998L10 0z" />
+                    </svg>
+                  </div>}
                 </div>
-              )}
+                {!disabled && isOpen && (
+                  <div className="tf--list-box__menu" key={key} id={key}  ref={this.setMenuRef}>
+                    {currentAvailable.map(
+                      ({ branch, instance, indent = 0 }, inx) => {
+                        const itemClasses = classNames({
+                          'tf--list-box__menu-item': true,
+                          'tf--list-box__menu-branch': branch,
+                          searching: searchText,
+                          open: inx < indexes.length
+                        })
+                        const label = branch || instance
+                        return (
+                          <div
+                            role="button"
+                            key={label}
+                            className={itemClasses}
+                            id={`${controlId}-item-${inx}`}
+                            tabIndex="0"
+                            style={{
+                              textIndent: `${indent}px`,
+                              whiteSpace: 'pre'
+                            }}
+                            onClick={this.clickSelect.bind(this, inx)}
+                            onKeyPress={this.pressSelect.bind(this, inx)}
+                          >
+                            {this.renderLabel(label, searchText)}
+                          </div>
+                        )
+                      }
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          </FormGroup>
         </div>
       </React.Fragment>
     )
@@ -376,8 +431,9 @@ class ControlPanelTreeSelect extends React.Component {
     if (e) {
       e.stopPropagation()
     }
-    const { searchText: st } = this.state
-    if (!st) {
+    const clickedWithinClear = e && this.clearRef && this.clearRef.contains && this.clearRef.contains(e.target)
+    const clickedWithinToggle = e && this.toggleRef && this.toggleRef.contains && this.toggleRef.contains(event.target)
+    if (!(this.state.searchText || clickedWithinClear) || clickedWithinToggle) {
       this.setState(preState => {
         let {
           currentAvailable,
