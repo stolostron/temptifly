@@ -269,6 +269,7 @@ const addCodeSnippetsTemplateData = (
       availableMap,
       hasCapturedUserSource,
       customYAML,
+      encode: encodeData = [],
       userData
     } = control
     templateData[`has${_.capitalize(id)}`] = active.length > 0
@@ -298,13 +299,13 @@ const addCodeSnippetsTemplateData = (
               // see below for more
               if (new RegExp(/[\r\n]/).test(snippet)) {
                 const snippetKey = `____${_id}-${idx}____`
-                if (encode) {
+                if (encode || encodeData.includes(_id)) {
                   snippet = customYAML || snippet
                   tabInfo.push({
                     control,
                     templateYAML: snippet,
                     snippetKey,
-                    encode,
+                    encode: true,
                     id: _id
                   })
                 }
