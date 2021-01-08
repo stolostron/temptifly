@@ -2,8 +2,8 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FormGroup, Popover, Checkbox } from '@patternfly/react-core'
-import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
+import { Checkbox } from '@patternfly/react-core'
+import ControlPanelFormGroup from './ControlPanelFormGroup'
 
 class ControlPanelCheckbox extends React.Component {
   static propTypes = {
@@ -23,7 +23,7 @@ class ControlPanelCheckbox extends React.Component {
 
   render() {
     const { controlId, control, handleChange } = this.props
-    const { name, active, tooltip, disabled = false } = control
+    const { name, active, disabled = false } = control
 
     const onChange = () => {
       control.active = !active
@@ -43,32 +43,9 @@ class ControlPanelCheckbox extends React.Component {
             isDisabled={disabled}
             onChange={onChange}
           />
-          <FormGroup
-            id={`${controlId}-label`}
-            label={name}
-            fieldId={controlId}
-            labelIcon={
-              /* istanbul ignore next */
-              tooltip ? (
-                <Popover
-                  id={`${controlId}-label-help-popover`}
-                  bodyContent={tooltip}
-                >
-                  <button
-                    id={`${controlId}-label-help-button`}
-                    aria-label="More info"
-                    onClick={(e) => e.preventDefault()}
-                    className="pf-c-form__group-label-help"
-                  >
-                    <HelpIcon noVerticalAlign />
-                  </button>
-                </Popover>
-              ) : (
-                <React.Fragment />
-              )
-            }
-          >
-          </FormGroup>
+          <ControlPanelFormGroup
+            controlId={controlId}
+            control={control} />
         </div>
       </React.Fragment>
     )

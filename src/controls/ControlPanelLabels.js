@@ -2,8 +2,8 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FormGroup, TextInput, Label, Popover } from '@patternfly/react-core'
-import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
+import { TextInput, Label } from '@patternfly/react-core'
+import ControlPanelFormGroup from './ControlPanelFormGroup'
 import _ from 'lodash'
 
 export const DNS_LABEL = '[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?'
@@ -33,42 +33,16 @@ class ControlPanelLabels extends React.Component {
 
   render() {
     const { controlId, i18n, control } = this.props
-    const { name, active = [], tooltip, validation={} } = control
+    const { active = [] } = control
     const formatted = active.map(({ key, value: v }) => `${key}=${v}`)
     const { value, invalidText } = this.state
     const validated = invalidText ? 'error' : undefined
     return (
       <React.Fragment>
         <div className="creation-view-controls-labels">
-          <FormGroup
-            id={`${controlId}-label`}
-            label={name}
-            isRequired={validation.required}
-            fieldId={controlId}
-            helperTextInvalid={invalidText}
-            validated={validated}
-            labelIcon={
-              /* istanbul ignore next */
-              tooltip ? (
-                <Popover
-                  id={`${controlId}-label-help-popover`}
-                  bodyContent={tooltip}
-                >
-                  <button
-                    id={`${controlId}-label-help-button`}
-                    aria-label="More info"
-                    onClick={(e) => e.preventDefault()}
-                    className="pf-c-form__group-label-help"
-                  >
-                    <HelpIcon noVerticalAlign />
-                  </button>
-                </Popover>
-              ) : (
-                <React.Fragment />
-              )
-            }
-          >
-
+          <ControlPanelFormGroup
+            controlId={controlId}
+            control={control}>
             <div className="creation-view-controls-labels-container">
               {formatted.map((label, inx) => {
                 return (
@@ -89,7 +63,7 @@ class ControlPanelLabels extends React.Component {
                 />
               </div>
             </div>
-          </FormGroup>
+          </ControlPanelFormGroup>
         </div>
       </React.Fragment>
     )

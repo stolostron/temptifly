@@ -2,8 +2,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FormGroup, Popover } from '@patternfly/react-core'
-import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
+import ControlPanelFormGroup from './ControlPanelFormGroup'
 
 class ControlPanelNumber extends React.Component {
   static propTypes = {
@@ -23,7 +22,7 @@ class ControlPanelNumber extends React.Component {
 
   render() {
     const { controlId, control, handleChange } = this.props
-    const { name, initial, exception, validation={}, tooltip } = control
+    const { initial, exception } = control
     let { active } = control
     active = active || initial
     const nActive = parseInt(active, 10)
@@ -42,34 +41,9 @@ class ControlPanelNumber extends React.Component {
           className="creation-view-controls-number"
           ref={this.setControlRef.bind(this, control)}
         >
-          <FormGroup
-            id={`${controlId}-label`}
-            label={name}
-            isRequired={validation.required}
-            fieldId={controlId}
-            helperTextInvalid={exception}
-            validated={validated}
-            labelIcon={
-              /* istanbul ignore next */
-              tooltip ? (
-                <Popover
-                  id={`${controlId}-label-help-popover`}
-                  bodyContent={tooltip}
-                >
-                  <button
-                    id={`${controlId}-label-help-button`}
-                    aria-label="More info"
-                    onClick={(e) => e.preventDefault()}
-                    className="pf-c-form__group-label-help"
-                  >
-                    <HelpIcon noVerticalAlign />
-                  </button>
-                </Popover>
-              ) : (
-                <React.Fragment />
-              )
-            }
-          >
+          <ControlPanelFormGroup
+            controlId={controlId}
+            control={control}>
             <div className="pf-c-number-input">
               <div className="pf-c-input-group">
                 <button className="pf-c-button pf-m-control" style={{lineHeight: '16px'}} type="button" aria-label="Minus"
@@ -111,7 +85,7 @@ class ControlPanelNumber extends React.Component {
             ) : (
               <React.Fragment />
             )}
-          </FormGroup>
+          </ControlPanelFormGroup>
         </div>
       </React.Fragment>
     )

@@ -3,13 +3,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  FormGroup,
-  Popover,
   Select,
   SelectOption,
   SelectVariant,
   Spinner } from '@patternfly/react-core'
-import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
+import ControlPanelFormGroup from './ControlPanelFormGroup'
 import _ from 'lodash'
 
 class ControlPanelSingleSelect extends React.Component {
@@ -38,9 +36,7 @@ class ControlPanelSingleSelect extends React.Component {
       name,
       active='',
       available = [],
-      validation = {},
       exception,
-      tooltip,
       disabled,
       isLoading,
       isFailed
@@ -72,34 +68,9 @@ class ControlPanelSingleSelect extends React.Component {
           className="creation-view-controls-singleselect"
           ref={this.setControlRef.bind(this, control)}
         >
-          <FormGroup
-            id={`${controlId}-label`}
-            label={name}
-            isRequired={validation.required}
-            fieldId={controlId}
-            helperTextInvalid={exception}
-            validated={validated}
-            labelIcon={
-              /* istanbul ignore next */
-              tooltip ? (
-                <Popover
-                  id={`${controlId}-label-help-popover`}
-                  bodyContent={tooltip}
-                >
-                  <button
-                    id={`${controlId}-label-help-button`}
-                    aria-label="More info"
-                    onClick={(e) => e.preventDefault()}
-                    className="pf-c-form__group-label-help"
-                  >
-                    <HelpIcon noVerticalAlign />
-                  </button>
-                </Popover>
-              ) : (
-                <React.Fragment />
-              )
-            }
-          >
+          <ControlPanelFormGroup
+            controlId={controlId}
+            control={control}>
             {isLoading ? (
               <div className="creation-view-controls-singleselect-loading">
                 <Spinner size="md" />
@@ -135,7 +106,7 @@ class ControlPanelSingleSelect extends React.Component {
             ) : (
               <React.Fragment />
             )}
-          </FormGroup>
+          </ControlPanelFormGroup>
         </div>
       </React.Fragment>
     )

@@ -7,8 +7,6 @@ import { BrowserRouter, Link } from 'react-router-dom'
 class ControlPanelPrompt extends React.Component {
   static propTypes = {
     control: PropTypes.object,
-    fetchData: PropTypes.object,
-    handleAddActive: PropTypes.func,
     i18n: PropTypes.func
   };
 
