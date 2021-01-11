@@ -574,6 +574,13 @@ $container-max-width-with-editor: 650px !default;
           padding: 14px;
        }
 
+      .tf-table-button-container {
+        display: flex;
+        > div {
+          padding: 10px;
+        }  
+      }
+      
       .bx--toolbar-content > div {
         & > .bx--btn {
           margin-left: 10px;

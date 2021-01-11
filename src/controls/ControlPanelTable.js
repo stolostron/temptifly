@@ -5,6 +5,10 @@ import React, {
 } from 'react'
 import PropTypes from 'prop-types'
 import {
+  Alert,
+    EmptyState,
+    EmptyStateIcon,
+    EmptyStateBody,
     Pagination,
     PaginationVariant,
     SearchInput,
@@ -29,6 +33,7 @@ import {
     TableVariant,
 } from '@patternfly/react-table'
 import { ControlMode } from '../utils/source-utils'
+import CubesIcon from '@patternfly/react-icons/dist/js/icons/cubes-icon'
 import {
   TrashIcon,
 } from '../icons/Icons'
@@ -219,39 +224,52 @@ class ControlPanelTable extends React.Component {
       if (!Array.isArray(active)) {
         active = []
       }
-      const columns = this.getColumns()
-//      if (isFailed) {
-//        return (
-//          <Notification
-//            title=""
-//            className="overview-notification"
-//            kind="error"
-//            subtitle={i18n('overview.error.default')}
-//          />
-//        )
-//      } else if (isLoading) {
-//        return (
-//          <DataTableSkeleton
-//            columnCount={headers.length - 1}
-//            compact={false}
-//            rowCount={3}
-//            showheader={'true'}
-//            showtoolbar={'true'}
-//            zebra={false}
-//          />
-//        )
-//      } else {
-        const { id, exceptions = [] } = control
-        const {
-          searchValue,
-          originalSet
-        } = this.state
         let { actions } = prompts
         actions = React.Children.map(actions, action => {
           return React.cloneElement(action, {
             appendTable: this.handleTableAction.bind(this, add)
           })
         })
+      const columns = this.getColumns()
+      if (isFailed) {
+        return (
+          
+            <Alert
+              variant='danger'
+              title={i18n('overview.error.default')}
+            />
+          
+          
+        )
+      } else if (isLoading) {
+        return (<EmptyState>
+                    <EmptyStateIcon variant="container" component={Spinner} />
+                    <Title size="lg" headingLevel="h4">
+                        Loading
+                    </Title>
+                </EmptyState>)
+      } else if ( rows.length===0 ) {
+        return (
+        
+  <EmptyState>
+    <EmptyStateIcon icon={CubesIcon} />
+    <Title headingLevel="h4" size="lg">
+      No Bare Metal Assets
+    </Title>
+    <EmptyStateBody>
+      There are no Bare Metal Assets currently defined.
+    </EmptyStateBody>
+    <div className='tf-table-button-container'>
+    {actions}
+    </div>
+  </EmptyState>
+                )
+      } else {
+        const { id, exceptions = [] } = control
+        const {
+          searchValue,
+          originalSet
+        } = this.state
         const activeSet = new Set(Object.keys(_.keyBy(active, 'id')))
         return (
           <Fragment>
@@ -309,6 +327,7 @@ class ControlPanelTable extends React.Component {
           
           
               )
+              }
     }
 
   handleSelect(event, isSelected, rowId) {
