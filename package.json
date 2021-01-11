@@ -57,6 +57,7 @@
   "peerDependencies": {
     "@patternfly/react-core": "^4.75.2",
     "@patternfly/react-icons": "^4.7.4",
+    "@patternfly/react-table": "^4.19.5",
     "@patternfly/react-tokens": "^4.9.18",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
@@ -64,6 +65,7 @@
   "devDependencies": {
     "@patternfly/react-core": "^4.75.2",
     "@patternfly/react-icons": "^4.7.4",
+    "@patternfly/react-table": "^4.19.5",
     "@patternfly/react-tokens": "^4.9.18",
     "assets-webpack-plugin": "^3.0.0",
     "autoprefixer": "^6.7.7",

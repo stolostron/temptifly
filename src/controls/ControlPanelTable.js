@@ -1,35 +1,33 @@
 'use strict'
 
-import React from 'react'
+import React, {
+    Fragment,
+} from 'react'
 import PropTypes from 'prop-types'
-
-
-//import {
-//  PaginationV2,
-//  DropdownV2,
-//  ToggleSmall,
-//  DataTable,
-//  DataTableSkeleton,
-//  Notification,
-//  Icon
-//} from 'carbon-components-react'
-//
-//
-//const {
-//  TableContainer,
-//  TableToolbar,
-//  TableToolbarSearch,
-//  TableToolbarContent,
-//  Table,
-//  TableHead,
-//  TableRow,
-//  TableSelectRow,
-//  TableSelectAll,
-//  TableBody,
-//  TableCell
-//} = DataTable
-
-
+import {
+    Pagination,
+    PaginationVariant,
+    SearchInput,
+    Spinner,
+    Split,
+    SplitItem,
+    Title,
+    Toolbar,
+    ToolbarContent,
+    ToolbarItem,
+} from '@patternfly/react-core'
+import {
+    IRow,
+    ISortBy,
+    RowWrapper,
+    RowWrapperProps,
+    sortable,
+    SortByDirection,
+    Table,
+    TableBody,
+    TableHeader,
+    TableVariant,
+} from '@patternfly/react-table'
 import { ControlMode } from '../utils/source-utils'
 import {
   TrashIcon,
@@ -94,12 +92,12 @@ class ControlPanelTable extends React.Component {
     this.loaded = false
   }
 
-  getHeaders() {
+  getColumns() {
     const { control: { controlData } } = this.props
     const headers = controlData
       .filter(({ mode }) => mode !== ControlMode.PROMPT_ONLY)
-      .map(({ id, name }) => ({ key: id, header: name }))
-    headers.push({ key: 'action', header: '' })
+      .map(({ id, name }) => ({ key: id, title: name }))
+    headers.push({ key: 'action', title: '' })
     return headers
   }
 
@@ -187,7 +185,8 @@ class ControlPanelTable extends React.Component {
         ref={this.setControlRef.bind(this, control)}
       >
         <div className="creation-view-controls-table">
-        </div>
+          {this.renderTree(rows)}
+         </div>
         {exception && (
           <div className="creation-view-controls-table-exceptions">
             {exception}
@@ -197,7 +196,119 @@ class ControlPanelTable extends React.Component {
     )
   }
 
-//          {this.renderTree(rows)}
+    renderTree(rows) {
+      const { control, i18n } = this.props
+      const { isLoading, isFailed, prompts = {}, available } = control
+      let { active } = control
+      if (!Array.isArray(active)) {
+        active = []
+      }
+      const columns = this.getColumns()
+//      if (isFailed) {
+//        return (
+//          <Notification
+//            title=""
+//            className="overview-notification"
+//            kind="error"
+//            subtitle={i18n('overview.error.default')}
+//          />
+//        )
+//      } else if (isLoading) {
+//        return (
+//          <DataTableSkeleton
+//            columnCount={headers.length - 1}
+//            compact={false}
+//            rowCount={3}
+//            showheader={'true'}
+//            showtoolbar={'true'}
+//            zebra={false}
+//          />
+//        )
+//      } else {
+        const { id, exceptions = [] } = control
+        const {
+          sortDirection,
+          selectedKey,
+          searchValue,
+          originalSet
+        } = this.state
+        const sortColumn = selectedKey
+        let { actions } = prompts
+        actions = React.Children.map(actions, action => {
+          return React.cloneElement(action, {
+            appendTable: this.handleTableAction.bind(this, add)
+          })
+        })
+        const activeSet = new Set(Object.keys(_.keyBy(active, 'id')))
+        return (
+          <Fragment>
+                <Toolbar>
+                    <ToolbarContent>
+                            <ToolbarItem>
+                                <SearchInput
+                                    style={{ minWidth: '350px' }}
+                                    placeholder={i18n('search.label')}
+                                    value={searchValue}
+                                    onChange={(value) => {
+                                        this.setState({
+                                          searchValue: value || '',
+                                          page: 1
+                                        })
+                                    }}
+                                    onClear={() => {
+                                        this.setState({
+                                          searchValue: '',
+                                          page: 1
+                                        })
+                                    }}
+                                    resultsCount={`${3} / ${5}`}
+                                />
+                            </ToolbarItem>
+                            <div style={{display: 'flex'}}>
+                            
+                                     {actions.map((action) => (
+                                        <ToolbarItem key={action.id}>
+                                          {action}
+                                         </ToolbarItem>
+                                    ))}
+                           
+                             </div>
+
+                            
+                    </ToolbarContent>
+                </Toolbar>
+          
+          <Fragment>
+          <Table aria-label="BMA Table" cells={columns} rows={rows}>
+            <TableHeader />
+            <TableBody />
+          </Table>
+          </Fragment>
+          </Fragment>
+         
+          
+          
+              )
+//            }}
+//          />
+//        )
+//      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   //          <PaginationV2
   //          key="pagination"
   //          id={'resource-table-pagination'}
