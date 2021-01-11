@@ -84,19 +84,24 @@ class ControlPanelTable extends React.Component {
       pageSize:
         parseInt(localStorage.getItem(`table-${id}-page-size`), 10) ||
         PAGE_SIZES.DEFAULT,
-      sortDirection: 'asc',
+      sortBy: {},
       searchValue: ''
     }
-    this.headerMap = _.keyBy(controlData, 'id')
+    
+    this.headers = controlData
+      .filter(({ mode }) => mode !== ControlMode.PROMPT_ONLY)
+      .map(({ id }) => id )
     this.handleSelect = this.handleSelect.bind(this)
     this.loaded = false
+    this.handleSelect = this.handleSelect.bind(this);
+    this.handleSort = this.handleSort.bind(this);
   }
 
   getColumns() {
     const { control: { controlData } } = this.props
     const headers = controlData
       .filter(({ mode }) => mode !== ControlMode.PROMPT_ONLY)
-      .map(({ id, name }) => ({ key: id, title: name }))
+      .map(({ id, name }) => ({title: name, transforms: [sortable] }))
     headers.push({ key: 'action', title: '' })
     return headers
   }
@@ -110,11 +115,12 @@ class ControlPanelTable extends React.Component {
     const columns = controlData
       .filter(({ mode }) => mode !== ControlMode.PROMPT_ONLY)
       .map(({ id }) => ({ key: id }))
-    const { selectedKey, sortDirection, searchValue } = this.state
+    const { sortBy, searchValue } = this.state
+    const { selectedKey, direction } = sortBy
     let items = _.cloneDeep(available)
     if (selectedKey) {
       items = sortTable
-        ? sortTable(items, selectedKey, sortDirection, active)
+        ? sortTable(items, selectedKey, direction, active)
         : _.orderBy(items, [selectedKey], [sortDirection])
     }
     const searchKey = _.get(columns, '[0].key')
@@ -123,49 +129,58 @@ class ControlPanelTable extends React.Component {
         return _.get(item, searchKey, '').indexOf(searchValue) !== -1
       })
     }
+    const activeMap = _.keyBy(active, 'id')
     return items.map((item, inx) => {
-      const { id } = item
-      const row = { id }
-      const handleDeleteRow = this.handleTableAction.bind(this, remove, inx)
-      const handleDeleteRowKey = e => {
-        if (e.type === 'click' || e.key === 'Enter') {
-          handleDeleteRow()
-        }
+//      const { id } = item
+//      const row = { id }
+//      const handleDeleteRow = this.handleTableAction.bind(this, remove, inx)
+//      const handleDeleteRowKey = e => {
+//        if (e.type === 'click' || e.key === 'Enter') {
+//          handleDeleteRow()
+//        }
+//      }
+//      columns.forEach(column => {
+//        row[column.key] =
+//          item[column.key] !== undefined ? item[column.key] : '-'
+//      })
+//      if (deletePrompt) {
+//        row.action = (
+//          <div
+//            className="creation-view-controls-table-delete-button"
+//            tabIndex="0"
+//            role={'button'}
+//            title={text}
+//            aria-label={text}
+//            onClick={handleDeleteRow}
+//            onKeyPress={handleDeleteRowKey}
+//          >
+//            <TrashIcon />
+//          </div>
+//        )
+//      }
+       const {
+        id,
+        hostName,
+        hostNamespace,
+        role,
+        bmcAddress
+      } = item
+      return {
+        cells: [hostName, hostNamespace, role, bmcAddress], 
+        selected: !!activeMap[id]
       }
-      columns.forEach(column => {
-        row[column.key] =
-          item[column.key] !== undefined ? item[column.key] : '-'
-      })
-      if (deletePrompt) {
-        row.action = (
-          <div
-            className="creation-view-controls-table-delete-button"
-            tabIndex="0"
-            role={'button'}
-            title={text}
-            aria-label={text}
-            onClick={handleDeleteRow}
-            onKeyPress={handleDeleteRowKey}
-          >
-            <TrashIcon />
-          </div>
-        )
-      }
-      return row
     })
   }
-
-  handleSort = selectedKey => () => {
-    if (selectedKey) {
-      this.setState(preState => {
-        selectedKey = preState.selectedKey !== selectedKey ? selectedKey : null
-        return {
-          selectedKey,
-          sortDirection: preState.sortDirection === 'asc' ? 'desc' : 'asc'
-        }
-      })
-    }
-  };
+  
+  handleSort(event, index, direction) {
+    this.setState({
+      sortBy: {
+        index,
+        selectedKey: this.headers[index-1],
+        direction
+      },
+    })
+  }
 
   setControlRef = (control, ref) => {
     control.ref = ref
@@ -198,6 +213,7 @@ class ControlPanelTable extends React.Component {
 
     renderTree(rows) {
       const { control, i18n } = this.props
+      const { sortBy } = this.state
       const { isLoading, isFailed, prompts = {}, available } = control
       let { active } = control
       if (!Array.isArray(active)) {
@@ -227,12 +243,9 @@ class ControlPanelTable extends React.Component {
 //      } else {
         const { id, exceptions = [] } = control
         const {
-          sortDirection,
-          selectedKey,
           searchValue,
           originalSet
         } = this.state
-        const sortColumn = selectedKey
         let { actions } = prompts
         actions = React.Children.map(actions, action => {
           return React.cloneElement(action, {
@@ -261,7 +274,7 @@ class ControlPanelTable extends React.Component {
                                           page: 1
                                         })
                                     }}
-                                    resultsCount={`${3} / ${5}`}
+                                    resultsCount={`${rows.length} / ${available.length}`}
                                 />
                             </ToolbarItem>
                             <div style={{display: 'flex'}}>
@@ -279,7 +292,14 @@ class ControlPanelTable extends React.Component {
                 </Toolbar>
           
           <Fragment>
-          <Table aria-label="BMA Table" cells={columns} rows={rows}>
+          <Table 
+            aria-label="BMA Table"
+            sortBy={sortBy} 
+            onSort={this.handleSort}             
+            onSelect={this.handleSelect} 
+            canSelectAll={true}
+            cells={columns} 
+            rows={rows}>
             <TableHeader />
             <TableBody />
           </Table>
@@ -289,313 +309,28 @@ class ControlPanelTable extends React.Component {
           
           
               )
-//            }}
-//          />
-//        )
-//      }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //          <PaginationV2
-  //          key="pagination"
-  //          id={'resource-table-pagination'}
-  //          onChange={pagination => this.setState(pagination)}
-  //          pageSize={pageSize}
-  //          pageSizes={PAGE_SIZES.VALUES}
-  //          totalItems={totalFilteredItems}
-  //          page={page}
-  //          disabled={pageSize >= totalFilteredItems}
-  //          isLastPage={pageSize >= totalFilteredItems}
-  //          itemsPerPageText={i18n('pagination.itemsPerPage')}
-  //          pageRangeText={(current, total) =>
-  //            i18n('pagination.pageRange', [current, total])
-  //          }
-  //          itemRangeText={(min, max, total) =>
-  //            `${i18n('pagination.itemRange', [min, max])} ${i18n(
-  //              'pagination.itemRangeDescription',
-  //              [total])}`
-  //          }
-  //          pageInputDisabled={pageSize >= totalFilteredItems}
-  //        />
-
-
-  //  renderTree(rows) {
-  //    const { control, i18n } = this.props
-  //    const { isLoading, isFailed, prompts = {}, available } = control
-  //    let { active } = control
-  //    if (!Array.isArray(active)) {
-  //      active = []
-  //    }
-  //    const headers = this.getHeaders()
-  //    if (isFailed) {
-  //      return (
-  //        <Notification
-  //          title=""
-  //          className="overview-notification"
-  //          kind="error"
-  //          subtitle={i18n('overview.error.default')}
-  //        />
-  //      )
-  //    } else if (isLoading) {
-  //      return (
-  //        <DataTableSkeleton
-  //          columnCount={headers.length - 1}
-  //          compact={false}
-  //          rowCount={3}
-  //          showheader={'true'}
-  //          showtoolbar={'true'}
-  //          zebra={false}
-  //        />
-  //      )
-  //    } else {
-  //      const { id, exceptions = [] } = control
-  //      const {
-  //        sortDirection,
-  //        selectedKey,
-  //        searchValue,
-  //        originalSet
-  //      } = this.state
-  //      const sortColumn = selectedKey
-  //      let { actions } = prompts
-  //      actions = React.Children.map(actions, action => {
-  //        return React.cloneElement(action, {
-  //          appendTable: this.handleTableAction.bind(this, add)
-  //        })
-  //      })
-  //      const activeSet = new Set(Object.keys(_.keyBy(active, 'id')))
-  //      return (
-  //        <DataTable
-  //          key={id}
-  //          rows={rows}
-  //          headers={headers}
-  //          render={({ rows: _rows, headers: _headers }) => {
-  //            return (
-  //              <TableContainer>
-  //                <TableToolbar
-  //                  aria-label={i18n('table.toolbar.description')}
-  //                >
-  //                  <TableToolbarSearch
-  //                    onChange={({ target }) =>
-  //                      this.setState({
-  //                        searchValue: target.value || '',
-  //                        page: 1
-  //                      })
-  //                    }
-  //                    id="resource-search-bar"
-  //                    translateWithId={translateWithId.bind(null, i18n)}
-  //                    value={searchValue}
-  //                    placeHolderText={i18n('search.label')}
-  //                  />
-  //                  <TableToolbarContent>{actions}</TableToolbarContent>
-  //                </TableToolbar>
-  //                <Table className="resource-table" zebra={false}>
-  //                  <TableHead>
-  //                    <TableRow>
-  //                      {active.length > 0 && <TableSelectAll
-  //                        id={'selectAll'}
-  //                        ariaLabel={'tableSelectAllRow'}
-  //                        name={'tableSelectAllRow'}
-  //                        indeterminate={
-  //                          active.length > 0 && active.length < available.length
-  //                        }
-  //                        disabled={false}
-  //                        checked={
-  //                          active.length > 0 &&
-  //                          active.length === available.length
-  //                        }
-  //                        onSelect={this.handleSelect.bind(this, null)}
-  //                      />}
-  //                      {_headers.map(header => (
-  //                        <th scope={'col'} key={header.key}>
-  //                          {header.key !== 'action' ? (
-  //                            <button
-  //                              title={i18n(
-  //                                `svg.description.${
-  //                                  !sortColumn || sortDirection === 'desc'
-  //                                    ? 'asc'
-  //                                    : 'desc'
-  //                                }`)}
-  //                              onClick={this.handleSort(header.key)}
-  //                              className={`bx--table-sort-v2${
-  //                                sortDirection === 'asc'
-  //                                  ? ' bx--table-sort-v2--ascending'
-  //                                  : ''
-  //                              }${
-  //                                sortColumn === header.key
-  //                                  ? ' bx--table-sort-v2--active'
-  //                                  : ''
-  //                              }`}
-  //                              data-key={header.key}
-  //                            >
-  //                              <span className="bx--table-header-label">
-  //                                {header.header}
-  //                              </span>
-  //                              <Icon
-  //                                className="bx--table-sort-v2__icon"
-  //                                name="caret--down"
-  //                                description={i18n(
-  //                                  `svg.description.${
-  //                                    !sortColumn || sortDirection === 'desc'
-  //                                      ? 'asc'
-  //                                      : 'desc'
-  //                                  }`)}
-  //                              />
-  //                            </button>
-  //                          ) : null}
-  //                        </th>
-  //                      ))}
-  //                    </TableRow>
-  //                  </TableHead>
-  //                  <TableBody>
-  //                    {_rows.map(row => (
-  //                      <TableRow
-  //                        key={row.id}
-  //                        className={!originalSet.has(row.id) && 'new-row'}
-  //                        data-row-name={_.get(row, 'cells[0].value')}
-  //                      >
-  //                        <TableSelectRow
-  //                          id={row.id}
-  //                          ariaLabel={'tableSelectRow'}
-  //                          name={'tableSelectRow'}
-  //                          checked={activeSet.has(row.id)}
-  //                          onSelect={this.handleSelect.bind(this, row.id)}
-  //                        />
-  //                        {row.cells.map(cell => {
-  //                          const key = _.get(cell, 'info.header')
-  //                          const inx = exceptions.findIndex(
-  //                            ({ cells }) =>
-  //                              cells.indexOf(`${key}-${row.id}`) !== -1
-  //                          )
-  //                          const hasException = inx !== -1
-  //                          const { id: rid } = row
-  //                          return (
-  //                            <TableCell
-  //                              key={cell.id}
-  //                              style={
-  //                                hasException
-  //                                  ? { color: 'red', cursor: 'pointer' }
-  //                                  : {}
-  //                              }
-  //                              title={
-  //                                hasException ? exceptions[inx].exception : ''
-  //                              }
-  //                            >
-  //                              {this.renderCellValue(rid, cell, hasException)}
-  //                            </TableCell>
-  //                          )
-  //                        })}
-  //                      </TableRow>
-  //                    ))}
-  //                  </TableBody>
-  //                </Table>
-  //              </TableContainer>
-  //            )
-  //          }}
-  //        />
-  //      )
-  //    }
-  //  }
-  //
-  //  renderCellValue(rid, cell, hasException) {
-  //    const { value, info: { header } } = cell
-  //    const column = this.headerMap[header]
-  //    if (column) {
-  //      const { type, available } = column
-  //      const { control: { active=[] } } = this.props
-  //      const rinx = active.findIndex(({ id }) => id === rid)
-  //      const cactive = _.get(active, `${rinx}.${header}`)
-  //      switch (type) {
-  //      case 'singleselect':
-  //        return (
-  //          <React.Fragment>
-  //            <div className="creation-view-controls-table-singleselect">
-  //              <DropdownV2
-  //                label={value}
-  //                items={available}
-  //                onChange={this.handleCellEdit.bind(
-  //                  this,
-  //                  rinx,
-  //                  header,
-  //                  'singleselect'
-  //                )}
-  //              />
-  //            </div>
-  //          </React.Fragment>
-  //        )
-  //      case 'toggle':
-  //        return (
-  //          <React.Fragment>
-  //            <div
-  //              className="creation-view-controls-table-toggle"
-  //              key={cell.id}
-  //            >
-  //              {cactive === undefined ? (
-  //                '-'
-  //              ) : (
-  //                <React.Fragment>
-  //                  <ToggleSmall
-  //                    id={`id${rid}`}
-  //                    ariaLabel={cactive}
-  //                    defaultToggled={available.indexOf(cactive) === 0}
-  //                    onToggle={this.handleCellEdit.bind(
-  //                      this,
-  //                      rinx,
-  //                      header,
-  //                      'toggle'
-  //                    )}
-  //                  />
-  //                  <div className="table-toggle-label">
-  //                    {_.capitalize(cactive)}
-  //                  </div>
-  //                </React.Fragment>
-  //              )}
-  //            </div>
-  //          </React.Fragment>
-  //        )
-  //      }
-  //    }
-  //
-  //    return (
-  //      <React.Fragment>
-  //        {value}
-  //        {hasException && <span>{' *'}</span>}
-  //      </React.Fragment>
-  //    )
-  //  }
-
-  handleSelect = id => {
+  handleSelect(event, isSelected, rowId) {
     const { control } = this.props
     const { available, controlData } = control
-
     let { active=[] } = control
-    const availableMap = _.keyBy(available, 'id')
-    if (id) {
-      if (!active.find(item => item.id === id)) {
+    if (rowId !== -1) {
+      const {id} = available[rowId]
+      const activeMap = _.keyBy(active, 'id')
+      
+      if (!activeMap[id]) {
         // add to active
-        this.addActives(active, [availableMap[id]], controlData)
+        this.addActives(active, [available[rowId]], controlData)
       } else {
         // remove from active
         const inx = active.findIndex(data => id === data.id)
         active.splice(inx, 1)
       }
     } else {
-      const wasActive = active.length > 0
       control.active = [];
       ({ active } = control)
-      if (!wasActive) {
+      if (isSelected) {
         this.addActives(active, available, controlData)
       }
     }

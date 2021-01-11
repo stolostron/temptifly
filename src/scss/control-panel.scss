@@ -569,6 +569,10 @@ $container-max-width-with-editor: 650px !default;
        .pf-c-toolbar__content-section {
           justify-content: space-between; 
        }
+       
+       .pf-c-table tr > * {
+          padding: 14px;
+       }
 
       .bx--toolbar-content > div {
         & > .bx--btn {
