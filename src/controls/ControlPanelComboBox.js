@@ -35,8 +35,10 @@ class ControlPanelComboBox extends React.Component {
     if (searchText && searchText.length) {
       // nothing selected, filter list
       if (currentSelection === undefined) {
-        if (active !== searchText) {
+        if (!isOpen) {
           handleComboChange(searchText)
+          searchText = null
+          isOpen = false
         }
       } else {
         // handle change
@@ -194,7 +196,7 @@ class ControlPanelComboBox extends React.Component {
           <ControlPanelFormGroup
             controlId={controlId}
             control={control}>
-            <div id={controlId}>
+            <div id={`${controlId}-group`}>
               <div
                 role="listbox"
                 aria-label="Choose an item"
@@ -223,7 +225,7 @@ class ControlPanelComboBox extends React.Component {
                       aria-controls={key}
                       aria-expanded="true"
                       autoComplete="new-password"
-                      id={`${controlId}-input`}
+                      id={controlId}
                       placeholder={placeholder}
                       ref={this.setInputRef}
                       style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}
@@ -398,7 +400,7 @@ class ControlPanelComboBox extends React.Component {
   }
 
   clickSelect(label) {
-    this.setState({ currentSelection: label })
+    this.setState({ currentSelection: label, isOpen: false })
   }
 
   pressClear(inx, e) {

@@ -90,6 +90,7 @@ class ControlPanel extends React.Component {
           onScroll={this.refreshFading.bind(this)}
         >
           {this.renderPortals()}
+          <div id="notifications" />
           {this.renderNotifications()}
           <div className="content">
             {this.renderControlSections(controlData)}
@@ -630,7 +631,7 @@ class ControlPanel extends React.Component {
         }
       )
     }
-    return <div id="notifications" />
+    return null
   }
 
   renderDeleteGroupButton(control, inx) {
