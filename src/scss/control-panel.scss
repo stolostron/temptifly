@@ -69,7 +69,7 @@ $container-max-width-with-editor: 650px !default;
       background: white;
       box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
       padding: 20px;
-      max-width: 700px;
+      max-width: 800px;
 
       .pf-c-form-control,
       .bx--list-box__field,
@@ -311,6 +311,7 @@ $container-max-width-with-editor: 650px !default;
         position: relative;
         background-color: white;
         padding: 5px 8px 5px 30px;
+        height: 36px;
         max-width: $control-max-width-with-editor;
         border-bottom: 1px solid #8a8d90;
 
@@ -564,23 +565,23 @@ $container-max-width-with-editor: 650px !default;
     }
 
     &-table {
-       max-width: 800px;
-       
-       .pf-c-toolbar__content-section {
-          justify-content: space-between; 
-       }
-       
-       .pf-c-table tr > * {
-          padding: 14px;
-       }
+      max-width: 800px;
+
+      .pf-c-toolbar__content-section {
+        justify-content: space-between;
+      }
+
+      .pf-c-table tr > * {
+        padding: 14px;
+      }
 
       .tf-table-button-container {
         display: flex;
         > div {
           padding: 10px;
-        }  
+        }
       }
-      
+
       .bx--toolbar-content > div {
         & > .bx--btn {
           margin-left: 10px;

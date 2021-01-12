@@ -50,7 +50,7 @@ export const generateSourceFromTemplate = (
   // replacements are snippets of code instead of single values
   // ex: when you select a card, it inserts a snippet of code into
   //     the template instead of a text value
-  const { snippetMap, tabInfo } = addCodeSnippetsTemplateData(
+  const { snippetMap, encodeInfo } = addCodeSnippetsTemplateData(
     templateData,
     replacements,
     controlMap
@@ -61,26 +61,28 @@ export const generateSourceFromTemplate = (
   /////////////////////////////////////////////////////////
   // if tab(s) were created to show encoded YAML, update that tab's info
   if (otherYAMLTabs) {
-    tabInfo.forEach(({ id, control, templateYAML, encode, snippetKey }) => {
+    encodeInfo.forEach(({ id, control, templateYAML, encode, newTab, snippetKey }) => {
       templateYAML = replaceSnippetMap(templateYAML, snippetMap)
       if (encode) {
         snippetMap[snippetKey] = Base64.encode(
           templateYAML.replace(/\s*##.+$/gm, '')
         )
       }
-      const existingInx = otherYAMLTabs.findIndex(
-        ({ id: existingId }) => existingId === id
-      )
-      if (existingInx !== -1) {
-        const existingTab = otherYAMLTabs[existingInx]
-        existingTab.oldTemplateYAML = existingTab.templateYAML
-        existingTab.templateYAML = templateYAML
-      } else {
-        otherYAMLTabs.push({
-          id,
-          control,
-          templateYAML
-        })
+      if (newTab) {
+        const existingInx = otherYAMLTabs.findIndex(
+          ({ id: existingId }) => existingId === id
+        )
+        if (existingInx !== -1) {
+          const existingTab = otherYAMLTabs[existingInx]
+          existingTab.oldTemplateYAML = existingTab.templateYAML
+          existingTab.templateYAML = templateYAML
+        } else {
+          otherYAMLTabs.push({
+            id,
+            control,
+            templateYAML
+          })
+        }
       }
     })
   }
@@ -261,7 +263,7 @@ const addCodeSnippetsTemplateData = (
 
   //add replacements
   const snippetMap = {}
-  const tabInfo = []
+  const encodeInfo = []
   replacements.forEach(control => {
     const {
       id,
@@ -283,7 +285,7 @@ const addCodeSnippetsTemplateData = (
         choices.forEach((key, idx) => {
           const { replacements: _replacements } = availableMap[key]
           Object.entries(_replacements).forEach(([_id, partial]) => {
-            const { template: _template, encode } = partial
+            const { template: _template, encode, newTab } = partial
             partial = _template || partial
             const typeOf = typeof partial
             if (typeOf === 'string' || typeOf === 'function') {
@@ -301,11 +303,12 @@ const addCodeSnippetsTemplateData = (
                 const snippetKey = `____${_id}-${idx}____`
                 if (encode || encodeData.includes(_id)) {
                   snippet = customYAML || snippet
-                  tabInfo.push({
+                  encodeInfo.push({
                     control,
                     templateYAML: snippet,
                     snippetKey,
                     encode: true,
+                    newTab,
                     id: _id
                   })
                 }
@@ -355,7 +358,7 @@ const addCodeSnippetsTemplateData = (
     }
   })
 
-  return { snippetMap, tabInfo }
+  return { snippetMap, encodeInfo }
 }
 
 const replaceSnippetMap = (yaml, snippetMap) => {
