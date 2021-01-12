@@ -2,8 +2,8 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FormGroup, TextInput, Popover } from '@patternfly/react-core'
-import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
+import { TextInput } from '@patternfly/react-core'
+import ControlPanelFormGroup from './ControlPanelFormGroup'
 
 class ControlPanelTextInput extends React.Component {
   static propTypes = {
@@ -29,8 +29,6 @@ class ControlPanelTextInput extends React.Component {
       type,
       active: value,
       exception,
-      tooltip,
-      validation = {},
       disabled
     } = control
 
@@ -51,34 +49,9 @@ class ControlPanelTextInput extends React.Component {
           style={{ display: '' }}
           ref={this.setControlRef.bind(this, control)}
         >
-          <FormGroup
-            id={`${controlId}-label`}
-            label={name}
-            isRequired={validation.required}
-            fieldId={controlId}
-            helperTextInvalid={exception}
-            validated={validated}
-            labelIcon={
-              /* istanbul ignore next */
-              tooltip ? (
-                <Popover
-                  id={`${controlId}-label-help-popover`}
-                  bodyContent={tooltip}
-                >
-                  <button
-                    id={`${controlId}-label-help-button`}
-                    aria-label="More info"
-                    onClick={(e) => e.preventDefault()}
-                    className="pf-c-form__group-label-help"
-                  >
-                    <HelpIcon noVerticalAlign />
-                  </button>
-                </Popover>
-              ) : (
-                <React.Fragment />
-              )
-            }
-          >
+          <ControlPanelFormGroup
+            controlId={controlId}
+            control={control}>
             <TextInput
               id={controlId}
               isDisabled={disabled}
@@ -88,7 +61,7 @@ class ControlPanelTextInput extends React.Component {
               value={value || ''}
               onChange={this.handleChange.bind(this, control)}
             />
-          </FormGroup>
+          </ControlPanelFormGroup>
         </div>
       </React.Fragment>
     )

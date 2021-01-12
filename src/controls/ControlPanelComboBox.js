@@ -4,8 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { FormGroup, Popover } from '@patternfly/react-core'
-import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
+import ControlPanelFormGroup from './ControlPanelFormGroup'
 import TimesCircleIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
 import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon'
 import _ from 'lodash'
@@ -110,12 +109,10 @@ class ControlPanelComboBox extends React.Component {
       userData = [],
       availableMap,
       exception,
-      validation={},
       hasReplacements,
       isFailed,
       fetchAvailable,
-      disabled,
-      tooltip
+      disabled
     } = control
     let { isLoading } = control
     let { active, available=[], placeholder = '' } = control
@@ -194,34 +191,9 @@ class ControlPanelComboBox extends React.Component {
     return (
       <React.Fragment>
         <div className="creation-view-controls-combobox">
-          <FormGroup
-            id={`${controlId}-label`}
-            label={name}
-            isRequired={validation.required}
-            fieldId={controlId}
-            helperTextInvalid={exception}
-            validated={validated}
-            labelIcon={
-              /* istanbul ignore next */
-              tooltip ? (
-                <Popover
-                  id={`${controlId}-label-help-popover`}
-                  bodyContent={tooltip}
-                >
-                  <button
-                    id={`${controlId}-label-help-button`}
-                    aria-label="More info"
-                    onClick={(e) => e.preventDefault()}
-                    className="pf-c-form__group-label-help"
-                  >
-                    <HelpIcon noVerticalAlign />
-                  </button>
-                </Popover>
-              ) : (
-                <React.Fragment />
-              )
-            }
-          >
+          <ControlPanelFormGroup
+            controlId={controlId}
+            control={control}>
             <div id={controlId}>
               <div
                 role="listbox"
@@ -323,7 +295,7 @@ class ControlPanelComboBox extends React.Component {
                 )}
               </div>
             </div>
-          </FormGroup>
+          </ControlPanelFormGroup>
         </div>
       </React.Fragment>
     )
