@@ -299,7 +299,7 @@ const isProtectedNameNamespace = path => {
     const [key, value] = path.slice(Math.max(path.length - 2, 0))
     return (
       typeof key === 'string' &&
-      (key === 'metadata' || key.endsWith('Ref')) &&
+      (key === 'metadata' /*|| key.endsWith('Ref')*/) &&
       ['name', 'namespace'].indexOf(value) !== -1
     )
   }
