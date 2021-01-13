@@ -622,7 +622,7 @@ class ControlPanel extends React.Component {
               title={exception}
               actionLinks={
                 <React.Fragment>
-                  <AlertActionLink onClick={handleClick}>View details</AlertActionLink>
+                  {variant !== 'success' && <AlertActionLink onClick={handleClick}>View details</AlertActionLink>}
                 </React.Fragment>
               }
             />
