@@ -40,6 +40,19 @@ class ControlPanelComboBox extends React.Component {
       // nothing selected, filter list
       if (currentSelection === undefined) {
         if (!isOpen || isBlurred) {
+          const {userData=[]} = control
+          if (!userData.includes(searchText)) {
+            control.active = searchText
+            userData.push(searchText)
+            _.set(control, 'userData', userData)
+
+            // if this combobox is fetched from server, make sure whatever user types in has an availableMap entry
+            const setAvailableMap = _.get(control, 'fetchAvailable.setAvailableMap')
+            if (setAvailableMap) {
+              setAvailableMap(control)
+            }
+
+          }
           handleComboChange(searchText)
           searchText = null
           isOpen = false
