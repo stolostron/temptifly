@@ -90,6 +90,7 @@ class ControlPanel extends React.Component {
           onScroll={this.refreshFading.bind(this)}
         >
           {this.renderPortals()}
+          <div id="notifications" />
           {this.renderNotifications()}
           <div className="content">
             {this.renderControlSections(controlData)}
@@ -567,70 +568,72 @@ class ControlPanel extends React.Component {
   renderNotifications() {
     const { notifications = [] } = this.props
     if (notifications.length > 0) {
-      return notifications.map(
-        ({
-          id,
-          controlId,
-          exception,
-          kind = 'error',
-          ref,
-          tabInx = 0,
-          editor,
-          row
-        }) => {
-          const handleClick = () => {
-            if (ref || controlId) {
-              ref = document.getElementById(controlId) || ref
-              if (ref) {
+      return (
+        <React.Fragment>
+          {notifications.map(
+            ({
+              controlId,
+              exception,
+              kind = 'error',
+              ref,
+              tabInx = 0,
+              editor,
+              row
+            }) => {
+              const handleClick = () => {
+                if (ref || controlId) {
+                  ref = document.getElementById(controlId) || ref
+                  if (ref) {
 
-                // uncollapse all parents
-                let parent = ref.parentNode
-                while (parent && !parent.classList.contains('creation-view-controls')) {
-                  parent.classList.remove('collapsed')
-                  parent = parent.parentNode
+                    // uncollapse all parents
+                    let parent = ref.parentNode
+                    while (parent && !parent.classList.contains('creation-view-controls')) {
+                      parent.classList.remove('collapsed')
+                      parent = parent.parentNode
+                    }
+                    ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+                  }
+                } else if (editor && row) {
+                  const tabContainer = document.querySelector(
+                    '.creation-view-yaml-header-tabs'
+                  )
+                  if (tabContainer) {
+                    const tabs = tabContainer.getElementsByClassName(
+                      '.bx--tabs__nav-link'
+                    )
+                    if (tabs.length > 0) {
+                      tabs[tabInx].click()
+                    }
+                  }
+                  setTimeout(() => {
+                    editor.revealLineInCenter(row)
+                  }, 0)
                 }
-                ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
               }
-            } else if (editor && row) {
-              const tabContainer = document.querySelector(
-                '.creation-view-yaml-header-tabs'
+
+              let variant = 'success'
+              switch (kind) {
+              case 'error':
+                variant='danger'
+              }
+              return (
+                <Alert
+                  key={exception}
+                  variant={variant}
+                  title={exception}
+                  actionLinks={
+                    <React.Fragment>
+                      {variant !== 'success' && <AlertActionLink onClick={handleClick}>View details</AlertActionLink>}
+                    </React.Fragment>
+                  }
+                />
               )
-              if (tabContainer) {
-                const tabs = tabContainer.getElementsByClassName(
-                  '.bx--tabs__nav-link'
-                )
-                if (tabs.length > 0) {
-                  tabs[tabInx].click()
-                }
-              }
-              setTimeout(() => {
-                editor.revealLineInCenter(row)
-              }, 0)
+
             }
-          }
-
-          let variant = 'success'
-          switch (kind) {
-          case 'error':
-            variant='danger'
-          }
-          return (
-            <Alert
-              key={id}
-              variant={variant}
-              title={exception}
-              actionLinks={
-                <React.Fragment>
-                  <AlertActionLink onClick={handleClick}>View details</AlertActionLink>
-                </React.Fragment>
-              }
-            />
-          )
-
-        }
-      )
+          )}
+        </React.Fragment>)
     }
-    return <div id="notifications" />
+    return null
   }
 
   renderDeleteGroupButton(control, inx) {

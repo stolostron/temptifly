@@ -67,6 +67,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                     placeholder={undefined}
                     readOnly={false}
                     required={false}
+                    spellCheck="false"
                     type="text"
                     value=""
                   />
@@ -101,6 +102,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                     placeholder={undefined}
                     readOnly={false}
                     required={false}
+                    spellCheck="false"
                     type="text"
                     value=""
                   />

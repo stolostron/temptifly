@@ -27,16 +27,35 @@ class ControlPanelComboBox extends React.Component {
     const { currentSelection } = state
     let {
       isOpen,
+      preselect,
       searchText
+    } = state
+    const {
+      isBlurred,
     } = state
 
     /////////////////////////////////////////////////////////////
     // search mode
-    if (searchText && searchText.length) {
+    if (searchText && searchText.length && !preselect) {
       // nothing selected, filter list
       if (currentSelection === undefined) {
-        if (active !== searchText) {
+        if (!isOpen || isBlurred) {
+          const {userData=[]} = control
+          if (!userData.includes(searchText)) {
+            control.active = searchText
+            userData.push(searchText)
+            _.set(control, 'userData', userData)
+
+            // if this combobox is fetched from server, make sure whatever user types in has an availableMap entry
+            const setAvailableMap = _.get(control, 'fetchAvailable.setAvailableMap')
+            if (setAvailableMap) {
+              setAvailableMap(control)
+            }
+
+          }
           handleComboChange(searchText)
+          searchText = null
+          isOpen = false
         }
       } else {
         // handle change
@@ -49,11 +68,16 @@ class ControlPanelComboBox extends React.Component {
       handleComboChange(currentSelection)
       searchText = null
       isOpen = false
+      preselect = false
+    } else if (isBlurred && !preselect) {
+      isOpen = false
     }
     return {
       active,
       currentSelection: undefined,
       isOpen,
+      isBlurred: false,
+      preselect,
       searchText
     }
   }
@@ -62,24 +86,9 @@ class ControlPanelComboBox extends React.Component {
     super(props)
     this.state = {
       isOpen: false,
+      isBlurred: false,
       searchText: null
     }
-    this.onDocClick = (event) => {
-      const clickedOnToggle = this.inputRef && this.inputRef.contains(event.target)
-      const clickedWithinMenu = this.menuRef && this.menuRef.contains && this.menuRef.contains(event.target)
-      const clickedWithinClear = this.clearRef && this.clearRef.contains && this.clearRef.contains(event.target)
-      const clickedWithinToggle = this.toggleRef && this.toggleRef.contains && this.toggleRef.contains(event.target)
-      if (this.state.isOpen && !(clickedOnToggle || clickedWithinMenu || clickedWithinClear || clickedWithinToggle)) {
-        this.setState({isOpen: false})
-      }
-    }
-    this.onDocClick = this.onDocClick.bind(this)
-  }
-  componentDidMount() {
-    document.addEventListener('mousedown', this.onDocClick)
-  }
-  componentWillUnmount() {
-    document.removeEventListener('mousedown', this.onDocClick)
   }
 
   setInputRef = (ref) => {
@@ -187,14 +196,14 @@ class ControlPanelComboBox extends React.Component {
     })
     const aria = isOpen ? 'Close menu' : 'Open menu'
     const validated = exception ? 'error' : undefined
-    const value = searchText || active || ''
+    const value = typeof searchText === 'string' ? searchText : active || ''
     return (
       <React.Fragment>
         <div className="creation-view-controls-combobox">
           <ControlPanelFormGroup
             controlId={controlId}
             control={control}>
-            <div id={controlId}>
+            <div id={`${controlId}-group`}>
               <div
                 role="listbox"
                 aria-label="Choose an item"
@@ -222,14 +231,18 @@ class ControlPanelComboBox extends React.Component {
                       disabled={disabled}
                       aria-controls={key}
                       aria-expanded="true"
-                      autoComplete="new-password"
-                      id={`${controlId}-input`}
+                      autoComplete="off"
+                      id={controlId}
                       placeholder={placeholder}
                       ref={this.setInputRef}
                       style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}
                       value={value}
+                      onBlur={this.blur.bind(this)}
                       onKeyUp={this.pressUp.bind(this)}
                       onKeyDown={this.pressDown.bind(this)}
+                      onFocus={e => {
+                        e.target.select()
+                      }}
                       onChange={evt =>
                         this.setState({ searchText: evt.currentTarget.value })
                       }
@@ -283,6 +296,7 @@ class ControlPanelComboBox extends React.Component {
                             className={itemClasses}
                             id={`${controlId}-item-${id}`}
                             tabIndex="0"
+                            onMouseDown={()=>this.setState({preselect: true})}
                             onClick={this.clickSelect.bind(this, label)}
                             onKeyPress={this.pressSelect.bind(this, label)}
                           >
@@ -329,6 +343,10 @@ class ControlPanelComboBox extends React.Component {
         </React.Fragment>
       )
     }
+  }
+
+  blur() {
+    this.setState({isBlurred: true})
   }
 
   pressUp(e) {
@@ -398,7 +416,7 @@ class ControlPanelComboBox extends React.Component {
   }
 
   clickSelect(label) {
-    this.setState({ currentSelection: label })
+    this.setState({ currentSelection: label, isOpen: false })
   }
 
   pressClear(inx, e) {

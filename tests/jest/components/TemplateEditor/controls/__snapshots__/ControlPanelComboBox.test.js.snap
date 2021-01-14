@@ -48,7 +48,7 @@ exports[`ControlPanelComboBox component renders as expected 1`] = `
       className="pf-c-form__group-control"
     >
       <div
-        id="controlId"
+        id="controlId-group"
       >
         <div
           aria-label="Choose an item"
@@ -75,11 +75,13 @@ exports[`ControlPanelComboBox component renders as expected 1`] = `
                 aria-controls="controlId-creation.app.name-test"
                 aria-expanded="true"
                 aria-label="ListBox input field"
-                autoComplete="new-password"
+                autoComplete="off"
                 className="pf-c-combo-control"
                 disabled={undefined}
-                id="controlId-input"
+                id="controlId"
+                onBlur={[Function]}
                 onChange={[Function]}
+                onFocus={[Function]}
                 onKeyDown={[Function]}
                 onKeyUp={[Function]}
                 placeholder={undefined}

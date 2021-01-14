@@ -27,6 +27,7 @@ import {
   Table,
   TableBody,
   TableHeader,
+  TableVariant
 } from '@patternfly/react-table'
 import { ControlMode } from '../utils/source-utils'
 import CubesIcon from '@patternfly/react-icons/dist/js/icons/cubes-icon'
@@ -344,6 +345,7 @@ class ControlPanelTable extends React.Component {
               onSelect={this.handleSelect}
               onRowEdit={this.updateEditableRows}
               canSelectAll={true}
+              variant={TableVariant.compact}
               cells={columns}
               rows={rows}>
               <TableHeader />

@@ -102,7 +102,7 @@ class ControlPanelSingleSelect extends React.Component {
               </Select>
             )}
             {validated === 'error' ? (
-              <div style={{ borderTop: '1.75px solid red', paddingBottom: '6px', maxWidth: '800px' }}></div>
+              <div style={{ borderTop: '1.75px solid red', paddingBottom: '6px', maxWidth: '600px' }}></div>
             ) : (
               <React.Fragment />
             )}
