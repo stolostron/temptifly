@@ -165,7 +165,11 @@ const mergeSource = (
   // filter out the custom resources that don't exist in the current template using selfLinks
   customResources = customResources.filter(resource => {
     // filter out custom resource that isn't in next version of template
-    const selfLink = _.get(resource, 'metadata.selfLink')
+
+    const deleteLink = _.merge(
+      _.pick(resource, ['apiVersion', 'kind']),
+      _.pick(_.get(resource, 'metadata', {}), ['selfLink', 'name', 'namespace'])
+    )
     let resourceID = getResourceID(resource)
     if (!resourceID) {
       return false
@@ -190,9 +194,7 @@ const mergeSource = (
       if (inx === -1) {
         // if editor got rid of it, add to the selfLinks we will be deleting
         // when updating editor to server
-        if (selfLink) {
-          deletedLinks.add(selfLink)
-        }
+        deletedLinks.add(deleteLink)
         return false
       } else {
         // else remove from currentTemplateResources such that
