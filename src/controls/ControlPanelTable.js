@@ -74,70 +74,86 @@ class ControlPanelTable extends React.Component {
       rows = _.cloneDeep(available)
     }
     const activeMap = _.keyBy(active, 'id')
-    newState.rows = rows.map(row => {
+    newState.rows = rows.map((row, rowIndex) => {
       const { id } = row
-      if (row.cells) {
-        row.selected = !!activeMap[id]
-        return row
-      }
-      const cells = controlData
-        .filter(({ mode }) => mode !== ControlMode.PROMPT_ONLY)
-        .map(data=>{
-          const {id, type, available} = data
-          switch(type) {
-          case 'text':
-            return row[id]
-          case 'toggle':
-            return  {
-              title: (value, rowIndex, cellIndex, props) => (
-                <EditableSelectInputCell
-                  value={value}
-                  rowIndex={rowIndex}
-                  cellIndex={cellIndex}
-                  props={props}
-                  onSelect={onSelect}
-                  clearSelection={clearSelection}
-                  /* eslint-disable-next-line react/prop-types */
-                  isOpen={props.isSelectOpen}
-                  /* eslint-disable-next-line react/prop-types */
-                  options={props.options.map((option, index) => (
-                    <SelectOption
-                      /* eslint-disable-next-line react/no-array-index-key */
-                      key={index}
-                      value={option.value}
-                      id={id + index}
-                    />
-                  ))}
-                  onToggle={isOpen => {
-                    onToggle(isOpen, rowIndex, cellIndex)
-                  }}
-                  /* eslint-disable-next-line react/prop-types */
-                  selections={props.selected}
-                />
-              ),
-              props: {
-                value: row[id],
-                name: id,
-                isSelectOpen: false,
-                selected: [row[id]],
-                options: available.map(value=>{return {value}}),
-                editableSelectProps: {
-                  variant: 'single',
-                  'aria-label': id
+
+      // create table rows
+      if (!row.cells) {
+        const cells = controlData
+          .filter(({ mode }) => mode !== ControlMode.PROMPT_ONLY)
+          .map(data=>{
+            const {id, type, available} = data
+            switch(type) {
+            case 'text':
+              return row[id]
+            case 'toggle':
+              return  {
+                title: (value, rowIndex, cellIndex, props) => (
+                  <EditableSelectInputCell
+                    value={value}
+                    rowIndex={rowIndex}
+                    cellIndex={cellIndex}
+                    props={props}
+                    onSelect={onSelect}
+                    clearSelection={clearSelection}
+                    /* eslint-disable-next-line react/prop-types */
+                    isOpen={props.isSelectOpen}
+                    /* eslint-disable-next-line react/prop-types */
+                    options={props.options.map((option, index) => (
+                      <SelectOption
+                        /* eslint-disable-next-line react/no-array-index-key */
+                        key={index}
+                        value={option.value}
+                        id={id + index}
+                      />
+                    ))}
+                    onToggle={isOpen => {
+                      onToggle(isOpen, rowIndex, cellIndex)
+                    }}
+                    /* eslint-disable-next-line react/prop-types */
+                    selections={props.selected}
+                  />
+                ),
+                props: {
+                  value: row[id],
+                  name: id,
+                  isSelectOpen: false,
+                  selected: [row[id]],
+                  options: available.map(value=>{return {value}}),
+                  editableSelectProps: {
+                    variant: 'single',
+                    'aria-label': id
+                  }
                 }
               }
             }
-          }
-        })
+          })
+        return {
+          id,
+          cells,
+          selected: !!activeMap[id],
+          rowEditBtnAriaLabel: idx => `Edit row ${idx}`,
+          rowSaveBtnAriaLabel: idx => `Save edits for row ${idx}`,
+          rowCancelBtnAriaLabel: idx => `Cancel edits for row ${idx}`,
 
-      return {
-        id,
-        cells,
-        selected: !!activeMap[id],
-        rowEditBtnAriaLabel: idx => `Edit row ${idx}`,
-        rowSaveBtnAriaLabel: idx => `Save edits for row ${idx}`,
-        rowCancelBtnAriaLabel: idx => `Cancel edits for row ${idx}`,
-
+        }
+      } else {
+        // update table row
+        row.selected = !!activeMap[id]
+        if (!row.isEditable) {
+          row.cells.forEach(({props})=>{
+            if (props) {
+              /* eslint-disable-next-line react/prop-types */
+              const {name} = props
+              const value = _.get(active, `${rowIndex}.${name}`)
+              /* eslint-disable-next-line react/prop-types */
+              props.selected = value
+              /* eslint-disable-next-line react/prop-types */
+              props.value = value
+            }
+          })
+        }
+        return row
       }
     })
     return newState
@@ -202,14 +218,16 @@ class ControlPanelTable extends React.Component {
     const { sortBy, searchValue } = this.state
     let { rows } = this.state
     const { control } = this.props
-    const { sortTable, active } = control
+    const { sortTable, active, controlData } = control
     const { sortIndex, direction } = sortBy
     rows = _.cloneDeep(rows)
     if (sortIndex) {
-      const sortKey = `cells[${sortIndex-1}]`
-      rows = sortTable
-        ? sortTable(rows, sortKey, direction, active)
-        : _.orderBy(rows, [sortKey], [direction])
+      if (sortTable) {
+        const sortKey = _.get(controlData, `[${sortIndex-1}].id`)
+        rows = sortTable(rows, sortKey, direction, active)
+      } else {
+        rows = _.orderBy(rows, [`cells[${sortIndex-1}]`], [direction])
+      }
     }
     if (searchValue) {
       rows = rows.filter(row => {
@@ -264,13 +282,10 @@ class ControlPanelTable extends React.Component {
     const columns = this.getColumns()
     if (isFailed) {
       return (
-
         <Alert
           variant='danger'
           title={i18n('overview.error.default')}
         />
-
-
       )
     } else if (isLoading) {
       return (<EmptyState>
@@ -324,19 +339,14 @@ class ControlPanelTable extends React.Component {
                 />
               </ToolbarItem>
               <div style={{display: 'flex'}}>
-
                 {actions.map((action) => (
                   <ToolbarItem key={action.id}>
                     {action}
                   </ToolbarItem>
                 ))}
-
               </div>
-
-
             </ToolbarContent>
           </Toolbar>
-
           <Fragment>
             <Table
               aria-label="BMA Table"
@@ -377,9 +387,6 @@ class ControlPanelTable extends React.Component {
             </Split>
           </Fragment>
         </Fragment>
-
-
-
       )
     }
   }
@@ -445,9 +452,7 @@ class ControlPanelTable extends React.Component {
         if (newCellProps.editableValue === undefined) {
           newCellProps.editableValue = []
         }
-
         let newSelected = Array.from(newCellProps.selected)
-
         switch (newCellProps.editableSelectProps.variant) {
         case 'typeaheadmulti':
         case 'checkbox': {
@@ -462,11 +467,9 @@ class ControlPanelTable extends React.Component {
           newSelected = newValue
         }
         }
-
         newCellProps.editableValue = newSelected
         newCellProps.selected = newSelected
       }
-
       return {
         rows: newRows
       }
@@ -509,8 +512,6 @@ class ControlPanelTable extends React.Component {
           if (props) {
             const {name, editableValue} = props
             _.set(active, `${rowIndex}.${name}`, editableValue)
-            props.selected = editableValue
-            props.value = editableValue
           }
         })
         this.props.handleChange(control)
