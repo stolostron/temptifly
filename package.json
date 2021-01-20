@@ -1,6 +1,6 @@
 {
   "name": "temptifly",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Side-by-side template editor",
   "main": "dist/index.js",
   "scripts": {

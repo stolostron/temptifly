@@ -141,11 +141,12 @@ class ControlPanelTable extends React.Component {
         // update table row
         row.selected = !!activeMap[id]
         if (!row.isEditable) {
-          row.cells.forEach(({props})=>{
+          row.cells.forEach(cell=>{
+            const {props} = cell||{}
             if (props) {
               /* eslint-disable-next-line react/prop-types */
               const {name} = props
-              const value = _.get(active, `${rowIndex}.${name}`)
+              const value = _.get(activeMap, `${id}.${name}`)
               /* eslint-disable-next-line react/prop-types */
               props.selected = value
               /* eslint-disable-next-line react/prop-types */
@@ -366,7 +367,7 @@ class ControlPanelTable extends React.Component {
               <SplitItem>
                 {rows.length !== 0 && (
                   <Pagination
-                    itemCount={rows.length}
+                    itemCount={available.length}
                     perPage={perPage}
                     page={page}
                     variant={PaginationVariant.bottom}
