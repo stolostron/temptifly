@@ -48,10 +48,19 @@ exports[`TemplateEditor component renders as expected 1`] = `
                 }
               }
             >
-              <label
-                className="creation-view-controls-textbox-title"
-                htmlFor="name"
-              />
+              <span
+                style={
+                  Object {
+                    "alignItems": "baseline",
+                    "display": "flex",
+                  }
+                }
+              >
+                <label
+                  className="creation-view-controls-textbox-title"
+                  htmlFor="name"
+                />
+              </span>
               <div
                 className="bx--form-item"
               >
@@ -77,10 +86,19 @@ exports[`TemplateEditor component renders as expected 1`] = `
                 }
               }
             >
-              <label
-                className="creation-view-controls-textbox-title"
-                htmlFor="namespace"
-              />
+              <span
+                style={
+                  Object {
+                    "alignItems": "baseline",
+                    "display": "flex",
+                  }
+                }
+              >
+                <label
+                  className="creation-view-controls-textbox-title"
+                  htmlFor="namespace"
+                />
+              </span>
               <div
                 className="bx--form-item"
               >

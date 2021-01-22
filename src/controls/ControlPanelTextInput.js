@@ -49,16 +49,18 @@ class ControlPanelTextInput extends React.Component {
           style={{ display: '' }}
           ref={this.setControlRef.bind(this, control)}
         >
-          <label
-            className="creation-view-controls-textbox-title"
-            htmlFor={controlId}
-          >
-            {name}
-            {validation.required ? (
-              <div className="creation-view-controls-required">*</div>
-            ) : null}
+          <span style={{display: 'flex', alignItems: 'baseline'}}>
+            <label
+              className="creation-view-controls-textbox-title"
+              htmlFor={controlId}
+            >
+              {name}
+              {validation.required ? (
+                <div className="creation-view-controls-required">*</div>
+              ) : null}
+            </label>
             <Tooltip control={control} i18n={i18n} />
-          </label>
+          </span>
           <TextInput
             id={controlId}
             hideLabel
