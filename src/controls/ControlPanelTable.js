@@ -74,7 +74,7 @@ class ControlPanelTable extends React.Component {
       rows = _.cloneDeep(available)
     }
     const activeMap = _.keyBy(active, 'id')
-    newState.rows = rows.map((row, rowIndex) => {
+    newState.rows = rows.map(row => {
       const { id } = row
 
       // create table rows
@@ -340,8 +340,9 @@ class ControlPanelTable extends React.Component {
                 />
               </ToolbarItem>
               <div style={{display: 'flex'}}>
-                {actions.map((action) => (
-                  <ToolbarItem key={action.id}>
+                {actions.map((action, inx) => (
+                /* eslint-disable-next-line react/no-array-index-key */
+                  <ToolbarItem key={inx}>
                     {action}
                   </ToolbarItem>
                 ))}

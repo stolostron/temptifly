@@ -384,7 +384,7 @@ class ControlPanelComboBox extends React.Component {
       e.stopPropagation()
     }
     const clickedWithinClear = e && this.clearRef && this.clearRef.contains && this.clearRef.contains(e.target)
-    const clickedWithinToggle = e && this.toggleRef && this.toggleRef.contains && this.toggleRef.contains(event.target)
+    const clickedWithinToggle = e && this.toggleRef && this.toggleRef.contains && this.toggleRef.contains(e.target)
     if (!(this.state.searchText || clickedWithinClear) || clickedWithinToggle) {
       this.setState(preState => {
         let {

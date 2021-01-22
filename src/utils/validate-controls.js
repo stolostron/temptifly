@@ -274,7 +274,7 @@ const validateControl = (
         controlId,
         ref
       } = control
-      if (required && (!active || (type === 'cards' && active.length === 0))) {
+      if (required && ((!active && active !== 0) || (type === 'cards' && active.length === 0))) {
         let row = 0
         const msg = notification ? notification : 'creation.missing.input'
         control.exception = i18n(msg, [name])

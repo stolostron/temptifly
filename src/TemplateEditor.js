@@ -1188,7 +1188,7 @@ export default class TemplateEditor extends React.Component {
         : (i18n ? i18n('button.create') : 'Create')
       const button = (
         <Button
-          id={createBtn}
+          id={`${createBtn}-btn`}
           onClick={this.handleCreateResource.bind(this)}
           variant={'primary'}
           isDisabled={disableButton}

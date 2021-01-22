@@ -190,7 +190,6 @@ const ControlPanelCard = ({
       id={id}
       role="button"
       onClick={handleClick}
-      disabled={true}
       tabIndex="0"
       aria-label={title}
       onKeyDown={handleClick}
