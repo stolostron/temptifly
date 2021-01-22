@@ -31,7 +31,6 @@ class ControlPanelSingleSelect extends React.Component {
     const { controlId, i18n, control } = this.props
     const {
       name,
-      placeholder = '',
       available = [],
       validation = {},
       isLoading,
@@ -48,6 +47,13 @@ class ControlPanelSingleSelect extends React.Component {
         active = i18n(
           _.get(control, 'fetchAvailable.emptyDesc', 'resource.none'))
       }
+    }
+    let { placeholder } = control
+    if (!placeholder) {
+      placeholder = i18n(
+        'creation.ocp.cluster.enter.value',
+        [name ? name.toLowerCase() : '']
+      )
     }
     const key = `${controlId}-${name}-${available.join('-')}`
     return (
