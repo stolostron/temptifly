@@ -39,7 +39,7 @@ class ControlPanelCheckbox extends React.Component {
           <Checkbox
             aria-label={name}
             id={controlId}
-            isChecked={active}
+            isChecked={typeof active==='boolean'? active : active==='true'}
             isDisabled={disabled}
             onChange={onChange}
           />

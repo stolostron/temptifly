@@ -28,7 +28,7 @@ class ControlPanelNumber extends React.Component {
     const nActive = parseInt(active, 10)
 
     const onChange = (value) => {
-      if (value>0) {
+      if (value>=0) {
         control.active = value.toString()
         handleChange()
       }
