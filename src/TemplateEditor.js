@@ -1128,7 +1128,7 @@ export default class TemplateEditor extends React.Component {
         const notifications = this.containerRef.getElementsByClassName(
           'pf-c-alert'
         )
-        if (notifications && notifications.length) {
+        if (notifications && notifications.length && notifications[0].scrollIntoView) {
           notifications[0].scrollIntoView({ behavior: 'smooth', block: 'end' })
         }
       }
