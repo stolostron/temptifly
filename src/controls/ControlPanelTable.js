@@ -82,10 +82,10 @@ class ControlPanelTable extends React.Component {
         const cells = controlData
           .filter(({ mode }) => mode !== ControlMode.PROMPT_ONLY)
           .map(data=>{
-            const {id, type, available} = data
+            const {id:rid, type, available} = data
             switch(type) {
             case 'text':
-              return row[id]
+              return row[rid]
             case 'toggle':
               return  {
                 title: (value, rowIndex, cellIndex, props) => (
@@ -104,7 +104,7 @@ class ControlPanelTable extends React.Component {
                         /* eslint-disable-next-line react/no-array-index-key */
                         key={index}
                         value={option.value}
-                        id={id + index}
+                        id={rid + index}
                       />
                     ))}
                     onToggle={isOpen => {
@@ -115,14 +115,14 @@ class ControlPanelTable extends React.Component {
                   />
                 ),
                 props: {
-                  value: row[id],
-                  name: id,
+                  value: row[rid],
+                  name: rid,
                   isSelectOpen: false,
-                  selected: [row[id]],
+                  selected: [row[rid]],
                   options: available.map(value=>{return {value}}),
                   editableSelectProps: {
                     variant: 'single',
-                    'aria-label': id
+                    'aria-label': rid
                   }
                 }
               }
@@ -143,10 +143,10 @@ class ControlPanelTable extends React.Component {
         if (!row.isEditable) {
           row.cells.forEach(cell=>{
             const {props} = cell||{}
-            if (props) {
+            if (props && activeMap[id]) {
               /* eslint-disable-next-line react/prop-types */
               const {name} = props
-              const value = _.get(activeMap, `${id}.${name}`)
+              const value = activeMap[id][name]
               /* eslint-disable-next-line react/prop-types */
               props.selected = value
               /* eslint-disable-next-line react/prop-types */
@@ -504,7 +504,9 @@ class ControlPanelTable extends React.Component {
     this.setState(prevState=>{
       const newRows = Array.from(prevState.rows)
       const { control } = this.props
-      const { active } = control
+      const { active, available, controlData } = control
+      const activeMap = _.keyBy(active, 'id')
+      const {id} = available[rowIndex]
       switch (type) {
       case 'cancel':
         newRows[rowIndex].isEditable = false
@@ -512,8 +514,15 @@ class ControlPanelTable extends React.Component {
       case 'save':
         newRows[rowIndex].cells.forEach(({props})=>{
           if (props) {
-            const {name, editableValue} = props
-            _.set(active, `${rowIndex}.${name}`, editableValue)
+            const {name} = props
+            let {editableValue} = props
+            if (!editableValue) {
+              const controlDataMap = _.keyBy(controlData, 'id')
+              const _active = controlDataMap[name].active
+              editableValue = typeof _active === 'function' ? _active(editableValue) : _active
+            }
+            _.set(activeMap[id], `${name}`, editableValue)
+            props.value = editableValue
           }
         })
         this.props.handleChange(control)
@@ -521,6 +530,11 @@ class ControlPanelTable extends React.Component {
         break
       case 'edit':
         newRows[rowIndex].isEditable = true
+
+        // make sure this row is active'
+        if (!activeMap[id]) {
+          this.addActives(active, [available[rowIndex]], controlData)
+        }
         break
       }
       return { rows: newRows }
