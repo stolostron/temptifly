@@ -207,7 +207,7 @@ export const highlightAllChanges = (
           '.creation-view-yaml-header-tabs'
         )
         if (tabContainer) {
-          const tabs = tabContainer.getElementsByClassName('bx--tabs__nav-link')
+          const tabs = tabContainer.getElementsByClassName('tf--tabs__nav-link')
           if (tabs.length > 0) {
             tabs[changedTab].click()
           }

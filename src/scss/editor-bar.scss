@@ -62,12 +62,6 @@
       padding: 0 6px;
     }
 
-    .bx--search--sm {
-      svg.bx--search-magnifier {
-        fill: gray;
-      }
-    }
-
     .pf-c-search-input {
       color: white;
       background-color: #414141;
@@ -152,17 +146,6 @@
   .editor-bar-spacer {
     width: 1rem;
     height: 1rem;
-  }
-
-  .bx--overflow-menu {
-    height: 1.375rem;
-
-    &:focus,
-    &.bx--overflow-menu--open {
-      box-shadow: 0 0 0 3px #7cc7ff;
-      outline: 0.0625rem solid transparent;
-      border: none;
-    }
   }
 }
 

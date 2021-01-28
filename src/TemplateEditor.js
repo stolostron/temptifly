@@ -27,7 +27,6 @@ import {
 import ControlPanel from './controls/ControlPanel'
 import EditorHeader from './components/EditorHeader'
 import EditorBar from './components/EditorBar'
-import TooltipContainer from './components/TooltipContainer'
 import './scss/template-editor.scss'
 import templateExample from '../example/templates/template.hbs'
 import controlDataExample from '../example/controlData/ControlData'
@@ -1199,12 +1198,12 @@ export default class TemplateEditor extends React.Component {
       if (portal) {
         return !hasPermissions
           ? ReactDOM.createPortal(
-            <TooltipContainer
-              tooltip={titleText}
+            <div
+              title={titleText}
               isDisabled={!hasPermissions}
             >
               {button}
-            </TooltipContainer>,
+            </div>,
             portal
           )
           : ReactDOM.createPortal(button, portal)

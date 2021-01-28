@@ -59,10 +59,6 @@
           top: 0;
           right: 0;
           z-index: 1000;
-
-          .bx--inline-notification {
-            background-color: white;
-          }
         }
 
         .yamlEditorContainer {
@@ -130,10 +126,6 @@
   display: flex;
   margin-left: 16px;
   align-items: center;
-
-  .bx--form-item {
-    min-width: 0;
-  }
 
   .switch-label {
     margin-left: 8px;
