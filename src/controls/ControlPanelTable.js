@@ -450,7 +450,7 @@ class ControlPanelTable extends React.Component {
       if (isPlaceholder) {
         newCellProps.editableValue = []
         newCellProps.selected = []
-      } else {
+      } else if (newCellProps.selected) {
         if (newCellProps.editableValue === undefined) {
           newCellProps.editableValue = []
         }

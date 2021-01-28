@@ -641,6 +641,10 @@ $container-max-width-with-editor: 650px !default;
       .pf-c-select__toggle,
       .pf-c-form-control {
         background-color: $acm_background_color;
+
+        .pf-c-badge.pf-m-read {
+          background-color: darkgray;
+        }
       }
 
       .creation-view-controls-title-main-collapse-button {
