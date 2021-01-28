@@ -20,18 +20,8 @@ $container-max-width-with-editor: 650px !default;
   justify-content: left;
 }
 
-.bx--tooltip,
-.bx--tooltip .bx--tooltip__caret {
-  color: white;
-  background-color: black;
-}
-
 .temptifly,
 .creation-view {
-  .bx--tooltip__trigger {
-    margin-left: 10px;
-  }
-
   .creation-view-portals {
     display: flex;
     justify-content: flex-end;
@@ -71,11 +61,7 @@ $container-max-width-with-editor: 650px !default;
       padding: 20px;
       max-width: 800px;
 
-      .pf-c-form-control,
-      .bx--list-box__field,
-      .bx--text-input,
-      .bx--list-box,
-      .bx--search-input {
+      .pf-c-form-control {
         background-color: #f4f7fb;
       }
 
@@ -124,36 +110,12 @@ $container-max-width-with-editor: 650px !default;
     max-width: $control-max-width-with-editor;
   }
 
-  .bx--tooltip--icon__top:focus {
-    box-shadow: none;
-    outline: none;
-    border: none;
-
-    .info-icon {
-      box-shadow: 0 0 0 3px #7cc7ff;
-      outline: 0.0625rem solid transparent;
-      border: none;
-    }
-  }
-
-  .bx--inline-notification {
-    cursor: pointer;
-  }
-
   .pf-c-alert {
     max-width: 1000px;
 
     h4 {
       margin: 0;
     }
-  }
-
-  .bx--tooltip--icon__top:after,
-  .bx--tooltip--icon__bottom:after {
-    white-space: normal;
-    width: 22rem;
-    z-index: 2000;
-    margin-left: 5.8rem;
   }
 
   &-controls {
@@ -320,10 +282,6 @@ $container-max-width-with-editor: 650px !default;
           top: 6px;
           left: 4px;
         }
-
-        .bx--dropdown-v2.bx--skeleton:before {
-          animation: none;
-        }
       }
 
       .tf--list-box {
@@ -411,33 +369,6 @@ $container-max-width-with-editor: 650px !default;
       }
     }
 
-    .bx--list-box input[role="combobox"] {
-      font-weight: 400;
-      cursor: pointer;
-      width: 90%;
-
-      &:focus {
-        cursor: text;
-      }
-
-      &:disabled {
-        cursor: not-allowed;
-      }
-
-      &:disabled + .bx--list-box__selection {
-        cursor: not-allowed;
-        pointer-events: none;
-      }
-    }
-
-    &-textarea {
-      .bx--form-item {
-        textarea {
-          background-color: white;
-        }
-      }
-    }
-
     &-add-value-container {
       display: flex;
       max-width: $control-max-width-with-editor;
@@ -512,28 +443,9 @@ $container-max-width-with-editor: 650px !default;
       margin-bottom: 8px;
       position: relative;
 
-      .bx--list-box {
-        .bx--list-box__field {
-          span.bx--list-box__label {
-            color: $color__navy-gray-6;
-            text-overflow: ellipsis;
-          }
-        }
-      }
-
-      .bx--list-box input[role="combobox"] {
-        margin-left: 16px;
-      }
-
-      .pf-c-select,
-      .bx--list-box {
+      .pf-c-select {
         max-width: $control-max-width-without-editor;
         background-color: white;
-
-        .bx--list-box__menu {
-          max-height: 12rem;
-          z-index: 500;
-        }
       }
     }
 
@@ -582,60 +494,14 @@ $container-max-width-with-editor: 650px !default;
         }
       }
 
-      .bx--toolbar-content > div {
-        & > .bx--btn {
-          margin-left: 10px;
-          border-radius: 3px;
-          height: 24px;
-          font-size: 16px;
-          font-weight: 400;
-          padding: 16px;
-          display: inline-flex;
-        }
-
-        & > .bx--btn--primary {
-          background-color: $color__white;
-          color: $color__blue-51;
-          border-color: $color__blue-51;
-          border-width: 1px;
-          margin: 2px;
-          margin-right: 12px;
-          &:hover,
-          &:active,
-          &:focus {
-            background-color: unset;
-            color: $color__blue-51;
-            box-shadow: 0 0 0 2px $color__blue-51;
-          }
-        }
-      }
-
       &-singleselect {
         padding: 0;
         min-width: 100px;
-
-        .bx--list-box {
-          box-shadow: none;
-        }
-
-        .bx--list-box__label {
-          font-weight: normal;
-        }
-
-        .bx--list-box__field {
-          background-color: white;
-        }
       }
 
       &-toggle {
         display: flex;
         align-items: center;
-
-        .bx--form-item {
-          flex: unset;
-          padding-right: 10px;
-          min-width: 0;
-        }
       }
 
       @keyframes fadeIt {
@@ -672,27 +538,6 @@ $container-max-width-with-editor: 650px !default;
         display: flex;
         flex-wrap: wrap;
         padding: 15px 10px;
-
-        .bx--tag.bx--tag--custom {
-          color: #152935;
-          background-color: #e2eaf4;
-          white-space: nowrap;
-          line-height: 20px;
-          padding: 0.7rem;
-          font-size: 0.8rem;
-          margin: 0 0.2rem;
-
-          .closeIcon {
-            cursor: pointer;
-            margin-left: 5px;
-          }
-        }
-
-        .bx--text-input {
-          height: 1.8rem;
-          background-color: white;
-          box-shadow: none;
-        }
       }
 
       &-edit-container {
@@ -730,78 +575,13 @@ $container-max-width-with-editor: 650px !default;
         padding-bottom: 0.5rem;
       }
 
-      .bx--select {
-        width: 100%;
-      }
-
-      .bx--list-box__label {
-        font-weight: normal;
-      }
-
-      .bx--number {
-        width: $control-max-width-with-editor;
-
-        .bx--number__controls {
-          top: 1.1rem;
-        }
-      }
-
-      .bx--skeleton__text {
-        height: 2.4rem;
-      }
-
-      .pf-c-select,
-      .bx--list-box__field,
-      .bx--text-input,
-      .bx--list-box {
+      .pf-c-select {
         width: $control-max-width-without-editor;
         background-color: white;
 
         .pf-c-select__menu {
           padding-left: 0;
           margin-left: 0;
-        }
-      }
-
-      .bx--list-box {
-        .bx--list-box__menu {
-          max-height: 14rem;
-          z-index: 500;
-        }
-      }
-
-      .bx--text-area {
-        height: 90px;
-        width: $control-max-width-without-editor;
-      }
-
-      .bx--text-input::placeholder {
-        color: $color__navy-gray-6;
-        text-overflow: ellipsis;
-      }
-
-      .bx--multi-select {
-        .bx--list-box__menu {
-          max-height: 12rem;
-          animation: slideopen 200ms ease-in-out;
-          z-index: 500;
-        }
-
-        &.bx--combo-box input::placeholder {
-          color: $color__navy-gray-6;
-          text-overflow: ellipsis;
-        }
-
-        &.bx--combo-box input[role="combobox"] {
-          cursor: default;
-          text-overflow: ellipsis;
-
-          &:focus {
-            cursor: text;
-            box-shadow: 0 0 0 3px #7cc7ff;
-            outline: 0.0625rem solid transparent;
-            border: none;
-          }
         }
       }
     }
@@ -828,30 +608,6 @@ $container-max-width-with-editor: 650px !default;
       }
     }
 
-    &-textbox {
-      .bx--text-input {
-        outline: 2px solid transparent;
-      }
-    }
-
-    &-textbox.flashed {
-      .bx--text-input {
-        animation: flash 2s ease-out;
-      }
-    }
-
-    &-textarea {
-      .bx--text-area {
-        outline: 2px solid transparent;
-      }
-    }
-
-    &-textarea.flashed {
-      .bx--text-area {
-        animation: flash 2s ease-out;
-      }
-    }
-
     &-checkbox {
       padding: 0 0.3125rem 1.125rem 0;
       display: flex;
@@ -862,10 +618,6 @@ $container-max-width-with-editor: 650px !default;
 
       .pf-c-form__group-label {
         padding: 0;
-      }
-
-      .bx--form-item {
-        flex: 0;
       }
     }
 
@@ -887,12 +639,12 @@ $container-max-width-with-editor: 650px !default;
       }
 
       .pf-c-select__toggle,
-      .pf-c-form-control,
-      .bx--list-box__field,
-      .bx--text-input,
-      .bx--list-box,
-      .bx--number input[type="number"] {
+      .pf-c-form-control {
         background-color: $acm_background_color;
+
+        .pf-c-badge.pf-m-read {
+          background-color: darkgray;
+        }
       }
 
       .creation-view-controls-title-main-collapse-button {

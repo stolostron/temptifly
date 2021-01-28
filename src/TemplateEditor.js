@@ -27,7 +27,6 @@ import {
 import ControlPanel from './controls/ControlPanel'
 import EditorHeader from './components/EditorHeader'
 import EditorBar from './components/EditorBar'
-import TooltipContainer from './components/TooltipContainer'
 import './scss/template-editor.scss'
 import templateExample from '../example/templates/template.hbs'
 import controlDataExample from '../example/controlData/ControlData'
@@ -274,7 +273,18 @@ export default class TemplateEditor extends React.Component {
         this.forceUpdate()
       }, 0)
     }
-    window.addEventListener('resize', this.layoutEditors.bind(this))
+    this.innerWidth = window.innerWidth
+    window.addEventListener('resize', (()=>{
+      if (this.innerWidth !== window.innerWidth) {
+        this.innerWidth = window.innerWidth
+        localStorage.removeItem(this.splitterSizeCookie)
+        const pane1 = document.getElementsByClassName('Pane1')
+        if (pane1 && pane1[0]) {
+          pane1[0].style.width = `${this.innerWidth/2}px`
+        }
+      }
+      this.layoutEditors()
+    }).bind(this))
   }
 
   componentWillUnmount() {
@@ -289,17 +299,14 @@ export default class TemplateEditor extends React.Component {
   setSplitPaneRef = splitPane => (this.splitPane = splitPane);
 
   handleSplitterDefault = () => {
+    const width = window.innerWidth
     const cookie = localStorage.getItem(this.splitterSizeCookie)
-    let size = cookie ? parseInt(cookie, 10) : 1000
-    const page = document.getElementById('page')
-    if (page) {
-      const width = page.getBoundingClientRect().width
-      if (!cookie) {
-        size = width / 2
-        localStorage.setItem(this.splitterSizeCookie, size)
-      } else if (size > width * 7 / 10) {
-        size = width * 7 / 10
-      }
+    let size = cookie ? parseInt(cookie, 10) : width
+    if (!cookie) {
+      size = width / 2
+      localStorage.setItem(this.splitterSizeCookie, size)
+    } else if (size > width * 7 / 10) {
+      size = width * 7 / 10
     }
     return size
   };
@@ -1199,12 +1206,12 @@ export default class TemplateEditor extends React.Component {
       if (portal) {
         return !hasPermissions
           ? ReactDOM.createPortal(
-            <TooltipContainer
-              tooltip={titleText}
+            <div
+              title={titleText}
               isDisabled={!hasPermissions}
             >
               {button}
-            </TooltipContainer>,
+            </div>,
             portal
           )
           : ReactDOM.createPortal(button, portal)

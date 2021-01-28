@@ -599,7 +599,7 @@ class ControlPanel extends React.Component {
                   )
                   if (tabContainer) {
                     const tabs = tabContainer.getElementsByClassName(
-                      '.bx--tabs__nav-link'
+                      '.tf--tabs__nav-link'
                     )
                     if (tabs.length > 0) {
                       tabs[tabInx].click()

@@ -19,64 +19,10 @@ $color__white: #ffffff !default;
       margin: 0;
     }
   }
-  &--container-wrapper {
-    margin-bottom: 60px;
-    .bx--link-connection {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding-left: 350px;
-    }
-  }
   &--providers-container {
-    .bx--accordion {
-      &__content {
-        padding-left: 1rem;
-        .tf--label-editor {
-          .tf--label-separator {
-            line-height: 2.3rem;
-            margin-right: 5px;
-            margin-left: 5px;
-          }
-          .bx--form-item {
-            flex: 0;
-            min-width: 450px;
-            margin-bottom: 25px;
-          }
-          .tf--form-field {
-            margin-right: 0;
-            min-width: 450px;
-          }
-          .toggle-component-btn {
-            background-color: transparent;
-            padding: 0;
-            margin-right: 25px;
-            &.add-btn {
-              .bx--btn__icon {
-                margin: 0;
-                fill: #3d70b2;
-              }
-            }
-            .bx--btn__icon {
-              margin: 0;
-              fill: #5a6872;
-            }
-          }
-        }
-      }
-    }
-    .tf--parameters__accordion {
-      .bx--accordion__title {
-        font-weight: 500;
-        font-size: 1.5rem;
-      }
-    }
     .tf--form-field {
       &__wrapper {
         margin-bottom: 30px;
-        .bx--number {
-          padding: 0;
-        }
       }
       min-width: 450px;
       padding: 10px;
@@ -88,12 +34,6 @@ $color__white: #ffffff !default;
       margin-right: 40px;
       padding-left: 0px;
       padding-right: 0px;
-      .bx--list-box__field {
-        height: 2.5rem;
-      }
-      .bx--select__arrow {
-        right: 2rem;
-      }
     }
     .tf-placeholder {
       min-width: 450px;
