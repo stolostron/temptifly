@@ -4,7 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { TextInput, Label } from '@patternfly/react-core'
 import ControlPanelFormGroup from './ControlPanelFormGroup'
-import _ from 'lodash'
+import keyBy from 'lodash/keyBy'
 
 export const DNS_LABEL = '[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?'
 export const PREFIX = `${DNS_LABEL}(?:\\.${DNS_LABEL})*/`
@@ -88,7 +88,7 @@ class ControlPanelLabels extends React.Component {
       invalidText = i18n('enter.add.label')
     } else {
       const match = regex.exec(value)
-      const map = _.keyBy(active, 'key')
+      const map = keyBy(active, 'key')
       if (map[match[KEY_CAPTURE_GROUP_INDEX]]) {
         invalid = true
         invalidText = i18n(

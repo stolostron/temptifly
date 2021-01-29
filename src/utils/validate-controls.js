@@ -1,7 +1,8 @@
 'use strict'
 
 import { ControlMode, parseYAML, reverseTemplate } from './source-utils'
-import _ from 'lodash'
+import get from 'lodash/get'
+import keyBy from 'lodash/keyBy'
 
 ///////////////////////////////////////////////////////////////////////////////
 // validate control/source values
@@ -186,7 +187,7 @@ const validateTableControl = (
     validation: { tester },
     exceptions
   } = table
-  const controlDataMap = _.keyBy(controlData, 'id')
+  const controlDataMap = keyBy(controlData, 'id')
   let hidden = false
   if (Array.isArray(rows)) {
     rows.forEach((row) => {
@@ -455,7 +456,7 @@ const validateSingleSelectControl = (
   ) {
     control.exception = i18n(
       'validation.bad.value',
-      [active, _.get(control, 'available')])
+      [active, get(control, 'available')])
     exceptions.push({
       row: getRow(sourcePath),
       column: 0,
@@ -589,5 +590,5 @@ const getKey = path => {
 }
 
 const getRow = sourcePath => {
-  return _.get(sourcePath, '$r', 0) + 1
+  return get(sourcePath, '$r', 0) + 1
 }

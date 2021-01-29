@@ -13,7 +13,8 @@ import {
   if_orFn,
   switchFn
 } from '../helpers'
-import _ from 'lodash'
+import get from 'lodash/get'
+import capitalize from 'lodash/capitalize'
 
 const helpers = {
   helpers: {
@@ -233,7 +234,7 @@ const addCodeSnippetsTemplateData = (
   // reset that control's active state and let replacement fill from scratch
   replacements.forEach(control => {
     const { availableMap } = control
-    const controlReplacements = _.get(
+    const controlReplacements = get(
       Object.values(availableMap),
       '[0].replacements'
     )
@@ -274,7 +275,7 @@ const addCodeSnippetsTemplateData = (
       encode: encodeData = [],
       userData
     } = control
-    templateData[`has${_.capitalize(id)}`] = active.length > 0
+    templateData[`has${capitalize(id)}`] = active.length > 0
     if (typeof active !== 'function' && active.length > 0) {
       if (hasCapturedUserSource) {
         // restore snippet that user edited

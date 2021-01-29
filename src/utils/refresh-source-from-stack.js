@@ -10,7 +10,16 @@ import {
 } from './source-utils'
 import { generateSourceFromTemplate } from './refresh-source-from-templates'
 import YamlParser from './YamlParser'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
+import merge from 'lodash/merge'
+import uniqWith from 'lodash/uniqWith'
+import set from 'lodash/set'
+import unset from 'lodash/unset'
+import get from 'lodash/get'
+import omitBy from 'lodash/omitBy'
+import isEmpty from 'lodash/isEmpty'
+import isEqual from 'lodash/isEqual'
+import pick from 'lodash/pick'
 
 export const generateSourceFromStack = (
   template,
@@ -52,7 +61,7 @@ export const updateEditStack = (
 
 const updateCustomIdMap = editStack => {
   const { customResources, baseTemplateResources, customIdMap } = editStack
-  const clonedTemplateResources = _.cloneDeep(baseTemplateResources)
+  const clonedTemplateResources = cloneDeep(baseTemplateResources)
   const customIdSet = new Set()
   customResources.forEach(resource => {
     const resourceID = getResourceID(resource)
@@ -142,7 +151,7 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
   )
 
   // make sure there's no duplicates
-  resources = _.uniqWith(resources, _.isEqual)
+  resources = uniqWith(resources, isEqual)
 
   // then generate the source from those resources
   return { ...generateSourceFromResources(resources), templateResources }
@@ -155,9 +164,9 @@ const mergeSource = (
   customIdMap,
   deletedLinks
 ) => {
-  let customResources = _.cloneDeep(resources)
+  let customResources = cloneDeep(resources)
   const clonedCurrentTemplateResources =
-    currentTemplateResources && _.cloneDeep(currentTemplateResources)
+    currentTemplateResources && cloneDeep(currentTemplateResources)
 
   ////////////////////////////////////////////////
   ///////////  DELETE ////////////////////////////
@@ -166,9 +175,9 @@ const mergeSource = (
   customResources = customResources.filter(resource => {
     // filter out custom resource that isn't in next version of template
 
-    const deleteLink = _.merge(
-      _.pick(resource, ['apiVersion', 'kind']),
-      _.pick(_.get(resource, 'metadata', {}), ['selfLink', 'name', 'namespace'])
+    const deleteLink = merge(
+      pick(resource, ['apiVersion', 'kind']),
+      pick(get(resource, 'metadata', {}), ['selfLink', 'name', 'namespace'])
     )
     let resourceID = getResourceID(resource)
     if (!resourceID) {
@@ -245,21 +254,21 @@ const mergeSource = (
                 case 'A': {
                   switch (item.kind) {
                   case 'N':
-                    val = _.get(newResource, path, [])
+                    val = get(newResource, path, [])
                     if (Array.isArray(val)) {
-                      _.set(resource, path, val)
+                      set(resource, path, val)
                     } else {
                       val[Object.keys(val).length] = item.rhs
-                      _.set(resource, path, Object.values(val))
+                      set(resource, path, Object.values(val))
                     }
                     break
                   case 'D':
-                    val = _.get(newResource, path, [])
+                    val = get(newResource, path, [])
                     if (Array.isArray(val)) {
-                      _.set(resource, path, val)
+                      set(resource, path, val)
                     } else {
-                      val = _.omitBy(val, e => e === item.lhs)
-                      _.set(resource, path, Object.values(val))
+                      val = omitBy(val, e => e === item.lhs)
+                      set(resource, path, Object.values(val))
                     }
                     break
                   }
@@ -267,21 +276,21 @@ const mergeSource = (
                 }
                 case 'E': {
                   idx = path.pop()
-                  val = _.get(resource, path)
+                  val = get(resource, path)
                   if (Array.isArray(val)) {
                     val.splice(idx, 1, rhs)
                   } else {
                     path.push(idx)
-                    _.set(resource, path, rhs)
+                    set(resource, path, rhs)
                   }
                   break
                 }
                 case 'N': {
-                  _.set(resource, path, rhs)
+                  set(resource, path, rhs)
                   break
                 }
                 case 'D': {
-                  _.unset(resource, path)
+                  unset(resource, path)
                   break
                 }
                 }
@@ -330,8 +339,8 @@ const generateSourceFromResources = resources => {
   const parsed = {}
   const yamls = []
   resources.forEach(resource => {
-    if (!_.isEmpty(resource)) {
-      const key = _.get(resource, 'kind', 'unknown')
+    if (!isEmpty(resource)) {
+      const key = get(resource, 'kind', 'unknown')
       yaml = jsYaml.safeDump(resource, {
         sortKeys,
         noRefs: true,

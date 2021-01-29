@@ -1,5 +1,4 @@
 var path = require('path'),
-    webpack = require('webpack'),
     MiniCssExtractPlugin = require('mini-css-extract-plugin'),
     FileManagerPlugin = require('filemanager-webpack-plugin')
 
@@ -11,6 +10,7 @@ module.exports = {
   entry: {
     'main': ['@babel/polyfill', './src/index.js']
   },
+  mode: 'production',
   output: {
     filename: 'index.js',
     path: __dirname + '/dist',
@@ -98,9 +98,6 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'styles.css',
       allChunks: true
-    }),
-    new webpack.optimize.LimitChunkCountPlugin({
-      maxChunks: 1
     }),
     new FileManagerPlugin({
       events: {

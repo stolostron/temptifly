@@ -2,7 +2,8 @@
 
 import { diff } from 'deep-diff'
 import { parseYAML, getInsideObject, getResourceID } from './source-utils'
-import _ from 'lodash'
+import get from 'lodash/get'
+import keyBy from 'lodash/keyBy'
 import { Base64 } from 'js-base64'
 
 export const highlightChanges = (editor, oldYAML, newYAML) => {
@@ -10,7 +11,7 @@ export const highlightChanges = (editor, oldYAML, newYAML) => {
   const decorationList = []
 
   // determine what rows were modified or added
-  oldYAML = oldYAML.replace(/\./g, '_') // any periods will mess up the _.get later
+  oldYAML = oldYAML.replace(/\./g, '_') // any periods will mess up the get later
   newYAML = newYAML.replace(/\./g, '_')
   const oldParse = parseYAML(oldYAML)
   const newParse = parseYAML(newYAML)
@@ -31,7 +32,7 @@ export const highlightChanges = (editor, oldYAML, newYAML) => {
         path.length > 0 ? pathBase + `.${path.join('.$v.')}` : pathBase
       const synced =
         (kind === 'D' || kind === 'E') && lhs && !rhs ? oldSynced : newSynced
-      let obj = _.get(synced, newPath)
+      let obj = get(synced, newPath)
       if (obj) {
         if (obj.$v || obj.$v === false) {
           // convert A's and E's into 'N's
@@ -64,7 +65,7 @@ export const highlightChanges = (editor, oldYAML, newYAML) => {
           kind = 'N'
           path.pop()
           newPath = pathBase + `.${path.join('.$v.')}`
-          obj = _.get(newSynced, newPath)
+          obj = get(newSynced, newPath)
         } else if (path.length > 0) {
           kind = 'D'
         }
@@ -146,8 +147,8 @@ export const highlightChanges = (editor, oldYAML, newYAML) => {
 const normalize = (oldRaw, newRaw) => {
   Object.keys(oldRaw).forEach(key => {
     if (newRaw[key] && oldRaw[key].length !== newRaw[key].length) {
-      const oldKeys = _.keyBy(oldRaw[key], getResourceID)
-      const newKeys = _.keyBy(newRaw[key], getResourceID)
+      const oldKeys = keyBy(oldRaw[key], getResourceID)
+      const newKeys = keyBy(newRaw[key], getResourceID)
 
       // if an element added to array, compare it with an empty object
       Object.keys(newKeys).forEach((k, inx) => {
@@ -189,7 +190,7 @@ export const highlightAllChanges = (
       let changeTab = true
       let editorOnTab
       editors.forEach((editor, inx) => {
-        editor.errorLine = _.get(editor, 'errorList[0].range.startLineNumber')
+        editor.errorLine = get(editor, 'errorList[0].range.startLineNumber')
         if (editor.changed || editor.errorLine !== undefined) {
           if (changedTab === undefined) {
             changedTab = inx

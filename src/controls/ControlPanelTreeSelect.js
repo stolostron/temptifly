@@ -7,7 +7,8 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import TimesCircleIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
 import ControlPanelFormGroup from './ControlPanelFormGroup'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
+import get from 'lodash/get'
 
 class ControlPanelTreeSelect extends React.Component {
   static propTypes = {
@@ -94,7 +95,7 @@ class ControlPanelTreeSelect extends React.Component {
       if (currentSelection !== undefined) {
         currentSelection -= branches
         if (currentSelection >= 0) {
-          indexes = _.cloneDeep(indexes)
+          indexes = cloneDeep(indexes)
           indexes.push(currentSelection)
         } else {
           // clicked a branch label
@@ -103,14 +104,14 @@ class ControlPanelTreeSelect extends React.Component {
       }
 
       let path = indexes.map(index => `[${index}]`).join('.children')
-      currentAvailable = path ? _.get(available, path) : available
+      currentAvailable = path ? get(available, path) : available
       currentAvailable = currentAvailable.children || currentAvailable
       let indent = 0
       if (Array.isArray(currentAvailable)) {
         path = ''
         indexes.forEach(index => {
           path += `[${index}]`
-          let label = _.get(available, `${path}.label`)
+          let label = get(available, `${path}.label`)
           if (label) {
             label = `${label}`
             branchLabels.push({ branch: label, indent })
