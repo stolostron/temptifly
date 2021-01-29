@@ -21,13 +21,11 @@ exports[`EditorBar component renders as expected 1`] = `
         className="editor-bar-section"
       >
         <div
-          aria-label={undefined}
           className="editor-bar-button restore"
           onClick={[Function]}
           onKeyPress={[Function]}
           role="button"
           tabIndex={0}
-          title={undefined}
         >
           <div />
         </div>
@@ -36,13 +34,11 @@ exports[`EditorBar component renders as expected 1`] = `
         className="editor-bar-section"
       >
         <div
-          aria-label={undefined}
           className="editor-bar-button undo disabled"
           onClick={[Function]}
           onKeyPress={[Function]}
           role="button"
           tabIndex={0}
-          title={undefined}
         >
           <svg
             height="16px"
@@ -74,13 +70,11 @@ exports[`EditorBar component renders as expected 1`] = `
           </svg>
         </div>
         <div
-          aria-label={undefined}
           className="editor-bar-button redo"
           onClick={[Function]}
           onKeyPress={[Function]}
           role="button"
           tabIndex={0}
-          title={undefined}
         >
           <svg
             height="16px"
@@ -116,9 +110,7 @@ exports[`EditorBar component renders as expected 1`] = `
         className="editor-bar-section"
       >
         <div
-          aria-label={undefined}
           className="editor-bar-search"
-          id={undefined}
           role="region"
         >
           <div
@@ -154,20 +146,17 @@ exports[`EditorBar component renders as expected 1`] = `
                 aria-label="Search input"
                 className="pf-c-search-input__text-input"
                 onChange={[Function]}
-                placeholder={undefined}
                 value=""
               />
             </span>
             
           </div>
           <div
-            aria-label={undefined}
             className="editor-bar-button previous disabled"
             onClick={[Function]}
             onKeyPress={[Function]}
             role="button"
             tabIndex={0}
-            title={undefined}
           >
             <svg
               height="16px"
@@ -196,13 +185,11 @@ exports[`EditorBar component renders as expected 1`] = `
             </svg>
           </div>
           <div
-            aria-label={undefined}
             className="editor-bar-button next disabled"
             onClick={[Function]}
             onKeyPress={[Function]}
             role="button"
             tabIndex={0}
-            title={undefined}
           >
             <svg
               height="16px"
@@ -240,13 +227,11 @@ exports[`EditorBar component renders as expected 1`] = `
       className="editor-bar-section"
     >
       <div
-        aria-label={undefined}
         className="editor-bar-button close"
         onClick={[Function]}
         onKeyPress={[Function]}
         role="button"
         tabIndex={0}
-        title={undefined}
       >
         <svg
           height="16px"

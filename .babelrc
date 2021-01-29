@@ -1,11 +1,32 @@
 {
     "presets": [
-        "es2015",
-        "react",
-        "stage-2"
+        "@babel/preset-env",
+        "@babel/preset-react"
     ],
     "plugins": [
-        "transform-class-properties",
-        "dynamic-import-node"
-    ]
+        "@babel/plugin-transform-runtime",
+        [ "@babel/plugin-proposal-class-properties", { "loose": true } ],
+        [ "@babel/plugin-transform-spread", { "loose": true }],
+        "@babel/plugin-syntax-dynamic-import",
+        "@babel/plugin-transform-async-to-generator",
+        "@babel/plugin-transform-react-jsx"
+    ],
+    "sourceMaps": true,
+    "env": {
+        "production": {
+            "presets": ["react-optimize"]
+          },
+        "client": {
+            "plugins": ["@babel/plugin-syntax-dynamic-import"]
+        },
+        "server": {
+            "plugins": ["dynamic-import-node", "@babel/plugin-proposal-object-rest-spread"]
+        },
+        "test": {
+            "plugins": ["dynamic-import-node"]
+        },
+        "e2e": {
+            "plugins": ["@babel/plugin-syntax-dynamic-import", "istanbul"]
+        }
+    }
 }
