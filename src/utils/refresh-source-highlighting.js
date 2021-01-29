@@ -197,6 +197,7 @@ export const highlightAllChanges = (
           }
           if (inx === selectedTab) {
             changeTab = false
+            editorOnTab = editor
           } else if (!changeTab && editor.errorLine !== undefined) {
             changeTab = true
           }
