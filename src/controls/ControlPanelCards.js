@@ -4,7 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import Tooltip from '../components/Tooltip'
-import _ from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 import {
   CheckmarkIcon,
 } from '../icons/Icons'
@@ -31,7 +31,7 @@ class ControlPanelCards extends React.Component {
           control.active = []
         }
       }
-      return { collapsed: collapseCardsControlOnSelect && !_.isEmpty(active), initialized: true}
+      return { collapsed: collapseCardsControlOnSelect && !isEmpty(active), initialized: true}
     }
     return null
   }

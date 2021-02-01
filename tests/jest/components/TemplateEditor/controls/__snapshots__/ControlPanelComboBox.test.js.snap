@@ -77,17 +77,14 @@ exports[`ControlPanelComboBox component renders as expected 1`] = `
                 aria-label="ListBox input field"
                 autoComplete="off"
                 className="pf-c-combo-control"
-                disabled={undefined}
                 id="controlId"
                 onBlur={[Function]}
                 onChange={[Function]}
                 onFocus={[Function]}
                 onKeyDown={[Function]}
                 onKeyUp={[Function]}
-                placeholder={undefined}
                 role="combobox"
                 spellCheck="false"
-                style={undefined}
                 value="test"
               />
             </div>

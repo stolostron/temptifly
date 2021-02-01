@@ -1,6 +1,6 @@
 'use strict'
 
-import _ from 'lodash'
+import get from 'lodash/get'
 
 ///////////////////////////////////////////////////////////////////////////////
 // intialize controls and groups
@@ -131,7 +131,7 @@ const initializeMsgs = (control, i18n) => {
   })
   const properties = ['available', 'active']
   properties.forEach(prop => {
-    const values = _.get(control, prop)
+    const values = get(control, prop)
     if (Array.isArray(values)) {
       values.forEach(item => {
         keys.forEach(key => {
@@ -181,7 +181,7 @@ const initializeAvailableChoices = (type, control) => {
   if (
     type !== 'table' &&
     type !== 'treeselect' &&
-    typeof _.get(control, 'available[0]') === 'object'
+    typeof get(control, 'available[0]') === 'object'
   ) {
     const { sort = true } = control
     availableMap = control.availableMap = {}

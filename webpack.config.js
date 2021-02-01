@@ -1,6 +1,5 @@
 var path = require('path'),
-    webpack = require('webpack'),
-    ExtractTextPlugin = require('extract-text-webpack-plugin'),
+    MiniCssExtractPlugin = require('mini-css-extract-plugin'),
     FileManagerPlugin = require('filemanager-webpack-plugin')
 
 const overpassTest = /overpass-.*\.(woff2?|ttf|eot|otf)(\?.*$|$)/
@@ -8,7 +7,10 @@ const overpassTest = /overpass-.*\.(woff2?|ttf|eot|otf)(\?.*$|$)/
 module.exports = {
   context: __dirname,
   devtool: 'source-map',
-  entry: './src/index.js',
+  entry: {
+    'main': ['@babel/polyfill', './src/index.js']
+  },
+  mode: 'production',
   output: {
     filename: 'index.js',
     path: __dirname + '/dist',
@@ -18,40 +20,46 @@ module.exports = {
   module: {
     rules: [
       {
+        // Transpile React JSX to ES5
         test: [/\.jsx$/, /\.js$/],
         exclude: /node_modules|\.scss/,
         loader: 'babel-loader?cacheDirectory',
+        options: {
+          presets: ['@babel/preset-env', '@babel/preset-react'],
+          plugins: ['@babel/plugin-proposal-class-properties']
+        }
       },
       {
         test: [/\.s?css$/],
         exclude: /node_modules/,
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader?sourceMap'
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
             },
-            {
-              loader: 'postcss-loader?sourceMap',
-              options: {
-                plugins: function () {
-                  return [
-                    require('autoprefixer')
-                  ]
-                },
-              }
+          },
+          {
+            loader: 'postcss-loader?sourceMap',
+            options: {
+              plugins: function () {
+                return [
+                  require('autoprefixer')
+                ]
+              },
             },
-            {
-              loader: 'resolve-url-loader',
-              options: {
-                sourceMap: true
-              }
-            },
-            {
-              loader: 'sass-loader?sourceMap',
+          },
+          {
+            loader: 'resolve-url-loader',
+            options: {
+              sourceMap: true
             }
-          ]
-        })
+          },
+          {
+            loader: 'sass-loader?sourceMap',
+          },
+        ],
       },
       {
         test: /\.s?css$/,
@@ -87,18 +95,15 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin({
+    new MiniCssExtractPlugin({
       filename: 'styles.css',
       allChunks: true
     }),
-    new webpack.optimize.LimitChunkCountPlugin({
-      maxChunks: 1
-    }),
     new FileManagerPlugin({
-      onEnd: {
-        copy: [
-          { source: 'src/index.d.ts', destination: 'dist' }
-        ]
+      events: {
+        onEnd: {
+          copy: [{ source: './src/index.d.ts', destination: './dist/index.d.ts' }],
+        }
       }
     })
 

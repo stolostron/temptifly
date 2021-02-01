@@ -1,7 +1,7 @@
 'use strict'
 
 import { parseYAML, getSourcePath, removeVs } from './source-utils'
-import _ from 'lodash'
+import get from 'lodash/get'
 
 ///////////////////////////////////////////////////////////////////////////////
 //intialize controls and groups
@@ -92,7 +92,7 @@ const initialControl = (control, editor) => {
         }
       }
       if (sourcePath) {
-        let active = _.get(templateObject, sourcePath)
+        let active = get(templateObject, sourcePath)
         switch (ctrl.type) {
         case 'checkbox':
           if (!active) {

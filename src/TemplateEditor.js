@@ -2,7 +2,7 @@
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import loadable from 'loadable-components'
+import loadable from '@loadable/component'
 import { Prompt } from 'react-router-dom'
 import SplitPane from 'react-split-pane'
 import classNames from 'classnames'
@@ -28,9 +28,11 @@ import ControlPanel from './controls/ControlPanel'
 import EditorHeader from './components/EditorHeader'
 import EditorBar from './components/EditorBar'
 import './scss/template-editor.scss'
-import templateExample from '../example/templates/template.hbs'
-import controlDataExample from '../example/controlData/ControlData'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
+import get from 'lodash/get'
+import debounce from 'lodash/debounce'
+import keyBy from 'lodash/keyBy'
+import merge from 'lodash/merge'
 
 export const YamlEditor = loadable(() => import(/* webpackChunkName: "YamlEditor" */ './components/YamlEditor'))
 
@@ -145,7 +147,7 @@ export default class TemplateEditor extends React.Component {
     const { editor, template, showSecrets } = state
     if (!controlData) {
       // initialize control data
-      const cd = _.cloneDeep(initialControlData || controlDataExample)
+      const cd = cloneDeep(initialControlData)
       controlData = initializeControls(cd, editor, i18n)
       newState = { ...newState, controlData }
 
@@ -160,7 +162,7 @@ export default class TemplateEditor extends React.Component {
     // has source been initialized?
     if (isLoaded && !templateYAML) {
       // editing an existing set of resources??
-      const customResources = _.get(fetchControl, 'resources')
+      const customResources = get(fetchControl, 'resources')
       if (customResources) {
         editStack = { customResources, editor, i18n }
       }
@@ -217,7 +219,7 @@ export default class TemplateEditor extends React.Component {
       isCustomName: false,
       showEditor: !!localStorage.getItem(TEMPLATE_EDITOR_OPEN_COOKIE),
       showSecrets: !!localStorage.getItem(TEMPLATE_EDITOR_SHOW_SECRETS_COOKIE),
-      template: props.template || templateExample,
+      template: props.template,
       i18n: props.i18n || ((msg) => msg),
       activeYAMLEditor: 0,
       exceptions: [],
@@ -230,7 +232,7 @@ export default class TemplateEditor extends React.Component {
       hasUndo: false,
       hasRedo: false,
       resetInx: 0,
-      hasPauseCreate: !!_.get(props, 'createControl.pauseCreate'),
+      hasPauseCreate: !!get(props, 'createControl.pauseCreate'),
       editor: {
         forceUpdate: (() => {
           this.forceUpdate()
@@ -245,7 +247,7 @@ export default class TemplateEditor extends React.Component {
     this.isDirty = false
     this.firstGoToLinePerformed = false
     this.editors = []
-    this.parseDebounced = _.debounce(yaml => {
+    this.parseDebounced = debounce(yaml => {
       this.handleParse(yaml)
     }, 500)
     this.handleEditorCommand = this.handleEditorCommand.bind(this)
@@ -497,7 +499,7 @@ export default class TemplateEditor extends React.Component {
       )
       control.nextUniqueGroupID++
       active.push(newGroup)
-      const nameControl = _.keyBy(newGroup, 'id')[nameId]
+      const nameControl = keyBy(newGroup, 'id')[nameId]
       nameControl.active = `${baseName}-${active.length - 1}`
 
       // scroll down
@@ -561,7 +563,7 @@ export default class TemplateEditor extends React.Component {
 
     this.setState({
       controlData,
-      template: template || templateExample,
+      template: template,
       templateYAML,
       templateObject,
       templateResources,
@@ -603,7 +605,7 @@ export default class TemplateEditor extends React.Component {
         parentControlData.splice(
           insertInx + 1,
           0,
-          ..._.cloneDeep(insertControlData)
+          ...cloneDeep(insertControlData)
         )
 
         // if this card control is in a group, tell each control
@@ -1114,7 +1116,7 @@ export default class TemplateEditor extends React.Component {
 
   replaceSecrets = payload => {
     const { templateObject } = this.state
-    const secretsMap = _.keyBy(templateObject.Secret, ({ $raw }) => {
+    const secretsMap = keyBy(templateObject.Secret, ({ $raw }) => {
       const { metadata: { name, namespace } } = $raw
       return `${namespace}/${name}`
     })
@@ -1123,7 +1125,7 @@ export default class TemplateEditor extends React.Component {
       if (kind === 'Secret') {
         const secret = secretsMap[`${namespace}/${name}`]
         if (secret) {
-          _.merge(resource, secret.$raw)
+          merge(resource, secret.$raw)
         }
       }
     })
@@ -1250,7 +1252,7 @@ export default class TemplateEditor extends React.Component {
   resetEditor() {
     const { controlData: initialControlData } = this.props
     const { template, editStack = {}, resetInx, editor, i18n } = this.state
-    const cd = _.cloneDeep(initialControlData || controlDataExample)
+    const cd = cloneDeep(initialControlData)
     const controlData = initializeControls(cd, editor, i18n)
     const otherYAMLTabs = []
     if (editStack.initialized) {

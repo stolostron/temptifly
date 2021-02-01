@@ -8,7 +8,7 @@ import {
   SelectVariant,
   Spinner } from '@patternfly/react-core'
 import ControlPanelFormGroup from './ControlPanelFormGroup'
-import _ from 'lodash'
+import get from 'lodash/get'
 
 class ControlPanelSingleSelect extends React.Component {
   static propTypes = {
@@ -45,12 +45,12 @@ class ControlPanelSingleSelect extends React.Component {
     if (!placeholder) {
       if (isLoading) {
         placeholder = i18n(
-          _.get(control, 'fetchAvailable.loadingDesc', 'resource.loading'))
+          get(control, 'fetchAvailable.loadingDesc', 'resource.loading'))
       } else if (isFailed) {
         placeholder = i18n('resource.error')
       } else if (available.length === 0) {
         placeholder = i18n(
-          _.get(control, 'fetchAvailable.emptyDesc', 'resource.none'))
+          get(control, 'fetchAvailable.emptyDesc', 'resource.none'))
       }
     }
     const setOpen = (open) => {

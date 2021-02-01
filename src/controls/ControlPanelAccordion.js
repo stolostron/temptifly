@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import { Badge, Popover } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
-import _ from 'lodash'
+import get from 'lodash/get'
 import {
   CaretIcon,
 } from '../icons/Icons'
@@ -54,9 +54,9 @@ class ControlPanelAccordion extends React.Component {
           // if expanding make sure at least 1st control is visible
           const { content: _content } = control
           const ref =
-            _.get(_content, '[2].ref') ||
-            _.get(_content, '[1].ref') ||
-            _.get(_content, '[0].ref')
+            get(_content, '[2].ref') ||
+            get(_content, '[1].ref') ||
+            get(_content, '[0].ref')
           if (ref) {
             const rect = ref.getBoundingClientRect()
             if (rect.top < 0 || rect.bottom > window.innerHeight) {

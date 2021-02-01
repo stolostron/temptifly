@@ -1,6 +1,6 @@
 'use strict'
 
-import _ from 'lodash'
+import get from 'lodash/get'
 import IPCIDR from 'ip-cidr'
 import { Address4, Address6 } from 'ip-address'
 
@@ -14,7 +14,7 @@ const getCIDRContextTexter = (cidrFieldKey, sourcePath) => {
     if (!IP_ADDRESS_TESTER.test(value)) {
       return i18n('creation.ocp.cluster.valid.ip')
     }
-    const cidrString = _.get(templateObjectMap[tabId], path) || ''
+    const cidrString = get(templateObjectMap[tabId], path) || ''
     const cidr = new IPCIDR(cidrString.toString())
     if (cidr.isValid() && !cidr.contains(value)) {
       const cidrFieldName = i18n(cidrFieldKey)

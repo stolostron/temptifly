@@ -7,7 +7,10 @@ import { initializeControlFunctions } from './initialize-control-functions'
 import { generateSourceFromStack } from './refresh-source-from-stack'
 import { generateSourceFromTemplate } from './refresh-source-from-templates'
 
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
+import capitalize from 'lodash/capitalize'
+import isEmpty from 'lodash/isEmpty'
+import get from 'lodash/get'
 
 export const ControlMode = Object.freeze({
   TABLE_ONLY: 'TABLE_ONLY',
@@ -33,7 +36,7 @@ export const initializeControls = (
 
 // from an edit resource, discover # of groups, card selections
 export function discoverControls(controlData, templateObject, editor, i18n) {
-  templateObject = _.cloneDeep(templateObject)
+  templateObject = cloneDeep(templateObject)
   const discoverControl = control => {
     const { discover } = control
     if (discover) {
@@ -47,7 +50,7 @@ export function discoverControls(controlData, templateObject, editor, i18n) {
 
 //reverse control active valuess from template
 export function reverseTemplate(controlData, templateObject) {
-  templateObject = _.cloneDeep(templateObject)
+  templateObject = cloneDeep(templateObject)
   const reverseControl = control => {
     const { type, active = [], reverse, shift } = control
     if (type === 'group') {
@@ -113,7 +116,7 @@ export const generateSource = (
   controlData,
   otherYAMLTabs
 ) => {
-  if (!_.isEmpty(editStack)) {
+  if (!isEmpty(editStack)) {
     return generateSourceFromStack(
       template,
       editStack,
@@ -135,7 +138,7 @@ export const parseYAML = yaml => {
   try {
     yamls.forEach(snip => {
       const obj = jsYaml.safeLoad(snip)
-      const key = _.get(obj, 'kind', 'unknown')
+      const key = get(obj, 'kind', 'unknown')
       let values = parsed[key]
       if (!values) {
         values = parsed[key] = []
@@ -158,7 +161,7 @@ export const parseYAML = yaml => {
     exceptions.push({
       row: line + absLine,
       column,
-      text: _.capitalize(reason || message),
+      text: capitalize(reason || message),
       type: 'error'
     })
   }
@@ -169,8 +172,8 @@ export const getInsideObject = (ikey, parsed) => {
   const ret = {}
   Object.keys(parsed).forEach(key => {
     ret[key] = []
-    _.get(parsed, `${key}`, []).forEach(obj => {
-      ret[key].push(_.get(obj, `${ikey}`))
+    get(parsed, `${key}`, []).forEach(obj => {
+      ret[key].push(get(obj, `${ikey}`))
     })
   })
   return ret
@@ -194,10 +197,10 @@ export const cacheUserData = controlData => {
 
 export const getResourceID = resource => {
   return (
-    _.get(resource, 'metadata.selfLink') ||
+    get(resource, 'metadata.selfLink') ||
     (
-      `/namespaces/${_.get(resource, 'metadata.namespace', 'none') || ''}/` +
-      `${resource.kind}s/${_.get(resource, 'metadata.name') || ''}`
+      `/namespaces/${get(resource, 'metadata.namespace', 'none') || ''}/` +
+      `${resource.kind}s/${get(resource, 'metadata.name') || ''}`
     ).toLowerCase()
   )
 }

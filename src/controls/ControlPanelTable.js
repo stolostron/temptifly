@@ -31,7 +31,11 @@ import {
 } from '@patternfly/react-table'
 import { ControlMode } from '../utils/source-utils'
 import CubesIcon from '@patternfly/react-icons/dist/js/icons/cubes-icon'
-import _ from 'lodash'
+import keyBy from 'lodash/keyBy'
+import cloneDeep from 'lodash/cloneDeep'
+import get from 'lodash/get'
+import orderBy from 'lodash/orderBy'
+import set from 'lodash/set'
 
 const add = 'table.actions.add'
 const remove = 'table.actions.remove'
@@ -59,7 +63,7 @@ class ControlPanelTable extends React.Component {
     const newState = {}
     localStorage.setItem(`table-${id}-page-size`, perPage)
     if (!state.originalSet) {
-      newState.originalSet = new Set(isLoaded ? Object.keys(_.keyBy(available, 'id')) : [])
+      newState.originalSet = new Set(isLoaded ? Object.keys(keyBy(available, 'id')) : [])
     }
     const { active } = control
     const { controlData } = control
@@ -68,12 +72,12 @@ class ControlPanelTable extends React.Component {
       .filter(({ mode }) => mode !== ControlMode.PROMPT_ONLY)
       .map(({ id }) => ({ key: id }))
     newState.columns = columns
-    const availableMap = _.keyBy(available, 'id')
+    const availableMap = keyBy(available, 'id')
     rows = rows.filter(({id})=>!!availableMap[id])
     if (rows.length !== available.length) {
-      rows = _.cloneDeep(available)
+      rows = cloneDeep(available)
     }
-    const activeMap = _.keyBy(active, 'id')
+    const activeMap = keyBy(active, 'id')
     newState.rows = rows.map(row => {
       const { id } = row
 
@@ -191,7 +195,7 @@ class ControlPanelTable extends React.Component {
       !this.loaded
     ) {
       this.loaded = true
-      const requestedUIDs = _.get(fetchData, 'requestedUIDs', [])
+      const requestedUIDs = get(fetchData, 'requestedUIDs', [])
       requestedUIDs.forEach(uid => this.handleSelect(uid))
     }
   }
@@ -221,18 +225,18 @@ class ControlPanelTable extends React.Component {
     const { control } = this.props
     const { sortTable, active, controlData } = control
     const { sortIndex, direction } = sortBy
-    rows = _.cloneDeep(rows)
+    rows = cloneDeep(rows)
     if (sortIndex) {
       if (sortTable) {
-        const sortKey = _.get(controlData, `[${sortIndex-1}].id`)
+        const sortKey = get(controlData, `[${sortIndex-1}].id`)
         rows = sortTable(rows, sortKey, direction, active)
       } else {
-        rows = _.orderBy(rows, [`cells[${sortIndex-1}]`], [direction])
+        rows = orderBy(rows, [`cells[${sortIndex-1}]`], [direction])
       }
     }
     if (searchValue) {
       rows = rows.filter(row => {
-        return _.get(row, 'cells[0]', '').indexOf(searchValue) !== -1
+        return get(row, 'cells[0]', '').indexOf(searchValue) !== -1
       })
     }
     return rows
@@ -399,7 +403,7 @@ class ControlPanelTable extends React.Component {
     let { active=[] } = control
     if (rowId !== -1) {
       const {id} = available[rowId]
-      const activeMap = _.keyBy(active, 'id')
+      const activeMap = keyBy(active, 'id')
 
       if (!activeMap[id]) {
         // add to active
@@ -505,7 +509,7 @@ class ControlPanelTable extends React.Component {
       const newRows = Array.from(prevState.rows)
       const { control } = this.props
       const { active, available, controlData } = control
-      const activeMap = _.keyBy(active, 'id')
+      const activeMap = keyBy(active, 'id')
       const {id} = available[rowIndex]
       switch (type) {
       case 'cancel':
@@ -517,11 +521,11 @@ class ControlPanelTable extends React.Component {
             const {name} = props
             let {editableValue} = props
             if (!editableValue) {
-              const controlDataMap = _.keyBy(controlData, 'id')
+              const controlDataMap = keyBy(controlData, 'id')
               const _active = controlDataMap[name].active
               editableValue = typeof _active === 'function' ? _active(editableValue) : _active
             }
-            _.set(activeMap[id], `${name}`, editableValue)
+            set(activeMap[id], `${name}`, editableValue)
             props.value = editableValue
           }
         })
@@ -552,7 +556,7 @@ class ControlPanelTable extends React.Component {
       control.available = []
       available = control.available
     }
-    const existingMap = _.keyBy(available, ({ hostName, hostNamespace }) => {
+    const existingMap = keyBy(available, ({ hostName, hostNamespace }) => {
       return `${hostName}-${hostNamespace}`
     })
     switch (action) {

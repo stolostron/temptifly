@@ -7,7 +7,10 @@ import classNames from 'classnames'
 import ControlPanelFormGroup from './ControlPanelFormGroup'
 import TimesCircleIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
 import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon'
-import _ from 'lodash'
+import set from 'lodash/set'
+import get from 'lodash/get'
+import uniq from 'lodash/uniq'
+import invert from 'lodash/invert'
 
 class ControlPanelComboBox extends React.Component {
   static propTypes = {
@@ -44,10 +47,10 @@ class ControlPanelComboBox extends React.Component {
           if (!userData.includes(searchText)) {
             control.active = searchText
             userData.push(searchText)
-            _.set(control, 'userData', userData)
+            set(control, 'userData', userData)
 
             // if this combobox is fetched from server, make sure whatever user types in has an availableMap entry
-            const setAvailableMap = _.get(control, 'fetchAvailable.setAvailableMap')
+            const setAvailableMap = get(control, 'fetchAvailable.setAvailableMap')
             if (setAvailableMap) {
               setAvailableMap(control)
             }
@@ -129,14 +132,14 @@ class ControlPanelComboBox extends React.Component {
     if (fetchAvailable) {
       if (isLoading) {
         loadingMsg = i18n(
-          _.get(control, 'fetchAvailable.loadingDesc', 'resource.loading'))
+          get(control, 'fetchAvailable.loadingDesc', 'resource.loading'))
       } else if (isFailed) {
         placeholder = i18n('resource.error')
       } else if (available.length === 0) {
         placeholder =
           placeholder ||
           i18n(
-            _.get(control, 'fetchAvailable.emptyDesc', 'resource.empty'))
+            get(control, 'fetchAvailable.emptyDesc', 'resource.empty'))
       }
     } else if (isLoading) {
       loadingMsg = i18n(
@@ -150,12 +153,12 @@ class ControlPanelComboBox extends React.Component {
         [name.toLowerCase()]
       )
     }
-    available = _.uniq([...userData, ...available])
+    available = uniq([...userData, ...available])
 
     // when available map has descriptions of choices
     // ex: instance types have # cpu's etc
     if (availableMap && !hasReplacements) {
-      const map = _.invert(availableMap)
+      const map = invert(availableMap)
       active = map[active] || active
     }
 
