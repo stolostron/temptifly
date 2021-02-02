@@ -254,13 +254,12 @@ class ControlPanel extends React.Component {
   }
 
   renderControlPrompt(control) {
-    const { i18n, fetchData } = this.props
+    const { i18n } = this.props
     return (
       <ControlPanelPrompt
         control={control}
         handleAddActive={items => this.handleAddActive(control, items)}
         i18n={i18n}
-        fetchData={fetchData}
       />
     )
   }
@@ -402,6 +401,7 @@ class ControlPanel extends React.Component {
           control={control}
           handleChange={this.handleControlChange.bind(this, control)}
           i18n={i18n}
+          fetchData={this.props.fetchData}
         />
       )
     case 'labels':

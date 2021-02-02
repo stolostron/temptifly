@@ -180,7 +180,6 @@ class ControlPanelTable extends React.Component {
     this.headers = controlData
       .filter(({ mode }) => mode !== ControlMode.PROMPT_ONLY)
       .map(({ id }) => id )
-    this.handleSelect = this.handleSelect.bind(this)
     this.loaded = false
     this.handleSelect = this.handleSelect.bind(this)
     this.handleSort = this.handleSort.bind(this)
@@ -188,15 +187,19 @@ class ControlPanelTable extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { fetchData } = this.props
+    const { fetchData, control } = this.props
     if (
       !prevProps.control.isLoading &&
-      !this.props.control.isLoading &&
+      !control.isLoading &&
       !this.loaded
     ) {
       this.loaded = true
+      const { available } = control
       const requestedUIDs = get(fetchData, 'requestedUIDs', [])
-      requestedUIDs.forEach(uid => this.handleSelect(uid))
+      requestedUIDs.forEach(uid => {
+        const rowInx = available.findIndex(({id})=>id===uid)
+        this.handleSelect(null, true, rowInx)
+      })
     }
   }
 

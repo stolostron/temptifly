@@ -23,14 +23,6 @@ class ControlPanelCards extends React.Component {
     if (!initialized) {
       const { control } = props
       const { active, collapseCardsControlOnSelect } = control
-      if (typeof active === 'function') {
-        const activeID = control.active(control, props.fetchData)
-        if (activeID) {
-          props.handleChange(activeID)
-        } else {
-          control.active = []
-        }
-      }
       return { collapsed: collapseCardsControlOnSelect && !isEmpty(active), initialized: true}
     }
     return null
@@ -50,6 +42,17 @@ class ControlPanelCards extends React.Component {
 
   setControlRef = (control, ref) => {
     this.multiSelect = control.ref = ref
+  }
+
+  componentDidMount() {
+    const { control, fetchData, handleChange } = this.props
+    const { active } = control
+    if (typeof active === 'function') {
+      const activeID = active(control, fetchData)
+      if (activeID) {
+        handleChange(activeID)
+      }
+    }
   }
 
   render() {
@@ -85,7 +88,7 @@ class ControlPanelCards extends React.Component {
                       <ControlPanelCard
                         key={id}
                         type={id}
-                        selected={active.includes(id)}
+                        selected={active.includes && active.includes(id)}
                         choice={choice}
                         handleOnClick={this.handleChange.bind(this, id)}
                         i18n={i18n}

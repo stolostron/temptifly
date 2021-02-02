@@ -395,9 +395,9 @@ export default class TemplateEditor extends React.Component {
     const { controlData, showEditor, isCustomName, notifications, i18n } = this.state
     const {
       controlData: originalControlData,
-      fetchControl = {}
+      fetchControl
     } = this.props
-    const { fetchData } = fetchControl
+    const { fetchData } = fetchControl || {}
     return (
       <ControlPanel
         handleControlChange={this.handleControlChange}
@@ -667,6 +667,9 @@ export default class TemplateEditor extends React.Component {
         id + uniqueGroupID
       )
       if (!wasPreviouslySelected) {
+        if (!creationView) {
+          creationView = document.getElementsByClassName('content')[0]
+        }
         const scrollView = showEditor ? creationView : window
         const controlTop = ref.getBoundingClientRect().top
         const panelTop = showEditor
