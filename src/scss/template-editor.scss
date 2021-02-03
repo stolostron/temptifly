@@ -85,15 +85,6 @@
     margin: 0 5px;
     background: rgba(0, 0, 0, 0.5);
   }
-
-  .Resizer:hover {
-    -webkit-transition: all 0.2s ease;
-    transition: all 0.2s ease;
-  }
-
-  .Resizer.vertical:hover {
-    background: rgba(0, 0, 0, 0.5);
-  }
 }
 
 .edit-button {
