@@ -537,20 +537,23 @@ $container-max-width-with-editor: 650px !default;
         box-shadow: 0 1px 0 0 #5a6872;
         display: flex;
         flex-wrap: wrap;
-        padding: 15px 10px;
+        padding: 0;
+      }
+
+      &-tag-container {
+        padding: 6px 0 0 7px;
+        
+        .pf-c-label {
+          margin-right: 5px;
+        }
       }
 
       &-edit-container {
         position: relative;
         width: 100%;
-        margin-top: 10px;
-
-        .closeIcon {
-          cursor: pointer;
-          position: absolute;
-          right: 0;
-          top: 8px;
-          z-index: 1000;
+        
+        input {
+          border: none;
         }
       }
     }

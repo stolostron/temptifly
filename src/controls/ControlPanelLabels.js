@@ -26,17 +26,16 @@ class ControlPanelLabels extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: '',
-      invalidText: ''
+      value: ''
     }
   }
 
   render() {
     const { controlId, i18n, control } = this.props
-    const { active = [] } = control
+    const { active = [], exception } = control
     const formatted = active.map(({ key, value: v }) => `${key}=${v}`)
-    const { value, invalidText } = this.state
-    const validated = invalidText ? 'error' : undefined
+    const { value } = this.state
+    const validated = exception ? 'error' : undefined
     return (
       <React.Fragment>
         <div className="creation-view-controls-labels">
@@ -44,13 +43,15 @@ class ControlPanelLabels extends React.Component {
             controlId={controlId}
             control={control}>
             <div className="creation-view-controls-labels-container">
-              {formatted.map((label, inx) => {
-                return (
-                  <Label key={label} onClose={this.handleDelete.bind(this, inx)}>
-                    {label}
-                  </Label>
-                )
-              })}
+              {formatted.length!==0 && <div className="creation-view-controls-labels-tag-container">
+                {formatted.map((label, inx) => {
+                  return (
+                    <Label key={label} onClose={this.handleDelete.bind(this, inx)}>
+                      {label}
+                    </Label>
+                  )
+                })}
+              </div>}
               <div className="creation-view-controls-labels-edit-container">
                 <TextInput
                   id={controlId}
@@ -96,7 +97,8 @@ class ControlPanelLabels extends React.Component {
           [match[KEY_CAPTURE_GROUP_INDEX]])
       }
     }
-    this.setState({ value, invalidText })
+    control.exception = invalidText
+    this.setState({ value, invalid })
   }
 
   handleKeyDown(event) {
@@ -149,7 +151,9 @@ class ControlPanelLabels extends React.Component {
   }
 
   cancelLabel() {
-    this.setState({ value: '', invalid: false, invalidText: '' })
+    const { control } = this.props
+    control.exception = ''
+    this.setState({ value: '', invalid: false })
   }
 }
 
