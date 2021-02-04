@@ -61,8 +61,8 @@ const initialControl = (control, editor) => {
       )
     }
 
-    if (typeof control.isHidden === 'function') {
-      control.isHidden = control.isHidden.bind(null, control, lastestData)
+    if (typeof control.hidden === 'function') {
+      control.hidden = control.hidden.bind(null, control, lastestData)
     }
 
     if (typeof control.summarize === 'function') {

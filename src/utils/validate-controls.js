@@ -254,11 +254,11 @@ const validateControl = (
   i18n
 ) => {
   // if final validation before creating template, if this value is required, throw error
-  const { type, isHidden } = control
+  const { type, hidden } = control
   if (
-    isHidden === true ||
-    isHidden === 'true' ||
-    (typeof isHidden === 'function' && isHidden())
+    hidden === true ||
+    hidden === 'true' ||
+    (typeof hidden === 'function' && hidden())
   ) {
     return
   }

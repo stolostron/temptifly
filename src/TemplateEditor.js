@@ -1000,6 +1000,7 @@ export default class TemplateEditor extends React.Component {
               id: 'error',
               kind: 'error',
               exception: i18n('error.create.syntax', [text]),
+              text,
               row,
               editor,
               tabInx
@@ -1068,6 +1069,7 @@ export default class TemplateEditor extends React.Component {
             id: 'error',
             kind: 'error',
             exception: i18n('error.create.syntax', [text]),
+            text,
             row,
             editor,
             tabInx,
