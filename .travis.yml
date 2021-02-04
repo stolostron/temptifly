@@ -14,7 +14,8 @@ jobs:
       script:
         - npm run lint
         - npm test
-        - sonar-scanner --debug
+        - make sonar/js/jest-init
+        - make sonar/js
                 
     - stage: Build and Publish
       if: type = push AND branch = main
