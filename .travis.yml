@@ -12,8 +12,8 @@ jobs:
     - stage: Pull Request
       if: type = pull_request
       script:
-        - npm run lint
-        - npm test
+        #- npm run lint
+        #- npm test
         - make sonar/js/jest-init
         - make sonar/js
                 
