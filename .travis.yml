@@ -9,9 +9,10 @@ jobs:
         - stage: Pull Request
           if: type = pull_request
           script:
-              - npm test &&
-                npm run lint &&
-                sonar-scanner
+              - npm run lint
+              - npm test
+              - make sonar/js
+                
 
         - stage: Build and Publish
           if: type = push AND branch = main
