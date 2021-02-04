@@ -74,7 +74,7 @@ export function reverseTemplate(controlData, templateObject) {
 // reverse control active valuess from template
 export function setEditingMode(controlData) {
   const setEditMode = control => {
-    const { type, active, isHidden, editing } = control
+    const { type, active, hidden:isHidden, editing } = control
     if (type === 'group') {
       active.forEach(group => {
         group.forEach(gcontrol => {
@@ -86,7 +86,7 @@ export function setEditingMode(controlData) {
       // if editing existing app, hide this field initially
       if (hidden) {
         if (isHidden) {
-          control.isHidden = true
+          control.hidden = true
         } else {
           control.type = 'hidden'
         }
