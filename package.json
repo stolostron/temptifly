@@ -9,7 +9,7 @@
     "lint": "eslint --ext .jsx,.js .",
     "lint:fix": "npm run stylefmt && eslint --ext .jsx,.js --fix .",
     "stylefmt": "prettier --write src/**/*.scss",
-    "test": "jest --silent",
+    "test": "jest",
     "test:update-snapshot": "jest --updateSnapshot"
   },
   "repository": {
