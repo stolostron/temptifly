@@ -6,13 +6,12 @@ addons:
         organization: 'open-cluster-management'
 jobs:
     include:
-        - stage: unit-test
+        - stage: Pull Request
           if: type = pull_request
           script:
-            - make sonar/js/jest-init
-            - npm test &&
-              npm run lint
-            - make sonar/js
+              - npm test &&
+                npm run lint &&
+                sonar-scanner
 
         - stage: Build and Publish
           if: type = push AND branch = main
