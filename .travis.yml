@@ -22,7 +22,7 @@ jobs:
         # Bootstrap the build harness, pull test image, and run unit tests.
         - make
         - make sonar/js/jest-init
-        # - npm test
+        - npm test
         - make sonar/js
                 
     - stage: build
