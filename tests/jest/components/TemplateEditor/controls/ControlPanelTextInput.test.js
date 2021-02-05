@@ -1,7 +1,7 @@
 'use strict'
 
 import React from 'react'
-import ControlPanelTextArea from '../../../../../src/controls/ControlPanelTextArea'
+import ControlPanelTextInput from '../../../../../src/controls/ControlPanelTextInput'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
@@ -15,12 +15,12 @@ export const control =
 }
 const fn = jest.fn()
 
-describe('ControlPanelTextArea component', () => {
+describe('ControlPanelTextInput component', () => {
   it('renders as expected', () => {
 
     const Component = () => {
       return (
-        <ControlPanelTextArea
+        <ControlPanelTextInput
           key={'key'}
           control={control}
           controlId={'controlId'}
@@ -33,7 +33,7 @@ describe('ControlPanelTextArea component', () => {
     const { getByTestId, asFragment, rerender } = render(<Component />)
     expect(asFragment()).toMatchSnapshot()
 
-    userEvent.type(getByTestId('textarea'), 'n')
+    userEvent.type(getByTestId('textinput'), 'n')
     expect(control.active).toBe('n')
 
     control.name = ''

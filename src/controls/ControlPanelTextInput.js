@@ -61,6 +61,7 @@ class ControlPanelTextInput extends React.Component {
               validated={validated}
               value={value || ''}
               onChange={this.handleChange.bind(this, control)}
+              data-testid="textinput"
             />
           </ControlPanelFormGroup>
         </div>
