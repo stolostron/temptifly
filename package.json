@@ -58,8 +58,8 @@
     "null-loader": "^3.0.0",
     "prop-types": "^15.6.1",
     "react-apollo": "^2.3.1",
-    "react-router-dom": "^4.2.2",
-    "react-split-pane": "^0.1.84"
+    "react-router-dom": "^5.2.0",
+    "react-split-pane": "^0.1.92"
   },
   "peerDependencies": {
     "@patternfly/react-core": "^4.75.2",
@@ -75,6 +75,9 @@
     "@patternfly/react-icons": "^4.7.4",
     "@patternfly/react-table": "^4.19.5",
     "@patternfly/react-tokens": "^4.9.18",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.3",
+    "@testing-library/user-event": "^12.6.0",
     "autoprefixer": "^6.7.7",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.6.3",
