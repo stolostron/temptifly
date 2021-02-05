@@ -42,6 +42,7 @@ class ControlPanelCheckbox extends React.Component {
             isChecked={typeof active==='boolean'? active : active==='true'}
             isDisabled={disabled}
             onChange={onChange}
+            data-testid="checkbox"
           />
           <ControlPanelFormGroup
             controlId={controlId}

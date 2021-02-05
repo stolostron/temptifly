@@ -1,12 +1,9 @@
 'use strict'
 import {
-  caseFn,
-  defaultFn,
   if_eqFn,
   if_gtFn,
   if_neFn,
   if_orFn,
-  switchFn
 } from '../../../../../src/helpers'
 
 const opts = {
