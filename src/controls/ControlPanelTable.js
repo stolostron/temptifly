@@ -32,7 +32,6 @@ import {
 import { ControlMode } from '../utils/source-utils'
 import CubesIcon from '@patternfly/react-icons/dist/js/icons/cubes-icon'
 import keyBy from 'lodash/keyBy'
-import cloneDeep from 'lodash/cloneDeep'
 import get from 'lodash/get'
 import orderBy from 'lodash/orderBy'
 import set from 'lodash/set'
@@ -59,7 +58,7 @@ class ControlPanelTable extends React.Component {
     const { id, isLoaded } = control
     const { available=[] } = control
     const { perPage } = state
-    let { rows=[] } = state
+    const { rows=[] } = state
     const newState = {}
     localStorage.setItem(`table-${id}-page-size`, perPage)
     if (!state.originalSet) {
@@ -67,19 +66,22 @@ class ControlPanelTable extends React.Component {
     }
     const { active } = control
     const { controlData } = control
-    const { onSelect, onToggle, clearSelection } = state
+    const { onSelect, onToggle, clearSelection, searchValue } = state
     const columns = controlData
       .filter(({ mode }) => mode !== ControlMode.PROMPT_ONLY)
       .map(({ id }) => ({ key: id }))
     newState.columns = columns
-    const availableMap = keyBy(available, 'id')
-    rows = rows.filter(({id})=>!!availableMap[id])
-    if (rows.length !== available.length) {
-      rows = cloneDeep(available)
-    }
     const activeMap = keyBy(active, 'id')
-    newState.rows = rows.map(row => {
-      const { id } = row
+    const rowMap = keyBy(rows, 'id')
+    available.forEach(item=>{
+      if (!rowMap[item.id]) {
+        rowMap[item.id] = item
+        rows.push(item)
+      }
+    })
+    newState.rows = rows.map(item => {
+      const { id } = item
+      const row = rowMap[id]
 
       // create table rows
       if (!row.cells) {
@@ -87,9 +89,10 @@ class ControlPanelTable extends React.Component {
           .filter(({ mode }) => mode !== ControlMode.PROMPT_ONLY)
           .map(data=>{
             const {id:rid, type, available} = data
+            const ractive = get(activeMap[id], rid)
             switch(type) {
             case 'text':
-              return row[rid]
+              return item[rid]
             case 'toggle':
               return  {
                 title: (value, rowIndex, cellIndex, props) => (
@@ -119,10 +122,10 @@ class ControlPanelTable extends React.Component {
                   />
                 ),
                 props: {
-                  value: row[rid],
+                  value: ractive,
                   name: rid,
                   isSelectOpen: false,
-                  selected: [row[rid]],
+                  selected: [ractive],
                   options: available.map(value=>{return {value}}),
                   editableSelectProps: {
                     variant: 'single',
@@ -139,7 +142,7 @@ class ControlPanelTable extends React.Component {
           rowEditBtnAriaLabel: idx => `Edit row ${idx}`,
           rowSaveBtnAriaLabel: idx => `Save edits for row ${idx}`,
           rowCancelBtnAriaLabel: idx => `Cancel edits for row ${idx}`,
-
+          available: row
         }
       } else {
         // update table row
@@ -161,6 +164,12 @@ class ControlPanelTable extends React.Component {
         return row
       }
     })
+
+    if (searchValue) {
+      newState.rows = newState.rows.filter(row => {
+        return get(row, 'cells[0]', '').indexOf(searchValue) !== -1
+      })
+    }
     return newState
   }
 
@@ -213,36 +222,30 @@ class ControlPanelTable extends React.Component {
   }
 
   handleSort(event, index, direction) {
-    this.setState({
-      sortBy: {
-        index,
-        sortIndex: index,
-        direction
-      },
-    })
-  }
-
-  getFilteredRows() {
-    const { sortBy, searchValue } = this.state
-    let { rows } = this.state
-    const { control } = this.props
-    const { sortTable, active, controlData } = control
-    const { sortIndex, direction } = sortBy
-    rows = cloneDeep(rows)
-    if (sortIndex) {
-      if (sortTable) {
-        const sortKey = get(controlData, `[${sortIndex-1}].id`)
-        rows = sortTable(rows, sortKey, direction, active)
-      } else {
-        rows = orderBy(rows, [`cells[${sortIndex-1}]`], [direction])
+    const sortBy = {
+      index,
+      sortIndex: index,
+      direction
+    }
+    this.setState(prevState=>{
+      let rows = Array.from(prevState.rows)
+      const { control } = this.props
+      const { sortTable, active, controlData } = control
+      const { sortIndex, direction } = sortBy
+      if (sortIndex) {
+        const tableHeader = get(controlData, `[${sortIndex-1}]`)
+        if (sortTable && tableHeader.type!=='text') {
+          const sortKey = get(controlData, `[${sortIndex-1}].id`)
+          rows = sortTable(rows, sortKey, direction, active)
+        } else {
+          rows = orderBy(rows, [`cells[${sortIndex-1}]`], [direction])
+        }
       }
-    }
-    if (searchValue) {
-      rows = rows.filter(row => {
-        return get(row, 'cells[0]', '').indexOf(searchValue) !== -1
-      })
-    }
-    return rows
+      return {
+        rows,
+        sortBy
+      }
+    })
   }
 
   setControlRef = (control, ref) => {
@@ -253,7 +256,7 @@ class ControlPanelTable extends React.Component {
     const { control } = this.props
     const { exception } = control
     const { page = 1, perPage } = this.state
-    let rows = this.getFilteredRows()
+    let { rows } = this.state
     const inx = (page - 1) * perPage
     rows = rows.slice(inx, inx + perPage)
     return (
@@ -402,25 +405,40 @@ class ControlPanelTable extends React.Component {
 
   handleSelect(event, isSelected, rowId) {
     const { control } = this.props
-    const { available, controlData } = control
+    const { controlData } = control
     let { active=[] } = control
+    const { rows } = this.state
     if (rowId !== -1) {
-      const {id} = available[rowId]
+      const {id} = rows[rowId].available
       const activeMap = keyBy(active, 'id')
 
       if (!activeMap[id]) {
         // add to active
-        this.addActives(active, [available[rowId]], controlData)
+        this.addActives(active, [rows[rowId].available], controlData)
       } else {
         // remove from active
         const inx = active.findIndex(data => id === data.id)
         active.splice(inx, 1)
+        rows[rowId].cells.forEach(({props})=>{
+          if (props) {
+            props.value = ''
+          }
+        })
       }
     } else {
       control.active = [];
       ({ active } = control)
       if (isSelected) {
-        this.addActives(active, available, controlData)
+        this.addActives(active, rows.map(({available})=>available), controlData)
+      } else {
+        rows.forEach(({cells}) => {
+          cells.forEach(({props})=>{
+            if (props) {
+              props.value = ''
+            }
+          })
+        })
+
       }
     }
     this.props.handleChange(control)
@@ -511,9 +529,9 @@ class ControlPanelTable extends React.Component {
     this.setState(prevState=>{
       const newRows = Array.from(prevState.rows)
       const { control } = this.props
-      const { active, available, controlData } = control
+      const { active, controlData } = control
       const activeMap = keyBy(active, 'id')
-      const {id} = available[rowIndex]
+      const {id} = newRows[rowIndex].available
       switch (type) {
       case 'cancel':
         newRows[rowIndex].isEditable = false
@@ -540,7 +558,7 @@ class ControlPanelTable extends React.Component {
 
         // make sure this row is active'
         if (!activeMap[id]) {
-          this.addActives(active, [available[rowIndex]], controlData)
+          this.addActives(active, [newRows[rowIndex].available], controlData)
         }
         break
       }
