@@ -46,7 +46,7 @@ class ControlPanelLabels extends React.Component {
               {formatted.length!==0 && <div className="creation-view-controls-labels-tag-container">
                 {formatted.map((label, inx) => {
                   return (
-                    <Label key={label} onClose={this.handleDelete.bind(this, inx)}>
+                    <Label key={label} onClose={this.handleDelete.bind(this, inx)} >
                       {label}
                     </Label>
                   )
@@ -61,6 +61,7 @@ class ControlPanelLabels extends React.Component {
                   onBlur={this.handleBlur.bind(this)}
                   onKeyDown={this.handleKeyDown.bind(this)}
                   onChange={this.handleChange.bind(this)}
+                  data-testid="labelinput"
                 />
               </div>
             </div>
@@ -71,6 +72,7 @@ class ControlPanelLabels extends React.Component {
   }
 
   handleDelete(inx) {
+
     const { control, handleChange } = this.props
     const { active = [] } = control
     active.splice(inx, 1)
@@ -145,6 +147,7 @@ class ControlPanelLabels extends React.Component {
         key: match[KEY_CAPTURE_GROUP_INDEX],
         value: match[VALUE_CAPTURE_GROUP_INDEX] || ''
       })
+      control.active = active
       handleChange(control)
     }
     this.cancelLabel()
