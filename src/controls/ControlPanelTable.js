@@ -430,6 +430,15 @@ class ControlPanelTable extends React.Component {
       ({ active } = control)
       if (isSelected) {
         this.addActives(active, rows.map(({available})=>available), controlData)
+      } else {
+        rows.forEach(({cells}) => {
+          cells.forEach(({props})=>{
+            if (props) {
+              props.value = ''
+            }
+          })
+        })
+
       }
     }
     this.props.handleChange(control)
