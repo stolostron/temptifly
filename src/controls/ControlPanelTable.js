@@ -73,13 +73,14 @@ class ControlPanelTable extends React.Component {
     newState.columns = columns
     const activeMap = keyBy(active, 'id')
     const rowMap = keyBy(rows, 'id')
+    const newRows = []
     available.forEach(item=>{
       if (!rowMap[item.id]) {
         rowMap[item.id] = item
-        rows.push(item)
+        newRows.push(item)
       }
     })
-    newState.rows = rows.map(item => {
+    newState.rows = [...newRows, ...rows].map(item => {
       const { id } = item
       const row = rowMap[id]
 
