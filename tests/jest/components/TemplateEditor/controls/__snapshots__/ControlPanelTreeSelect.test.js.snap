@@ -81,7 +81,7 @@ exports[`ControlPanelTreeSelect component renders as expected 1`] = `
               placeholder=""
               role="combobox"
               spellCheck="false"
-              value="test"
+              value={false}
             />
             <div
               className="tf--list-box__selection"
