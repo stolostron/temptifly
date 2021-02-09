@@ -405,7 +405,7 @@ class ControlPanelTable extends React.Component {
 
   handleSelect(event, isSelected, rowId) {
     const { control } = this.props
-    const { controlData } = control
+    const { controlData, available } = control
     let { active=[] } = control
     const { rows } = this.state
     if (rowId !== -1) {
@@ -429,7 +429,7 @@ class ControlPanelTable extends React.Component {
       control.active = [];
       ({ active } = control)
       if (isSelected) {
-        this.addActives(active, rows.map(({available})=>available), controlData)
+        this.addActives(active, available, controlData)
       } else {
         rows.forEach(({cells}) => {
           cells.forEach(({props})=>{

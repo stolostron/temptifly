@@ -577,6 +577,7 @@ class ControlPanel extends React.Component {
               kind = 'error',
               ref,
               tabInx = 0,
+              text,
               editor,
               row
             }) => {
@@ -615,6 +616,8 @@ class ControlPanel extends React.Component {
               switch (kind) {
               case 'error':
                 variant='danger'
+                //eslint-disable-next-line no-console
+                console.log(`!!!!!!!!!!!error ${exception}--${text}!!!!!!!!!!!!!!!`)
               }
               return (
                 <Alert
