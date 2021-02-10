@@ -66,6 +66,7 @@ const controlData = [
         id: 'BMC',
         logo: <BaremetalLogo />,
         title: 'cluster.create.baremetal.subtitle',
+        tooltip: 'cluster.create.baremetal.subtitle',
         change: {
           insertControlData: controlDataBMC,
           replacements: {

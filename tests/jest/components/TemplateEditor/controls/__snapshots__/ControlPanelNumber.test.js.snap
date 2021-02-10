@@ -54,7 +54,7 @@ exports[`ControlPanelNumber component renders as expected 1`] = `
             <button
               aria-label="Minus"
               class="pf-c-button pf-m-control"
-              data-testid="numberdn"
+              data-testid="down-controlId"
               style="line-height: 16px;"
               type="button"
             >
@@ -76,7 +76,7 @@ exports[`ControlPanelNumber component renders as expected 1`] = `
             <input
               aria-label="Number input"
               class="pf-c-form-control"
-              data-testid="numberinput"
+              data-testid="input-controlId"
               name="number-input-default-name"
               pattern="[0-9]*"
               type="number"
@@ -85,7 +85,7 @@ exports[`ControlPanelNumber component renders as expected 1`] = `
             <button
               aria-label="Plus"
               class="pf-c-button pf-m-control"
-              data-testid="numberup"
+              data-testid="up-controlId"
               style="line-height: 16px;"
               type="button"
             >

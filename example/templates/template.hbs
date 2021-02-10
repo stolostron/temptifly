@@ -418,3 +418,22 @@ data:
 {{/case}}
 
 {{/switch}}
+
+{{#switch infrastructure}}
+{{#case 'DEF'}}
+apiVersion: v1
+kind: Secret
+type: Opaque
+{{/case}}
+
+{{#default}}
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: {{{../../name}}}
+  namespace: {{{../../name}}}
+{{/default}}
+{{/switch}}
+
+

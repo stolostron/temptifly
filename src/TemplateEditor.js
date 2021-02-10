@@ -64,6 +64,7 @@ export default class TemplateEditor extends React.Component {
       fetchData: PropTypes.object
     }),
     i18n: PropTypes.func,
+    initialOpen: PropTypes.bool,
     monacoEditor: PropTypes.element,
     portals: PropTypes.object,
     template: PropTypes.func.isRequired,
@@ -72,7 +73,7 @@ export default class TemplateEditor extends React.Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { monacoEditor, createControl = {}, type } = props
+    const { monacoEditor, createControl = {}, type, initialOpen } = props
     const { i18n } = state
 
     // update notifications
@@ -132,7 +133,7 @@ export default class TemplateEditor extends React.Component {
     const { fetchControl } = props
     const { isLoaded, isFailed } = fetchControl || { isLoaded: true }
     const showEditor =
-      monacoEditor && isLoaded && !!localStorage.getItem(TEMPLATE_EDITOR_OPEN_COOKIE)
+      (monacoEditor||initialOpen) && isLoaded && !!localStorage.getItem(TEMPLATE_EDITOR_OPEN_COOKIE)
     let newState = { isLoaded, isFailed, showEditor }
 
     // has control data been initialized?
@@ -256,6 +257,9 @@ export default class TemplateEditor extends React.Component {
     this.handleNewEditorMode = this.handleNewEditorMode.bind(this)
     this.handleControlChange = this.handleControlChange.bind(this)
     this.handleGroupChange = this.handleGroupChange.bind(this)
+    if (props.initialOpen) {
+      localStorage.setItem(TEMPLATE_EDITOR_OPEN_COOKIE, 'true')
+    }
     const { type = 'main' } = this.props
     this.splitterSizeCookie = `TEMPLATE-EDITOR-SPLITTER-SIZE-${type.toUpperCase()}`
     if (!this.state.hasPauseCreate) {

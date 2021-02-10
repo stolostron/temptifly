@@ -1,5 +1,4 @@
 import {
-  LOAD_OCP_IMAGES,
   networkingControlData,
   labelControlData,
 } from './ControlDataHelpers'
@@ -16,46 +15,6 @@ import {
 } from '../../src/utils/validation-types'
 //import { listBareMetalAssets } from '../../../../../resources/bare-metal-asset'
 import _ from 'lodash'
-
-const setAvailableBMAs = (control, result) => {
-  const { loading } = result
-  const { data } = result
-  const bmas = data
-  if (!control.isLoaded) {
-    control.available = []
-    control.isLoading = false
-    const error = bmas ? null : result.error
-    if (error) {
-      control.isFailed = true
-    } else if (bmas) {
-      control.isLoaded = true
-      control.active = []
-      control.available = bmas
-        .filter((bma) => {
-          return !_.get(bma, 'spec.clusterDeployment.name')
-        })
-        .map(formatBMA)
-        .sort(({ hostName: a }, { hostName: b }) => {
-          return a.localeCompare(b)
-        })
-      control.available.forEach((datum) => {
-        datum.id = datum.id.toString()
-      })
-    } else {
-      control.isLoading = loading
-    }
-  }
-}
-
-const formatBMA = (bma) => ({
-  id: bma.metadata.uid,
-  macAddress: bma.spec.bootMACAddress,
-  credName: bma.spec.bmc.credentialsName,
-  credNamespace: bma.metadata.namespace,
-  bmcAddress: bma.spec.bmc.address,
-  hostName: bma.metadata.name,
-  hostNamespace: bma.metadata.namespace,
-})
 
 const sortTable = (items, selectedKey, sortDirection, active) => {
   if (selectedKey === 'role' && active.length > 0) {
@@ -150,7 +109,7 @@ const controlDataBMC = [
     id: 'imageSet',
     type: 'combobox',
     placeholder: 'creation.ocp.cloud.select.ocp.image',
-    fetchAvailable: LOAD_OCP_IMAGES('bmc'),
+    //fetchAvailable: LOAD_OCP_IMAGES('bmc'),
     validation: {
       notification: 'creation.ocp.cluster.must.select.ocp.image',
       required: true,
@@ -252,13 +211,13 @@ const controlDataBMC = [
         mode: ControlMode.PROMPT_ONLY,
       },
     ],
-    fetchAvailable: {
-      //      query: () => {
-      //        return listBareMetalAssets().promise
-      //      },
-      loadingDesc: 'table.bma.loading',
-      setAvailable: setAvailableBMAs,
-    },
+    //    fetchAvailable: {
+    //            query: () => {
+    //              return listBareMetalAssets().promise
+    //            },
+    //      loadingDesc: 'table.bma.loading',
+    //      setAvailable: setAvailableBMAs,
+    //    },
     active: [],
   },
   {

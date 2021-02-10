@@ -196,7 +196,7 @@ const ControlPanelCard = ({
       tabIndex="0"
       aria-label={title}
       onKeyDown={handleClick}
-      data-testid={id}
+      data-testid={`card-${id}`}
     >
       <div className={'tf--provider-card-container'}>
         <div className={cardClasses}>

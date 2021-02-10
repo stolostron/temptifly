@@ -14,6 +14,9 @@ export const control =
   type: 'labels',
 }
 const fn = jest.fn()
+const i18n = (key) => {
+  return key
+}
 
 describe('ControlPanelLabels component', () => {
   it('renders as expected', () => {
@@ -25,27 +28,24 @@ describe('ControlPanelLabels component', () => {
           control={control}
           controlId={'controlId'}
           handleChange={fn}
-          i18n={fn}
+          i18n={i18n}
         />
       )
     }
-    const { getByTestId, asFragment, rerender, container, debug } = render(<Component />)
+    const { getByTestId, asFragment, container } = render(<Component />)
     expect(asFragment()).toMatchSnapshot()
 
-    userEvent.type(getByTestId('labelinput'), 'label=test{enter}')
+    userEvent.type(getByTestId('label-controlId'), 'label=test{enter}')
     expect(control.active).toEqual([{'key': 'label', 'value': 'test'}])
-    userEvent.type(getByTestId('labelinput'), 'label=test2{enter}')
+    userEvent.type(getByTestId('label-controlId'), 'label=test2{enter}')
     container.querySelector('.pf-c-button').click()
     expect(control.active).toEqual([])
+    userEvent.type(getByTestId('label-controlId'), 'label=test,')
+    userEvent.type(getByTestId('label-controlId'), 'label={esc}')
+    userEvent.type(getByTestId('label-controlId'), '{backspace}')
+    expect(control.active).toEqual([])
+    getByTestId('label-controlId').blur()
 
-    debug()
-    rerender()
 
-    //    control.name = ''
-    //    control.exception = 'error'
-    //    rerender(<Component />)
-    //    control.placeholder = 'placeholder'
-    //    rerender(<Component />)
-    //    expect(asFragment()).toMatchSnapshot()
   })
 })

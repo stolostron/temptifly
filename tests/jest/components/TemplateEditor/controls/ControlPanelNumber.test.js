@@ -32,15 +32,15 @@ describe('ControlPanelNumber component', () => {
     const { getByTestId, asFragment, rerender } = render(<Component />)
     expect(asFragment()).toMatchSnapshot()
 
-    userEvent.type(getByTestId('numberinput'), '3')
+    userEvent.type(getByTestId('number-controlId'), '3')
     expect(control.active).toBe('3')
-    userEvent.click(getByTestId('numberup'))
+    userEvent.click(getByTestId('up-controlId'))
     expect(control.active).toBe('4')
     control.active = '0'
     control.exception = 'error'
     rerender(<Component />)
     expect(asFragment()).toMatchSnapshot()
-    userEvent.click(getByTestId('numberdn'))
+    userEvent.click(getByTestId('down-controlId'))
     expect(control.active).toBe('0')
 
   })

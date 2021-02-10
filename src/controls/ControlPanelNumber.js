@@ -50,7 +50,7 @@ class ControlPanelNumber extends React.Component {
             <div className="pf-c-number-input">
               <div className="pf-c-input-group">
                 <button className="pf-c-button pf-m-control" style={{lineHeight: '16px'}} type="button" aria-label="Minus"
-                  data-testid="numberdn"
+                  data-testid={`down-${controlId}`}
                   onClick={()=>{
                     onChange(-1)
                   }}>
@@ -73,10 +73,10 @@ class ControlPanelNumber extends React.Component {
                     onSet(e.target.value)
                   }}
                   aria-label="Number input"
-                  data-testid="numberinput"
+                  data-testid={`number-${controlId}`}
                 />
                 <button className="pf-c-button pf-m-control" style={{lineHeight: '16px'}} type="button" aria-label="Plus"
-                  data-testid="numberup"
+                  data-testid={`up-${controlId}`}
                   onClick={()=>{
                     onChange(1)
                   }}>

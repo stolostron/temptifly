@@ -48,7 +48,7 @@ exports[`ControlPanelTextArea component renders as expected 1`] = `
         <textarea
           aria-invalid="false"
           class="pf-c-form-control"
-          data-testid="textarea"
+          data-testid="area-controlId"
           id="controlId"
           type="text"
         />
@@ -73,7 +73,7 @@ exports[`ControlPanelTextArea component renders as expected 2`] = `
         <textarea
           aria-invalid="true"
           class="pf-c-form-control"
-          data-testid="textarea"
+          data-testid="area-controlId"
           id="controlId"
           placeholder="placeholder"
           type="text"

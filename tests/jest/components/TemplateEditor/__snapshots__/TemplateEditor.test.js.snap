@@ -3,251 +3,283 @@
 exports[`TemplateEditor component renders as expected 1`] = `
 <DocumentFragment>
   <div
-    class="temptifly"
+    class="temptifly showEditor"
   >
     <div
-      class="creation-view-split-container"
+      class="creation-view-split-container showEditor"
     >
       <div
-        class="creation-view-controls-container"
+        class="SplitPane  vertical "
+        style="display: flex; flex: 1; height: 100%; position: absolute; outline: none; overflow: hidden; user-select: text; flex-direction: row; left: 0px; right: 0px;"
       >
         <div
-          class="creation-view-controls pf-c-form"
+          class="Pane vertical Pane1  "
+          style="flex: 0 0 auto; position: relative; outline: none; width: 512px;"
         >
           <div
-            id="notifications"
-          />
-          <div
-            class="content"
+            class="creation-view-controls-container"
           >
             <div
-              aria-label="creation.ocp.toggle"
-              class="creation-view-controls-title"
-              id="main-creation.ocp.cluster.details"
-              role="button"
-              tabindex="0"
-              title="creation.ocp.toggle"
+              class="creation-view-controls pf-c-form showEditor"
             >
               <div
-                class="creation-view-controls-title-main"
-              >
-                <div
-                  class="creation-view-controls-title-main-collapse-button"
-                >
-                  <svg
-                    height="16px"
-                    role="presentation"
-                    version="1.1"
-                    viewBox="0 0 12 8"
-                    width="16px"
-                  >
-                    <g>
-                      <path
-                        d="M1.4 7.5L6 2.8l4.6 4.7L12 6.1 6 0 0 6.1z"
-                      />
-                    </g>
-                  </svg>
-                </div>
-                <div
-                  class="creation-view-controls-title-main-name"
-                >
-                  creation.ocp.cluster.details
-                  <span
-                    class="creation-view-controls-title-main-summary"
-                  />
-                </div>
-              </div>
-              <div
-                class="creation-view-controls-title-normal-container"
+                id="notifications"
               />
-            </div>
-            <div
-              class="creation-view-controls-section"
-            >
               <div
-                class="creation-view-controls-textbox"
+                class="content"
               >
                 <div
-                  class="pf-c-form__group"
-                  id="eman-label"
+                  aria-label="creation.ocp.toggle"
+                  class="creation-view-controls-title"
+                  id="main-creation.ocp.cluster.details"
+                  role="button"
+                  tabindex="0"
+                  title="creation.ocp.toggle"
                 >
                   <div
-                    class="pf-c-form__group-label"
-                  >
-                    <label
-                      class="pf-c-form__label"
-                      for="eman"
-                    >
-                      <span
-                        class="pf-c-form__label-text"
-                      >
-                        creation.ocp.name
-                      </span>
-                      <span
-                        aria-hidden="true"
-                        class="pf-c-form__label-required"
-                      >
-                         *
-                      </span>
-                    </label>
-                     
-                    <button
-                      aria-label="More info"
-                      class="pf-c-form__group-label-help"
-                      id="eman-label-help-button"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        fill="currentColor"
-                        height="1em"
-                        role="img"
-                        viewBox="0 0 1024 1024"
-                        width="1em"
-                      >
-                        <path
-                          d="M521.3,576 C627.5,576 713.7,502 713.7,413.7 C713.7,325.4 627.6,253.6 521.3,253.6 C366,253.6 334.5,337.7 329.2,407.2 C329.2,414.3 335.2,416 343.5,416 L445,416 C450.5,416 458,415.5 460.8,406.5 C460.8,362.6 582.9,357.1 582.9,413.6 C582.9,441.9 556.2,470.9 521.3,473 C486.4,475.1 447.3,479.8 447.3,521.7 L447.3,553.8 C447.3,570.8 456.1,576 472,576 C487.9,576 521.3,576 521.3,576 M575.3,751.3 L575.3,655.3 C575.313862,651.055109 573.620137,646.982962 570.6,644 C567.638831,640.947672 563.552355,639.247987 559.3,639.29884 L463.3,639.29884 C459.055109,639.286138 454.982962,640.979863 452,644 C448.947672,646.961169 447.247987,651.047645 447.29884,655.3 L447.29884,751.3 C447.286138,755.544891 448.979863,759.617038 452,762.6 C454.961169,765.652328 459.047645,767.352013 463.3,767.30116 L559.3,767.30116 C563.544891,767.313862 567.617038,765.620137 570.6,762.6 C573.659349,759.643612 575.360354,755.553963 575.3,751.3 M512,896 C300.2,896 128,723.9 128,512 C128,300.3 300.2,128 512,128 C723.8,128 896,300.2 896,512 C896,723.8 723.7,896 512,896 M512.1,0 C229.7,0 0,229.8 0,512 C0,794.2 229.8,1024 512.1,1024 C794.4,1024 1024,794.3 1024,512 C1024,229.7 794.4,0 512.1,0"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                  <div
-                    class="pf-c-form__group-control"
-                  >
-                    <input
-                      aria-invalid="false"
-                      class="pf-c-form-control"
-                      data-testid="textinput"
-                      id="eman"
-                      placeholder="creation.ocp.cluster.enter.value"
-                      spellcheck="false"
-                      type="text"
-                      value=""
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              aria-label="creation.ocp.toggle"
-              class="creation-view-controls-title overline"
-              id="choosedist-creation.ocp.distribution"
-              role="button"
-              tabindex="0"
-              title="creation.ocp.toggle"
-            >
-              <div
-                class="creation-view-controls-title-main"
-              >
-                <div
-                  class="creation-view-controls-title-main-collapse-button"
-                >
-                  <svg
-                    height="16px"
-                    role="presentation"
-                    version="1.1"
-                    viewBox="0 0 12 8"
-                    width="16px"
-                  >
-                    <g>
-                      <path
-                        d="M1.4 7.5L6 2.8l4.6 4.7L12 6.1 6 0 0 6.1z"
-                      />
-                    </g>
-                  </svg>
-                </div>
-                <div
-                  class="creation-view-controls-title-main-name"
-                >
-                  creation.ocp.distribution
-                  <span
-                    class="creation-view-controls-title-main-summary"
-                  />
-                </div>
-              </div>
-              <div
-                class="creation-view-controls-title-normal-container"
-              >
-                <div
-                  class="creation-view-controls-title-normal"
-                >
-                  creation.ocp.choose.distribution
-                </div>
-              </div>
-            </div>
-            <div
-              class="creation-view-controls-section"
-            >
-              <div
-                aria-label="creation.ocp.toggle"
-                class="creation-view-controls-title"
-                id="chooseinfra-"
-                role="button"
-                tabindex="0"
-                title="creation.ocp.toggle"
-              >
-                <div
-                  class="creation-view-controls-title-normal-container"
-                />
-              </div>
-              <div
-                class="creation-view-controls-card-container"
-              >
-                <div
-                  class="tf--grid-container"
-                >
-                  <div
-                    class="tf--grid"
+                    class="creation-view-controls-title-main"
                   >
                     <div
-                      class="tf--providers-container tf--row"
+                      class="creation-view-controls-title-main-collapse-button"
+                    >
+                      <svg
+                        height="16px"
+                        role="presentation"
+                        version="1.1"
+                        viewBox="0 0 12 8"
+                        width="16px"
+                      >
+                        <g>
+                          <path
+                            d="M1.4 7.5L6 2.8l4.6 4.7L12 6.1 6 0 0 6.1z"
+                          />
+                        </g>
+                      </svg>
+                    </div>
+                    <div
+                      class="creation-view-controls-title-main-name"
+                    >
+                      creation.ocp.cluster.details
+                      <span
+                        class="creation-view-controls-title-main-summary"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="creation-view-controls-title-normal-container"
+                  />
+                </div>
+                <div
+                  class="creation-view-controls-section"
+                >
+                  <div
+                    class="creation-view-controls-textbox"
+                  >
+                    <div
+                      class="pf-c-form__group"
+                      id="eman-label"
                     >
                       <div
-                        aria-label="cluster.create.baremetal.subtitle"
-                        class="tf--provider-card"
-                        data-testid="cluster.create.baremetal.subtitle"
-                        id="cluster.create.baremetal.subtitle"
-                        role="button"
-                        tabindex="0"
+                        class="pf-c-form__group-label"
+                      >
+                        <label
+                          class="pf-c-form__label"
+                          for="eman"
+                        >
+                          <span
+                            class="pf-c-form__label-text"
+                          >
+                            creation.ocp.name
+                          </span>
+                          <span
+                            aria-hidden="true"
+                            class="pf-c-form__label-required"
+                          >
+                             *
+                          </span>
+                        </label>
+                         
+                        <button
+                          aria-label="More info"
+                          class="pf-c-form__group-label-help"
+                          id="eman-label-help-button"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            fill="currentColor"
+                            height="1em"
+                            role="img"
+                            viewBox="0 0 1024 1024"
+                            width="1em"
+                          >
+                            <path
+                              d="M521.3,576 C627.5,576 713.7,502 713.7,413.7 C713.7,325.4 627.6,253.6 521.3,253.6 C366,253.6 334.5,337.7 329.2,407.2 C329.2,414.3 335.2,416 343.5,416 L445,416 C450.5,416 458,415.5 460.8,406.5 C460.8,362.6 582.9,357.1 582.9,413.6 C582.9,441.9 556.2,470.9 521.3,473 C486.4,475.1 447.3,479.8 447.3,521.7 L447.3,553.8 C447.3,570.8 456.1,576 472,576 C487.9,576 521.3,576 521.3,576 M575.3,751.3 L575.3,655.3 C575.313862,651.055109 573.620137,646.982962 570.6,644 C567.638831,640.947672 563.552355,639.247987 559.3,639.29884 L463.3,639.29884 C459.055109,639.286138 454.982962,640.979863 452,644 C448.947672,646.961169 447.247987,651.047645 447.29884,655.3 L447.29884,751.3 C447.286138,755.544891 448.979863,759.617038 452,762.6 C454.961169,765.652328 459.047645,767.352013 463.3,767.30116 L559.3,767.30116 C563.544891,767.313862 567.617038,765.620137 570.6,762.6 C573.659349,759.643612 575.360354,755.553963 575.3,751.3 M512,896 C300.2,896 128,723.9 128,512 C128,300.3 300.2,128 512,128 C723.8,128 896,300.2 896,512 C896,723.8 723.7,896 512,896 M512.1,0 C229.7,0 0,229.8 0,512 C0,794.2 229.8,1024 512.1,1024 C794.4,1024 1024,794.3 1024,512 C1024,229.7 794.4,0 512.1,0"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                      <div
+                        class="pf-c-form__group-control"
+                      >
+                        <input
+                          aria-invalid="false"
+                          class="pf-c-form-control"
+                          data-testid="text-eman"
+                          id="eman"
+                          placeholder="creation.ocp.cluster.enter.value"
+                          spellcheck="false"
+                          type="text"
+                          value=""
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  aria-label="creation.ocp.toggle"
+                  class="creation-view-controls-title overline"
+                  id="choosedist-creation.ocp.distribution"
+                  role="button"
+                  tabindex="0"
+                  title="creation.ocp.toggle"
+                >
+                  <div
+                    class="creation-view-controls-title-main"
+                  >
+                    <div
+                      class="creation-view-controls-title-main-collapse-button"
+                    >
+                      <svg
+                        height="16px"
+                        role="presentation"
+                        version="1.1"
+                        viewBox="0 0 12 8"
+                        width="16px"
+                      >
+                        <g>
+                          <path
+                            d="M1.4 7.5L6 2.8l4.6 4.7L12 6.1 6 0 0 6.1z"
+                          />
+                        </g>
+                      </svg>
+                    </div>
+                    <div
+                      class="creation-view-controls-title-main-name"
+                    >
+                      creation.ocp.distribution
+                      <span
+                        class="creation-view-controls-title-main-summary"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="creation-view-controls-title-normal-container"
+                  >
+                    <div
+                      class="creation-view-controls-title-normal"
+                    >
+                      creation.ocp.choose.distribution
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="creation-view-controls-section"
+                >
+                  <div
+                    aria-label="creation.ocp.toggle"
+                    class="creation-view-controls-title"
+                    id="chooseinfra-"
+                    role="button"
+                    tabindex="0"
+                    title="creation.ocp.toggle"
+                  >
+                    <div
+                      class="creation-view-controls-title-normal-container"
+                    />
+                  </div>
+                  <div
+                    class="creation-view-controls-card-container"
+                  >
+                    <div
+                      class="tf--grid-container small"
+                    >
+                      <div
+                        class="tf--grid"
                       >
                         <div
-                          class="tf--provider-card-container"
+                          class="tf--providers-container tf--row"
                         >
                           <div
-                            class="tf--create-cluster-page__provider-card"
+                            aria-label="cluster.create.baremetal.subtitle"
+                            class="tf--provider-card"
+                            data-testid="card-cluster.create.baremetal.subtitle"
+                            id="cluster.create.baremetal.subtitle"
+                            role="button"
+                            tabindex="0"
                           >
-                            <svg
-                              height="45px"
-                              role="presentation"
-                              viewBox="0 0 45 45"
-                              width="45px"
+                            <div
+                              class="tf--provider-card-container"
                             >
-                              <g
-                                fill="none"
-                                fill-rule="evenodd"
-                                stroke="none"
-                                stroke-width="1"
+                              <div
+                                class="tf--create-cluster-page__provider-card"
                               >
-                                <g
-                                  fill="#000000"
-                                  transform="translate(-381.000000, -956.000000)"
+                                <svg
+                                  height="45px"
+                                  role="presentation"
+                                  viewBox="0 0 45 45"
+                                  width="45px"
                                 >
                                   <g
-                                    transform="translate(380.000000, 955.000000)"
+                                    fill="none"
+                                    fill-rule="evenodd"
+                                    stroke="none"
+                                    stroke-width="1"
+                                  >
+                                    <g
+                                      fill="#000000"
+                                      transform="translate(-381.000000, -956.000000)"
+                                    >
+                                      <g
+                                        transform="translate(380.000000, 955.000000)"
+                                      >
+                                        <path
+                                          d="M45.08,33.0620688 C45.3675,33.0620688 45.5989375,33.2935063 45.5989375,33.5810063 L45.5989375,45.0810063 C45.5989375,45.3670688 45.3675,45.5985063 45.08,45.5985063 L1.955,45.5985063 C1.6689375,45.5985063 1.4375,45.3670688 1.4375,45.0810063 L1.4375,33.5810063 C1.4375,33.2935063 1.6689375,33.0620688 1.955,33.0620688 L45.08,33.0620688 Z M44.5625,34.0985063 L2.4739375,34.0985063 L2.4739375,44.5620688 L44.5625,44.5620688 L44.5625,34.0985063 Z M37.8943688,37.8958062 C38.6878688,37.8958062 39.3318688,38.5398062 39.3318688,39.3333062 C39.3318688,40.1282437 38.6878688,40.7708062 37.8943688,40.7708062 C37.0994313,40.7708062 36.4568688,40.1282437 36.4568688,39.3333062 C36.4568688,38.5398062 37.0994313,37.8958062 37.8943688,37.8958062 Z M45.08,17.2495688 C45.3675,17.2495688 45.5989375,17.4810063 45.5989375,17.7685063 L45.5989375,29.2685063 C45.5989375,29.5545688 45.3675,29.7860063 45.08,29.7860063 L1.955,29.7860063 C1.6689375,29.7860063 1.4375,29.5545688 1.4375,29.2685063 L1.4375,17.7685063 C1.4375,17.4810063 1.6689375,17.2495688 1.955,17.2495688 L45.08,17.2495688 Z M44.5625,18.2860063 L2.4739375,18.2860063 L2.4739375,28.7495688 L44.5625,28.7495688 L44.5625,18.2860063 Z M37.893075,22.0818688 C38.6880125,22.0818688 39.330575,22.7244313 39.330575,23.5193688 C39.330575,24.3128688 38.6880125,24.9568688 37.893075,24.9568688 C37.099575,24.9568688 36.455575,24.3128688 36.455575,23.5193688 C36.455575,22.7244313 37.099575,22.0818688 37.893075,22.0818688 Z M45.08,1.43706875 C45.3675,1.43706875 45.5989375,1.66850625 45.5989375,1.95600625 L45.5989375,13.4560063 C45.5989375,13.7420688 45.3675,13.9735063 45.08,13.9735063 L1.955,13.9735063 C1.6689375,13.9735063 1.4375,13.7420688 1.4375,13.4560063 L1.4375,1.95600625 C1.4375,1.66850625 1.6689375,1.43706875 1.955,1.43706875 L45.08,1.43706875 Z M44.5625,2.47350625 L2.4739375,2.47350625 L2.4739375,12.9370688 L44.5625,12.9370688 L44.5625,2.47350625 Z M37.8916375,6.26793125 C38.686575,6.26793125 39.3291375,6.91193125 39.3291375,7.70543125 C39.3291375,8.50036875 38.686575,9.14293125 37.8916375,9.14293125 C37.0981375,9.14293125 36.4541375,8.50036875 36.4541375,7.70543125 C36.4541375,6.91193125 37.0981375,6.26793125 37.8916375,6.26793125 Z"
+                                        />
+                                      </g>
+                                    </g>
+                                  </g>
+                                </svg>
+                                <p
+                                  class="tf--create-cluster-page__provider-card-title"
+                                >
+                                  <span>
+                                    cluster.create.baremetal.subtitle
+                                  </span>
+                                </p>
+                              </div>
+                              <div
+                                class="card-tooltip-container"
+                              >
+                                <button
+                                  aria-label="More info"
+                                  class="pf-c-form__group-label-help"
+                                  id="undefined-label-help-button"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    fill="currentColor"
+                                    height="1em"
+                                    role="img"
+                                    viewBox="0 0 1024 1024"
+                                    width="1em"
                                   >
                                     <path
-                                      d="M45.08,33.0620688 C45.3675,33.0620688 45.5989375,33.2935063 45.5989375,33.5810063 L45.5989375,45.0810063 C45.5989375,45.3670688 45.3675,45.5985063 45.08,45.5985063 L1.955,45.5985063 C1.6689375,45.5985063 1.4375,45.3670688 1.4375,45.0810063 L1.4375,33.5810063 C1.4375,33.2935063 1.6689375,33.0620688 1.955,33.0620688 L45.08,33.0620688 Z M44.5625,34.0985063 L2.4739375,34.0985063 L2.4739375,44.5620688 L44.5625,44.5620688 L44.5625,34.0985063 Z M37.8943688,37.8958062 C38.6878688,37.8958062 39.3318688,38.5398062 39.3318688,39.3333062 C39.3318688,40.1282437 38.6878688,40.7708062 37.8943688,40.7708062 C37.0994313,40.7708062 36.4568688,40.1282437 36.4568688,39.3333062 C36.4568688,38.5398062 37.0994313,37.8958062 37.8943688,37.8958062 Z M45.08,17.2495688 C45.3675,17.2495688 45.5989375,17.4810063 45.5989375,17.7685063 L45.5989375,29.2685063 C45.5989375,29.5545688 45.3675,29.7860063 45.08,29.7860063 L1.955,29.7860063 C1.6689375,29.7860063 1.4375,29.5545688 1.4375,29.2685063 L1.4375,17.7685063 C1.4375,17.4810063 1.6689375,17.2495688 1.955,17.2495688 L45.08,17.2495688 Z M44.5625,18.2860063 L2.4739375,18.2860063 L2.4739375,28.7495688 L44.5625,28.7495688 L44.5625,18.2860063 Z M37.893075,22.0818688 C38.6880125,22.0818688 39.330575,22.7244313 39.330575,23.5193688 C39.330575,24.3128688 38.6880125,24.9568688 37.893075,24.9568688 C37.099575,24.9568688 36.455575,24.3128688 36.455575,23.5193688 C36.455575,22.7244313 37.099575,22.0818688 37.893075,22.0818688 Z M45.08,1.43706875 C45.3675,1.43706875 45.5989375,1.66850625 45.5989375,1.95600625 L45.5989375,13.4560063 C45.5989375,13.7420688 45.3675,13.9735063 45.08,13.9735063 L1.955,13.9735063 C1.6689375,13.9735063 1.4375,13.7420688 1.4375,13.4560063 L1.4375,1.95600625 C1.4375,1.66850625 1.6689375,1.43706875 1.955,1.43706875 L45.08,1.43706875 Z M44.5625,2.47350625 L2.4739375,2.47350625 L2.4739375,12.9370688 L44.5625,12.9370688 L44.5625,2.47350625 Z M37.8916375,6.26793125 C38.686575,6.26793125 39.3291375,6.91193125 39.3291375,7.70543125 C39.3291375,8.50036875 38.686575,9.14293125 37.8916375,9.14293125 C37.0981375,9.14293125 36.4541375,8.50036875 36.4541375,7.70543125 C36.4541375,6.91193125 37.0981375,6.26793125 37.8916375,6.26793125 Z"
+                                      d="M521.3,576 C627.5,576 713.7,502 713.7,413.7 C713.7,325.4 627.6,253.6 521.3,253.6 C366,253.6 334.5,337.7 329.2,407.2 C329.2,414.3 335.2,416 343.5,416 L445,416 C450.5,416 458,415.5 460.8,406.5 C460.8,362.6 582.9,357.1 582.9,413.6 C582.9,441.9 556.2,470.9 521.3,473 C486.4,475.1 447.3,479.8 447.3,521.7 L447.3,553.8 C447.3,570.8 456.1,576 472,576 C487.9,576 521.3,576 521.3,576 M575.3,751.3 L575.3,655.3 C575.313862,651.055109 573.620137,646.982962 570.6,644 C567.638831,640.947672 563.552355,639.247987 559.3,639.29884 L463.3,639.29884 C459.055109,639.286138 454.982962,640.979863 452,644 C448.947672,646.961169 447.247987,651.047645 447.29884,655.3 L447.29884,751.3 C447.286138,755.544891 448.979863,759.617038 452,762.6 C454.961169,765.652328 459.047645,767.352013 463.3,767.30116 L559.3,767.30116 C563.544891,767.313862 567.617038,765.620137 570.6,762.6 C573.659349,759.643612 575.360354,755.553963 575.3,751.3 M512,896 C300.2,896 128,723.9 128,512 C128,300.3 300.2,128 512,128 C723.8,128 896,300.2 896,512 C896,723.8 723.7,896 512,896 M512.1,0 C229.7,0 0,229.8 0,512 C0,794.2 229.8,1024 512.1,1024 C794.4,1024 1024,794.3 1024,512 C1024,229.7 794.4,0 512.1,0"
                                     />
-                                  </g>
-                                </g>
-                              </g>
-                            </svg>
-                            <p
-                              class="tf--create-cluster-page__provider-card-title"
-                            >
-                              <span>
-                                cluster.create.baremetal.subtitle
-                              </span>
-                            </p>
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -256,12 +288,285 @@ exports[`TemplateEditor component renders as expected 1`] = `
                 </div>
               </div>
             </div>
+            <div
+              class="creation-view-controls-container-blurr bottom"
+              style="display: none;"
+            />
           </div>
         </div>
-        <div
-          class="creation-view-controls-container-blurr bottom"
-          style="display: none;"
+        <span
+          class="Resizer vertical "
+          role="presentation"
         />
+        <div
+          class="Pane vertical Pane2  "
+          style="flex: 1; position: relative; outline: none;"
+        >
+          <div
+            class="creation-view-yaml"
+          >
+            <div
+              class="creation-view-yaml-header"
+            >
+              <div
+                aria-label="editor.toolbar"
+                class="creation-view-yaml-header-toolbar"
+                id="editor.toolbar"
+                role="region"
+              >
+                <div
+                  class="editor-bar"
+                >
+                  <div
+                    class="editor-bar-group"
+                  >
+                    <div
+                      class="editor-bar-title"
+                    >
+                      creation.app.yaml
+                    </div>
+                  </div>
+                  <div
+                    class="editor-bar-group"
+                  >
+                    <div
+                      class="editor-bar-toolbar"
+                    >
+                      <div
+                        class="editor-bar-section"
+                      >
+                        <div
+                          aria-label="editor.bar.reset"
+                          class="editor-bar-button restore disabled"
+                          role="button"
+                          tabindex="0"
+                          title="editor.bar.reset"
+                        >
+                          <div>
+                            editor.bar.reset
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="editor-bar-section"
+                      >
+                        <div
+                          aria-label="editor.bar.undo"
+                          class="editor-bar-button undo disabled"
+                          role="button"
+                          tabindex="0"
+                          title="editor.bar.undo"
+                        >
+                          <svg
+                            height="16px"
+                            role="presentation"
+                            version="1.1"
+                            viewBox="0 0 18 12"
+                            width="16px"
+                          >
+                            <g
+                              fill="none"
+                              fill-rule="evenodd"
+                              stroke="none"
+                              stroke-width="1"
+                            >
+                              <g
+                                fill="#EDEDED"
+                                transform="translate(-827.000000, -218.000000)"
+                              >
+                                <g
+                                  transform="translate(827.000000, 218.000000)"
+                                >
+                                  <path
+                                    d="M14,5.3 C15.5,5.3 16.8,6.6 16.8,8 C16.8,9.5 15.5,10.7 14,10.7 L10,10.7 L10,12 L14,12 C16.3,12 18,10.3 18,8 C18,5.8 16.2,4 14,4 L2.4,4 L4.9,1.5 L4,0.6 L0,4.6 L4,8.6 L4.9,7.7 L2.4,5.3 L14,5.3 Z"
+                                    id="Fill"
+                                  />
+                                </g>
+                              </g>
+                            </g>
+                          </svg>
+                        </div>
+                        <div
+                          aria-label="editor.bar.redo"
+                          class="editor-bar-button redo disabled"
+                          role="button"
+                          tabindex="0"
+                          title="editor.bar.redo"
+                        >
+                          <svg
+                            height="16px"
+                            role="presentation"
+                            version="1.1"
+                            viewBox="0 0 18 12"
+                            width="16px"
+                          >
+                            <g
+                              fill="none"
+                              fill-rule="evenodd"
+                              stroke="none"
+                              stroke-width="1"
+                            >
+                              <g
+                                fill="#EDEDED"
+                                transform="translate(-857.000000, -218.000000)"
+                              >
+                                <g
+                                  transform="translate(857.000000, 218.000000)"
+                                >
+                                  <path
+                                    d="M4,5.3 C2.5,5.3 1.2,6.6 1.2,8 C1.2,9.5 2.5,10.7 4,10.7 L8,10.7 L8,12 L4,12 C1.7,12 0,10.3 0,8 C0,5.8 1.8,4 4,4 L15.6,4 L13.1,1.5 L14,0.6 L18,4.6 L14,8.6 L13.1,7.7 L15.6,5.2 L4,5.2 L4,5.3 Z"
+                                    id="Fill"
+                                  />
+                                </g>
+                              </g>
+                            </g>
+                          </svg>
+                        </div>
+                      </div>
+                      <div
+                        class="editor-bar-section"
+                      >
+                        <div
+                          aria-label="find.label"
+                          class="editor-bar-search"
+                          id="find.label"
+                          role="region"
+                        >
+                          <div
+                            class="pf-c-search-input"
+                            id="template-editor-search-application"
+                          >
+                            <span
+                              class="pf-c-search-input__text"
+                            >
+                              <span
+                                class="pf-c-search-input__icon"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style="vertical-align: -0.125em;"
+                                  viewBox="0 0 512 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+                                  />
+                                </svg>
+                              </span>
+                              <input
+                                aria-label="find.label"
+                                class="pf-c-search-input__text-input"
+                                placeholder="find.label"
+                                value=""
+                              />
+                            </span>
+                          </div>
+                          <div
+                            aria-label="editor.bar.previous"
+                            class="editor-bar-button previous disabled"
+                            role="button"
+                            tabindex="0"
+                            title="editor.bar.previous"
+                          >
+                            <svg
+                              height="16px"
+                              role="presentation"
+                              version="1.1"
+                              viewBox="0 0 18 18"
+                              width="16px"
+                            >
+                              <g
+                                fill="none"
+                                fill-rule="evenodd"
+                                stroke="none"
+                                stroke-width="1"
+                              >
+                                <g
+                                  fill="#EDEDED"
+                                  transform="translate(-1225.000000, -215.000000)"
+                                >
+                                  <path
+                                    d="M1234,216.5 C1238.14214,216.5 1241.5,219.857864 1241.5,224 C1241.5,228.142136 1238.14214,231.5 1234,231.5 C1229.85786,231.5 1226.5,228.142136 1226.5,224 C1226.5,219.857864 1229.85786,216.5 1234,216.5 L1234,216.5 Z M1234,215.25 C1229.16751,215.25 1225.25,219.167508 1225.25,224 C1225.25,228.832492 1229.16751,232.75 1234,232.75 C1238.83249,232.75 1242.75,228.832492 1242.75,224 C1242.75,219.167508 1238.83249,215.25 1234,215.25 Z M1230.35502,224.334055 L1235.91465,224.334055 L1233.00667,227.242032 L1233.89056,228.125915 L1238.30997,223.706498 L1233.89498,219.2915 L1233.00225,220.166545 L1235.91907,223.08336 L1230.35944,223.08336 L1230.35502,224.334055 L1230.35502,224.334055 Z"
+                                    id="Fill"
+                                    transform="translate(1234.000000, 224.000000) scale(-1, 1) translate(-1234.000000, -224.000000) "
+                                  />
+                                </g>
+                              </g>
+                            </svg>
+                          </div>
+                          <div
+                            aria-label="editor.bar.next"
+                            class="editor-bar-button next disabled"
+                            role="button"
+                            tabindex="0"
+                            title="editor.bar.next"
+                          >
+                            <svg
+                              height="16px"
+                              role="presentation"
+                              version="1.1"
+                              viewBox="0 0 18 18"
+                              width="16px"
+                            >
+                              <g
+                                fill="none"
+                                fill-rule="evenodd"
+                                stroke="none"
+                                stroke-width="1"
+                              >
+                                <g
+                                  fill="#EDEDED"
+                                  transform="translate(-1255.000000, -215.000000)"
+                                >
+                                  <path
+                                    d="M1264,216.5 C1268.14214,216.5 1271.5,219.857864 1271.5,224 C1271.5,228.142136 1268.14214,231.5 1264,231.5 C1259.85786,231.5 1256.5,228.142136 1256.5,224 C1256.5,219.857864 1259.85786,216.5 1264,216.5 L1264,216.5 Z M1264,215.25 C1259.16751,215.25 1255.25,219.167508 1255.25,224 C1255.25,228.832492 1259.16751,232.75 1264,232.75 C1268.83249,232.75 1272.75,228.832492 1272.75,224 C1272.75,219.167508 1268.83249,215.25 1264,215.25 Z M1260.35502,224.334055 L1265.91465,224.334055 L1263.00667,227.242032 L1263.89056,228.125915 L1268.30997,223.706498 L1263.89498,219.2915 L1263.00225,220.166545 L1265.91907,223.08336 L1260.35944,223.08336 L1260.35502,224.334055 L1260.35502,224.334055 Z"
+                                    id="Fill"
+                                  />
+                                </g>
+                              </g>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="editor-bar-close"
+                  >
+                    <div
+                      class="editor-bar-section"
+                    >
+                      <div
+                        aria-label="editor.bar.close"
+                        class="editor-bar-button close"
+                        role="button"
+                        tabindex="0"
+                        title="editor.bar.close"
+                      >
+                        <svg
+                          height="16px"
+                          role="presentation"
+                          version="1.1"
+                          viewBox="-4 -4 16 16"
+                          width="16px"
+                        >
+                          <g>
+                            <path
+                              d="M9.8 8.6L8.4 10 5 6.4 1.4 10 0 8.6 3.6 5 .1 1.4 1.5 0 5 3.6 8.6 0 10 1.4 6.4 5z"
+                            />
+                          </g>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

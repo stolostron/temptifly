@@ -3,10 +3,16 @@
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import TemplateEditor from '../../../../src/TemplateEditor'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import template from '../../../../example/templates/template.hbs'
 import controlData from '../../../../example/controlData/ControlData'
+
+//window.MonacoEnvironment = {
+//  getWorkerUrl: function() {
+//    return `${config.contextPath}/editor.worker.js`
+//  }
+//}
 
 export const portals = Object.freeze({
   cancelBtn: 'cancel-button-portal-id',
@@ -18,8 +24,8 @@ const i18n = (key) => {
   return key
 }
 
-describe('TemplateEditor component', () => {
-  it('renders as expected', () => {
+describe('TemplateEditor component',() => {
+  it('renders as expected',  async () => {
 
     const createResource = async () => {
     }
@@ -37,20 +43,22 @@ describe('TemplateEditor component', () => {
             type={'application'}
             title={'creation.app.yaml'}
             i18n={i18n}
+            initialOpen={true}
           />
         </BrowserRouter>
       )
     }
 
-    const { getByTestId, asFragment, container, debug } = render(<Component />)
+    const { getByTestId, asFragment, debug } = render(<Component />)
     expect(asFragment()).toMatchSnapshot()
 
-
-    userEvent.type(container.querySelector('#eman'), 'test')
-
+    userEvent.type(getByTestId('text-eman'), 'test')
+    userEvent.click(getByTestId('card-cluster.create.baremetal.subtitle'))
     screen.debug(debug(), 2000000)
 
-    userEvent.click(getByTestId('cluster.create.baremetal.subtitle'))
+    await waitFor(() => expect(screen.getByTestId('combo-imageSet')).toBeInTheDocument())
+
+    userEvent.type(getByTestId('combo-imageSet'), 'test')
 
 
     //    userEvent.type(getByTestId('textinput'), 'n')

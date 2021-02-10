@@ -61,7 +61,7 @@ class ControlPanelLabels extends React.Component {
                   onBlur={this.handleBlur.bind(this)}
                   onKeyDown={this.handleKeyDown.bind(this)}
                   onChange={this.handleChange.bind(this)}
-                  data-testid="labelinput"
+                  data-testid={`label-${controlId}`}
                 />
               </div>
             </div>
@@ -72,41 +72,40 @@ class ControlPanelLabels extends React.Component {
   }
 
   handleDelete(inx) {
-
     const { control, handleChange } = this.props
     const { active = [] } = control
     active.splice(inx, 1)
     handleChange(control)
   }
 
-  handleChange(value) {
+  handleChange(value='') {
     const { control, i18n } = this.props
     const { active = [] } = control
-    if (value === ',') {
-      value = ''
-    }
-    let invalid = !regex.test(value)
-    let invalidText = ''
-    if (invalid) {
-      invalidText = i18n('enter.add.label')
+    if (value.endsWith(',')) {
+      this.createLabel()
     } else {
-      const match = regex.exec(value)
-      const map = keyBy(active, 'key')
-      if (map[match[KEY_CAPTURE_GROUP_INDEX]]) {
-        invalid = true
-        invalidText = i18n(
-          'enter.duplicate.key',
-          [match[KEY_CAPTURE_GROUP_INDEX]])
+      let invalid = !regex.test(value)
+      let invalidText = ''
+      if (invalid) {
+        invalidText = i18n('enter.add.label')
+      } else {
+        const match = regex.exec(value)
+        const map = keyBy(active, 'key')
+        if (map[match[KEY_CAPTURE_GROUP_INDEX]]) {
+          invalid = true
+          invalidText = i18n(
+            'enter.duplicate.key',
+            [match[KEY_CAPTURE_GROUP_INDEX]])
+        }
       }
+      control.exception = invalidText
+      this.setState({ value, invalid })
     }
-    control.exception = invalidText
-    this.setState({ value, invalid })
   }
 
   handleKeyDown(event) {
     switch (event.key) {
     case 'Enter':
-    case ',':
       this.createLabel()
       break
 

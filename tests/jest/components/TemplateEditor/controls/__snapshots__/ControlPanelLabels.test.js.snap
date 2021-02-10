@@ -54,8 +54,9 @@ exports[`ControlPanelLabels component renders as expected 1`] = `
             <input
               aria-invalid="false"
               class="pf-c-form-control"
-              data-testid="labelinput"
+              data-testid="label-controlId"
               id="controlId"
+              placeholder="enter.add.label"
               type="text"
               value=""
             />

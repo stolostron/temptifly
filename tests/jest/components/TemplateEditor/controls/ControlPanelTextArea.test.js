@@ -33,7 +33,7 @@ describe('ControlPanelTextArea component', () => {
     const { getByTestId, asFragment, rerender } = render(<Component />)
     expect(asFragment()).toMatchSnapshot()
 
-    userEvent.type(getByTestId('textarea'), 'n')
+    userEvent.type(getByTestId('area-controlId'), 'n')
     expect(control.active).toBe('n')
 
     control.name = ''

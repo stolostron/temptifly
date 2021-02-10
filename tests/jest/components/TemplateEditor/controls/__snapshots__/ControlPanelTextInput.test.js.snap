@@ -48,7 +48,7 @@ exports[`ControlPanelTextInput component renders as expected 1`] = `
         <input
           aria-invalid="false"
           class="pf-c-form-control"
-          data-testid="textinput"
+          data-testid="text-controlId"
           id="controlId"
           spellcheck="false"
           type="text"
@@ -75,7 +75,7 @@ exports[`ControlPanelTextInput component renders as expected 2`] = `
         <input
           aria-invalid="true"
           class="pf-c-form-control"
-          data-testid="textinput"
+          data-testid="text-controlId"
           id="controlId"
           placeholder="placeholder"
           spellcheck="false"

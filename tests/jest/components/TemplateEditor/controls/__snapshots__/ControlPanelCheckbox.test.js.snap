@@ -12,7 +12,7 @@ exports[`ControlPanelCheckbox component renders as expected 1`] = `
         aria-invalid="false"
         aria-label="creation.app.name"
         class="pf-c-check__input"
-        data-testid="checkbox"
+        data-testid="checkbox-controlId"
         id="controlId"
         type="checkbox"
       />
