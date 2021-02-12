@@ -9,6 +9,7 @@ import {
   EmptyState,
   EmptyStateIcon,
   EmptyStateBody,
+  EmptyStateVariant,
   Pagination,
   PaginationVariant,
   SearchInput,
@@ -30,7 +31,7 @@ import {
   TableVariant
 } from '@patternfly/react-table'
 import { ControlMode } from '../utils/source-utils'
-import CubesIcon from '@patternfly/react-icons/dist/js/icons/cubes-icon'
+import FolderPlusIcon from '@patternfly/react-icons/dist/js/icons/folder-plus-icon'
 import keyBy from 'lodash/keyBy'
 import get from 'lodash/get'
 import orderBy from 'lodash/orderBy'
@@ -217,7 +218,13 @@ class ControlPanelTable extends React.Component {
     const { control: { controlData } } = this.props
     const headers = controlData
       .filter(({ mode }) => mode !== ControlMode.PROMPT_ONLY)
-      .map(({ name }) => ({title: name, transforms: [sortable] }))
+      .map(({ name, width }) => ({
+        title: name,
+        columnTransforms: [()=>{
+          return {style: {width: width || 'auto'}}
+        }],
+        transforms: [sortable]
+      }))
     headers.push({ key: 'action', title: '' })
     return headers
   }
@@ -307,19 +314,32 @@ class ControlPanelTable extends React.Component {
         </Title>
       </EmptyState>)
     } else if ( available.length===0 ) {
+      const explanation = 'You don\'t have any bare metal assets yet. Start by creating or importing your bare metal assets.'
       return (
-
-        <EmptyState>
-          <EmptyStateIcon icon={CubesIcon} />
-          <Title headingLevel="h4" size="lg">
-            No Bare Metal Assets
+        <EmptyState variant={EmptyStateVariant.small}>
+          <EmptyStateIcon icon={FolderPlusIcon} />
+          <Title headingLevel="h2" size="lg">
+            No bare metal assets found
           </Title>
+          <EmptyStateBody>{explanation}</EmptyStateBody>
           <EmptyStateBody>
-            There are no Bare Metal Assets currently defined.
+            <Split>
+              <SplitItem isFilled></SplitItem>
+              <SplitItem>
+                <Toolbar>
+                  <ToolbarContent>
+                    {actions.map((action, inx) => (
+                      /* eslint-disable-next-line react/no-array-index-key */
+                      <ToolbarItem key={inx}>
+                        {action}
+                      </ToolbarItem>
+                    ))}
+                  </ToolbarContent>
+                </Toolbar>
+              </SplitItem>
+              <SplitItem isFilled></SplitItem>
+            </Split>
           </EmptyStateBody>
-          <div className='tf-table-button-container'>
-            {actions}
-          </div>
         </EmptyState>
       )
     } else {
@@ -409,6 +429,32 @@ class ControlPanelTable extends React.Component {
     const { controlData, available } = control
     let { active=[] } = control
     const { rows } = this.state
+
+    const saveValues = (rows) => {
+      rows.forEach(({cells}) => {
+        cells.forEach(({props})=>{
+          if (props) {
+            props.lastValue = props.value
+            props.value = ''
+          }
+        })
+      })
+    }
+
+    const restoreValues = (rows, active) => {
+      rows.forEach(({id, cells}) => {
+        cells.forEach(({props})=>{
+          if (props) {
+            if (props.lastValue) {
+              props.value = props.lastValue
+              const inx = active.findIndex(data => id === data.id)
+              set(active[inx], `${props.name}`, props.value)
+            }
+          }
+        })
+      })
+    }
+
     if (rowId !== -1) {
       const {id} = rows[rowId].available
       const activeMap = keyBy(active, 'id')
@@ -416,30 +462,21 @@ class ControlPanelTable extends React.Component {
       if (!activeMap[id]) {
         // add to active
         this.addActives(active, [rows[rowId].available], controlData)
+        restoreValues([rows[rowId]], active)
       } else {
         // remove from active
         const inx = active.findIndex(data => id === data.id)
         active.splice(inx, 1)
-        rows[rowId].cells.forEach(({props})=>{
-          if (props) {
-            props.value = ''
-          }
-        })
+        saveValues([rows[rowId]])
       }
     } else {
       control.active = [];
       ({ active } = control)
       if (isSelected) {
         this.addActives(active, available, controlData)
+        restoreValues(rows, active)
       } else {
-        rows.forEach(({cells}) => {
-          cells.forEach(({props})=>{
-            if (props) {
-              props.value = ''
-            }
-          })
-        })
-
+        saveValues(rows)
       }
     }
     this.props.handleChange(control)
