@@ -1,6 +1,8 @@
 var path = require('path'),
     MiniCssExtractPlugin = require('mini-css-extract-plugin'),
-    FileManagerPlugin = require('filemanager-webpack-plugin')
+    FileManagerPlugin = require('filemanager-webpack-plugin'),
+    TerserPlugin = require('terser-webpack-plugin')
+
 
 const overpassTest = /overpass-.*\.(woff2?|ttf|eot|otf)(\?.*$|$)/
 
@@ -92,6 +94,30 @@ module.exports = {
       // don't parse minified bundles (vendor libs) for faster builds
       /\.min\.js$/
     ]
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          warnings: false,
+          compress: {
+            comparisons: false,
+          },
+          parse: {},
+          mangle: true,
+          output: {
+            comments: false,
+            ascii_only: true,
+          },
+        },
+        parallel: true,
+        cache: true,
+        sourceMap: true,
+      }),
+    ],
+    nodeEnv: 'production',
+    sideEffects: true,
   },
 
   plugins: [
