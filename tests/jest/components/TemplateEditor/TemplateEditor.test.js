@@ -51,12 +51,11 @@ describe('TemplateEditor component',() => {
       )
     }
 
-    const { getByTestId, asFragment, debug } = render(<Component />)
+    const { getByTestId, asFragment } = render(<Component />)
     expect(asFragment()).toMatchSnapshot()
 
     userEvent.type(getByTestId('text-eman'), 'test')
     userEvent.click(getByTestId('card-cluster.create.baremetal.subtitle'))
-    screen.debug(debug(), 2000000)
 
     await waitFor(() => expect(screen.getByTestId('combo-imageSet')).toBeInTheDocument())
 
