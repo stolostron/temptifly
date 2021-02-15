@@ -10,6 +10,7 @@ addons:
 stages:
   - unit-test
   - build-publish
+
 jobs:
   include:
     - stage: unit-test
@@ -24,6 +25,6 @@ jobs:
     - stage: 
       if: type = push AND branch = main
       script:
-        - npm test &&
-          npm run build &&
-          scripts/publish.sh
+        - npm test
+        - npm run build
+        - scripts/publish.sh
