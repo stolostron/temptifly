@@ -1,9 +1,8 @@
 'use strict'
 
 import React from 'react'
-import ControlPanelTextArea from '../../../../../src/controls/ControlPanelTextArea'
+import ControlPanelPrompt from '../../../../../src/controls/ControlPanelPrompt'
 import { render } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 
 export const control =
 {
@@ -12,15 +11,22 @@ export const control =
   controlData: [],
   id: 'name',
   type: 'text',
+  prompts: {
+    prompt: 'creation.ocp.cloud.add.connection',
+    type: 'link',
+    url: 'mylink',
+    positionBottomRight: true,
+    id: 'add-provider-connection',
+  }
 }
 const fn = jest.fn()
 
-describe('ControlPanelTextArea component', () => {
+describe('ControlPanelPrompt component', () => {
   it('renders as expected', () => {
 
     const Component = () => {
       return (
-        <ControlPanelTextArea
+        <ControlPanelPrompt
           key={'key'}
           control={control}
           controlId={'controlId'}
@@ -30,17 +36,13 @@ describe('ControlPanelTextArea component', () => {
       )
     }
 
-    const { getByTestId, asFragment, rerender } = render(<Component />)
+    const { asFragment, rerender } = render(<Component />)
     expect(asFragment()).toMatchSnapshot()
-
-    userEvent.type(getByTestId('area-controlId'), 'n')
-    expect(control.active).toBe('n')
-
-    control.name = ''
-    control.exception = 'error'
-    rerender(<Component />)
-    control.placeholder = 'placeholder'
+    control.prompts.type = ''
     rerender(<Component />)
     expect(asFragment()).toMatchSnapshot()
+    control.prompts = undefined
+    rerender(<Component />)
+
   })
 })

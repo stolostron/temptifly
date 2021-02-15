@@ -249,6 +249,7 @@ class ControlPanelComboBox extends React.Component {
                       onChange={evt =>
                         this.setState({ searchText: evt.currentTarget.value })
                       }
+                      data-testid={`combo-${controlId}`}
                     />
                   </div>
                   {!disabled && (searchText || active) && <div

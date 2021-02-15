@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ControlPanelPrompt component renders as expected 1`] = `
+<DocumentFragment>
+  <div
+    class="creation-view-controls-add-value-container bottom-right"
+  >
+    <a
+      class="creation-view-controls-add-button"
+      href="/mylink"
+      id="add-provider-connection"
+    />
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ControlPanelPrompt component renders as expected 2`] = `<DocumentFragment />`;

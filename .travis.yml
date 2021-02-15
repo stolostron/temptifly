@@ -1,24 +1,21 @@
 language: node_js
-node_js:
-  - "8"
-
-before_script:
-  - |
-    if [[ ! -d "test-output" ]]; then
-      mkdir test-output
-    fi
-  - |
-    sudo add-apt-repository ppa:git-core/ppa -y
-    sudo apt-get update
-    sudo apt-get install git -y
-    git --version
-
-script:
-  - npm test
-
-deploy:
-  provider: script
-  script: "cp .npmrc.template $HOME/.npmrc && npx semantic-release && npm run deploy"
-  skip_cleanup: true
-  on:
-    branch: master
+node_js: '12'
+install: npm install
+addons:
+  sonarcloud:
+    organization: open-cluster-management
+    token:
+      secure: >-
+        BZtPXXog0xEU7Sx1yy/dw5Aw/lpGHgmT3BfX4pVdQKyxzUzsRnOC6Z2XzcsUizjkgehsRAfgSfGnEf/wAHxb+dSk9awYr5BcHi1QlvAyYmDAu+z0lpuvoKzLLcLwfuj4Smmf3SQl9rygBzf1UGRSfkpdPGHHR4mS///UVMbxJ02j84eWRO0TYfaeOdFHgGk/ST0wEaJm7vpMfjS1cFWkY6nLyaY6hAvXaRdNNMPmClT7/HbNyMSNvI9k/R7XL74NfAkCmB7zWCaqJYHA+7+UmDCUSk4oEthVOQ2c+BkQ6g3V6WUhhmfZhC80Q2RJmqW81mZtcvI3BTITDBS06nyo6yyEbI1I553wFw27da4UwJEiKKrY5hENVtoXosLJ51/VXRtev6nokQ0LlCliq3bZ+hJ5iIqsJp7Q5dNC6UGhTfYovYbXSxez9UYx5NSMM9Y8KDS2zv8fA6e56lPIQH+gOMpbF5I5lCreEN1MZE7JrS+lBTh9ezoqm33N4nf1/j7D288EptdDXls3Y19UYAbdpuTEV5tohNh/WZBf1NcJ8XW374lTWkxEb4V+xBqRO1KzrE9Ea2RbHGO6tQA6drMVrMGbyIGAXE+UH7x85EBd4YoZbwJG3z+uLCI7mzEtUOVzIzV8x55Sx8GcMAp1CbpoL1ms2U7i8k3uPzCTsHAdkkw=
+stages:
+  - unit-test
+jobs:
+  include:
+    - stage: unit-test
+      name: Run unit tests
+      if: type = pull_request
+      script:
+        - make
+        - make sonar/js/jest-init
+        - npm test
+        - make sonar/js

@@ -22,12 +22,15 @@ class ControlPanelNumber extends React.Component {
 
   render() {
     const { controlId, control, handleChange } = this.props
-    const { initial, exception } = control
-    let { active } = control
-    active = active || initial
-    const nActive = parseInt(active, 10)
+    const { exception } = control
 
-    const onChange = (value) => {
+    const onSet = (value) => {
+      control.active = value.toString()
+      handleChange()
+    }
+
+    const onChange = (inc) => {
+      const value = parseInt(control.active, 10) + inc
       if (value>=0) {
         control.active = value.toString()
         handleChange()
@@ -47,8 +50,9 @@ class ControlPanelNumber extends React.Component {
             <div className="pf-c-number-input">
               <div className="pf-c-input-group">
                 <button className="pf-c-button pf-m-control" style={{lineHeight: '16px'}} type="button" aria-label="Minus"
+                  data-testid={`down-${controlId}`}
                   onClick={()=>{
-                    onChange(nActive-1)
+                    onChange(-1)
                   }}>
                   <span className="pf-c-number-input__icon">
                     <svg height="16" width="16" role="img" viewBox="0 0 24 24">
@@ -59,20 +63,22 @@ class ControlPanelNumber extends React.Component {
                 <input
                   className="pf-c-form-control"
                   type="number"
-                  value={active}
+                  value={control.active}
                   pattern="[0-9]*"
                   name="number-input-default-name"
                   onFocus={e => {
                     e.target.select()
                   }}
                   onChange={e => {
-                    onChange(e.target.value)
+                    onSet(e.target.value)
                   }}
                   aria-label="Number input"
+                  data-testid={`number-${controlId}`}
                 />
                 <button className="pf-c-button pf-m-control" style={{lineHeight: '16px'}} type="button" aria-label="Plus"
+                  data-testid={`up-${controlId}`}
                   onClick={()=>{
-                    onChange(nActive+1)
+                    onChange(1)
                   }}>
                   <svg height="16" width="16" role="img" viewBox="0 0 24 24">
                     <path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z" />

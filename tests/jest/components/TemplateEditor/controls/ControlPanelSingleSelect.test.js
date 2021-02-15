@@ -4,7 +4,16 @@ import React from 'react'
 import ControlPanelSingleSelect from '../../../../../src/controls/ControlPanelSingleSelect'
 import renderer from 'react-test-renderer'
 
-import { control } from '../../TestingData'
+
+export const control =
+{
+  active: false,
+  name: 'creation.app.name',
+  tooltip: 'tooltip.creation.app.name',
+  controlData: [],
+  id: 'checkbox',
+  type: 'checkbox',
+}
 
 describe('ControlPanelSingleSelect component', () => {
   it('renders as expected', () => {

@@ -287,12 +287,12 @@ class ControlPanelTable extends React.Component {
   renderTree(rows) {
     const { control, i18n } = this.props
     const { sortBy, page, perPage } = this.state
-    const { isLoading, isFailed, prompts = {}, available } = control
+    const { isLoading, isFailed, prompts = {}, available=[] } = control
     let { active } = control
     if (!Array.isArray(active)) {
       active = []
     }
-    let { actions } = prompts
+    let { actions=[] } = prompts
     actions = React.Children.map(actions, action => {
       return React.cloneElement(action, {
         appendTable: this.handleTableAction.bind(this, add)

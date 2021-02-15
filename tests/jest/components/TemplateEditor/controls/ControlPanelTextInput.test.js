@@ -1,7 +1,7 @@
 'use strict'
 
 import React from 'react'
-import ControlPanelNumber from '../../../../../src/controls/ControlPanelNumber'
+import ControlPanelTextInput from '../../../../../src/controls/ControlPanelTextInput'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
@@ -11,16 +11,16 @@ export const control =
   tooltip: 'tooltip.creation.app.name',
   controlData: [],
   id: 'name',
-  type: 'number',
+  type: 'text',
 }
 const fn = jest.fn()
 
-describe('ControlPanelNumber component', () => {
+describe('ControlPanelTextInput component', () => {
   it('renders as expected', () => {
 
     const Component = () => {
       return (
-        <ControlPanelNumber
+        <ControlPanelTextInput
           key={'key'}
           control={control}
           controlId={'controlId'}
@@ -29,19 +29,18 @@ describe('ControlPanelNumber component', () => {
         />
       )
     }
+
     const { getByTestId, asFragment, rerender } = render(<Component />)
     expect(asFragment()).toMatchSnapshot()
 
-    userEvent.type(getByTestId('number-controlId'), '3')
-    expect(control.active).toBe('3')
-    userEvent.click(getByTestId('up-controlId'))
-    expect(control.active).toBe('4')
-    control.active = '0'
+    userEvent.type(getByTestId('text-controlId'), 'n')
+    expect(control.active).toBe('n')
+
+    control.name = ''
     control.exception = 'error'
     rerender(<Component />)
+    control.placeholder = 'placeholder'
+    rerender(<Component />)
     expect(asFragment()).toMatchSnapshot()
-    userEvent.click(getByTestId('down-controlId'))
-    expect(control.active).toBe('0')
-
   })
 })

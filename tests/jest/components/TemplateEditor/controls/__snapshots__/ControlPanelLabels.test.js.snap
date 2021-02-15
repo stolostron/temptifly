@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ControlPanelTextArea component renders as expected 1`] = `
+exports[`ControlPanelLabels component renders as expected 1`] = `
 <DocumentFragment>
   <div
-    class="creation-view-controls-textbox"
+    class="creation-view-controls-labels"
   >
     <div
       class="pf-c-form__group"
@@ -45,47 +45,22 @@ exports[`ControlPanelTextArea component renders as expected 1`] = `
       <div
         class="pf-c-form__group-control"
       >
-        <textarea
-          aria-invalid="false"
-          class="pf-c-form-control"
-          data-testid="area-controlId"
-          id="controlId"
-          type="text"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`ControlPanelTextArea component renders as expected 2`] = `
-<DocumentFragment>
-  <div
-    class="creation-view-controls-textbox"
-  >
-    <div
-      class="pf-c-form__group"
-      id="controlId-label"
-    >
-      <div
-        class="pf-c-form__group-control"
-      >
-        <textarea
-          aria-invalid="true"
-          class="pf-c-form-control"
-          data-testid="area-controlId"
-          id="controlId"
-          placeholder="placeholder"
-          type="text"
-        >
-          n
-        </textarea>
         <div
-          aria-live="polite"
-          class="pf-c-form__helper-text pf-m-error"
-          id="controlId-helper"
+          class="creation-view-controls-labels-container"
         >
-          error
+          <div
+            class="creation-view-controls-labels-edit-container"
+          >
+            <input
+              aria-invalid="false"
+              class="pf-c-form-control"
+              data-testid="label-controlId"
+              id="controlId"
+              placeholder="enter.add.label"
+              type="text"
+              value=""
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -1,12 +1,3 @@
-const tapReporter = [
-  'jest-tap-reporter',
-  {
-    logLevel: 'ERROR',
-    showInternalStackTraces: true,
-    filePath: 'test-output/jestTestLogs.tap'
-  }
-]
-
 const jestConfig = {
   collectCoverage: true,
   collectCoverageFrom: [
@@ -56,7 +47,7 @@ const jestConfig = {
 }
 
 jestConfig.reporters = process.env.TRAVIS
-  ? ['default', tapReporter]
+  ? ['default']
   : ['default']
 
 module.exports = jestConfig

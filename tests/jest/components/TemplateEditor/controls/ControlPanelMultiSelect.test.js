@@ -4,7 +4,15 @@ import React from 'react'
 import ControlPanelMultiSelect from '../../../../../src/controls/ControlPanelMultiSelect'
 import renderer from 'react-test-renderer'
 
-import { control } from '../../TestingData'
+export const control =
+{
+  active: false,
+  name: 'creation.app.name',
+  tooltip: 'tooltip.creation.app.name',
+  controlData: [],
+  id: 'checkbox',
+  type: 'checkbox',
+}
 
 describe('ControlPanelMultiSelect component', () => {
   it('renders as expected', () => {
