@@ -10,10 +10,7 @@ addons:
 stages:
   - unit-test
   - build-publish
-<<<<<<< HEAD
-
-=======
->>>>>>> branch 'main' of git@github.com:open-cluster-management/temptifly.git
+  
 jobs:
   include:
     - stage: unit-test
@@ -28,12 +25,6 @@ jobs:
     - stage: 
       if: type = push AND branch = main
       script:
-<<<<<<< HEAD
         - npm test
         - npm run build
         - scripts/publish.sh
-=======
-        - npm test &&
-          npm run build &&
-          scripts/publish.sh
->>>>>>> branch 'main' of git@github.com:open-cluster-management/temptifly.git
