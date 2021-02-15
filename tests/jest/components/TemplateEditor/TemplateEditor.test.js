@@ -4,6 +4,7 @@ import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import TemplateEditor from '../../../../src/TemplateEditor'
 import { render, screen, waitFor } from '@testing-library/react'
+import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import template from '../../../../example/templates/template.hbs'
 import controlData from '../../../../example/controlData/ControlData'
@@ -27,6 +28,7 @@ const i18n = (key) => {
 describe('TemplateEditor component',() => {
   it('renders as expected',  async () => {
 
+    window.scrollBy = () => {}
     const createResource = async () => {
     }
     const createControl={

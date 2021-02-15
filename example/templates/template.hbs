@@ -421,12 +421,14 @@ data:
 
 {{#switch infrastructure}}
 {{#case 'DEF'}}
+---
 apiVersion: v1
 kind: Secret
 type: Opaque
 {{/case}}
 
 {{#default}}
+---
 apiVersion: v1
 kind: Secret
 type: Opaque

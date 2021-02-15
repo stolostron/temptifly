@@ -77,6 +77,7 @@ exports[`ControlPanelComboBox component renders as expected 1`] = `
                 aria-label="ListBox input field"
                 autoComplete="off"
                 className="pf-c-combo-control"
+                data-testid="combo-controlId"
                 id="controlId"
                 onBlur={[Function]}
                 onChange={[Function]}

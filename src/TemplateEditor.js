@@ -674,7 +674,7 @@ export default class TemplateEditor extends React.Component {
         if (!creationView) {
           creationView = document.getElementsByClassName('content')[0]
         }
-        const scrollView = showEditor ? creationView : window
+        const scrollView = showEditor && creationView.scrollBy ? creationView : window
         const controlTop = ref.getBoundingClientRect().top
         const panelTop = showEditor
           ? creationView.getBoundingClientRect().top

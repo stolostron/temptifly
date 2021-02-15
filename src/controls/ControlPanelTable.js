@@ -292,7 +292,7 @@ class ControlPanelTable extends React.Component {
     if (!Array.isArray(active)) {
       active = []
     }
-    let { actions } = prompts
+    let { actions=[] } = prompts
     actions = React.Children.map(actions, action => {
       return React.cloneElement(action, {
         appendTable: this.handleTableAction.bind(this, add)
