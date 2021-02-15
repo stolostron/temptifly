@@ -28,8 +28,11 @@ const i18n = (key) => {
 describe('TemplateEditor component',() => {
   it('renders as expected',  async () => {
 
+    jest.setTimeout(30000)
+
     window.scrollBy = () => {}
-    const createResource = async () => {
+    const createResource = (json) => {
+      expect(json).toMatchSnapshot()
     }
     const createControl={
       createResource,
@@ -37,6 +40,7 @@ describe('TemplateEditor component',() => {
     const Component = () => {
       return (
         <BrowserRouter>
+          <div id={portals.createBtn} />
           <TemplateEditor
             template={template}
             controlData={controlData}
@@ -50,121 +54,30 @@ describe('TemplateEditor component',() => {
         </BrowserRouter>
       )
     }
+    const { getByTestId, asFragment, getByRole, getByText, container } = render(<Component />)
 
-    const { getByTestId, asFragment } = render(<Component />)
-    expect(asFragment()).toMatchSnapshot()
-
+    // text
     userEvent.type(getByTestId('text-eman'), 'test')
+    // card
     userEvent.click(getByTestId('card-cluster.create.baremetal.subtitle'))
 
+    // combobox
     await waitFor(() => expect(screen.getByTestId('combo-imageSet')).toBeInTheDocument())
+    userEvent.type(getByTestId('combo-imageSet'), '4.3.40-x86_64')
+    // tree select
+    userEvent.type(getByTestId('tree-workerType'), 'highmem-16')
+    // table
+    userEvent.click(container.querySelector('[name="check-all"]'))
+    userEvent.click(getByRole('button', { name: /edit row 1/i }))
+    userEvent.click(getByRole('button', { name: /save edits for row 1/i }))
+    userEvent.click(getByRole('button', { name: /edit row 2/i }))
+    userEvent.click(getByRole('button', { name: /cancel edits for row 2/i }))
+    userEvent.click(getByText('creation.ocp.host.name'))
+    userEvent.click(getByText('creation.ocp.host.name'))
+    userEvent.type(getByRole('textbox', { name: /search input/i }), 'bma1')
+    expect(asFragment()).toMatchSnapshot()
 
-    userEvent.type(getByTestId('combo-imageSet'), 'test')
-
-
-    //    userEvent.type(getByTestId('textinput'), 'n')
-    //    expect(control.active).toBe('n')
-    //
-    //    control.name = ''
-    //    control.exception = 'error'
-    //    rerender(<Component />)
-    //    control.placeholder = 'placeholder'
-    //    rerender(<Component />)
-    //    expect(asFragment()).toMatchSnapshot()
+    // create json
+    userEvent.click(getByTestId('create-button-portal-id'))
   })
 })
-
-
-
-//describe('TemplateEditor component', () => {
-//  it('renders as expected', () => {
-//    const fn = jest.fn()
-//    const component = renderer.create(
-//      <BrowserRouter>
-//        <TemplateEditor
-//          template={applicationTemplate}
-//          controlData={controlData}
-//          portals={portals}
-//          type={'application'}
-//          title={'creation.app.yaml'}
-//          i18n={fn}
-//        />
-//      </BrowserRouter>
-//    )
-//    expect(component.toJSON()).toMatchSnapshot()
-//  })
-//})
-//
-//describe('on control change function', () => {
-//  it('renders as expected', () => {
-//    const fn = jest.fn()
-//    const wrapper = mount(
-//      <BrowserRouter>
-//        <TemplateEditor
-//          template={applicationTemplate}
-//          controlData={controlData}
-//          portals={portals}
-//          type={'application'}
-//          title={'creation.app.yaml'}
-//          i18n={fn}
-//        />
-//      </BrowserRouter>
-//    )
-//    const evt = {
-//      target: {
-//        value: 'value-testing'
-//      },
-//      selectedItems: ['selectedItems-testing-1', 'selectedItems-testing-2']
-//    }
-//
-//    wrapper
-//      .find('#eman')
-//      .at(0)
-//      .simulate('change', evt)
-//    wrapper
-//      .find('#emanspace')
-//      .at(0)
-//      .simulate('change', evt)
-//
-//    wrapper
-//      .find('#main-')
-//      .at(0)
-//      .simulate('click', evt)
-//  })
-//})
-//
-//describe('getResourceJSON function', () => {
-//  const result = [
-//    {
-//      apiVersion: 'app.k8s.io/v1beta1',
-//      kind: 'Application',
-//      metadata: { name: null, namespace: null },
-//      spec: {
-//        componentKinds: [
-//          { group: 'apps.open-cluster-management.io', kind: 'Subscription' }
-//        ],
-//        descriptor: {},
-//        selector: {
-//          matchExpressions: [{ key: 'app', operator: 'In', values: [null] }]
-//        }
-//      }
-//    }
-//  ]
-//
-//  it('renders as expected', () => {
-//    const fn = jest.fn()
-//    const wrapper = shallow(
-//      <BrowserRouter>
-//        <TemplateEditor
-//          template={applicationTemplate}
-//          controlData={controlData}
-//          portals={portals}
-//          type={'application'}
-//          title={'creation.app.yaml'}
-//          i18n={fn}
-//        />
-//      </BrowserRouter>
-//    )
-//    expect(wrapper.find('TemplateEditor').dive().instance().getResourceJSON()).toEqual(result)
-//  })
-//})

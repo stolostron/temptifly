@@ -74,6 +74,7 @@ exports[`ControlPanelTreeSelect component renders as expected 1`] = `
               aria-label="ListBox input field"
               autoComplete="new-password"
               className="pf-c-form-control"
+              data-testid="tree-controlId"
               id="controlId-input"
               onChange={[Function]}
               onFocus={[Function]}

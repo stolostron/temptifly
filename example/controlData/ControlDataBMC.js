@@ -6,14 +6,9 @@ import {
   ControlMode,
 } from '../../src/utils/source-utils'
 import {
-  VALIDATE_CIDR,
-  VALIDATE_IP_AGAINST_MACHINE_CIDR,
-  VALIDATE_IP_AGAINST_MACHINE_CIDR_OPTIONAL,
   VALIDATE_ALPHANUMERIC,
-  VALIDATE_ALPHANUMERIC_PERIOD,
   VALIDATE_MAC_ADDRESS,
 } from '../../src/utils/validation-types'
-//import { listBareMetalAssets } from '../../../../../resources/bare-metal-asset'
 import _ from 'lodash'
 
 const sortTable = (items, selectedKey, sortDirection, active) => {
@@ -109,7 +104,35 @@ const controlDataBMC = [
     id: 'imageSet',
     type: 'combobox',
     placeholder: 'creation.ocp.cloud.select.ocp.image',
-    //fetchAvailable: LOAD_OCP_IMAGES('bmc'),
+    available: [
+      'quay.io/openshift-release-dev/ocp-release:4.3.40-x86_64',
+      'quay.io/openshift-release-dev/ocp-release:4.4.33-x86_64',
+      'quay.io/openshift-release-dev/ocp-release:4.5.31-x86_64',
+      'quay.io/openshift-release-dev/ocp-release:4.6.16-x86_64'
+    ],
+    availableMap: {
+      'quay.io/openshift-release-dev/ocp-release:4.3.40-x86_64': {
+        replacements: {
+          clusterImageSetComment: 'quay.io/openshift-release-dev/ocp-release:4.3.40-x86_64',
+          releaseImageReference: 'img4.3.40-x86-64-appsub',
+          releaseImageVersion: '4.3.40'
+        }
+      },
+      'quay.io/openshift-release-dev/ocp-release:4.4.33-x86_64': {
+        replacements: {
+          clusterImageSetComment: 'quay.io/openshift-release-dev/ocp-release:4.4.33-x86_64',
+          releaseImageReference: 'img4.4.33-x86-64-appsub',
+          releaseImageVersion: '4.4.33'
+        }
+      },
+      'quay.io/openshift-release-dev/ocp-release:4.5.31-x86_64': {
+        replacements: {
+          clusterImageSetComment: 'quay.io/openshift-release-dev/ocp-release:4.5.31-x86_64',
+          releaseImageReference: 'img4.5.31-x86-64-appsub',
+          releaseImageVersion: '4.5.31'
+        }
+      },
+    },
     validation: {
       notification: 'creation.ocp.cluster.must.select.ocp.image',
       required: true,
@@ -211,13 +234,51 @@ const controlDataBMC = [
         mode: ControlMode.PROMPT_ONLY,
       },
     ],
-    //    fetchAvailable: {
-    //            query: () => {
-    //              return listBareMetalAssets().promise
-    //            },
-    //      loadingDesc: 'table.bma.loading',
-    //      setAvailable: setAvailableBMAs,
-    //    },
+    available: [
+      {
+        bmcAddress: 'idrac-virtualmedia://machine.net',
+        credName: 'bma1-bmc-secret-aiqw6'       ,
+        credNamespace: 'default'            ,
+        hostName: 'bma1'                ,
+        hostNamespace: 'default'            ,
+        id: '9049a48d-c77a-48f9-974e-6ff59f5ab715'    ,
+        macAddress: '00:44:22:22:44:88'
+      },{
+        bmcAddress: 'idrac-virtualmedia://machine.net',
+        credName: 'bma2-bmc-secret-ze0es'       ,
+        credNamespace: 'default'            ,
+        hostName: 'bma2'                ,
+        hostNamespace: 'default'            ,
+        id: '0c28e8de-6620-4a48-b448-22361ada9398'    ,
+        macAddress: '00:44:22:22:44:88'
+      },{
+
+        bmcAddress: 'idrac-virtualmedia://machine.net',
+        credName: 'bma3-bmc-secret-vf9al'       ,
+        credNamespace: 'default'            ,
+        hostName: 'bma3'                ,
+        hostNamespace: 'default'            ,
+        id: '706c60f4-7553-4fd4-b127-a2416a1992cd',
+        macAddress: '00:44:22:22:44:88'
+      },{
+
+        bmcAddress: 'ipmi://[fd2e:6f44:5dd8::1]:6230' ,
+        credName: 'bma4-bmc-secret'           ,
+        credNamespace: 'cassandra-app-ns'       ,
+        hostName: 'bma4'                ,
+        hostNamespace: 'cassandra-app-ns'       ,
+        id: 'b941ea15-dc10-43c7-92cc-cae8701db484'    ,
+        macAddress: '52:54:00:cc:73:cb'
+      },{
+        bmcAddress: 'idrac-virtualmedia://machine.net',
+        credName: 'bma4-bmc-secret-fc5er'       ,
+        credNamespace: 'default'            ,
+        hostName: 'bma4'                ,
+        hostNamespace: 'default'            ,
+        id: '1d4c020c-71ce-48a6-b5aa-46861b629b12'    ,
+        macAddress: '00:44:22:22:44:88'
+      }
+    ],
     active: [],
   },
   {
@@ -229,55 +290,6 @@ const controlDataBMC = [
     available: ['false', 'true'],
   },
   ...networkingControlData,
-  {
-    id: 'provisioningNetworkCIDR',
-    type: 'text',
-    name: 'creation.ocp.network.cidr',
-    tooltip: 'tooltip.creation.ocp.network.cidr',
-    active: '',
-    validation: VALIDATE_CIDR,
-  },
-  {
-    id: 'provisioningNetworkInterface',
-    type: 'text',
-    name: 'creation.ocp.network.interface',
-    tooltip: 'tooltip.creation.ocp.network.interface',
-    active: 'enp1s0',
-    validation: VALIDATE_ALPHANUMERIC,
-  },
-  {
-    id: 'provisioningNetworkBridge',
-    type: 'text',
-    name: 'creation.ocp.network.bridge',
-    tooltip: 'tooltip.creation.ocp.network.bridge',
-    active: 'provisioning',
-    validation: VALIDATE_ALPHANUMERIC_PERIOD,
-  },
-  {
-    id: 'externalNetworkBridge',
-    type: 'text',
-    name: 'creation.ocp.external.bridge',
-    tooltip: 'tooltip.creation.ocp.external.bridge',
-    active: 'baremetal',
-    validation: VALIDATE_ALPHANUMERIC_PERIOD,
-  },
-  {
-    id: 'dnsVIP',
-    type: 'text',
-    name: 'creation.ocp.dns.vip',
-    hidden: 'true',
-    tooltip: 'tooltip.creation.ocp.dns.vip',
-    active: '',
-    validation: VALIDATE_IP_AGAINST_MACHINE_CIDR,
-  },
-  {
-    id: 'apiVIP',
-    type: 'text',
-    name: 'creation.ocp.api.vip',
-    tooltip: 'tooltip.creation.ocp.api.vip',
-    active: '',
-    validation: VALIDATE_IP_AGAINST_MACHINE_CIDR_OPTIONAL,
-  },
 ]
 
 export default controlDataBMC

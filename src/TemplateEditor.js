@@ -1210,6 +1210,7 @@ export default class TemplateEditor extends React.Component {
           onClick={this.handleCreateResource.bind(this)}
           variant={'primary'}
           isDisabled={disableButton}
+          data-testid={createBtn}
         >
           {label}
         </Button>
