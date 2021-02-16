@@ -2,12 +2,36 @@
 
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
+//import MonacoEditor from 'react-monaco-editor'
 import TemplateEditor from '../../../../src/TemplateEditor'
 import { render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import template from '../../../../example/templates/template.hbs'
 import controlData from '../../../../example/controlData/ControlData'
+import 'monaco-editor/esm/vs/editor/editor.all.js'
+import 'monaco-editor/esm/vs/editor/standalone/browser/quickOpen/quickCommand.js'
+import 'monaco-editor/esm/vs/basic-languages/yaml/yaml.contribution.js'
+import { global_BackgroundColor_dark_100 as editorBackground } from '@patternfly/react-tokens'
+if (window.monaco) {
+  window.monaco.editor.defineTheme('console', {
+    base: 'vs-dark',
+    inherit: true,
+    rules: [
+      // avoid pf tokens for `rules` since tokens are opaque strings that might not be hex values
+      { token: 'number', foreground: 'ace12e' },
+      { token: 'type', foreground: '73bcf7' },
+      { token: 'string', foreground: 'f0ab00' },
+      { token: 'keyword', foreground: 'cbc0ff' },
+    ],
+    colors: {
+      'editor.background': editorBackground.value,
+      'editorGutter.background': '#292e34', // no pf token defined
+      'editorLineNumber.activeForeground': '#fff',
+      'editorLineNumber.foreground': '#f0f0f0',
+    },
+  })
+}
 
 //window.MonacoEnvironment = {
 //  getWorkerUrl: function() {
@@ -37,6 +61,7 @@ describe('TemplateEditor component',() => {
     const createControl={
       createResource,
     }
+    //            monacoEditor={<MonacoEditor />}
     const Component = () => {
       return (
         <BrowserRouter>

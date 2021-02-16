@@ -1,25 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`YamlEditor renders as expected 1 1`] = `
-<div
-  className="yamlEditorContainer"
-  style={
-    Object {
-      "display": "block",
-      "minHeight": "100px",
-    }
-  }
-/>
-`;
-
-exports[`YamlEditor renders as expected 2 1`] = `
-<div
-  className="yamlEditorContainer"
-  style={
-    Object {
-      "display": "block",
-      "minHeight": "100px",
-    }
-  }
-/>
+exports[`YamlEditor renders as expected 1`] = `
+<DocumentFragment>
+  <div
+    class="yamlEditorContainer"
+    style="display: block; min-height: 100px;"
+  />
+</DocumentFragment>
 `;

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import ControlPanelSkeleton from '../../../../../src/controls/ControlPanelSkeleton'
-import renderer from 'react-test-renderer'
+import { render } from '@testing-library/react'
 
 
 export const control =
@@ -18,15 +18,19 @@ export const control =
 describe('ControlPanelSkeleton component', () => {
   it('renders as expected', () => {
     const fn = jest.fn()
-    const component = renderer.create(
-      <ControlPanelSkeleton
-        key={'key'}
-        control={control}
-        controlId={'controlId'}
-        handleChange={fn}
-        i18n={fn}
-      />
-    )
-    expect(component.toJSON()).toMatchSnapshot()
+
+    const Component = () => {
+      return (
+        <ControlPanelSkeleton
+          key={'key'}
+          control={control}
+          controlId={'controlId'}
+          handleChange={fn}
+          i18n={fn}
+        />
+      )
+    }
+    const { asFragment } = render(<Component />)
+    expect(asFragment()).toMatchSnapshot()
   })
 })

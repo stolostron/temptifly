@@ -1,22 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ControlPanelSkeleton component renders as expected 1`] = `
-<div
-  className="creation-view-controls-skeleton"
->
-  <label
-    className="creation-view-controls-textbox-title"
-    htmlFor="controlId"
-  >
-    creation.app.name
-  </label>
+<DocumentFragment>
   <div
-    className="pf-c-skeleton"
-    id="controlId"
+    class="creation-view-controls-skeleton"
   >
-    <span
-      className="pf-u-screen-reader"
-    />
+    <label
+      class="creation-view-controls-textbox-title"
+      for="controlId"
+    >
+      creation.app.name
+    </label>
+    <div
+      class="pf-c-skeleton"
+      id="controlId"
+    >
+      <span
+        class="pf-u-screen-reader"
+      />
+    </div>
   </div>
-</div>
+</DocumentFragment>
 `;
