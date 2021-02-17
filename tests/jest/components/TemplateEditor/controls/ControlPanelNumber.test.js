@@ -12,6 +12,7 @@ export const control =
   controlData: [],
   id: 'name',
   type: 'number',
+  initial: '3',
 }
 const fn = jest.fn()
 

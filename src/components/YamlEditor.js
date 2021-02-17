@@ -108,7 +108,7 @@ class YamlEditor extends React.Component {
 }
 
 YamlEditor.propTypes = {
-  editor: PropTypes.element.isRequired,
+  editor: PropTypes.element,
   hide: PropTypes.bool,
   onYamlChange: PropTypes.func,
   setEditor: PropTypes.func,

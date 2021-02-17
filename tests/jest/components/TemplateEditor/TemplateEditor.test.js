@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
-//import MonacoEditor from 'react-monaco-editor'
 import TemplateEditor from '../../../../src/TemplateEditor'
 import { render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
@@ -61,7 +60,6 @@ describe('TemplateEditor component',() => {
     const createControl={
       createResource,
     }
-    //            monacoEditor={<MonacoEditor />}
     const Component = () => {
       return (
         <BrowserRouter>

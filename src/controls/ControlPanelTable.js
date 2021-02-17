@@ -352,7 +352,7 @@ class ControlPanelTable extends React.Component {
             <ToolbarContent>
               <ToolbarItem>
                 <SearchInput
-                  style={{ minWidth: '350px' }}
+                  style={{ minWidth: '350px', display: 'flex' }}
                   placeholder={i18n('search.label')}
                   value={searchValue}
                   onChange={(value) => {
