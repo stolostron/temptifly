@@ -2,7 +2,7 @@
 
 import React from 'react'
 import ControlPanelTreeSelect from '../../../../../src/controls/ControlPanelTreeSelect'
-import renderer from 'react-test-renderer'
+import { render } from '@testing-library/react'
 
 
 export const control =
@@ -18,15 +18,19 @@ export const control =
 describe('ControlPanelTreeSelect component', () => {
   it('renders as expected', () => {
     const fn = jest.fn()
-    const component = renderer.create(
-      <ControlPanelTreeSelect
-        key={'key'}
-        control={control}
-        controlId={'controlId'}
-        handleChange={fn}
-        i18n={fn}
-      />
-    )
-    expect(component.toJSON()).toMatchSnapshot()
+
+    const Component = () => {
+      return (
+        <ControlPanelTreeSelect
+          key={'key'}
+          control={control}
+          controlId={'controlId'}
+          handleChange={fn}
+          i18n={fn}
+        />
+      )
+    }
+    const { asFragment } = render(<Component />)
+    expect(asFragment()).toMatchSnapshot()
   })
 })

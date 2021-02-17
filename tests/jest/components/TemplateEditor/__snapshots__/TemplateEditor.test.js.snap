@@ -832,7 +832,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                             >
                               <div
                                 class="pf-c-search-input"
-                                style="min-width: 350px;"
+                                style="min-width: 350px; display: flex;"
                               >
                                 <span
                                   class="pf-c-search-input__text"

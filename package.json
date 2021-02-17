@@ -1,6 +1,6 @@
 {
   "name": "temptifly",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "description": "Side-by-side template editor",
   "main": "dist/index.js",
   "scripts": {
@@ -85,8 +85,6 @@
     "cross-fetch": "^3.0.4",
     "css-loader": "^2.0.1",
     "del-cli": "^3.0.1",
-    "enzyme": "^3.7.0",
-    "enzyme-adapter-react-16": "^1.6.0",
     "eslint": "^4.19.1",
     "eslint-plugin-html": "^4.0.3",
     "eslint-plugin-import": "^2.11.0",
@@ -94,6 +92,9 @@
     "eslint-plugin-react": "^7.7.0",
     "file-loader": "1.x",
     "filemanager-webpack-plugin": "^3.1.0",
+    "monaco-editor": "^0.20.0",
+    "monaco-editor-webpack-plugin": "^1.9.0",
+    "react-monaco-editor": "0.36.0",
     "jest": "25.5.4",
     "jest-canvas-mock": "^2.3.0",
     "jest-handlebars": "^1.0.1",

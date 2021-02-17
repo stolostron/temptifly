@@ -63,7 +63,7 @@ class ControlPanelNumber extends React.Component {
                 <input
                   className="pf-c-form-control"
                   type="number"
-                  value={control.active}
+                  value={control.active||''}
                   pattern="[0-9]*"
                   name="number-input-default-name"
                   onFocus={e => {

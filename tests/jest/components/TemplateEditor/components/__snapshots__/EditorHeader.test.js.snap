@@ -1,12 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EditorHeader component renders as expected 1`] = `
-<div
-  className="creation-view-yaml-header"
->
+<DocumentFragment>
   <div
-    className="creation-view-yaml-header-toolbar"
-    role="region"
-  />
-</div>
+    class="creation-view-yaml-header"
+  >
+    <div
+      class="creation-view-yaml-header-toolbar"
+      role="region"
+    />
+  </div>
+</DocumentFragment>
 `;

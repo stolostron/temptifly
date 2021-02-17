@@ -26,5 +26,3 @@ jobs:
       if: type = push AND branch = main
       script:
         - npm test
-        - npm run build
-        - scripts/publish.sh
