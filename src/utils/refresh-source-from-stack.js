@@ -43,7 +43,7 @@ export const updateEditStack = (
   const { initialized } = editStack
   if (!initialized) {
     editStack.customIdMap = {}
-    editStack.deletedLinks = new Set()
+    editStack.deletedLinks = []
     editStack.initialized = true
   }
 
@@ -116,7 +116,7 @@ const intializeControls = (editStack, controlData) => {
 
   // keep track of template changes
   editStack.baseTemplateResources = null
-  editStack.deletedLinks = new Set()
+  editStack.deletedLinks = []
   editStack.customIdMap = {}
   editStack.initialized = true
 }
@@ -203,7 +203,7 @@ const mergeSource = (
       if (inx === -1) {
         // if editor got rid of it, add to the selfLinks we will be deleting
         // when updating editor to server
-        deletedLinks.add(deleteLink)
+        deletedLinks.push(deleteLink)
         return false
       } else {
         // else remove from currentTemplateResources such that
