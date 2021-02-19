@@ -34,17 +34,19 @@ describe('TemplateEditor component',() => {
     const Component = () => {
       return (
         <BrowserRouter>
-          <div id={portals.createBtn} />
-          <TemplateEditor
-            template={template}
-            controlData={controlData}
-            createControl={createControl}
-            portals={portals}
-            type={'application'}
-            title={'creation.app.yaml'}
-            i18n={i18n}
-            initialOpen={true}
-          />
+          <React.Fragment>
+            <div id={portals.createBtn} />
+            <TemplateEditor
+              template={template}
+              controlData={controlData}
+              createControl={createControl}
+              portals={portals}
+              type={'application'}
+              title={'creation.app.yaml'}
+              i18n={i18n}
+              initialOpen={true}
+            />
+          </React.Fragment>
         </BrowserRouter>
       )
     }
