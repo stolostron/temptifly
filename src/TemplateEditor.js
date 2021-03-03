@@ -504,7 +504,9 @@ export default class TemplateEditor extends React.Component {
       control.nextUniqueGroupID++
       active.push(newGroup)
       const nameControl = keyBy(newGroup, 'id')[nameId]
-      nameControl.active = `${baseName}-${active.length - 1}`
+      if (nameControl) {
+        nameControl.active = `${baseName}-${active.length - 1}`
+      }
 
       // scroll down
       setTimeout(() => {
