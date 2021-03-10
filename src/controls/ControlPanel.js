@@ -616,20 +616,20 @@ class ControlPanel extends React.Component {
               switch (kind) {
               case 'error':
                 variant='danger'
-                //eslint-disable-next-line no-console
-                console.log(`!!!!!!!!!!!error ${exception}--${text}!!!!!!!!!!!!!!!`)
               }
               return (
                 <Alert
                   key={exception}
                   variant={variant}
                   title={exception}
+                  isInline
                   actionLinks={
                     <React.Fragment>
-                      {variant !== 'success' && <AlertActionLink onClick={handleClick}>View details</AlertActionLink>}
+                      {variant !== 'success' && text && <AlertActionLink onClick={handleClick}>View details</AlertActionLink>}
                     </React.Fragment>
                   }
-                />
+                >
+                </Alert>
               )
 
             }
