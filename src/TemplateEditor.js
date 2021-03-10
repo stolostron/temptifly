@@ -87,7 +87,7 @@ export default class TemplateEditor extends React.Component {
           {
             id: 'creating',
             kind: 'info',
-            exception: Array.isArray(creationMsg)
+            exception: Array.isArray(creationMsg) && creationMsg.length
               ? creationMsg[0]
               : i18n(
                 isEditing
@@ -1127,11 +1127,12 @@ export default class TemplateEditor extends React.Component {
 
   replaceSecrets = payload => {
     const { templateObject } = this.state
-    const secretsMap = keyBy(templateObject.Secret, ({ $raw }) => {
+    const secretsMap = keyBy(templateObject.Secret
+      .filter(({$raw: {metadata}})=>metadata), ({ $raw }) => {
       const { metadata: { name, namespace } } = $raw
       return `${namespace}/${name}`
     })
-    payload.forEach(resource => {
+    payload.filter(({metadata})=>metadata).forEach(resource => {
       const { kind, metadata: { name, namespace } } = resource
       if (kind === 'Secret') {
         const secret = secretsMap[`${namespace}/${name}`]

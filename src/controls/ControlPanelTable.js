@@ -286,7 +286,7 @@ class ControlPanelTable extends React.Component {
 
   renderTree(rows) {
     const { control, i18n } = this.props
-    const { sortBy, page, perPage } = this.state
+    const { sortBy, page, perPage, rows:unfilteredRows } = this.state
     const { isLoading, isFailed, prompts = {}, available=[] } = control
     let { active } = control
     if (!Array.isArray(active)) {
@@ -397,9 +397,9 @@ class ControlPanelTable extends React.Component {
             <Split>
               <SplitItem isFilled></SplitItem>
               <SplitItem>
-                {rows.length !== 0 && (
+                {available.length !== 0 && (
                   <Pagination
-                    itemCount={available.length}
+                    itemCount={unfilteredRows.length}
                     perPage={perPage}
                     page={page}
                     variant={PaginationVariant.bottom}
@@ -428,7 +428,7 @@ class ControlPanelTable extends React.Component {
     const { control } = this.props
     const { controlData, available } = control
     let { active=[] } = control
-    const { rows } = this.state
+    const { rows, page = 1, perPage } = this.state
 
     const saveValues = (rows) => {
       rows.forEach(({cells}) => {
@@ -456,6 +456,8 @@ class ControlPanelTable extends React.Component {
     }
 
     if (rowId !== -1) {
+      rowId += (page - 1) * perPage
+
       const {id} = rows[rowId].available
       const activeMap = keyBy(active, 'id')
 
@@ -506,6 +508,8 @@ class ControlPanelTable extends React.Component {
   }
 
   onSelect(newValue, evt, rowIndex, cellIndex, isPlaceholder) {
+    const { page = 1, perPage } = this.state
+    rowIndex += (page - 1) * perPage
     this.setState(prevState=>{
       const newRows = Array.from(prevState.rows)
       const newCellProps = newRows[rowIndex].cells[cellIndex].props
@@ -542,6 +546,8 @@ class ControlPanelTable extends React.Component {
   }
 
   clearSelection(rowIndex, cellIndex) {
+    const { page = 1, perPage } = this.state
+    rowIndex += (page - 1) * perPage
     this.setState(prevState=>{
       const newRows = Array.from(prevState.rows)
       const newCellProps = newRows[rowIndex].cells[cellIndex].props
@@ -554,6 +560,8 @@ class ControlPanelTable extends React.Component {
   }
 
   onToggle(isOpen, rowIndex, cellIndex) {
+    const { page = 1, perPage } = this.state
+    rowIndex += (page - 1) * perPage
     this.setState(prevState=>{
       const newRows = Array.from(prevState.rows)
       newRows[rowIndex].cells[cellIndex].props.isSelectOpen = isOpen
@@ -564,6 +572,8 @@ class ControlPanelTable extends React.Component {
   }
 
   updateEditableRows(evt, type, isEditable, rowIndex) {
+    const { page = 1, perPage } = this.state
+    rowIndex += (page - 1) * perPage
     this.setState(prevState=>{
       const newRows = Array.from(prevState.rows)
       const { control } = this.props

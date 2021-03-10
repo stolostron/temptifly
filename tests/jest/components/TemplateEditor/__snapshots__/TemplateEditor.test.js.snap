@@ -1382,11 +1382,11 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                   class="pf-c-options-menu__toggle-text"
                                 >
                                   <b>
-                                    1 - 5
+                                    1 - 1
                                   </b>
                                    of 
                                   <b>
-                                    5
+                                    1
                                   </b>
                                    
                                 </span>
