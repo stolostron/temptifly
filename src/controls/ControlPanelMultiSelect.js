@@ -90,7 +90,7 @@ class ControlPanelMultiSelect extends React.Component {
     })
 
     const onFilter = evt => {
-      const textInput = evt.target.value
+      const textInput = get(evt, 'target.value', '')
       if (textInput === '') {
         return this.options
       } else {
