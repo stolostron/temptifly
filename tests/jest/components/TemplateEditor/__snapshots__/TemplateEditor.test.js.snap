@@ -2156,77 +2156,80 @@ exports[`TemplateEditor component renders as expected 1`] = `
 `;
 
 exports[`TemplateEditor component renders as expected 2`] = `
-Array [
-  Object {
-    "apiVersion": "hive.openshift.io/v1",
-    "kind": "ClusterDeployment",
-    "metadata": Object {
-      "annotations": Object {
-        "hive.openshift.io/try-install-once": "true",
+Object {
+  "createResources": Array [
+    Object {
+      "apiVersion": "hive.openshift.io/v1",
+      "kind": "ClusterDeployment",
+      "metadata": Object {
+        "annotations": Object {
+          "hive.openshift.io/try-install-once": "true",
+        },
+        "labels": Object {
+          "cloud": "BMC",
+          "vendor": "",
+        },
+        "name": "test",
+        "namespace": "test",
       },
-      "labels": Object {
-        "cloud": "BMC",
-        "vendor": "",
-      },
-      "name": "test",
-      "namespace": "test",
-    },
-    "spec": Object {
-      "baseDomain": null,
-      "clusterName": "test",
-      "controlPlaneConfig": Object {
-        "servingCertificates": Object {},
-      },
-      "installAttemptsLimit": 2,
-      "installed": false,
-      "platform": Object {
-        "baremetal": Object {
-          "hosts": null,
-          "libvirtSSHPrivateKeySecretRef": Object {
-            "name": "-ssh-private-key",
+      "spec": Object {
+        "baseDomain": null,
+        "clusterName": "test",
+        "controlPlaneConfig": Object {
+          "servingCertificates": Object {},
+        },
+        "installAttemptsLimit": 2,
+        "installed": false,
+        "platform": Object {
+          "baremetal": Object {
+            "hosts": null,
+            "libvirtSSHPrivateKeySecretRef": Object {
+              "name": "-ssh-private-key",
+            },
           },
         },
-      },
-      "provisioning": Object {
-        "installConfigSecretRef": Object {
-          "name": "test-install-config",
+        "provisioning": Object {
+          "installConfigSecretRef": Object {
+            "name": "test-install-config",
+          },
+          "sshKnownHosts": null,
+          "sshPrivateKeySecretRef": Object {
+            "name": "test-ssh-private-key",
+          },
         },
-        "sshKnownHosts": null,
-        "sshPrivateKeySecretRef": Object {
-          "name": "test-ssh-private-key",
+        "pullSecretRef": Object {
+          "name": "test-pull-secret",
         },
-      },
-      "pullSecretRef": Object {
-        "name": "test-pull-secret",
       },
     },
-  },
-  Object {
-    "apiVersion": "cluster.open-cluster-management.io/v1",
-    "kind": "ManagedCluster",
-    "metadata": Object {
-      "labels": Object {
-        "cloud": "Bare-Metal",
+    Object {
+      "apiVersion": "cluster.open-cluster-management.io/v1",
+      "kind": "ManagedCluster",
+      "metadata": Object {
+        "labels": Object {
+          "cloud": "Bare-Metal",
+          "name": "test",
+          "vendor": null,
+        },
         "name": "test",
-        "vendor": null,
       },
-      "name": "test",
+      "spec": Object {
+        "hubAcceptsClient": true,
+      },
     },
-    "spec": Object {
-      "hubAcceptsClient": true,
+    Object {
+      "apiVersion": "v1",
+      "data": Object {
+        "install-config.yaml": "YXBpVmVyc2lvbjogdjEKbWV0YWRhdGE6CiAgbmFtZTogdGVzdApiYXNlRG9tYWluOiAKY29udHJvbFBsYW5lOgogIG5hbWU6IG1hc3RlcgogIHJlcGxpY2FzOiAKICBwbGF0Zm9ybToKICAgIGJhcmVtZXRhbDoge30KY29tcHV0ZToKLSBuYW1lOiB3b3JrZXIKICByZXBsaWNhczogCm5ldHdvcmtpbmc6CiAgY2x1c3Rlck5ldHdvcms6CiAgLSBjaWRyOgogICAgaG9zdFByZWZpeDoKICBtYWNoaW5lQ0lEUjoKICBuZXR3b3JrVHlwZTogT3BlblNoaWZ0U0ROCiAgc2VydmljZU5ldHdvcms6CiAgLQpwbGF0Zm9ybToKICBiYXJlbWV0YWw6CiAgICBsaWJ2aXJ0VVJJOiAKICAgIHByb3Zpc2lvbmluZ05ldHdvcmtDSURSOgogICAgcHJvdmlzaW9uaW5nTmV0d29ya0ludGVyZmFjZToKICAgIHByb3Zpc2lvbmluZ0JyaWRnZToKICAgIGV4dGVybmFsQnJpZGdlOgogICAgYXBpVklQOgogICAgaW5ncmVzc1ZJUDoKICAgIGhvc3RzOgpwdWxsU2VjcmV0OiAiIiAjIHNraXAsIGhpdmUgd2lsbCBpbmplY3QgYmFzZWQgb24gaXQncyBzZWNyZXRzCg==",
+      },
+      "kind": "Secret",
+      "metadata": Object {
+        "name": "test-install-config",
+        "namespace": "test",
+      },
+      "type": "Opaque",
     },
-  },
-  Object {
-    "apiVersion": "v1",
-    "data": Object {
-      "install-config.yaml": "YXBpVmVyc2lvbjogdjEKbWV0YWRhdGE6CiAgbmFtZTogdGVzdApiYXNlRG9tYWluOiAKY29udHJvbFBsYW5lOgogIG5hbWU6IG1hc3RlcgogIHJlcGxpY2FzOiAKICBwbGF0Zm9ybToKICAgIGJhcmVtZXRhbDoge30KY29tcHV0ZToKLSBuYW1lOiB3b3JrZXIKICByZXBsaWNhczogCm5ldHdvcmtpbmc6CiAgY2x1c3Rlck5ldHdvcms6CiAgLSBjaWRyOgogICAgaG9zdFByZWZpeDoKICBtYWNoaW5lQ0lEUjoKICBuZXR3b3JrVHlwZTogT3BlblNoaWZ0U0ROCiAgc2VydmljZU5ldHdvcms6CiAgLQpwbGF0Zm9ybToKICBiYXJlbWV0YWw6CiAgICBsaWJ2aXJ0VVJJOiAKICAgIHByb3Zpc2lvbmluZ05ldHdvcmtDSURSOgogICAgcHJvdmlzaW9uaW5nTmV0d29ya0ludGVyZmFjZToKICAgIHByb3Zpc2lvbmluZ0JyaWRnZToKICAgIGV4dGVybmFsQnJpZGdlOgogICAgYXBpVklQOgogICAgaW5ncmVzc1ZJUDoKICAgIGhvc3RzOgpwdWxsU2VjcmV0OiAiIiAjIHNraXAsIGhpdmUgd2lsbCBpbmplY3QgYmFzZWQgb24gaXQncyBzZWNyZXRzCg==",
-    },
-    "kind": "Secret",
-    "metadata": Object {
-      "name": "test-install-config",
-      "namespace": "test",
-    },
-    "type": "Opaque",
-  },
-]
+  ],
+  "deleteResources": undefined,
+}
 `;
