@@ -1,6 +1,6 @@
 'use strict'
 
-import React from 'react'
+import React  from 'react'
 import ReactDOM from 'react-dom'
 import loadable from '@loadable/component'
 import { Prompt } from 'react-router-dom'
@@ -1115,32 +1115,29 @@ export default class TemplateEditor extends React.Component {
       })
       this.replaceSecrets(payload)
 
-      // if this was an edit of existing resources, and user deleted a resource, what selflink(s) should we delete
-      if (editStack) {
-        const { deletedLinks } = editStack
-        payload.push({ deleteLinks: [...deletedLinks] })
-      }
-      return payload
+      return {createResources: payload, deleteResources: editStack ? [...editStack.deletedLinks] : undefined}
     }
     return null
   }
 
   replaceSecrets = payload => {
     const { templateObject } = this.state
-    const secretsMap = keyBy(templateObject.Secret
-      .filter(({$raw: {metadata}})=>metadata), ({ $raw }) => {
-      const { metadata: { name, namespace } } = $raw
-      return `${namespace}/${name}`
-    })
-    payload.filter(({metadata})=>metadata).forEach(resource => {
-      const { kind, metadata: { name, namespace } } = resource
-      if (kind === 'Secret') {
-        const secret = secretsMap[`${namespace}/${name}`]
-        if (secret) {
-          merge(resource, secret.$raw)
+    if (templateObject.Secret) {
+      const secretsMap = keyBy(templateObject.Secret
+        .filter(({$raw: {metadata}})=>metadata), ({ $raw }) => {
+        const { metadata: { name, namespace } } = $raw
+        return `${namespace}/${name}`
+      })
+      payload.filter(({metadata})=>metadata).forEach(resource => {
+        const { kind, metadata: { name, namespace } } = resource
+        if (kind === 'Secret') {
+          const secret = secretsMap[`${namespace}/${name}`]
+          if (secret) {
+            merge(resource, secret.$raw)
+          }
         }
-      }
-    })
+      })
+    }
   };
 
   scrollControlPaneToTop = () => {

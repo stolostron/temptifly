@@ -622,6 +622,10 @@ $container-max-width-with-editor: 650px !default;
       .pf-c-form__group-label {
         padding: 0;
       }
+
+      .pf-c-check__input {
+        margin-right: 6px;
+      }
     }
 
     .creation-view-group-container {

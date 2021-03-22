@@ -15,10 +15,10 @@
     "env": {
         "production": {
             "presets": ["react-optimize"]
-          },
+        },
         "client": {
             "plugins": ["@babel/plugin-syntax-dynamic-import"]
-        },
+          },
         "server": {
             "plugins": ["dynamic-import-node", "@babel/plugin-proposal-object-rest-spread"]
         },
