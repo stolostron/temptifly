@@ -31,7 +31,7 @@ import {
   TableVariant
 } from '@patternfly/react-table'
 import { ControlMode } from '../utils/source-utils'
-import FolderPlusIcon from '@patternfly/react-icons/dist/js/icons/folder-plus-icon'
+import { NoResourceIcon } from '../icons/NoResource'
 import keyBy from 'lodash/keyBy'
 import get from 'lodash/get'
 import orderBy from 'lodash/orderBy'
@@ -317,7 +317,7 @@ class ControlPanelTable extends React.Component {
       const explanation = 'You don\'t have any bare metal assets yet. Start by creating or importing your bare metal assets.'
       return (
         <EmptyState variant={EmptyStateVariant.small}>
-          <EmptyStateIcon icon={FolderPlusIcon} />
+          <EmptyStateIcon icon={NoResourceIcon} />
           <Title headingLevel="h2" size="lg">
             No bare metal assets found
           </Title>
