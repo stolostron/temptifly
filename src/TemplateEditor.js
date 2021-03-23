@@ -1050,7 +1050,7 @@ export default class TemplateEditor extends React.Component {
   };
 
   getResourceJSON() {
-    const { templateYAML, controlData, otherYAMLTabs, editStack, i18n } = this.state
+    const { templateYAML, controlData, otherYAMLTabs, i18n } = this.state
     let canCreate = false
     const {
       templateObjectMap,
@@ -1112,12 +1112,6 @@ export default class TemplateEditor extends React.Component {
         })
       })
       this.replaceSecrets(payload)
-
-      // if this was an edit of existing resources, and user deleted a resource, what selflink(s) should we delete
-      if (editStack) {
-        const { deletedLinks } = editStack
-        payload.push({ deleteLinks: [...deletedLinks] })
-      }
       return payload
     }
     return null
