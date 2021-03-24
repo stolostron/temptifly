@@ -61,43 +61,6 @@
       height: 100%;
       padding: 0 6px;
     }
-
-    .pf-c-search-input {
-      color: white;
-      background-color: #414141;
-      font-size: 0.875rem;
-      height: 1.375rem;
-      &:focus {
-        box-shadow: none;
-        border: none;
-      }
-
-      .pf-c-search-input__text {
-        &::before {
-          border: none;
-        }
-
-        .pf-c-search-input__icon {
-          color: #6d736e;
-        }
-      }
-
-      .pf-c-search-input__text-input {
-        color: white;
-
-        &::placeholder {
-          color: white;
-          opacity: 0.5;
-        }
-        &:focus {
-          outline: none;
-        }
-      }
-
-      .pf-c-search-input__clear button {
-        color: white;
-      }
-    }
   }
 
   .editor-bar-button {
