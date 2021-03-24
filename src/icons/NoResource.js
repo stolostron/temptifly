@@ -1,9 +1,7 @@
 import React from 'react'
 
 export const NoResourceIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 729 729">
+  <svg viewBox="0 0 729 729">
     <defs>
       <style>{'.cls-1 {fill:none;}'}</style>
       <style>{'.cls-2{fill:#f0f0f0;}'}</style>
