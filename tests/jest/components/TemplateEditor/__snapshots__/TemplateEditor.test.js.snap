@@ -904,7 +904,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                               </div>
                             </div>
                             <div
-                              style="display: flex;"
+                              style="display: flex; margin-top: 10px;"
                             />
                           </div>
                           <div
@@ -1358,6 +1358,9 @@ exports[`TemplateEditor component renders as expected 1`] = `
                       >
                         <div
                           class="pf-l-split__item pf-m-fill"
+                        />
+                        <div
+                          class="pf-l-split__item"
                         />
                         <div
                           class="pf-l-split__item"
