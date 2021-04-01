@@ -20,6 +20,7 @@ import omitBy from 'lodash/omitBy'
 import isEmpty from 'lodash/isEmpty'
 import isEqual from 'lodash/isEqual'
 import pick from 'lodash/pick'
+import keyBy from 'lodash/keyBy'
 
 export const generateSourceFromStack = (
   template,
@@ -125,11 +126,18 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
   const { customResources, deletedLinks, customIdMap } = editStack
 
   // get the next iteration of template changes
-  const { templateResources } = generateSourceFromTemplate(
+  const { templateResources, templateObject } = generateSourceFromTemplate(
     template,
     controlData,
     otherYAMLTabs
   )
+
+  // save any secrets
+  const secretsMap = templateObject.Secret && keyBy(templateObject.Secret
+    .filter(({$raw: {metadata}})=>metadata), ({ $raw }) => {
+    const { metadata: { name, namespace } } = $raw
+    return `${namespace}/${name}`
+  })
 
   // first time thru, we just have the base template to compare against
   let currentTemplateResources
@@ -154,7 +162,23 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
   resources = uniqWith(resources, isEqual)
 
   // then generate the source from those resources
-  return { ...generateSourceFromResources(resources), templateResources }
+  const { templateYAML, templateObject:mergedObjects } = generateSourceFromResources(resources)
+
+  // restore any secrets
+  if (secretsMap && mergedObjects.Secret) {
+    mergedObjects.Secret.forEach(resource => {
+      resource = resource.$raw
+      if (resource.metadata) {
+        const { metadata: { name, namespace } } = resource
+        const secret = secretsMap[`${namespace}/${name}`]
+        if (secret) {
+          merge(resource, secret.$raw)
+        }
+      }
+    })
+  }
+
+  return { templateYAML, templateObject:mergedObjects, templateResources }
 }
 
 const mergeSource = (
@@ -344,7 +368,7 @@ const generateSourceFromResources = resources => {
       yaml = jsYaml.safeDump(resource, {
         sortKeys,
         noRefs: true,
-        lineWidth: 200
+        lineWidth: 2000
       })
       yaml = yaml.replace(/'\d+':(\s|$)\s*/gm, '- ')
       yaml = yaml.replace(/:\s*null$/gm, ':')
