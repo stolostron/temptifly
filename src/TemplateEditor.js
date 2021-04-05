@@ -19,7 +19,7 @@ import {
   cacheUserData
 } from './utils/source-utils'
 import {
-  logSyntaxErrors,
+  logSourceErrors,
 } from './utils/logger'
 import { validateControls } from './utils/validate-controls'
 import { updateEditStack } from './utils/refresh-source-from-stack'
@@ -1072,7 +1072,7 @@ export default class TemplateEditor extends React.Component {
     )
     let notifications = []
     if (hasSyntaxExceptions || hasValidationExceptions) {
-      logSyntaxErrors(templateYAML, controlData, otherYAMLTabs, templateExceptionMap)
+      logSourceErrors(templateYAML, controlData, otherYAMLTabs, templateExceptionMap)
       Object.values(templateExceptionMap).forEach(({ exceptions }) => {
         exceptions.forEach(({ row, text, editor, tabInx, controlId, ref }) => {
           notifications.push({

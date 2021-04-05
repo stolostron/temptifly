@@ -6,37 +6,62 @@ import YamlParser from './YamlParser'
 import get from 'lodash/get'
 import set from 'lodash/set'
 
-export const logSyntaxErrors = (templateYAML, controlData, otherYAMLTabs, templateExceptionMap) => {
-  if (process.env.NODE_ENV === 'production') {
-    return
+export const logSourceErrors = (templateYAML, controlData, otherYAMLTabs, templateExceptionMap) => {
+  if (process.env.NODE_ENV !== 'production') {
+    /* eslint-disable no-console */
+
+  //////////////////////////////// YAML //////////////////////////////////////
+    console.groupCollapsed("YAML")
+
+    const errors = []
+    const tabIds = ['<<main>>']
+    Object.values(templateExceptionMap).forEach(({ exceptions }) => {
+      exceptions.forEach(({ row, text, tabInx, controlId }) => {
+        const tabErrors = get(errors, `${tabInx}`, [])
+        const rowErrors = get(tabErrors, `${row}`, [])
+        rowErrors.push({ text, controlId })
+        set(tabErrors, `${row}`, rowErrors)
+        set(errors, `${tabInx}`, tabErrors)
+      })
+    })
+    const yamls=[templateYAML]
+    otherYAMLTabs.forEach(({id, templateYAML:yaml})=>{
+      tabIds.push(id)
+      yamls.push(yaml)
+    })
+
+    // errors at top
+    errors.forEach((tabErrors, tabInx)=>{
+      tabErrors.forEach((rowErrors, rowInx)=>{
+        rowErrors.forEach(({text})=>{
+          console.info(`!!!!!!!!!!!! ${tabInx ? tabIds[tabInx] : ''} ${rowInx+1}: ${text} !!!!!!!!!!!!`)
+        })
+      })
+    })
+    // log YAML with errors
+    yamls.forEach((yaml, tabInx) => {
+      if (tabInx!==0) {
+        console.info(`\n//////////////////////// ${tabIds[tabInx]} ///////////////`)
+        const tabErrors = get(errors, `${tabInx}`, [])
+        tabErrors.forEach((rowErrors, rowInx)=>{
+          rowErrors.forEach(({text})=>{
+            console.info(`!!!!!!!!!!!! ${rowInx+1}: ${text} !!!!!!!!!!!!`)
+          })
+        })
+      }
+      const output = []
+      const tabErrors = errors[tabInx] || []
+      const lines = yaml.split('\n')
+      lines.forEach((line, row)=>{
+        output.push(`${row+1} ${line}`)
+        const rowErrors = tabErrors[row+1] || []
+        rowErrors.forEach(({text})=>{
+          output.push(`********* ${text}`)
+        })
+      })
+      console.info(output.join('\n'))
+    })
+    console.groupEnd();
   }
-
-  // map errors
-  let errors
-  const errorMap = {}
-  Object.values(templateExceptionMap).forEach(({ exceptions }) => {
-    exceptions.forEach(({ row, text, tabInx, controlId }) => {
-      errors = get(errorMap, `${row}`, [])
-      errors.push({ text, tabInx, controlId })
-      set(errorMap, `${row}`, errors)
-    })
-  })
-
-  // log YAML with errors
-  const yaml = []
-  get(errorMap, '0', []).forEach(({text})=>{
-    yaml.push(`!!!!!!!!!!!! ${text} !!!!!!!!!!!!`)
-  })
-  const lines = templateYAML.split('\n')
-  lines.forEach((line, row)=>{
-    yaml.push(`${row+1} ${line}`)
-    get(errorMap, `${row+1}`, []).forEach(({text})=>{
-      yaml.push(`********* ${text}`)
-    })
-  })
-  /* eslint-disable no-console */
-  console.groupCollapsed("YAML")
-  console.debug(yaml.join('\n'))
-  console.groupEnd();
 }
 
