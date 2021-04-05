@@ -1,7 +1,7 @@
 'use strict'
 
 import jsYaml from 'js-yaml'
-import YamlParser from './YamlParser'
+import { generateTemplateData } from './refresh-source-from-templates'
 
 import get from 'lodash/get'
 import set from 'lodash/set'
@@ -10,8 +10,25 @@ export const logSourceErrors = (templateYAML, controlData, otherYAMLTabs, templa
   if (process.env.NODE_ENV !== 'production') {
     /* eslint-disable no-console */
 
+
+  //////////////////////////////// INPUT //////////////////////////////////////
+  console.groupCollapsed("TEMPLATE INPUT")
+  const replacements = []
+  const controlMap = {}
+  const templateData = generateTemplateData(
+    controlData,
+    replacements,
+    controlMap
+  )
+  const input = jsYaml.safeDump(templateData, {
+    noRefs: true,
+    lineWidth: 200
+  })
+  console.info(input)
+  console.groupEnd();
+
   //////////////////////////////// YAML //////////////////////////////////////
-    console.groupCollapsed("YAML")
+  console.groupCollapsed("YAML OUTPUT")
 
     const errors = []
     const tabIds = ['<<main>>']
