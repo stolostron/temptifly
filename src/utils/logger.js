@@ -11,7 +11,7 @@ export const logSourceErrors = (templateYAML, controlData, otherYAMLTabs, templa
     /* eslint-disable no-console */
 
   //////////////////////////////// SOURCE ERRORS //////////////////////////////////////
-  const errors = []
+    const errors = []
     const tabIds = ['Main YAML']
     Object.values(templateExceptionMap).forEach(({ exceptions }) => {
       exceptions.forEach(({ row, text, tabInx, controlId }) => {
@@ -29,21 +29,21 @@ export const logSourceErrors = (templateYAML, controlData, otherYAMLTabs, templa
     })
 
     if(errors.length) {
-    console.group("!!!!!!!!!!!!!!!!!! YAML ERRORS !!!!!!!!!!!!!!!!!!!!!!")
+      console.group('!!!!!!!!!!!!!!!!!! YAML ERRORS !!!!!!!!!!!!!!!!!!!!!!')
 
-    // errors at top
-    errors.forEach((tabErrors, tabInx)=>{
-      tabErrors.forEach((rowErrors, rowInx)=>{
-        rowErrors.forEach(({text})=>{
-          console.info(`${tabIds[tabInx]} ${rowInx+1}: ${text}`)
+      // errors at top
+      errors.forEach((tabErrors, tabInx)=>{
+        tabErrors.forEach((rowErrors, rowInx)=>{
+          rowErrors.forEach(({text})=>{
+            console.info(`${tabIds[tabInx]} ${rowInx+1}: ${text}`)
+          })
         })
       })
-    })
-    console.groupEnd();
-  }
+      console.groupEnd()
+    }
 
-  //////////////////////////////// YAML //////////////////////////////////////
-  console.groupCollapsed("\n==================YAML OUTPUT=====================")
+    //////////////////////////////// YAML //////////////////////////////////////
+    console.groupCollapsed('\n==================YAML OUTPUT=====================')
     // log YAML with errors
     yamls.forEach((yaml, tabInx) => {
       console.info(`\n//////////////////////// ${tabIds[tabInx]} ///////////////`)
@@ -59,23 +59,23 @@ export const logSourceErrors = (templateYAML, controlData, otherYAMLTabs, templa
       })
       console.info(output.join('\n'))
     })
-    console.groupEnd();
+    console.groupEnd()
 
-  //////////////////////////////// INPUT //////////////////////////////////////
-  console.groupCollapsed("==================TEMPLATE INPUT======================")
-  const replacements = []
-  const controlMap = {}
-  const templateData = generateTemplateData(
-    controlData,
-    replacements,
-    controlMap
-  )
-  const input = jsYaml.safeDump(templateData, {
-    noRefs: true,
-    lineWidth: 200
-  })
-  console.info(input)
-  console.groupEnd();
+    //////////////////////////////// INPUT //////////////////////////////////////
+    console.groupCollapsed('==================TEMPLATE INPUT======================')
+    const replacements = []
+    const controlMap = {}
+    const templateData = generateTemplateData(
+      controlData,
+      replacements,
+      controlMap
+    )
+    const input = jsYaml.safeDump(templateData, {
+      noRefs: true,
+      lineWidth: 200
+    })
+    console.info(input)
+    console.groupEnd()
   }
 }
 
@@ -83,21 +83,21 @@ export const logCreateErrors = (creationMsg, resourceJSON) => {
   if (process.env.NODE_ENV !== 'production') {
     /* eslint-disable no-console */
 
-    console.group("!!!!!!!!!!!!!!!!!! CREATE ERRORS !!!!!!!!!!!!!!!!!!!!!!")
+    console.group('!!!!!!!!!!!!!!!!!! CREATE ERRORS !!!!!!!!!!!!!!!!!!!!!!')
 
     creationMsg.forEach(({message})=>{
       console.info(message)
     })
-    console.groupEnd();
+    console.groupEnd()
 
 
-  //////////////////////////////// INPUT //////////////////////////////////////
-  console.groupCollapsed("==================RESOURCE JSON======================")
-  const input = jsYaml.safeDump(resourceJSON, {
-    noRefs: true,
-    lineWidth: 200
-  })
-  console.info(input)
-  console.groupEnd();
+    //////////////////////////////// INPUT //////////////////////////////////////
+    console.groupCollapsed('==================RESOURCE JSON======================')
+    const input = jsYaml.safeDump(resourceJSON, {
+      noRefs: true,
+      lineWidth: 200
+    })
+    console.info(input)
+    console.groupEnd()
   }
 }
