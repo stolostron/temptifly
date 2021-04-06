@@ -18,6 +18,10 @@ import {
   getUniqueName,
   cacheUserData
 } from './utils/source-utils'
+import {
+  logCreateErrors,
+  logSourceErrors,
+} from './utils/logger'
 import { validateControls } from './utils/validate-controls'
 import { updateEditStack } from './utils/refresh-source-from-stack'
 import {
@@ -65,6 +69,7 @@ export default class TemplateEditor extends React.Component {
     }),
     i18n: PropTypes.func,
     initialOpen: PropTypes.bool,
+    logging: PropTypes.bool,
     monacoEditor: PropTypes.element,
     portals: PropTypes.object,
     template: PropTypes.func.isRequired,
@@ -74,7 +79,7 @@ export default class TemplateEditor extends React.Component {
 
   static getDerivedStateFromProps(props, state) {
     const { monacoEditor, createControl = {}, type, initialOpen } = props
-    const { i18n } = state
+    const { i18n, resourceJSON } = state
 
     // update notifications
     let { notifications } = state
@@ -117,6 +122,7 @@ export default class TemplateEditor extends React.Component {
         break
 
       case 'ERROR':
+        logCreateErrors(this.props.logging, creationMsg, resourceJSON)
         notifications = creationMsg.map(message => {
           return {
             id: 'create',
@@ -1069,6 +1075,7 @@ export default class TemplateEditor extends React.Component {
     )
     let notifications = []
     if (hasSyntaxExceptions || hasValidationExceptions) {
+      logSourceErrors(this.props.logging, templateYAML, controlData, otherYAMLTabs, templateExceptionMap)
       Object.values(templateExceptionMap).forEach(({ exceptions }) => {
         exceptions.forEach(({ row, text, editor, tabInx, controlId, ref }) => {
           notifications.push({
@@ -1237,6 +1244,7 @@ export default class TemplateEditor extends React.Component {
     const { createResource } = createControl
     const resourceJSON = this.getResourceJSON()
     if (resourceJSON) {
+      this.setState({resourceJSON})
       createResource(resourceJSON)
     }
   }

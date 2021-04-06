@@ -118,7 +118,7 @@ export const generateSourceFromTemplate = (
 
 }
 
-const generateTemplateData = (
+export const generateTemplateData = (
   controlData,
   replacements,
   controlMap
