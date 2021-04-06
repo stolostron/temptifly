@@ -31,7 +31,7 @@ import {
   TableVariant
 } from '@patternfly/react-table'
 import { ControlMode } from '../utils/source-utils'
-import FolderPlusIcon from '@patternfly/react-icons/dist/js/icons/folder-plus-icon'
+import { NoResourceIcon } from '../icons/NoResource'
 import keyBy from 'lodash/keyBy'
 import get from 'lodash/get'
 import orderBy from 'lodash/orderBy'
@@ -299,6 +299,7 @@ class ControlPanelTable extends React.Component {
       })
     })
     const columns = this.getColumns()
+    const explanation = 'You don\'t have any bare metal assets yet. Start by creating or importing your bare metal assets.'
     if (isFailed) {
       return (
         <Alert
@@ -313,35 +314,6 @@ class ControlPanelTable extends React.Component {
           Loading
         </Title>
       </EmptyState>)
-    } else if ( available.length===0 ) {
-      const explanation = 'You don\'t have any bare metal assets yet. Start by creating or importing your bare metal assets.'
-      return (
-        <EmptyState variant={EmptyStateVariant.small}>
-          <EmptyStateIcon icon={FolderPlusIcon} />
-          <Title headingLevel="h2" size="lg">
-            No bare metal assets found
-          </Title>
-          <EmptyStateBody>{explanation}</EmptyStateBody>
-          <EmptyStateBody>
-            <Split>
-              <SplitItem isFilled></SplitItem>
-              <SplitItem>
-                <Toolbar>
-                  <ToolbarContent>
-                    {actions.map((action, inx) => (
-                      /* eslint-disable-next-line react/no-array-index-key */
-                      <ToolbarItem key={inx}>
-                        {action}
-                      </ToolbarItem>
-                    ))}
-                  </ToolbarContent>
-                </Toolbar>
-              </SplitItem>
-              <SplitItem isFilled></SplitItem>
-            </Split>
-          </EmptyStateBody>
-        </EmptyState>
-      )
     } else {
       const {
         searchValue,
@@ -370,14 +342,16 @@ class ControlPanelTable extends React.Component {
                   resultsCount={`${rows.length} / ${available.length}`}
                 />
               </ToolbarItem>
-              <div style={{display: 'flex'}}>
-                {actions.map((action, inx) => (
-                /* eslint-disable-next-line react/no-array-index-key */
-                  <ToolbarItem key={inx}>
-                    {action}
-                  </ToolbarItem>
-                ))}
-              </div>
+              {available.length !== 0 && (
+                <div style={{display: 'flex', marginTop: '10px'}}>
+                  {actions.map((action, inx) => (
+                  /* eslint-disable-next-line react/no-array-index-key */
+                    <ToolbarItem key={inx}>
+                      {action}
+                    </ToolbarItem>
+                  ))}
+                </div>
+              )}
             </ToolbarContent>
           </Toolbar>
           <Fragment>
@@ -396,6 +370,37 @@ class ControlPanelTable extends React.Component {
             </Table>
             <Split>
               <SplitItem isFilled></SplitItem>
+              <SplitItem>
+                {available.length === 0 && (
+                  <div style={{display: 'flex', paddingTop: '20px', color: 'gray'}}>
+                    <EmptyStateIcon icon={NoResourceIcon} />
+                    <EmptyState variant={EmptyStateVariant.small}>
+                      <Title headingLevel="h2" size="lg">
+                        No bare metal assets found
+                      </Title>
+                      <EmptyStateBody>{explanation}</EmptyStateBody>
+                      <EmptyStateBody>
+                        <Split>
+                          <SplitItem isFilled></SplitItem>
+                          <SplitItem>
+                            <Toolbar>
+                              <ToolbarContent>
+                                {actions.map((action, inx) => (
+                                /* eslint-disable-next-line react/no-array-index-key */
+                                  <ToolbarItem key={inx}>
+                                    {action}
+                                  </ToolbarItem>
+                                ))}
+                              </ToolbarContent>
+                            </Toolbar>
+                          </SplitItem>
+                          <SplitItem isFilled></SplitItem>
+                        </Split>
+                      </EmptyStateBody>
+                    </EmptyState>
+                  </div>
+                )}
+              </SplitItem>
               <SplitItem>
                 {available.length !== 0 && (
                   <Pagination
