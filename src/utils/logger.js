@@ -6,8 +6,8 @@ import { generateTemplateData } from './refresh-source-from-templates'
 import get from 'lodash/get'
 import set from 'lodash/set'
 
-export const logSourceErrors = (templateYAML, controlData, otherYAMLTabs, templateExceptionMap) => {
-  if (process.env.NODE_ENV !== 'production') {
+export const logSourceErrors = (logging, templateYAML, controlData, otherYAMLTabs, templateExceptionMap) => {
+  if (logging) {
     /* eslint-disable no-console */
 
   //////////////////////////////// SOURCE ERRORS //////////////////////////////////////
@@ -79,8 +79,8 @@ export const logSourceErrors = (templateYAML, controlData, otherYAMLTabs, templa
   }
 }
 
-export const logCreateErrors = (creationMsg, resourceJSON) => {
-  if (process.env.NODE_ENV !== 'production') {
+export const logCreateErrors = (logging, creationMsg, resourceJSON) => {
+  if (logging) {
     /* eslint-disable no-console */
 
     console.group('!!!!!!!!!!!!!!!!!! CREATE ERRORS !!!!!!!!!!!!!!!!!!!!!!')

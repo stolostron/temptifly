@@ -69,6 +69,7 @@ export default class TemplateEditor extends React.Component {
     }),
     i18n: PropTypes.func,
     initialOpen: PropTypes.bool,
+    logging: PropTypes.bool,
     monacoEditor: PropTypes.element,
     portals: PropTypes.object,
     template: PropTypes.func.isRequired,
@@ -121,7 +122,7 @@ export default class TemplateEditor extends React.Component {
         break
 
       case 'ERROR':
-        logCreateErrors(creationMsg, resourceJSON)
+        logCreateErrors(this.props.logging, creationMsg, resourceJSON)
         notifications = creationMsg.map(message => {
           return {
             id: 'create',
@@ -1074,7 +1075,7 @@ export default class TemplateEditor extends React.Component {
     )
     let notifications = []
     if (hasSyntaxExceptions || hasValidationExceptions) {
-      logSourceErrors(templateYAML, controlData, otherYAMLTabs, templateExceptionMap)
+      logSourceErrors(this.props.logging, templateYAML, controlData, otherYAMLTabs, templateExceptionMap)
       Object.values(templateExceptionMap).forEach(({ exceptions }) => {
         exceptions.forEach(({ row, text, editor, tabInx, controlId, ref }) => {
           notifications.push({
