@@ -19,6 +19,7 @@ import {
   cacheUserData
 } from './utils/source-utils'
 import {
+  logCreateErrors,
   logSourceErrors,
 } from './utils/logger'
 import { validateControls } from './utils/validate-controls'
@@ -77,7 +78,7 @@ export default class TemplateEditor extends React.Component {
 
   static getDerivedStateFromProps(props, state) {
     const { monacoEditor, createControl = {}, type, initialOpen } = props
-    const { i18n } = state
+    const { i18n, resourceJSON } = state
 
     // update notifications
     let { notifications } = state
@@ -120,6 +121,7 @@ export default class TemplateEditor extends React.Component {
         break
 
       case 'ERROR':
+        logCreateErrors(creationMsg, resourceJSON)
         notifications = creationMsg.map(message => {
           return {
             id: 'create',
@@ -1241,6 +1243,7 @@ export default class TemplateEditor extends React.Component {
     const { createResource } = createControl
     const resourceJSON = this.getResourceJSON()
     if (resourceJSON) {
+      this.setState({resourceJSON})
       createResource(resourceJSON)
     }
   }
