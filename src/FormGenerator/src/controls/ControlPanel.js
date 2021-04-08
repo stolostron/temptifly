@@ -23,7 +23,7 @@ import '../scss/control-panel.scss'
 import {
   TrashIcon,
   AddIcon,
-} from '../icons/Icons'
+} from '../src/icons/Icons'
 
 class ControlPanel extends React.Component {
   static propTypes = {

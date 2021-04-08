@@ -7,7 +7,7 @@ import Tooltip from '../components/Tooltip'
 import isEmpty from 'lodash/isEmpty'
 import {
   CheckmarkIcon,
-} from '../icons/Icons'
+} from '../src/icons/Icons'
 
 class ControlPanelCards extends React.Component {
   static propTypes = {

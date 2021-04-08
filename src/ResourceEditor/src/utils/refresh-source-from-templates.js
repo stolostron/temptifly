@@ -12,7 +12,7 @@ import {
   if_neFn,
   if_orFn,
   switchFn
-} from '../helpers'
+} from '../ResourceEditor/helpers'
 import get from 'lodash/get'
 import capitalize from 'lodash/capitalize'
 

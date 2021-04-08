@@ -8,7 +8,7 @@ import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import get from 'lodash/get'
 import {
   CaretIcon,
-} from '../icons/Icons'
+} from '../src/icons/Icons'
 
 class ControlPanelAccordion extends React.Component {
   static propTypes = {

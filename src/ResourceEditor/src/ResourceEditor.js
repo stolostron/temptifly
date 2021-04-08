@@ -22,15 +22,15 @@ import {
   logCreateErrors,
   logSourceErrors,
 } from './utils/logger'
-import { validateControls } from './utils/validate-controls'
+import { validateControls } from './src/utils/validate-controls'
 import { updateEditStack } from './utils/refresh-source-from-stack'
 import {
   highlightChanges,
   highlightAllChanges
 } from './utils/refresh-source-highlighting'
 import ControlPanel from './controls/ControlPanel'
-import EditorHeader from './ResourceEditor/components/EditorHeader'
-import EditorBar from './ResourceEditor/components/EditorBar'
+import EditorHeader from './components/EditorHeader'
+import EditorBar from './components/EditorBar'
 import './scss/template-editor.scss'
 import cloneDeep from 'lodash/cloneDeep'
 import get from 'lodash/get'
@@ -38,7 +38,7 @@ import debounce from 'lodash/debounce'
 import keyBy from 'lodash/keyBy'
 import merge from 'lodash/merge'
 
-export const YamlEditor = loadable(() => import(/* webpackChunkName: "YamlEditor" */ './ResourceEditor/components/YamlEditor'))
+export const YamlEditor = loadable(() => import(/* webpackChunkName: "YamlEditor" */ './components/YamlEditor'))
 
 const TEMPLATE_EDITOR_OPEN_COOKIE = 'template-editor-open-cookie'
 const TEMPLATE_EDITOR_SHOW_SECRETS_COOKIE =
