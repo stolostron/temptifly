@@ -50,7 +50,7 @@ const Portals = Object.freeze({
   createBtn: 'create-button-portal-id'
 })
 
-export default class TemplateEditor extends React.Component {
+export default class ResourceEditor extends React.Component {
   static propTypes = {
     controlData: PropTypes.array.isRequired,
     createControl: PropTypes.shape({
