@@ -1,7 +1,6 @@
 'use strict'
 
 import jsYaml from 'js-yaml'
-import { generateTemplateData } from './refresh-source-from-templates'
 
 import get from 'lodash/get'
 import set from 'lodash/set'

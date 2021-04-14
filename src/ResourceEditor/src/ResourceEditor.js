@@ -1,19 +1,12 @@
 'use strict'
 
 import React  from 'react'
-import ReactDOM from 'react-dom'
 import loadable from '@loadable/component'
 import { Prompt } from 'react-router-dom'
 import SplitPane from 'react-split-pane'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import {
-  Button,
-  Switch,
-  Alert
-} from '@patternfly/react-core'
-import {
-  initializeControls,
   generateSource,
   getUniqueName,
   cacheUserData
@@ -22,16 +15,15 @@ import {
   logCreateErrors,
   logSourceErrors,
 } from './utils/logger'
-import { validateControls } from './src/utils/validate-controls'
+/////////////////import { validateControls } from './src/utils/validate-controls'
 import { updateEditStack } from './utils/refresh-source-from-stack'
 import {
   highlightChanges,
   highlightAllChanges
 } from './utils/refresh-source-highlighting'
-import ControlPanel from './controls/ControlPanel'
 import EditorHeader from './components/EditorHeader'
 import EditorBar from './components/EditorBar'
-import './scss/template-editor.scss'
+import './css/template-editor.scss'
 import cloneDeep from 'lodash/cloneDeep'
 import get from 'lodash/get'
 import debounce from 'lodash/debounce'
@@ -44,185 +36,89 @@ const TEMPLATE_EDITOR_OPEN_COOKIE = 'template-editor-open-cookie'
 const TEMPLATE_EDITOR_SHOW_SECRETS_COOKIE =
   'template-editor-show-secrets-cookie'
 
-const Portals = Object.freeze({
-  editBtn: 'edit-button-portal-id',
-  cancelBtn: 'cancel-button-portal-id',
-  createBtn: 'create-button-portal-id'
-})
-
 export default class ResourceEditor extends React.Component {
+
   static propTypes = {
-    controlData: PropTypes.array.isRequired,
-    createControl: PropTypes.shape({
-      hasPermissions: PropTypes.bool,
-      createResource: PropTypes.func,
-      pauseCreate: PropTypes.func,
-      cancelCreate: PropTypes.func,
-      creationStatus: PropTypes.string,
-      creationMsg: PropTypes.array
-    }).isRequired,
-    fetchControl: PropTypes.shape({
-      resources: PropTypes.array,
-      isLoaded: PropTypes.bool,
-      isFailed: PropTypes.bool,
-      fetchData: PropTypes.object
-    }),
-    i18n: PropTypes.func,
-    initialOpen: PropTypes.bool,
-    logging: PropTypes.bool,
+    editorEvents: PropTypes.object,
+    renderForm: PropTypes.func.isRequired,
+    isLoaded: PropTypes.bool,
+    showEditor: PropTypes.bool,
+    showLogging: PropTypes.bool,
     monacoEditor: PropTypes.element,
-    portals: PropTypes.object,
     template: PropTypes.func.isRequired,
+    templateInput: PropTypes.object.isRequired,
+    editResources: PropTypes.array,
     title: PropTypes.string,
     type: PropTypes.string,
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { monacoEditor, createControl = {}, type, initialOpen } = props
-    const { i18n, resourceJSON } = state
+    const { isLoaded, template, templateInput, editResources, editorEvents } = props
+    const { editor, editors, otherYAMLTabs, selectedTab } = state
+    let { editStack, isEditing, templateYAML, firstTemplateYAML, isDirty } = state
+    if (isLoaded) {
 
-    // update notifications
-    let { notifications } = state
-    const { hasFormExceptions, isEditing } = state
-    const { creationStatus, creationMsg } = createControl
-    if (creationStatus && !hasFormExceptions) {
-      switch (creationStatus) {
-      case 'IN_PROGRESS':
-        notifications = [
-          {
-            id: 'creating',
-            kind: 'info',
-            exception: Array.isArray(creationMsg) && creationMsg.length
-              ? creationMsg[0]
-              : i18n(
-                isEditing
-                  ? 'success.create.updating'
-                  : 'success.create.creating',
-                [type]
-              )
-          }
-        ]
-        break
-
-      case 'DONE':
-        notifications = [
-          {
-            id: 'success',
-            kind: 'success',
-            exception: Array.isArray(creationMsg)
-              ? creationMsg[0]
-              : i18n(
-                isEditing
-                  ? 'success.create.updated'
-                  : 'success.create.created',
-                [type]
-              )
-          }
-        ]
-        break
-
-      case 'ERROR':
-        logCreateErrors(this.props.logging, creationMsg, resourceJSON)
-        notifications = creationMsg.map(message => {
-          return {
-            id: 'create',
-            kind: 'error',
-            exception: message.message || message
-          }
-        })
-        break
+      // if editing an existing set of resources start an editStack
+      if (editResources && !editStack) {
+        editStack = { editResources, editor, i18n }
+        isEditing = true
       }
-      return { notifications }
-    }
 
-    // is a resource loaded in editor?
-    const { fetchControl } = props
-    const { isLoaded, isFailed } = fetchControl || { isLoaded: true }
-    const showEditor =
-      (monacoEditor||initialOpen) && isLoaded && !!localStorage.getItem(TEMPLATE_EDITOR_OPEN_COOKIE)
-    let newState = { isLoaded, isFailed, showEditor }
-
-    // has control data been initialized?
-    const { controlData: initialControlData } = props
-    let {
-      controlData,
-      templateYAML,
-      templateObject,
-      templateResources,
-      editStack
-    } = state
-    const { editor, template, showSecrets } = state
-    if (!controlData) {
-      // initialize control data
-      const cd = cloneDeep(initialControlData)
-      controlData = initializeControls(cd, editor, i18n)
-      newState = { ...newState, controlData }
-
-      const showControl = controlData.find(
-        ({ id: idCtrl }) => idCtrl === 'showSecrets'
-      )
-      if (showControl) {
-        showControl.active = showSecrets
-      }
-    }
-
-    // has source been initialized?
-    if (isLoaded && !templateYAML) {
-      // editing an existing set of resources??
-      const customResources = get(fetchControl, 'resources')
-      if (customResources) {
-        editStack = { customResources, editor, i18n }
-      }
+      // if custom editing on a tab, clear it now that user is using controls
+      otherYAMLTabs.forEach(tab => {
+        delete tab.control.customYAML
+      })
 
       // generate source from template or stack of resources
-      ({ templateYAML, templateObject, templateResources } = generateSource(
+      const { templateYAML:newYAML, templateObject, templateResources, syntaxErrors } = generateSource(
         template,
+        templateInput,
         editStack,
-        controlData
-      ))
+        otherYAMLTabs
+      )
 
-      newState = {
-        ...newState,
-        templateYAML,
-        firstTemplateYAML: templateYAML,
+      // keep track of dirty state
+      if (!firstTemplateYAML) {
+          firstTemplateYAML = newYAML
+      }
+      isDirty = firstTemplateYAML !== newYAML
+
+      if (templateYAML !== newYAML) {
+        if (templateYAML) {
+          // highlight changes in editor
+          highlightAllChanges(
+            editors,
+            templateYAML,
+            newYAML,
+            otherYAMLTabs,
+            selectedTab
+          )
+        }
+
+      // send event to controls if yaml changed
+        editorEvents.emit('change', {editors, templateYAML:newYAML, templateObject, templateResources, syntaxErrors, isDirty, otherYAMLTabs})
+      }
+
+      return {
+        templateYAML:newYAML,
+        firstTemplateYAML,
         templateObject,
         templateResources,
+        syntaxErrors,
         editStack,
-        isEditing: !!customResources
+        isEditing,
+        isDirty
       }
     }
-
-    // make sure an auto generated name is unique
-    const { isCustomName } = state
-    if (!isCustomName) {
-      const name = controlData.find(({ id }) => id === 'name')
-      if (name) {
-        const { active, existing } = name
-        const uniqueName = getUniqueName(active, new Set(existing))
-        if (uniqueName !== active) {
-          name.active = uniqueName;
-          ({ templateYAML, templateObject, templateResources } = generateSource(
-            template,
-            editStack,
-            controlData
-          ))
-          newState = {
-            ...newState,
-            controlData,
-            templateYAML,
-            templateObject,
-            templateResources
-          }
-        }
-      }
-    }
-
-    return newState
+    return {}
   }
 
   constructor(props) {
     super(props)
+    this.editors = []
+    this.selectedTab = 0
     this.state = {
+      isDirty: false,
       isCustomName: false,
       showEditor: !!localStorage.getItem(TEMPLATE_EDITOR_OPEN_COOKIE),
       showSecrets: !!localStorage.getItem(TEMPLATE_EDITOR_SHOW_SECRETS_COOKIE),
@@ -240,6 +136,8 @@ export default class ResourceEditor extends React.Component {
       hasRedo: false,
       resetInx: 0,
       hasPauseCreate: !!get(props, 'createControl.pauseCreate'),
+      selectedTab: this.selectedTab,
+      editors: this.editors,
       editor: {
         forceUpdate: (() => {
           this.forceUpdate()
@@ -250,19 +148,13 @@ export default class ResourceEditor extends React.Component {
       }
     }
 
-    this.selectedTab = 0
-    this.isDirty = false
     this.firstGoToLinePerformed = false
-    this.editors = []
     this.parseDebounced = debounce(yaml => {
       this.handleParse(yaml)
     }, 500)
     this.handleEditorCommand = this.handleEditorCommand.bind(this)
     this.handleSearchChange = this.handleSearchChange.bind(this)
     this.gotoEditorLine = this.gotoEditorLine.bind(this)
-    this.handleNewEditorMode = this.handleNewEditorMode.bind(this)
-    this.handleControlChange = this.handleControlChange.bind(this)
-    this.handleGroupChange = this.handleGroupChange.bind(this)
     if (props.initialOpen) {
       localStorage.setItem(TEMPLATE_EDITOR_OPEN_COOKIE, 'true')
     }
@@ -333,44 +225,33 @@ export default class ResourceEditor extends React.Component {
     this.layoutEditors()
   };
 
+  // render() {
+  //   const { isLoaded, showEditor, resetInx, hasPauseCreate, i18n } = this.state
+  //   if (!showEditor) {
+  //     this.editors = []
+  //   }
+
+  //   const viewClasses = classNames({
+  //     'temptifly': true,
+  //     showEditor
+  //   })
+  //   return (
+  //     <div
+  //       key={`key${resetInx}`}
+  //       className={viewClasses}
+  //       ref={this.setContainerRef}
+  //     >
+  //       {!hasPauseCreate && <Prompt
+  //         when={this.isDirty}
+  //         message={i18n('changes.maybe.lost')}
+  //       />}
+  //       {this.renderSplitEditor(isLoaded)}
+  //     </div>
+  //   )
+  // }
+
   render() {
-    const { isLoaded, isFailed, showEditor, resetInx, hasPauseCreate, i18n } = this.state
-    if (!showEditor) {
-      this.editors = []
-    }
-
-    if (isLoaded && isFailed) {
-      return (
-        <Alert
-          variant={'danger'}
-          title={i18n('overview.error.default')}
-        />
-      )
-    }
-    const viewClasses = classNames({
-      'temptifly': true,
-      showEditor
-    })
-    return (
-      <div
-        key={`key${resetInx}`}
-        className={viewClasses}
-        ref={this.setContainerRef}
-      >
-        {!hasPauseCreate && <Prompt
-          when={this.isDirty}
-          message={i18n('changes.maybe.lost')}
-        />}
-        {this.renderSplitEditor(isLoaded)}
-        {this.renderEditButton(isLoaded)}
-        {this.renderCreateButton(isLoaded)}
-        {this.renderCancelButton()}
-      </div>
-    )
-  }
-
-  renderSplitEditor(isLoaded) {
-    const { showEditor } = this.state
+    const { showEditor, renderForm } = this.props
     const editorClasses = classNames({
       'creation-view-split-container': true,
       showEditor
@@ -391,344 +272,14 @@ export default class ResourceEditor extends React.Component {
             defaultSize={this.handleSplitterDefault()}
             onChange={this.handleSplitterChange}
           >
-            {this.renderControls(isLoaded)}
+            {renderForm()}
             {this.renderEditor()}
           </SplitPane>
         ) : (
-          this.renderControls(isLoaded)
+          renderForm()
         )}
       </div>
     )
-  }
-
-  renderControls(isLoaded) {
-    const { controlData, showEditor, isCustomName, notifications, i18n } = this.state
-    const {
-      controlData: originalControlData,
-      fetchControl
-    } = this.props
-    const { fetchData } = fetchControl || {}
-    return (
-      <ControlPanel
-        handleControlChange={this.handleControlChange}
-        handleNewEditorMode={this.handleNewEditorMode}
-        handleGroupChange={this.handleGroupChange}
-        controlData={controlData || originalControlData}
-        fetchData={fetchData}
-        originalControlData={originalControlData}
-        notifications={notifications}
-        showEditor={showEditor}
-        showPortals={this.props.portals ? null : Portals}
-        isCustomName={isCustomName}
-        isLoaded={isLoaded}
-        i18n={i18n}
-      />
-    )
-  }
-
-  handleControlChange(control, controlData, creationView, isCustomName) {
-    const {
-      template,
-      templateYAML,
-      otherYAMLTabs,
-      firstTemplateYAML,
-      editStack,
-      isFinalValidate,
-      i18n
-    } = this.state
-
-    // if custom editing on a tab, clear it now that user is using controls
-    otherYAMLTabs.forEach(tab => {
-      delete tab.control.customYAML
-    })
-
-    // custom action when control is selected
-    const { onSelect } = control
-    if (typeof onSelect === 'function') {
-      onSelect()
-    }
-
-    const {
-      templateYAML: newYAML,
-      templateObject,
-      templateResources
-    } = generateSource(template, editStack, controlData, otherYAMLTabs)
-    validateControls(
-      this.editors,
-      newYAML,
-      otherYAMLTabs,
-      controlData,
-      isFinalValidate,
-      i18n
-    )
-    highlightAllChanges(
-      this.editors,
-      templateYAML,
-      newYAML,
-      otherYAMLTabs,
-      this.selectedTab
-    )
-    const notifications = controlData.filter(c => {
-      return !!c.exception && isFinalValidate
-    })
-    this.setState({
-      controlData,
-      isCustomName,
-      templateYAML: newYAML,
-      templateObject,
-      templateResources,
-      exceptions: [],
-      notifications
-    })
-    this.isDirty = firstTemplateYAML !== newYAML
-    this.handleScrollAndCollapse(control, controlData, creationView)
-  }
-
-  handleGroupChange(control, controlData, creationView, inx) {
-    const {
-      showEditor,
-      editor,
-      template,
-      templateYAML,
-      otherYAMLTabs,
-      firstTemplateYAML,
-      editStack,
-      isFinalValidate,
-      i18n
-    } = this.state
-    const { active, controlData: cd } = control
-    if (inx === undefined) {
-      // add new group
-      const { prompts: { nameId, baseName } } = control
-      const newGroup = initializeControls(
-        cd,
-        editor,
-        i18n,
-        control.nextUniqueGroupID,
-        true
-      )
-      control.nextUniqueGroupID++
-      active.push(newGroup)
-      const nameControl = keyBy(newGroup, 'id')[nameId]
-      if (nameControl) {
-        nameControl.active = `${baseName}-${active.length - 1}`
-      }
-
-      // scroll down
-      setTimeout(() => {
-        (showEditor ? creationView : window).scrollBy({
-          top: 260,
-          left: 0,
-          behavior: 'smooth'
-        })
-      }, 100)
-    } else {
-      active.splice(inx, 1)
-    }
-    const {
-      templateYAML: newYAML,
-      templateObject,
-      templateResources
-    } = generateSource(template, editStack, controlData, otherYAMLTabs)
-    validateControls(
-      this.editors,
-      newYAML,
-      otherYAMLTabs,
-      controlData,
-      isFinalValidate,
-      i18n
-    )
-    highlightAllChanges(
-      this.editors,
-      templateYAML,
-      newYAML,
-      otherYAMLTabs,
-      this.selectedTab
-    )
-    this.setState({
-      controlData,
-      templateYAML: newYAML,
-      templateObject,
-      templateResources
-    })
-    this.isDirty = firstTemplateYAML !== newYAML
-  }
-
-  handleNewEditorMode(control, controlData, creationView) {
-    let { notifications } = this.state
-    const {
-      controlData: newControlData,
-      template,
-      templateYAML,
-      templateObject,
-      templateResources,
-      otherYAMLTabs
-    } = this.changeEditorMode(control, controlData)
-    controlData = newControlData
-
-    delete control.exception
-    if (notifications.length > 0) {
-      notifications = controlData.filter(c => {
-        return !!c.exception
-      })
-    }
-
-    this.setState({
-      controlData,
-      template: template,
-      templateYAML,
-      templateObject,
-      templateResources,
-      notifications,
-      exceptions: [],
-      otherYAMLTabs
-    })
-
-    this.handleScrollAndCollapse(control, controlData, creationView)
-  }
-
-  // change editor mode based on what card is selected
-  changeEditorMode(control, controlData) {
-    let { template } = this.props
-    const { editStack, otherYAMLTabs, editor, i18n } = this.state
-    let { templateYAML, templateObject, templateResources } = this.state
-    let newYAML = templateYAML
-    let newYAMLTabs = otherYAMLTabs
-
-    // delete all controls below this card control
-    const { availableMap, groupControlData } = control
-    const parentControlData = groupControlData || controlData
-    const insertInx = parentControlData.findIndex(
-      ({ id }) => id === control.id
-    )
-    const deleteLen = parentControlData.length - insertInx - 1
-    if (deleteLen) {
-      parentControlData.splice(insertInx + 1, deleteLen)
-    }
-
-    // add new controls and template
-    const { change } = availableMap[control.active[0]] || {}
-    if (change) {
-      const { replaceTemplate = template, insertControlData } = change
-
-      // insert control data into main control data
-      if (insertControlData) {
-        // splice control data with data from this card
-        parentControlData.splice(
-          insertInx + 1,
-          0,
-          ...cloneDeep(insertControlData)
-        )
-
-        // if this card control is in a group, tell each control
-        // what group control it belongs to
-        if (groupControlData) {
-          parentControlData.forEach(cd => {
-            cd.groupControlData = groupControlData
-          })
-        }
-        controlData = initializeControls(controlData, editor, i18n)
-      }
-
-      // replace template and regenerate templateYAML and highlight diffs
-      if (replaceTemplate) {
-        template = replaceTemplate
-        newYAMLTabs = newYAMLTabs || [];
-        ({
-          templateYAML: newYAML,
-          templateObject,
-          templateResources
-        } = generateSource(template, editStack, controlData, newYAMLTabs))
-        highlightAllChanges(
-          this.editors,
-          templateYAML,
-          newYAML,
-          otherYAMLTabs,
-          this.selectedTab
-        )
-        templateYAML = newYAML
-      }
-    }
-    return {
-      controlData,
-      template,
-      templateYAML,
-      templateObject,
-      templateResources,
-      otherYAMLTabs
-    }
-  }
-
-  handleScrollAndCollapse(control, controlData, creationView) {
-    const { showEditor, previouslySelectedCards } = this.state
-    // user chose a card with new controls in it---scroll the view down to the new fields
-    const {
-      id,
-      ref,
-      uniqueGroupID = 0,
-      scrollViewAfterSelection,
-      collapseAboveAfterSelection,
-      scrollViewToTopOnSelect
-    } = control
-    if (
-      scrollViewAfterSelection ||
-      collapseAboveAfterSelection ||
-      scrollViewToTopOnSelect
-    ) {
-      const wasPreviouslySelected = previouslySelectedCards.includes(
-        id + uniqueGroupID
-      )
-      if (!wasPreviouslySelected) {
-        if (!creationView) {
-          creationView = document.getElementsByClassName('content')[0]
-        }
-        const scrollView = showEditor && creationView.scrollBy ? creationView : window
-        const controlTop = ref.getBoundingClientRect().top
-        const panelTop = showEditor
-          ? creationView.getBoundingClientRect().top
-          : 200
-        setTimeout(() => {
-          switch (true) {
-          // collapse section above when this control is selected
-          case collapseAboveAfterSelection === true:
-            controlData.some(({ id: tid, sectionRef, sectionTitleRef }) => {
-              if (sectionRef && sectionTitleRef) {
-                sectionRef.classList.toggle('collapsed', true)
-                sectionTitleRef.classList.toggle('collapsed', true)
-              }
-              return id === tid
-            })
-            setTimeout(() => {
-              scrollView.scrollTo({
-                top: 0,
-                left: 0
-              })
-            }, 100)
-            break
-
-            // scroll view down after control is selected by 'scrollViewAfterSelection' pixels
-          case scrollViewAfterSelection !== undefined:
-            scrollView.scrollBy({
-              top: scrollViewAfterSelection,
-              left: 0,
-              behavior: 'smooth'
-            })
-            break
-
-            // scroll control to top when cards have been collapsed (only one card shown)
-          case scrollViewToTopOnSelect !== undefined:
-            scrollView.scrollBy({
-              top: controlTop - panelTop,
-              left: 0,
-              behavior: 'smooth'
-            })
-            break
-          }
-        }, 100)
-        previouslySelectedCards.push(id + uniqueGroupID)
-      }
-    }
-    this.setState({ previouslySelectedCards })
   }
 
   renderEditor() {
@@ -991,18 +542,18 @@ export default class ResourceEditor extends React.Component {
     }
 
     // update controls with values typed into yaml
-    const {
-      parsedResources,
-      templateExceptionMap,
-      hasSyntaxExceptions
-    } = validateControls(
-      this.editors,
-      templateYAML,
-      otherYAMLTabs,
-      controlData,
-      isFinalValidate,
-      i18n
-    )
+//    const {
+//      parsedResources,
+///      templateExceptionMap,
+//      hasSyntaxExceptions
+//    } = validateControls(
+//      this.editors,
+//      templateYAML,
+//      otherYAMLTabs,
+//      controlData,
+//      isFinalValidate,
+//      i18n
+//    )
     if (notifications.length > 0) {
       notifications = []
       if (hasSyntaxExceptions) {
@@ -1060,19 +611,19 @@ export default class ResourceEditor extends React.Component {
   getResourceJSON() {
     const { templateYAML, controlData, otherYAMLTabs, editStack, i18n } = this.state
     let canCreate = false
-    const {
-      templateObjectMap,
-      templateExceptionMap,
-      hasSyntaxExceptions,
-      hasValidationExceptions
-    } = validateControls(
-      this.editors,
-      templateYAML,
-      otherYAMLTabs,
-      controlData,
-      true,
-      i18n
-    )
+//    const {
+ //     templateObjectMap,
+//      templateExceptionMap,
+//      hasSyntaxExceptions,
+//      hasValidationExceptions
+//    } = validateControls(
+//      this.editors,
+//      templateYAML,
+//      otherYAMLTabs,
+//      controlData,
+//      true,
+//      i18n
+//    )
     let notifications = []
     if (hasSyntaxExceptions || hasValidationExceptions) {
       logSourceErrors(this.props.logging, templateYAML, controlData, otherYAMLTabs, templateExceptionMap)
@@ -1160,85 +711,6 @@ export default class ResourceEditor extends React.Component {
     }, 0)
   };
 
-  renderEditButton(isLoaded) {
-    const { monacoEditor, portals, i18n } = this.props
-    const { editBtn } = portals || Portals
-    if (monacoEditor && editBtn && isLoaded) {
-      const portal = document.getElementById(editBtn)
-      if (portal) {
-        const { showEditor } = this.state
-        const handleToggle = () => {
-          if (showEditor) {
-            localStorage.removeItem(TEMPLATE_EDITOR_OPEN_COOKIE)
-          } else {
-            localStorage.setItem(TEMPLATE_EDITOR_OPEN_COOKIE, 'true')
-          }
-          this.setState({ showEditor: !showEditor })
-        }
-        this.renderedPortals = true
-        return ReactDOM.createPortal(
-          <div className="edit-template-switch">
-            <Switch
-              id="edit-yaml"
-              key={`is${showEditor}`}
-              isChecked={showEditor}
-              label={i18n ? i18n('edit.yaml.on') : 'Show Yaml'}
-              labelOff={i18n ? i18n('edit.yaml.off') : 'Hide Yaml'}
-              onChange={handleToggle}
-            />
-          </div>,
-          portal
-        )
-      }
-    }
-    return null
-  }
-
-  renderCreateButton(isLoaded) {
-    const { isEditing } = this.state
-    const { portals, createControl={}, i18n } = this.props
-    const { createBtn } = portals || Portals
-    if (createBtn && isLoaded) {
-      const { hasPermissions = true } = createControl
-      const titleText = !hasPermissions
-        ? (i18n ? i18n('button.save.access.denied') : 'Denied')
-        : undefined
-      let disableButton = true
-      if (this.isDirty && hasPermissions) {
-        disableButton = false
-      }
-      const portal = document.getElementById(createBtn)
-      const label = isEditing
-        ? (i18n ? i18n('button.update') : 'Update')
-        : (i18n ? i18n('button.create') : 'Create')
-      const button = (
-        <Button
-          id={`${createBtn}-btn`}
-          onClick={this.handleCreateResource.bind(this)}
-          variant={'primary'}
-          isDisabled={disableButton}
-          data-testid={createBtn}
-        >
-          {label}
-        </Button>
-      )
-      if (portal) {
-        return !hasPermissions
-          ? ReactDOM.createPortal(
-            <div
-              title={titleText}
-              isDisabled={!hasPermissions}
-            >
-              {button}
-            </div>,
-            portal
-          )
-          : ReactDOM.createPortal(button, portal)
-      }
-    }
-    return null
-  }
-
   handleCreateResource() {
     const { createControl } = this.props
     const { createResource } = createControl
@@ -1249,29 +721,11 @@ export default class ResourceEditor extends React.Component {
     }
   }
 
-  renderCancelButton() {
-    const { portals, createControl={}, i18n } = this.props
-    const { cancelBtn } = portals || Portals
-    if (cancelBtn) {
-      const portal = document.getElementById(cancelBtn)
-      if (portal) {
-        const { cancelCreate } = createControl
-        return ReactDOM.createPortal(
-          <Button id={cancelBtn} onClick={cancelCreate} variant={'secondary'}>
-            {i18n ? i18n('button.cancel') : 'Cancel'}
-          </Button>,
-          portal
-        )
-      }
-    }
-    return null
-  }
-
   resetEditor() {
     const { controlData: initialControlData } = this.props
     const { template, editStack = {}, resetInx, editor, i18n } = this.state
     const cd = cloneDeep(initialControlData)
-    const controlData = initializeControls(cd, editor, i18n)
+    const controlData = {}
     const otherYAMLTabs = []
     if (editStack.initialized) {
       delete editStack.initialized

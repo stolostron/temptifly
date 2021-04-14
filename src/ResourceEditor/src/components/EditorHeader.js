@@ -4,7 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Checkbox } from '@patternfly/react-core'
-import '../scss/editor-header.scss'
+import '../css/editor-header.scss'
 
 class EditorHeader extends React.Component {
   static propTypes = {

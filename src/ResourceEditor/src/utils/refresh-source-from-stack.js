@@ -2,12 +2,12 @@
 
 import { diff } from 'deep-diff'
 import jsYaml from 'js-yaml'
-import {
-  discoverControls,
-  setEditingMode,
-  reverseTemplate,
-  getResourceID
-} from './source-utils'
+// import {
+//   discoverControls,
+//   setEditingMode,
+//   reverseTemplate,
+//   getResourceID
+// } from './source-utils'
 import { generateSourceFromTemplate } from './refresh-source-from-templates'
 import YamlParser from './YamlParser'
 import cloneDeep from 'lodash/cloneDeep'

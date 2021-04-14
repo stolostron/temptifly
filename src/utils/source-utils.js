@@ -5,7 +5,6 @@ import YamlParser from './YamlParser'
 import { initializeControlData } from './initialize-control-data'
 import { initializeControlFunctions } from './initialize-control-functions'
 import { generateSourceFromStack } from './refresh-source-from-stack'
-import { generateSourceFromTemplate } from './refresh-source-from-templates'
 
 import cloneDeep from 'lodash/cloneDeep'
 import capitalize from 'lodash/capitalize'

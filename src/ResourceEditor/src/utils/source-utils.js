@@ -2,129 +2,28 @@
 
 import jsYaml from 'js-yaml'
 import YamlParser from './YamlParser'
-import { initializeControlData } from './initialize-control-data'
-import { initializeControlFunctions } from './initialize-control-functions'
 import { generateSourceFromStack } from './refresh-source-from-stack'
 import { generateSourceFromTemplate } from './refresh-source-from-templates'
-
 import cloneDeep from 'lodash/cloneDeep'
 import capitalize from 'lodash/capitalize'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
 
-export const ControlMode = Object.freeze({
-  TABLE_ONLY: 'TABLE_ONLY',
-  PROMPT_ONLY: 'PROMPT_ONLY'
-})
-
-export const initializeControls = (
-  initialControlData,
-  editor,
-  i18n,
-  uniqueGroupID,
-  inGroup
-) => {
-  const controlData = initializeControlData(
-    initialControlData,
-    i18n,
-    uniqueGroupID,
-    inGroup
-  )
-  initializeControlFunctions(controlData, editor)
-  return controlData
-}
-
-// from an edit resource, discover # of groups, card selections
-export function discoverControls(controlData, templateObject, editor, i18n) {
-  templateObject = cloneDeep(templateObject)
-  const discoverControl = control => {
-    const { discover } = control
-    if (discover) {
-      discover(control, controlData, templateObject, editor, i18n)
-    }
-  }
-  controlData.forEach(control => {
-    discoverControl(control, i18n)
-  })
-}
-
-//reverse control active valuess from template
-export function reverseTemplate(controlData, templateObject) {
-  templateObject = cloneDeep(templateObject)
-  const reverseControl = control => {
-    const { type, active = [], reverse, shift } = control
-    if (type === 'group') {
-      active.forEach(group => {
-        group.forEach(gcontrol => {
-          reverseControl(gcontrol)
-        })
-        if (typeof shift === 'function') {
-          shift(templateObject)
-        }
-      })
-    } else if (typeof reverse === 'function') {
-      reverse(control, templateObject)
-    }
-  }
-  controlData.forEach(control => {
-    reverseControl(control)
-  })
-}
-
-// reverse control active valuess from template
-export function setEditingMode(controlData) {
-  const setEditMode = control => {
-    const { type, active, hidden:isHidden, editing } = control
-    if (type === 'group') {
-      active.forEach(group => {
-        group.forEach(gcontrol => {
-          setEditMode(gcontrol)
-        })
-      })
-    } else if (editing) {
-      const { hidden, disabled, collapsed, editMode } = editing
-      // if editing existing app, hide this field initially
-      if (hidden) {
-        if (isHidden) {
-          control.hidden = true
-        } else {
-          control.type = 'hidden'
-        }
-      }
-      // if editing existing app, disable this field
-      if (disabled) {
-        control.disabled = true
-      }
-      // if editing existing app, disable this field
-      if (collapsed) {
-        control.collapsed = true
-      }
-      // if editing existing app, set editMode
-      if (editMode) {
-        control.editMode = true
-      }
-    }
-  }
-  controlData.forEach(control => {
-    setEditMode(control)
-  })
-}
-
 export const generateSource = (
   template,
+  templateInput,
   editStack,
-  controlData,
   otherYAMLTabs
 ) => {
   if (!isEmpty(editStack)) {
     return generateSourceFromStack(
       template,
+      templateInput,
       editStack,
-      controlData,
       otherYAMLTabs
     )
   } else {
-    return generateSourceFromTemplate(template, controlData, otherYAMLTabs)
+    return generateSourceFromTemplate(template, templateInput, otherYAMLTabs)
   }
 }
 

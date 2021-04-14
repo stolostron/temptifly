@@ -8,7 +8,6 @@ import {
   reverseTemplate,
   getResourceID
 } from './source-utils'
-import { generateSourceFromTemplate } from './refresh-source-from-templates'
 import YamlParser from './YamlParser'
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
