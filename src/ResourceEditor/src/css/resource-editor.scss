@@ -87,44 +87,6 @@
   }
 }
 
-.edit-button {
-  cursor: pointer;
-  margin-left: 30px;
-  font-size: 12px;
-
-  .icon {
-    margin: 0 6px;
-    width: 9px;
-    height: 9px;
-  }
-}
-
-.editor-collapse-button {
-  font-size: 12px;
-  cursor: pointer;
-  color: #3d70b2;
-  display: flex;
-  align-items: center;
-
-  > svg {
-    margin-left: 8px;
-    width: 13px;
-    height: 13px;
-    stroke: #3d70b2;
-  }
-}
-
-.edit-template-switch {
-  display: flex;
-  margin-left: 16px;
-  align-items: center;
-
-  .switch-label {
-    margin-left: 8px;
-    font-size: 12px;
-  }
-}
-
 .monaco-editor .monaco-editor-hover {
   color: #cccccc;
   padding: 6px 10px;

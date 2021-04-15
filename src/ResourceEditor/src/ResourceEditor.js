@@ -22,7 +22,7 @@ import {
 import EditorHeader from './components/EditorHeader'
 import EditorBar from './components/EditorBar'
 import YamlEditor from './components/YamlEditor'
-import './css/template-editor.scss'
+import './css/resource-editor.scss'
 import cloneDeep from 'lodash/cloneDeep'
 import get from 'lodash/get'
 import debounce from 'lodash/debounce'
@@ -30,9 +30,9 @@ import keyBy from 'lodash/keyBy'
 import merge from 'lodash/merge'
 import isEqual from 'lodash/isEqual'
 
-const TEMPLATE_EDITOR_OPEN_COOKIE = 'template-editor-open-cookie'
-const TEMPLATE_EDITOR_SHOW_SECRETS_COOKIE =
-  'template-editor-show-secrets-cookie'
+const RESOURCE_EDITOR_OPEN_COOKIE = 'resource-editor-open-cookie'
+const RESOURCE_EDITOR_SHOW_SECRETS_COOKIE =
+  'resource-editor-show-secrets-cookie'
 
 export default class ResourceEditor extends React.Component {
 
@@ -121,8 +121,8 @@ export default class ResourceEditor extends React.Component {
     this.state = {
       isDirty: false,
       isCustomName: false,
-      showEditor: !!localStorage.getItem(TEMPLATE_EDITOR_OPEN_COOKIE),
-      showSecrets: !!localStorage.getItem(TEMPLATE_EDITOR_SHOW_SECRETS_COOKIE),
+      showEditor: !!localStorage.getItem(RESOURCE_EDITOR_OPEN_COOKIE),
+      showSecrets: !!localStorage.getItem(RESOURCE_EDITOR_SHOW_SECRETS_COOKIE),
       template: props.template,
       i18n: props.i18n || ((msg) => msg),
       activeYAMLEditor: 0,
@@ -157,10 +157,10 @@ export default class ResourceEditor extends React.Component {
     this.handleSearchChange = this.handleSearchChange.bind(this)
     this.gotoEditorLine = this.gotoEditorLine.bind(this)
     if (props.initialOpen) {
-      localStorage.setItem(TEMPLATE_EDITOR_OPEN_COOKIE, 'true')
+      localStorage.setItem(RESOURCE_EDITOR_OPEN_COOKIE, 'true')
     }
     const { type = 'main' } = this.props
-    this.splitterSizeCookie = `TEMPLATE-EDITOR-SPLITTER-SIZE-${type.toUpperCase()}`
+    this.splitterSizeCookie = `RESOURCE-EDITOR-SPLITTER-SIZE-${type.toUpperCase()}`
     if (!this.state.hasPauseCreate) {
       this.beforeUnloadFunc = (event => {
         if (this.isDirty) {
@@ -435,16 +435,16 @@ export default class ResourceEditor extends React.Component {
   }
 
   closeEdit() {
-    localStorage.removeItem(TEMPLATE_EDITOR_OPEN_COOKIE)
+    localStorage.removeItem(RESOURCE_EDITOR_OPEN_COOKIE)
     this.setState({ showEditor: false })
   }
 
   handleShowSecrets() {
     const { showSecrets, controlData } = this.state
     if (showSecrets) {
-      localStorage.removeItem(TEMPLATE_EDITOR_SHOW_SECRETS_COOKIE)
+      localStorage.removeItem(RESOURCE_EDITOR_SHOW_SECRETS_COOKIE)
     } else {
-      localStorage.setItem(TEMPLATE_EDITOR_SHOW_SECRETS_COOKIE, 'true')
+      localStorage.setItem(RESOURCE_EDITOR_SHOW_SECRETS_COOKIE, 'true')
     }
     const showControl = controlData.find(
       ({ id: idCtrl }) => idCtrl === 'showSecrets'
@@ -683,19 +683,6 @@ export default class ResourceEditor extends React.Component {
         }
       })
     }
-  };
-
-  scrollControlPaneToTop = () => {
-    setTimeout(() => {
-      if (this.containerRef) {
-        const notifications = this.containerRef.getElementsByClassName(
-          'pf-c-alert'
-        )
-        if (notifications && notifications.length && notifications[0].scrollIntoView) {
-          notifications[0].scrollIntoView({ behavior: 'smooth', block: 'end' })
-        }
-      }
-    }, 0)
   };
 
   handleCreateResource() {
