@@ -11,7 +11,7 @@ import {
   RedoIcon,
   NextIcon,
   PreviousIcon,
-} from '../icons/Icons'
+} from './Icons'
 
 
 class EditorButton extends React.Component {

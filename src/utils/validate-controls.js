@@ -1,6 +1,6 @@
 'use strict'
 
-import { ControlMode, parseYAML, reverseTemplate } from './source-utils'
+import { ControlMode, reverseTemplate } from './control-utils'
 import get from 'lodash/get'
 import keyBy from 'lodash/keyBy'
 

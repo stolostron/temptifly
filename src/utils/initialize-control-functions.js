@@ -1,6 +1,6 @@
 'use strict'
 
-import { parseYAML, getSourcePath, removeVs } from './source-utils'
+import { parseYAML, getSourcePath, removeVs } from '../ResourceEditor/src/utils/source-utils'
 import get from 'lodash/get'
 
 ///////////////////////////////////////////////////////////////////////////////

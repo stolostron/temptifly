@@ -3,11 +3,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import Tooltip from '../components/Tooltip'
+import Tooltip from './Tooltip'
 import isEmpty from 'lodash/isEmpty'
 import {
   CheckmarkIcon,
-} from '../icons/Icons'
+} from './Icons'
 
 class ControlPanelCards extends React.Component {
   static propTypes = {

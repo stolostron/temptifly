@@ -12,11 +12,8 @@ import {
 import {
   initializeControls,
   cacheUserData
-} from './utils/source-utils'
+} from './utils/control-utils'
 import { createTemplateInput } from './utils/create-template-input'
-import {
-  logCreateErrors,
-} from './utils/logger'
 import ResourceEditor from './ResourceEditor/src'
 import { validateControls } from './utils/validate-controls'
 import ControlPanel from './controls/ControlPanel'
@@ -104,7 +101,6 @@ export default class TemplateEditor extends React.Component {
         break
 
       case 'ERROR':
-        logCreateErrors(this.props.logging, creationMsg, resourceJSON)
         notifications = creationMsg.map(message => {
           return {
             id: 'create',

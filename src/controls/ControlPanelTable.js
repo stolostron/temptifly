@@ -30,7 +30,7 @@ import {
   TableHeader,
   TableVariant
 } from '@patternfly/react-table'
-import { ControlMode } from '../utils/source-utils'
+import { ControlMode } from '../utils/control-utils'
 import { NoResourceIcon } from '../icons/NoResource'
 import keyBy from 'lodash/keyBy'
 import get from 'lodash/get'
