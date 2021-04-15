@@ -2,29 +2,7 @@
 
 import { parseYAML } from './source-utils'
 import { Base64 } from 'js-base64'
-import {
-  caseFn,
-  defaultFn,
-  if_eqFn,
-  if_existsFn,
-  if_gtFn,
-  if_neFn,
-  if_orFn,
-  switchFn
-} from '../helpers'
-
-const helpers = {
-  helpers: {
-    case: caseFn,
-    default: defaultFn,
-    if_eq: if_eqFn,
-    if_exists: if_existsFn,
-    if_gt: if_gtFn,
-    if_ne: if_neFn,
-    if_or: if_orFn,
-    switch: switchFn
-  }
-}
+import { helpers } from '../helpers'
 
 export const generateSourceFromTemplate = (
   template,
@@ -79,8 +57,7 @@ export const generateSourceFromTemplate = (
   const parsed = parseYAML(yaml)
   let templateObject = parsed.parsed
   if (yaml) {
-    templateData.showSecrets = true
-    let yamlWithSecrets = template(templateData, helpers) || ''
+    let yamlWithSecrets = template({...templateData, ...{showSecrets:true}}, helpers) || ''
     yamlWithSecrets = replaceSnippetMap(yamlWithSecrets, snippetMap)
     templateObject = parseYAML(yamlWithSecrets).parsed
   }

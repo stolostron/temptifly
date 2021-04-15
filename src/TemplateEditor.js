@@ -2,8 +2,6 @@
 
 import React  from 'react'
 import ReactDOM from 'react-dom'
-import { Prompt } from 'react-router-dom'
-import classNames from 'classnames'
 import EventEmitter from 'events'
 import PropTypes from 'prop-types'
 import {
@@ -13,27 +11,18 @@ import {
 } from '@patternfly/react-core'
 import {
   initializeControls,
-  generateSource,
-  getUniqueName,
   cacheUserData
 } from './utils/source-utils'
 import { createTemplateInput } from './utils/create-template-input'
 import {
   logCreateErrors,
-  logSourceErrors,
 } from './utils/logger'
 import ResourceEditor from './ResourceEditor/src'
 import { validateControls } from './utils/validate-controls'
-import { updateEditStack } from './utils/refresh-source-from-stack'
-import {
-  highlightChanges,
-  highlightAllChanges
-} from './utils/refresh-source-highlighting'
 import ControlPanel from './controls/ControlPanel'
 import './scss/template-editor.scss'
 import cloneDeep from 'lodash/cloneDeep'
 import get from 'lodash/get'
-import debounce from 'lodash/debounce'
 import keyBy from 'lodash/keyBy'
 const TEMPLATE_EDITOR_OPEN_COOKIE = 'template-editor-open-cookie'
 
@@ -211,12 +200,9 @@ export default class TemplateEditor extends React.Component {
     }
   }
 
-  setContainerRef = container => {
-    this.containerRef = container
-  };
 
   render() {
-    const { isLoaded, isFailed, showEditor, hasPauseCreate, i18n } = this.state
+    const { isLoaded, isFailed, i18n } = this.state
 
     if (isLoaded && isFailed) {
       return (
@@ -226,19 +212,9 @@ export default class TemplateEditor extends React.Component {
         />
       )
     }
-    const viewClasses = classNames({
-      'temptifly': true,
-      showEditor
-    })
+
     return (
-      <div
-        className={viewClasses}
-        ref={this.setContainerRef}
-      >
-        {!hasPauseCreate && <Prompt
-          when={this.isDirty}
-          message={i18n('changes.maybe.lost')}
-        />}
+      <div>
         {this.renderResourceEditor(isLoaded)}
         {this.renderEditButton(isLoaded)}
         {this.renderCreateButton(isLoaded)}
@@ -307,80 +283,27 @@ export default class TemplateEditor extends React.Component {
     })
     this.setState({
       exceptions: [],
-      notifications
+      notifications,
+      isDirty
     })
   }
 
-  handleControlChange(control, controlData, creationView, isCustomName) {
-    const {
-      template,
-      templateYAML,
-      otherYAMLTabs,
-      firstTemplateYAML,
-      editStack,
-      isFinalValidate,
-      i18n
-    } = this.state
-
-    // // if custom editing on a tab, clear it now that user is using controls
-    // otherYAMLTabs.forEach(tab => {
-    //   delete tab.control.customYAML
-    // })
-
+  handleControlChange(control, controlData, creationView) {
     // custom action when control is selected
     const { onSelect } = control
     if (typeof onSelect === 'function') {
       onSelect()
     }
 
-    // const {
-    //   templateYAML: newYAML,
-    //   templateObject,
-    //   templateResources
-    // } = generateSource(template, editStack, controlData, otherYAMLTabs)
-    // validateControls(
-    //   this.editors,
-    //   newYAML,
-    //   otherYAMLTabs,
-    //   controlData,
-    //   isFinalValidate,
-    //   i18n
-    // )
-    // highlightAllChanges(
-    //   this.editors,
-    //   templateYAML,
-    //   newYAML,
-    //   otherYAMLTabs,
-    //   this.selectedTab
-    // )
-    // const notifications = controlData.filter(c => {
-    //   return !!c.exception && isFinalValidate
-    // })
-    this.setState({
-      controlData,
-//      isCustomName,
-//      templateYAML: newYAML,
-      // templateObject,
-      // templateResources,
-      // exceptions: [],
-      // notifications
-    })
-//    this.isDirty = firstTemplateYAML !== newYAML
+    // will create a new templateInput to pass to ResourceEditor to create new yaml
+    this.setState({controlData})
+
+    // collapse/scroll form
     this.handleScrollAndCollapse(control, controlData, creationView)
   }
 
   handleGroupChange(control, controlData, creationView, inx) {
-    const {
-      showEditor,
-      editor,
-      template,
-      templateYAML,
-      otherYAMLTabs,
-      firstTemplateYAML,
-      editStack,
-      isFinalValidate,
-      i18n
-    } = this.state
+    const {showEditor, editor, i18n } = this.state
     const { active, controlData: cd } = control
     if (inx === undefined) {
       // add new group
@@ -410,45 +333,12 @@ export default class TemplateEditor extends React.Component {
     } else {
       active.splice(inx, 1)
     }
-    const {
-      templateYAML: newYAML,
-      templateObject,
-      templateResources
-    } = generateSource(template, editStack, controlData, otherYAMLTabs)
-    validateControls(
-      this.editors,
-      newYAML,
-      otherYAMLTabs,
-      controlData,
-      isFinalValidate,
-      i18n
-    )
-    highlightAllChanges(
-      this.editors,
-      templateYAML,
-      newYAML,
-      otherYAMLTabs,
-      this.selectedTab
-    )
-    this.setState({
-      controlData,
-      templateYAML: newYAML,
-      templateObject,
-      templateResources
-    })
-    this.isDirty = firstTemplateYAML !== newYAML
+    this.setState({controlData})
   }
 
   handleNewEditorMode(control, controlData, creationView) {
     let { notifications } = this.state
-    const {
-      controlData: newControlData,
-      template,
-      templateYAML,
-      templateObject,
-      templateResources,
-      otherYAMLTabs
-    } = this.changeEditorMode(control, controlData)
+    const { controlData: newControlData } = this.changeEditorMode(control, controlData)
     controlData = newControlData
 
     delete control.exception
@@ -460,13 +350,8 @@ export default class TemplateEditor extends React.Component {
 
     this.setState({
       controlData,
-      template: template,
-      templateYAML,
-      templateObject,
-      templateResources,
       notifications,
-      exceptions: [],
-      otherYAMLTabs
+      exceptions: []
     })
 
     this.handleScrollAndCollapse(control, controlData, creationView)
@@ -474,11 +359,7 @@ export default class TemplateEditor extends React.Component {
 
   // change editor mode based on what card is selected
   changeEditorMode(control, controlData) {
-    let { template } = this.props
-    const { editStack, otherYAMLTabs, editor, i18n } = this.state
-    let { templateYAML, templateObject, templateResources } = this.state
-    let newYAML = templateYAML
-    let newYAMLTabs = otherYAMLTabs
+    const { editor, i18n } = this.state
 
     // delete all controls below this card control
     const { availableMap, groupControlData } = control
@@ -494,7 +375,7 @@ export default class TemplateEditor extends React.Component {
     // add new controls and template
     const { change } = availableMap[control.active[0]] || {}
     if (change) {
-      const { replaceTemplate = template, insertControlData } = change
+      const { insertControlData } = change
 
       // insert control data into main control data
       if (insertControlData) {
@@ -514,34 +395,8 @@ export default class TemplateEditor extends React.Component {
         }
         controlData = initializeControls(controlData, editor, i18n)
       }
-
-      // replace template and regenerate templateYAML and highlight diffs
-      if (replaceTemplate) {
-        template = replaceTemplate
-        newYAMLTabs = newYAMLTabs || [];
-        ({
-          templateYAML: newYAML,
-          templateObject,
-          templateResources
-        } = generateSource(template, editStack, controlData, newYAMLTabs))
-        highlightAllChanges(
-          this.editors,
-          templateYAML,
-          newYAML,
-          otherYAMLTabs,
-          this.selectedTab
-        )
-        templateYAML = newYAML
-      }
     }
-    return {
-      controlData,
-      template,
-      templateYAML,
-      templateObject,
-      templateResources,
-      otherYAMLTabs
-    }
+    return {controlData}
   }
 
   handleScrollAndCollapse(control, controlData, creationView) {

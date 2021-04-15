@@ -68,7 +68,7 @@ class EditorHeader extends React.Component {
             className="tf--tabs__nav-item tf--tabs__nav-item--selected"
             onClick={(e)=>onClick(e, 0)}>
             <a className="tf--tabs__nav-link"
-              href="#" role="tab" tabIndex="0" aria-selected="true">
+              role="tab" tabIndex="0" aria-selected="true">
               {type}
             </a>
           </li>
@@ -77,7 +77,7 @@ class EditorHeader extends React.Component {
               <li id={id} key={id} role="presentation" tabIndex="-1" className="tf--tabs__nav-item"
                 onClick={(e)=>onClick(e, inx+1)}>
                 <a className="tf--tabs__nav-link"
-                  href="#" role="tab" tabIndex="0" aria-selected="false">
+                  role="tab" tabIndex="0" aria-selected="false">
                   {id}
                 </a>
               </li>

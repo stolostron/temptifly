@@ -3,6 +3,7 @@
 import { Base64 } from 'js-base64'
 import get from 'lodash/get'
 import capitalize from 'lodash/capitalize'
+import { helpers } from '../ResourceEditor/src/helpers'
 
 export const createTemplateInput = (controlData) => {
   const {templateData, replacements, controlMap} = generateTemplateData(controlData)

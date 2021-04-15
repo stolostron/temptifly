@@ -1,7 +1,6 @@
 'use strict'
 
 import React  from 'react'
-import loadable from '@loadable/component'
 import { Prompt } from 'react-router-dom'
 import SplitPane from 'react-split-pane'
 import classNames from 'classnames'
@@ -15,7 +14,6 @@ import {
   logCreateErrors,
   logSourceErrors,
 } from './utils/logger'
-/////////////////import { validateControls } from './src/utils/validate-controls'
 import { updateEditStack } from './utils/refresh-source-from-stack'
 import {
   highlightChanges,
@@ -23,14 +21,14 @@ import {
 } from './utils/refresh-source-highlighting'
 import EditorHeader from './components/EditorHeader'
 import EditorBar from './components/EditorBar'
+import YamlEditor from './components/YamlEditor'
 import './css/template-editor.scss'
 import cloneDeep from 'lodash/cloneDeep'
 import get from 'lodash/get'
 import debounce from 'lodash/debounce'
 import keyBy from 'lodash/keyBy'
 import merge from 'lodash/merge'
-
-export const YamlEditor = loadable(() => import(/* webpackChunkName: "YamlEditor" */ './components/YamlEditor'))
+import isEqual from 'lodash/isEqual'
 
 const TEMPLATE_EDITOR_OPEN_COOKIE = 'template-editor-open-cookie'
 const TEMPLATE_EDITOR_SHOW_SECRETS_COOKIE =
@@ -56,7 +54,8 @@ export default class ResourceEditor extends React.Component {
     const { isLoaded, template, templateInput, editResources, editorEvents } = props
     const { editor, editors, otherYAMLTabs, selectedTab } = state
     let { editStack, isEditing, templateYAML, firstTemplateYAML, isDirty } = state
-    if (isLoaded) {
+
+    if (isLoaded && !isEqual(get(templateInput, 'templateData'), get(state.templateInput, 'templateData'))) {
 
       // if editing an existing set of resources start an editStack
       if (editResources && !editStack) {
@@ -96,11 +95,13 @@ export default class ResourceEditor extends React.Component {
         }
 
       // send event to controls if yaml changed
-        editorEvents.emit('change', {editors, templateYAML:newYAML, templateObject, templateResources, syntaxErrors, isDirty, otherYAMLTabs})
+        templateYAML = newYAML
+        //editorEvents.emit('change', {editors, templateYAML, templateObject, templateResources, syntaxErrors, isDirty, otherYAMLTabs})
       }
 
       return {
-        templateYAML:newYAML,
+        templateInput,
+        templateYAML,
         firstTemplateYAML,
         templateObject,
         templateResources,
@@ -225,33 +226,13 @@ export default class ResourceEditor extends React.Component {
     this.layoutEditors()
   };
 
-  // render() {
-  //   const { isLoaded, showEditor, resetInx, hasPauseCreate, i18n } = this.state
-  //   if (!showEditor) {
-  //     this.editors = []
-  //   }
-
-  //   const viewClasses = classNames({
-  //     'temptifly': true,
-  //     showEditor
-  //   })
-  //   return (
-  //     <div
-  //       key={`key${resetInx}`}
-  //       className={viewClasses}
-  //       ref={this.setContainerRef}
-  //     >
-  //       {!hasPauseCreate && <Prompt
-  //         when={this.isDirty}
-  //         message={i18n('changes.maybe.lost')}
-  //       />}
-  //       {this.renderSplitEditor(isLoaded)}
-  //     </div>
-  //   )
-  // }
-
   render() {
     const { showEditor, renderForm } = this.props
+    const { hasPauseCreate, resetInx, isDirty } = this.state
+    const viewClasses = classNames({
+      'temptifly': true,
+      showEditor
+    })
     const editorClasses = classNames({
       'creation-view-split-container': true,
       showEditor
@@ -262,22 +243,28 @@ export default class ResourceEditor extends React.Component {
       maxSize = page.getBoundingClientRect().width * 8 / 10
     }
     return (
-      <div className={editorClasses}>
-        {showEditor ? (
-          <SplitPane
-            split="vertical"
-            minSize={50}
-            maxSize={maxSize}
-            ref={this.setSplitPaneRef}
-            defaultSize={this.handleSplitterDefault()}
-            onChange={this.handleSplitterChange}
-          >
-            {renderForm()}
-            {this.renderEditor()}
-          </SplitPane>
-        ) : (
-          renderForm()
-        )}
+      <div key={`key${resetInx}`} className={viewClasses} ref={this.setContainerRef} >
+        {!hasPauseCreate && <Prompt
+          when={isDirty}
+          message={'changes.maybe.lost'}
+        />}
+        <div className={editorClasses}>
+          {showEditor ? (
+            <SplitPane
+              split="vertical"
+              minSize={50}
+              maxSize={maxSize}
+              ref={this.setSplitPaneRef}
+              defaultSize={this.handleSplitterDefault()}
+              onChange={this.handleSplitterChange}
+            >
+              {renderForm()}
+              {this.renderEditor()}
+            </SplitPane>
+          ) : (
+            renderForm()
+          )}
+        </div>
       </div>
     )
   }
