@@ -66,7 +66,8 @@ export const generateSourceFromTemplate = (
     templateYAML: yaml,
     templateObject,
     templateResources: parsed.resources,
-    syntaxErrors: parsed.exceptions
+    syntaxErrors: parsed.exceptions,
+    otherYAMLTabs
   }
 
 }

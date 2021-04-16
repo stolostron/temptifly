@@ -7,14 +7,11 @@ import { generateSourceFromTemplate } from './refresh-source-from-templates'
 import cloneDeep from 'lodash/cloneDeep'
 import capitalize from 'lodash/capitalize'
 import isEmpty from 'lodash/isEmpty'
+import isEqual from 'lodash/isEqual'
 import get from 'lodash/get'
+import memoize from "memoize-one"
 
-export const generateSource = (
-  template,
-  templateInput,
-  editStack,
-  otherYAMLTabs
-) => {
+export const generateSource = memoize((template, templateInput, editStack, otherYAMLTabs) => {
   if (!isEmpty(editStack)) {
     return generateSourceFromStack(
       template,
@@ -25,7 +22,9 @@ export const generateSource = (
   } else {
     return generateSourceFromTemplate(template, templateInput, otherYAMLTabs)
   }
-}
+}, (newArgs, lastArgs)=>{
+  return isEqual(newArgs[1], lastArgs[1])
+})
 
 export const parseYAML = yaml => {
   let absLine = 0

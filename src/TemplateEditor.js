@@ -128,21 +128,13 @@ export default class TemplateEditor extends React.Component {
       // initialize control data
       const cd = cloneDeep(initialControlData)
       controlData = initializeControls(cd, editor, i18n)
-      newState = { ...newState, controlData }
+      newState = { ...newState, controlData, templateInput: createTemplateInput(controlData) }
 
       const showControl = controlData.find(
         ({ id: idCtrl }) => idCtrl === 'showSecrets'
       )
       if (showControl) {
         showControl.active = showSecrets
-      }
-    }
-
-    // create new template input which is property of ResourceEditor which creates the source
-    if (isLoaded) {
-      newState = {
-        ...newState,
-        templateInput: createTemplateInput(controlData)
       }
     }
 
@@ -292,7 +284,7 @@ export default class TemplateEditor extends React.Component {
     }
 
     // will create a new templateInput to pass to ResourceEditor to create new yaml
-    this.setState({controlData})
+    this.setState({controlData, templateInput: createTemplateInput(controlData)})
 
     // collapse/scroll form
     this.handleScrollAndCollapse(control, controlData, creationView)
@@ -329,7 +321,7 @@ export default class TemplateEditor extends React.Component {
     } else {
       active.splice(inx, 1)
     }
-    this.setState({controlData})
+    this.setState({controlData, templateInput: createTemplateInput(controlData)})
   }
 
   handleNewEditorMode(control, controlData, creationView) {
@@ -346,6 +338,7 @@ export default class TemplateEditor extends React.Component {
 
     this.setState({
       controlData,
+      templateInput: createTemplateInput(controlData),
       notifications,
       exceptions: []
     })

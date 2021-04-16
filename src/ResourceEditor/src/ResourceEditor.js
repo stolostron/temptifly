@@ -7,11 +7,9 @@ import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import {
   generateSource,
-  getUniqueName,
   cacheUserData
 } from './utils/source-utils'
 import {
-  logCreateErrors,
   logSourceErrors,
 } from './utils/logger'
 import { updateEditStack } from './utils/refresh-source-from-stack'
@@ -50,74 +48,8 @@ export default class ResourceEditor extends React.Component {
     type: PropTypes.string,
   };
 
-  static getDerivedStateFromProps(props, state) {
-    const { isLoaded, template, templateInput, editResources, editorEvents } = props
-    const { editor, editors, otherYAMLTabs, selectedTab } = state
-    let { editStack, isEditing, templateYAML, firstTemplateYAML, isDirty } = state
-
-    if (isLoaded && !isEqual(get(templateInput, 'templateData'), get(state.templateInput, 'templateData'))) {
-
-      // if editing an existing set of resources start an editStack
-      if (editResources && !editStack) {
-        editStack = { editResources, editor, i18n }
-        isEditing = true
-      }
-
-      // if custom editing on a tab, clear it now that user is using controls
-      otherYAMLTabs.forEach(tab => {
-        delete tab.control.customYAML
-      })
-
-      // generate source from template or stack of resources
-      const { templateYAML:newYAML, templateObject, templateResources, syntaxErrors } = generateSource(
-        template,
-        templateInput,
-        editStack,
-        otherYAMLTabs
-      )
-
-      // keep track of dirty state
-      if (!firstTemplateYAML) {
-          firstTemplateYAML = newYAML
-      }
-      isDirty = firstTemplateYAML !== newYAML
-
-      if (templateYAML !== newYAML) {
-        if (templateYAML) {
-          // highlight changes in editor
-          highlightAllChanges(
-            editors,
-            templateYAML,
-            newYAML,
-            otherYAMLTabs,
-            selectedTab
-          )
-        }
-
-      // send event to controls if yaml changed
-        templateYAML = newYAML
-        //editorEvents.emit('change', {editors, templateYAML, templateObject, templateResources, syntaxErrors, isDirty, otherYAMLTabs})
-      }
-
-      return {
-        templateInput,
-        templateYAML,
-        firstTemplateYAML,
-        templateObject,
-        templateResources,
-        syntaxErrors,
-        editStack,
-        isEditing,
-        isDirty
-      }
-    }
-    return {}
-  }
-
   constructor(props) {
     super(props)
-    this.editors = []
-    this.selectedTab = 0
     this.state = {
       isDirty: false,
       isCustomName: false,
@@ -137,8 +69,8 @@ export default class ResourceEditor extends React.Component {
       hasRedo: false,
       resetInx: 0,
       hasPauseCreate: !!get(props, 'createControl.pauseCreate'),
-      selectedTab: this.selectedTab,
-      editors: this.editors,
+      selectedTab: 0,
+      editors: [],
       editor: {
         forceUpdate: (() => {
           this.forceUpdate()
@@ -149,7 +81,12 @@ export default class ResourceEditor extends React.Component {
       }
     }
 
-    this.firstGoToLinePerformed = false
+    // if editing an existing set of resources start an editStack
+    if (props.editResources) {
+      this.state.editStack = { editResources:props.editResources, editor:this.state.editor, i18n:this.state.i18n }
+      this.state.isEditing = true
+    }
+
     this.parseDebounced = debounce(yaml => {
       this.handleParse(yaml)
     }, 500)
@@ -161,15 +98,6 @@ export default class ResourceEditor extends React.Component {
     }
     const { type = 'main' } = this.props
     this.splitterSizeCookie = `RESOURCE-EDITOR-SPLITTER-SIZE-${type.toUpperCase()}`
-    if (!this.state.hasPauseCreate) {
-      this.beforeUnloadFunc = (event => {
-        if (this.isDirty) {
-          event.preventDefault()
-          event.returnValue = this.isDirty
-        }
-      }).bind(this)
-      window.addEventListener('beforeunload', this.beforeUnloadFunc)
-    }
   }
 
   componentDidMount() {
@@ -190,6 +118,16 @@ export default class ResourceEditor extends React.Component {
       }
       this.layoutEditors()
     }).bind(this))
+
+    if (!this.state.hasPauseCreate) {
+      this.beforeUnloadFunc = (event => {
+        if (this.state.isDirty) {
+          event.preventDefault()
+          event.returnValue = this.state.isDirty
+        }
+      }).bind(this)
+      window.addEventListener('beforeunload', this.beforeUnloadFunc)
+    }
   }
 
   componentWillUnmount() {
@@ -199,6 +137,52 @@ export default class ResourceEditor extends React.Component {
       createControl.pauseCreate(controlData)
     }
     window.removeEventListener('beforeunload', this.beforeUnloadFunc)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!isEqual(this.props.templateInput, this.state.templateInput)) {
+        const { template, templateInput, showEditor, editorEvents } = this.props
+        let { firstTemplateYAML, editors, isDirty } = this.state
+        const { templateYAML, templateObject, templateResources, syntaxErrors, otherYAMLTabs } =
+          generateSource(template, templateInput, this.state.editStack, this.state.otherYAMLTabs)
+
+        if (!showEditor) {
+          editors=[]
+        }
+
+        // keep track of dirty state
+        if (!firstTemplateYAML) {
+          firstTemplateYAML = templateYAML
+        }
+        isDirty = firstTemplateYAML !== templateYAML
+
+        if (this.state.templateYAML) {
+          // highlight changes in editor
+          highlightAllChanges(
+            editors,
+            this.state.templateYAML,
+            templateYAML,
+            otherYAMLTabs,
+            this.state.selectedTab
+          )
+        }
+  
+        // send event to controls if yaml changed
+          //editorEvents.emit('change', {editors, templateYAML, templateObject, templateResources, syntaxErrors, isDirty, otherYAMLTabs})
+  
+      
+        this.setState({
+          templateInput: this.props.templateInput,
+          templateYAML,
+          firstTemplateYAML,
+          templateObject,
+          templateResources,
+          syntaxErrors,
+          otherYAMLTabs,
+          editors,
+          isDirty
+        })
+    }
   }
 
   setSplitPaneRef = splitPane => (this.splitPane = splitPane);
@@ -230,7 +214,7 @@ export default class ResourceEditor extends React.Component {
     const { showEditor, renderForm } = this.props
     const { hasPauseCreate, resetInx, isDirty } = this.state
     const viewClasses = classNames({
-      'temptifly': true,
+      'resource-editor': true,
       showEditor
     })
     const editorClasses = classNames({
@@ -270,15 +254,17 @@ export default class ResourceEditor extends React.Component {
   }
 
   renderEditor() {
-    const { type = 'main', title='YAML' } = this.props
+    const { template, templateInput, type = 'main', title='YAML' } = this.props
     const {
       hasUndo,
       hasRedo,
       exceptions,
-      otherYAMLTabs,
       showSecrets,
       i18n
     } = this.state
+    const { templateYAML, otherYAMLTabs } =
+      generateSource(template, templateInput, this.state.editStack, this.state.otherYAMLTabs)
+
     return (
       <div className="creation-view-yaml">
         <EditorHeader
@@ -301,14 +287,14 @@ export default class ResourceEditor extends React.Component {
             i18n={this.props.i18n}
           />
         </EditorHeader>
-        {this.renderEditors()}
+        {this.renderEditors(templateYAML, otherYAMLTabs)}
       </div>
     )
   }
 
-  renderEditors = () => {
+  renderEditors = (templateYAML, otherYAMLTabs) => {
     const { monacoEditor } = this.props
-    const { activeYAMLEditor, otherYAMLTabs, templateYAML } = this.state
+    const { activeYAMLEditor } = this.state
     return (
       <React.Fragment>
         <YamlEditor
@@ -343,16 +329,15 @@ export default class ResourceEditor extends React.Component {
   };
 
   handleTabChange = tabInx => {
-    this.selectedTab = tabInx
     this.setState({ activeYAMLEditor: tabInx })
     this.layoutEditors()
   };
 
   addEditor = editor => {
-    const { otherYAMLTabs } = this.state
-    this.editors.push(editor)
-    if (this.editors.length > 1) {
-      otherYAMLTabs[this.editors.length - 2].editor = editor
+    const { editors, otherYAMLTabs } = this.state
+    editors.push(editor)
+    if (editors.length > 1) {
+      otherYAMLTabs[editors.length - 2].editor = editor
     }
     this.layoutEditors()
 
@@ -365,29 +350,30 @@ export default class ResourceEditor extends React.Component {
   };
 
   layoutEditors() {
-    if (this.containerRef && this.editors.length > 0) {
+    const { editors } = this.state
+    if (this.containerRef && editors.length > 0) {
       const { otherYAMLTabs } = this.state
       const hasTabs = otherYAMLTabs.length > 0
       const controlsSize = this.handleSplitterDefault()
       const rect = this.containerRef.getBoundingClientRect()
       const width = rect.width - controlsSize - 16
       const height = rect.height - (hasTabs ? 80 : 40)
-      this.editors.forEach(editor => {
+      editors.forEach(editor => {
         editor.layout({ width, height })
       })
     }
   }
 
   gotoEditorLine(line) {
-    const { activeYAMLEditor } = this.state
-    const editor = this.editors[activeYAMLEditor]
+    const { editors, activeYAMLEditor } = this.state
+    const editor = editors[activeYAMLEditor]
     editor.revealLineInCenter(line)
   }
 
   // text editor commands
   handleEditorCommand(command) {
-    const { activeYAMLEditor } = this.state
-    const editor = this.editors[activeYAMLEditor]
+    const { editors, activeYAMLEditor } = this.state
+    const editor = editors[activeYAMLEditor]
     switch (command) {
     case 'next':
     case 'previous':
@@ -457,8 +443,8 @@ export default class ResourceEditor extends React.Component {
   }
 
   handleSearchChange(searchName) {
-    const { activeYAMLEditor } = this.state
-    const editor = this.editors[activeYAMLEditor]
+    const { editors, activeYAMLEditor } = this.state
+    const editor = editors[activeYAMLEditor]
     if (searchName.length > 1 || this.nameSearchMode) {
       if (searchName) {
         const found = editor.getModel().findMatches(searchName)
@@ -513,6 +499,7 @@ export default class ResourceEditor extends React.Component {
       controlData,
       templateResources,
       firstTemplateYAML,
+      editors,
       isFinalValidate,
       i18n
     } = this.state
@@ -534,7 +521,7 @@ export default class ResourceEditor extends React.Component {
 ///      templateExceptionMap,
 //      hasSyntaxExceptions
 //    } = validateControls(
-//      this.editors,
+//      editors,
 //      templateYAML,
 //      otherYAMLTabs,
 //      controlData,
@@ -564,7 +551,7 @@ export default class ResourceEditor extends React.Component {
       }
     }
 
-    this.isDirty = firstTemplateYAML !== yaml
+    //////////////////////this.isDirty = firstTemplateYAML !== yaml
 
     // update edit stack so that when the user changes something in the form
     // it doesn't wipe out what they just typed
@@ -579,7 +566,7 @@ export default class ResourceEditor extends React.Component {
         templateObject,
         templateResources: tr
       } = generateSource(template, editStack, controlData, otherYAMLTabs)
-      highlightChanges(this.editors[0], oldYAML, newYAML)
+      highlightChanges(editors[0], oldYAML, newYAML)
       this.setState({
         controlData,
         notifications,
@@ -642,7 +629,7 @@ export default class ResourceEditor extends React.Component {
       hasFormExceptions: !canCreate,
       isFinalValidate: true
     })
-    this.isDirty = false
+    ////////////////////////////////////////this.isDirty = false
     this.scrollControlPaneToTop()
 
     if (canCreate) {
@@ -726,11 +713,9 @@ export default class ResourceEditor extends React.Component {
       templateObject,
       templateResources,
       editStack,
-      resetInx: resetInx + 1
+      resetInx: resetInx + 1,
+      isDirty: false,
+      editors: []
     })
-    this.isDirty = false
-    this.selectedTab = 0
-    this.firstGoToLinePerformed = false
-    this.editors = []
   }
 }
