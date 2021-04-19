@@ -4,7 +4,6 @@ import jsYaml from 'js-yaml'
 import YamlParser from './YamlParser'
 import { generateSourceFromStack } from './refresh-source-from-stack'
 import { generateSourceFromTemplate } from './refresh-source-from-templates'
-import cloneDeep from 'lodash/cloneDeep'
 import capitalize from 'lodash/capitalize'
 import isEmpty from 'lodash/isEmpty'
 import isEqual from 'lodash/isEqual'
@@ -75,22 +74,6 @@ export const getInsideObject = (ikey, parsed) => {
     })
   })
   return ret
-}
-
-//don't save user data until they create
-export const cacheUserData = controlData => {
-  controlData.forEach(control => {
-    if (
-      control.cacheUserValueKey &&
-      control.userData &&
-      control.userData.length > 0
-    ) {
-      const storageKey = `${control.cacheUserValueKey}--${
-        window.location.href
-      }`
-      sessionStorage.setItem(storageKey, JSON.stringify(control.userData))
-    }
-  })
 }
 
 export const getResourceID = resource => {

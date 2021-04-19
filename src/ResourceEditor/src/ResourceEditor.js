@@ -5,14 +5,10 @@ import { Prompt } from 'react-router-dom'
 import SplitPane from 'react-split-pane'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
-import {
-  generateSource,
-  cacheUserData
-} from './utils/source-utils'
-import {
-  logSourceErrors,
-} from './utils/logger'
+import { generateSource } from './utils/source-utils'
+import { logSourceErrors } from './utils/logger'
 import { updateEditStack } from './utils/refresh-source-from-stack'
+import { refreshSourceParsing } from './utils/refresh-source-parsing'
 import {
   highlightChanges,
   highlightAllChanges
@@ -27,6 +23,7 @@ import debounce from 'lodash/debounce'
 import keyBy from 'lodash/keyBy'
 import merge from 'lodash/merge'
 import isEqual from 'lodash/isEqual'
+
 
 const RESOURCE_EDITOR_OPEN_COOKIE = 'resource-editor-open-cookie'
 const RESOURCE_EDITOR_SHOW_SECRETS_COOKIE =
@@ -62,6 +59,7 @@ export default class ResourceEditor extends React.Component {
       previouslySelectedCards: [],
       notifications: [],
       otherYAMLTabs: [],
+      customYAMLTabs: [],
       /* eslint-disable-next-line react/no-unused-state */
       hasFormExceptions: false,
       isFinalValidate: false,
@@ -69,7 +67,6 @@ export default class ResourceEditor extends React.Component {
       hasRedo: false,
       resetInx: 0,
       hasPauseCreate: !!get(props, 'createControl.pauseCreate'),
-      selectedTab: 0,
       editors: [],
       editor: {
         forceUpdate: (() => {
@@ -137,52 +134,6 @@ export default class ResourceEditor extends React.Component {
       createControl.pauseCreate(controlData)
     }
     window.removeEventListener('beforeunload', this.beforeUnloadFunc)
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (!isEqual(this.props.templateInput, this.state.templateInput)) {
-        const { template, templateInput, showEditor, editorEvents } = this.props
-        let { firstTemplateYAML, editors, isDirty } = this.state
-        const { templateYAML, templateObject, templateResources, syntaxErrors, otherYAMLTabs } =
-          generateSource(template, templateInput, this.state.editStack, this.state.otherYAMLTabs)
-
-        if (!showEditor) {
-          editors=[]
-        }
-
-        // keep track of dirty state
-        if (!firstTemplateYAML) {
-          firstTemplateYAML = templateYAML
-        }
-        isDirty = firstTemplateYAML !== templateYAML
-
-        if (this.state.templateYAML) {
-          // highlight changes in editor
-          highlightAllChanges(
-            editors,
-            this.state.templateYAML,
-            templateYAML,
-            otherYAMLTabs,
-            this.state.selectedTab
-          )
-        }
-  
-        // send event to controls if yaml changed
-          //editorEvents.emit('change', {editors, templateYAML, templateObject, templateResources, syntaxErrors, isDirty, otherYAMLTabs})
-  
-      
-        this.setState({
-          templateInput: this.props.templateInput,
-          templateYAML,
-          firstTemplateYAML,
-          templateObject,
-          templateResources,
-          syntaxErrors,
-          otherYAMLTabs,
-          editors,
-          isDirty
-        })
-    }
   }
 
   setSplitPaneRef = splitPane => (this.splitPane = splitPane);
@@ -260,10 +211,13 @@ export default class ResourceEditor extends React.Component {
       hasRedo,
       exceptions,
       showSecrets,
+      customYAMLTabs,
+      editStack,
+      otherYAMLTabs,
       i18n
     } = this.state
-    const { templateYAML, otherYAMLTabs } =
-      generateSource(template, templateInput, this.state.editStack, this.state.otherYAMLTabs)
+    const { templateYAML } =
+      generateSource(template, {...templateInput, customYAMLTabs}, editStack, otherYAMLTabs)
 
     return (
       <div className="creation-view-yaml">
@@ -329,7 +283,7 @@ export default class ResourceEditor extends React.Component {
   };
 
   handleTabChange = tabInx => {
-    this.setState({ activeYAMLEditor: tabInx })
+    this.setState({ activeYAMLEditor: tabInx})
     this.layoutEditors()
   };
 
@@ -492,95 +446,111 @@ export default class ResourceEditor extends React.Component {
     this.parseDebounced(yaml)
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    const { showEditor } = this.props
+    let { editors } = this.state
+
+    // control changed or user typed in 2nd tab
+    if (!isEqual(this.props.templateInput, this.state.templateInput) ||
+        !isEqual(prevState.customYAMLTabs, this.state.customYAMLTabs)) {
+        const { template, templateInput, editorEvents } = this.props
+        let { firstTemplateYAML } = this.state
+        const {customYAMLTabs, editStack, otherYAMLTabs} = this.state
+  
+        const {templateYAML, secretsMap} =
+          generateSource(template, {...templateInput, customYAMLTabs}, editStack, otherYAMLTabs)
+
+        // keep track of dirty state
+        if (!firstTemplateYAML) {
+          firstTemplateYAML = templateYAML
+        }
+        let isDirty = firstTemplateYAML !== templateYAML
+
+        if (!showEditor && editors.length>0) {
+          editors = []
+        }
+
+        // highlight changes in editor
+        if (this.state.templateYAML) {
+          if (!isEqual(prevState.customYAMLTabs, this.state.customYAMLTabs)) {
+            highlightChanges(editors[0], this.state.templateYAML, templateYAML)
+          } else {
+            highlightAllChanges(
+              editors,
+              this.state.templateYAML,
+              templateYAML,
+              otherYAMLTabs,
+              this.state.activeYAMLEditor
+            )
+          }
+        }
+  
+        // parse/syntax check the yaml
+        const parsed = refreshSourceParsing(editors, templateYAML, otherYAMLTabs)
+
+        // send event to controls to fill and validate
+        editorEvents.emit('change', {editors, parsed, secretsMap, isDirty})
+      
+        this.setState({
+          templateInput: cloneDeep(templateInput),
+          templateYAML,
+          firstTemplateYAML,
+          otherYAMLTabs,
+          editors,
+          secretsMap,
+          isDirty
+        })
+    // user typed in the main tab
+    } else if (prevState.templateYAML !== this.state.templateYAML) {
+      const { editorEvents } = this.props
+      let { firstTemplateYAML } = this.state
+      const { templateYAML, otherYAMLTabs, secretsMap } = this.state
+      let isDirty = firstTemplateYAML !== templateYAML
+  
+      // parse/syntax check the yaml
+      const parsed = refreshSourceParsing(editors, templateYAML, otherYAMLTabs)
+
+      // send event to controls to fill and validate
+      editorEvents.emit('change', {editors, parsed, secretsMap, isDirty})
+      
+      this.setState({
+        isDirty
+      })
+    } else if (!showEditor && editors.length>0) {
+      this.setState({
+        editors: []
+      })  
+    }
+  }
+
   handleParse = yaml => {
     const {
-      otherYAMLTabs,
       activeYAMLEditor,
-      controlData,
       templateResources,
       firstTemplateYAML,
       editors,
       isFinalValidate,
-      i18n
     } = this.state
-    let { editStack, templateYAML, notifications } = this.state
+    let { editStack, templateYAML, customYAMLTabs } = this.state
+    const {template, templateInput, editorEvents} = this.props
 
     if (activeYAMLEditor === 0) {
       templateYAML = yaml
     } else {
-      const tab = otherYAMLTabs[activeYAMLEditor - 1]
-      // protect user edits from being clobbered by form updates
-      tab.control.customYAML = yaml
-      // update the yaml shown in this tab
-      tab.templateYAML = yaml
+      customYAMLTabs = cloneDeep(customYAMLTabs)
+      customYAMLTabs[activeYAMLEditor - 1] = yaml
     }
-
-    // update controls with values typed into yaml
-//    const {
-//      parsedResources,
-///      templateExceptionMap,
-//      hasSyntaxExceptions
-//    } = validateControls(
-//      editors,
-//      templateYAML,
-//      otherYAMLTabs,
-//      controlData,
-//      isFinalValidate,
-//      i18n
-//    )
-    if (notifications.length > 0) {
-      notifications = []
-      if (hasSyntaxExceptions) {
-        Object.values(templateExceptionMap).forEach(({ exceptions }) => {
-          exceptions.forEach(({ row, text, editor, tabInx }) => {
-            notifications.push({
-              id: 'error',
-              kind: 'error',
-              exception: i18n('error.create.syntax', [text]),
-              text,
-              row,
-              editor,
-              tabInx
-            })
-          })
-        })
-      } else {
-        notifications = controlData.filter(control => {
-          return !!control.exception
-        })
-      }
-    }
-
-    //////////////////////this.isDirty = firstTemplateYAML !== yaml
 
     // update edit stack so that when the user changes something in the form
     // it doesn't wipe out what they just typed
-    editStack = updateEditStack(editStack, templateResources, parsedResources)
+ ///   editStack = updateEditStack(editStack, templateResources, parsedResources, customYAMLTabs)
 
-    // if typing on another tab that represents encoded yaml in the main tab,
-    // update the main yaml--for now
-    if (activeYAMLEditor !== 0) {
-      const { template, templateYAML: oldYAML } = this.state
-      const {
-        templateYAML: newYAML,
-        templateObject,
-        templateResources: tr
-      } = generateSource(template, editStack, controlData, otherYAMLTabs)
-      highlightChanges(editors[0], oldYAML, newYAML)
-      this.setState({
-        controlData,
-        notifications,
-        templateYAML: newYAML,
-        templateObject,
-        templateResources: tr,
-        editStack
-      })
-    } else {
-      this.setState({ controlData, notifications, templateYAML, editStack })
-    }
-
-    return templateYAML // for jest test
-  };
+    this.setState({
+      templateYAML,
+      customYAMLTabs,
+      editStack
+    })
+  }
 
   getResourceJSON() {
     const { templateYAML, controlData, otherYAMLTabs, editStack, i18n } = this.state

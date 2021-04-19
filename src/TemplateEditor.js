@@ -13,6 +13,7 @@ import {
   initializeControls,
   cacheUserData
 } from './utils/control-utils'
+import { reverseTemplate } from './utils/control-utils'
 import { createTemplateInput } from './utils/create-template-input'
 import ResourceEditor from './ResourceEditor/src'
 import { validateControls } from './utils/validate-controls'
@@ -256,16 +257,22 @@ export default class TemplateEditor extends React.Component {
   }
 
   // 
-  handleEditorChange({editors, templateYAML, templateObject, templateResources, syntaxErrors, isDirty, otherYAMLTabs}) {
+  handleEditorChange({editors, parsed, isDirty}) {
     const { controlData, isFinalValidate, i18n } = this.state
-    validateControls(
-      editors,
-      templateYAML,
-      otherYAMLTabs,
-      controlData,
-      isFinalValidate,
-      i18n
-    )
+
+
+    // // update active values in controls
+    // reverseTemplate(controlData, parsed, null, i18n)
+
+
+    // validateControls(
+    //   editors,
+    //   parsed,
+    //   otherYAMLTabs,
+    //   controlData,
+    //   isFinalValidate,
+    //   i18n
+    // )
     const notifications = controlData.filter(c => {
       return !!c.exception && isFinalValidate
     })

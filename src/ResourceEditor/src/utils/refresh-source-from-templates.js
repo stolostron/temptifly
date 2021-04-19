@@ -3,10 +3,11 @@
 import { parseYAML } from './source-utils'
 import { Base64 } from 'js-base64'
 import { helpers } from '../helpers'
+import keyBy from 'lodash/keyBy'
 
 export const generateSourceFromTemplate = (
   template,
-  {templateData, snippetMap, additionalTabInfo},
+  {templateData, snippetMap, additionalTabInfo, customYAMLTabs},
   otherYAMLTabs
 ) => {
 
@@ -15,8 +16,8 @@ export const generateSourceFromTemplate = (
   /////////////////////////////////////////////////////////
   // if tab(s) were created to show encoded YAML, update that tab's info
   if (otherYAMLTabs) {
-    additionalTabInfo.forEach(({ id, control, templateYAML, encode, newTab, snippetKey }) => {
-      templateYAML = replaceSnippetMap(templateYAML, snippetMap)
+    additionalTabInfo.forEach(({ id, control, templateYAML, encode, newTab, snippetKey }, inx) => {
+      templateYAML = customYAMLTabs[inx] ? customYAMLTabs[inx] : replaceSnippetMap(templateYAML, snippetMap)
       if (encode) {
         snippetMap[snippetKey] = Base64.encode(
           templateYAML.replace(/\s*##.+$/gm, '')
@@ -26,7 +27,7 @@ export const generateSourceFromTemplate = (
         const existingInx = otherYAMLTabs.findIndex(
           ({ id: existingId }) => existingId === id
         )
-        if (existingInx !== -1) {
+       if (existingInx !== -1) {
           const existingTab = otherYAMLTabs[existingInx]
           existingTab.oldTemplateYAML = existingTab.templateYAML
           existingTab.templateYAML = templateYAML
@@ -51,23 +52,25 @@ export const generateSourceFromTemplate = (
   // need to connect changes in source with the active value in the control
   // 1. by adding a reverse path to the control definition --or--
   // 2. by adding a ## controlId to the end of the template line with the value
-  //////////////////////yaml = setSourcePaths(yaml, otherYAMLTabs, controlData)
+  const controlData={}
+/////////////////  yaml = setSourcePaths(yaml, otherYAMLTabs, controlData)
 
-  // if show secrets is off, create the templateObject with secrets
-  const parsed = parseYAML(yaml)
-  let templateObject = parsed.parsed
+  // generate a map of secrets in yaml
+  let secretsMap
   if (yaml) {
     let yamlWithSecrets = template({...templateData, ...{showSecrets:true}}, helpers) || ''
     yamlWithSecrets = replaceSnippetMap(yamlWithSecrets, snippetMap)
-    templateObject = parseYAML(yamlWithSecrets).parsed
+    const templateObject = parseYAML(yamlWithSecrets).parsed
+    secretsMap = templateObject.Secret && keyBy(templateObject.Secret
+      .filter(({$raw: {metadata}})=>metadata), ({ $raw }) => {
+      const { metadata: { name, namespace } } = $raw
+      return `${namespace}/${name}`
+    })
   }
 
   return {
     templateYAML: yaml,
-    templateObject,
-    templateResources: parsed.resources,
-    syntaxErrors: parsed.exceptions,
-    otherYAMLTabs
+    secretsMap
   }
 
 }

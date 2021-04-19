@@ -1,6 +1,6 @@
 'use strict'
 
-import { ControlMode, reverseTemplate } from './control-utils'
+import { ControlMode } from './control-utils'
 import get from 'lodash/get'
 import keyBy from 'lodash/keyBy'
 
@@ -10,21 +10,12 @@ import keyBy from 'lodash/keyBy'
 
 export function validateControls(
   editors,
-  templateYAML,
+  parsed,
   otherYAMLTabs = [],
   controlData,
   isFinalValidate,
   i18n
 ) {
-  // parse all yamls
-  const results = parseYAML(templateYAML)
-  let { parsed, exceptions } = results
-  const { resources } = results
-
-  // update active values in controls
-  if (exceptions.length === 0) {
-    reverseTemplate(controlData, parsed, null, i18n)
-  }
 
   const templateObjectMap = { '<<main>>': parsed }
   const templateExceptionMap = {
@@ -144,7 +135,6 @@ export function validateControls(
   return {
     templateObjectMap,
     templateExceptionMap,
-    parsedResources: resources,
     hasSyntaxExceptions,
     hasValidationExceptions
   }

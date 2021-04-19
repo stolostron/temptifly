@@ -40,7 +40,7 @@ export function discoverControls(controlData, templateObject, editor, i18n) {
   })
 }
 
-//reverse control active valuess from template
+//reverse control active values from template
 export function reverseTemplate(controlData, templateObject) {
   templateObject = cloneDeep(templateObject)
   const reverseControl = control => {
