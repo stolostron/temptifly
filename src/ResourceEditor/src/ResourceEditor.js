@@ -8,7 +8,7 @@ import PropTypes from 'prop-types'
 import { generateSource } from './utils/source-utils'
 import { logSourceErrors } from './utils/logger'
 import { updateEditStack } from './utils/refresh-source-from-stack'
-import { refreshSourceParsing } from './utils/refresh-source-parsing'
+import { refreshSourceValidation } from './utils/refresh-source-validation'
 import {
   highlightChanges,
   highlightAllChanges
@@ -33,14 +33,15 @@ export default class ResourceEditor extends React.Component {
 
   static propTypes = {
     editorEvents: PropTypes.object,
+    onChange: PropTypes.func.isRequired,
     renderForm: PropTypes.func.isRequired,
+    validateForm: PropTypes.func.isRequired,
     isLoaded: PropTypes.bool,
     showEditor: PropTypes.bool,
     showLogging: PropTypes.bool,
     monacoEditor: PropTypes.element,
     template: PropTypes.func.isRequired,
     templateInput: PropTypes.object.isRequired,
-    editResources: PropTypes.array,
     title: PropTypes.string,
     type: PropTypes.string,
   };
@@ -124,6 +125,83 @@ export default class ResourceEditor extends React.Component {
         }
       }).bind(this)
       window.addEventListener('beforeunload', this.beforeUnloadFunc)
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { showEditor, validateForm, onChange } = this.props
+    let { editors } = this.state
+
+    // control changed or user typed in 2nd tab
+    if (!isEqual(this.props.templateInput, this.state.templateInput) ||
+        !isEqual(prevState.customYAMLTabs, this.state.customYAMLTabs)) {
+        const { template, templateInput } = this.props
+        let { firstTemplateYAML } = this.state
+        const {customYAMLTabs, editStack, otherYAMLTabs} = this.state
+  
+        const {templateYAML, sourcePathMap, secretsMap} =
+          generateSource(template, {...templateInput, customYAMLTabs}, editStack, otherYAMLTabs)
+
+        // keep track of dirty state
+        if (!firstTemplateYAML) {
+          firstTemplateYAML = templateYAML
+        }
+        let isDirty = firstTemplateYAML !== templateYAML
+
+        if (!showEditor && editors.length>0) {
+          editors = []
+        }
+
+        // highlight changes in editor
+        if (this.state.templateYAML) {
+          if (!isEqual(prevState.customYAMLTabs, this.state.customYAMLTabs)) {
+            highlightChanges(editors[0], this.state.templateYAML, templateYAML)
+          } else {
+            highlightAllChanges(
+              editors,
+              this.state.templateYAML,
+              templateYAML,
+              otherYAMLTabs,
+              this.state.activeYAMLEditor
+            )
+          }
+        }
+  
+        // parse/syntax check the yaml
+        const {parsed, templateObjectMap} = refreshSourceValidation(editors, templateYAML, otherYAMLTabs, validateForm, sourcePathMap)
+
+        // send event to controls to fill and validate
+        onChange({editors, parsed: parsed.parsed, templateObjectMap, sourcePathMap, secretsMap, isDirty})
+      
+        this.setState({
+          templateInput: cloneDeep(templateInput),
+          templateYAML,
+          firstTemplateYAML,
+          otherYAMLTabs,
+          sourcePathMap,
+          editors,
+          secretsMap,
+          isDirty
+        })
+    // user typed in the main tab
+    } else if (prevState.customYAML !== this.state.customYAML) {
+      let { firstTemplateYAML } = this.state
+      const { templateYAML, otherYAMLTabs, sourcePathMap, secretsMap } = this.state
+      let isDirty = firstTemplateYAML !== templateYAML
+  
+      // parse/syntax check the yaml
+      const parsed = refreshSourceValidation(editors, templateYAML, otherYAMLTabs, validateForm, sourcePathMap)
+
+      // send event to controls to fill and validate
+      onChange({editors, parsed, sourcePathMap, secretsMap, isDirty})
+      
+      this.setState({
+        isDirty
+      })
+    } else if (!showEditor && editors.length>0) {
+      this.setState({
+        editors: []
+      })  
     }
   }
 
@@ -446,83 +524,6 @@ export default class ResourceEditor extends React.Component {
     this.parseDebounced(yaml)
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    const { showEditor } = this.props
-    let { editors } = this.state
-
-    // control changed or user typed in 2nd tab
-    if (!isEqual(this.props.templateInput, this.state.templateInput) ||
-        !isEqual(prevState.customYAMLTabs, this.state.customYAMLTabs)) {
-        const { template, templateInput, editorEvents } = this.props
-        let { firstTemplateYAML } = this.state
-        const {customYAMLTabs, editStack, otherYAMLTabs} = this.state
-  
-        const {templateYAML, secretsMap} =
-          generateSource(template, {...templateInput, customYAMLTabs}, editStack, otherYAMLTabs)
-
-        // keep track of dirty state
-        if (!firstTemplateYAML) {
-          firstTemplateYAML = templateYAML
-        }
-        let isDirty = firstTemplateYAML !== templateYAML
-
-        if (!showEditor && editors.length>0) {
-          editors = []
-        }
-
-        // highlight changes in editor
-        if (this.state.templateYAML) {
-          if (!isEqual(prevState.customYAMLTabs, this.state.customYAMLTabs)) {
-            highlightChanges(editors[0], this.state.templateYAML, templateYAML)
-          } else {
-            highlightAllChanges(
-              editors,
-              this.state.templateYAML,
-              templateYAML,
-              otherYAMLTabs,
-              this.state.activeYAMLEditor
-            )
-          }
-        }
-  
-        // parse/syntax check the yaml
-        const parsed = refreshSourceParsing(editors, templateYAML, otherYAMLTabs)
-
-        // send event to controls to fill and validate
-        editorEvents.emit('change', {editors, parsed, secretsMap, isDirty})
-      
-        this.setState({
-          templateInput: cloneDeep(templateInput),
-          templateYAML,
-          firstTemplateYAML,
-          otherYAMLTabs,
-          editors,
-          secretsMap,
-          isDirty
-        })
-    // user typed in the main tab
-    } else if (prevState.templateYAML !== this.state.templateYAML) {
-      const { editorEvents } = this.props
-      let { firstTemplateYAML } = this.state
-      const { templateYAML, otherYAMLTabs, secretsMap } = this.state
-      let isDirty = firstTemplateYAML !== templateYAML
-  
-      // parse/syntax check the yaml
-      const parsed = refreshSourceParsing(editors, templateYAML, otherYAMLTabs)
-
-      // send event to controls to fill and validate
-      editorEvents.emit('change', {editors, parsed, secretsMap, isDirty})
-      
-      this.setState({
-        isDirty
-      })
-    } else if (!showEditor && editors.length>0) {
-      this.setState({
-        editors: []
-      })  
-    }
-  }
-
   handleParse = yaml => {
     const {
       activeYAMLEditor,
@@ -531,11 +532,11 @@ export default class ResourceEditor extends React.Component {
       editors,
       isFinalValidate,
     } = this.state
-    let { editStack, templateYAML, customYAMLTabs } = this.state
+    let { editStack, templateYAML, customYAML, customYAMLTabs } = this.state
     const {template, templateInput, editorEvents} = this.props
 
     if (activeYAMLEditor === 0) {
-      templateYAML = yaml
+      customYAML = templateYAML = yaml
     } else {
       customYAMLTabs = cloneDeep(customYAMLTabs)
       customYAMLTabs[activeYAMLEditor - 1] = yaml
@@ -547,6 +548,7 @@ export default class ResourceEditor extends React.Component {
 
     this.setState({
       templateYAML,
+      customYAML,
       customYAMLTabs,
       editStack
     })

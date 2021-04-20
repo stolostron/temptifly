@@ -8,6 +8,7 @@ import capitalize from 'lodash/capitalize'
 import isEmpty from 'lodash/isEmpty'
 import isEqual from 'lodash/isEqual'
 import get from 'lodash/get'
+import set from 'lodash/set'
 import memoize from "memoize-one"
 
 export const generateSource = memoize((template, templateInput, editStack, otherYAMLTabs) => {
@@ -109,6 +110,75 @@ export const getSourcePath = path => {
   sourcePath =
     sourcePath.length > 0 ? pathBase + `.${sourcePath.join('.$v.')}` : pathBase
   return sourcePath
+}
+
+//looks for ## at end of a YAML line
+export function getSourcePathMap(yaml, otherYAMLTabs = [], sourcePathMap) {
+  const { parsed } = parseYAML(yaml)
+  otherYAMLTabs.forEach(tab => {
+    const { id: tabId, templateYAML } = tab
+    const { parsed: tabParsed } = parseYAML(templateYAML)
+    syncSourcePathMap(tabParsed, tabId, sourcePathMap)
+    tab.templateYAML = templateYAML.replace(/\s*##.+$/gm, '') // remove source markers
+  })
+  syncSourcePathMap(parsed, '<<main>>', sourcePathMap)
+  return yaml.replace(/\s*##.+$/gm, '') // remove source markers
+}
+
+//point control to what template value it changes
+//looks for ##controlId in template
+const syncSourcePathMap = (parsed, tabId, sourcePathMap) => {
+  Object.entries(parsed).forEach(([key, value]) => {
+    value.forEach(({ $synced }, inx) => {
+      syncPathMap($synced, `${key}[${inx}].$synced`, tabId, sourcePathMap)
+    })
+  })
+}
+
+const syncPathMap = (object, path, tabId, sourcePathMap) => {
+  if (object) {
+    if (object.$cmt) {
+      // comment links in groups/tables have the format ##groupId.inx.controlId
+      // ties into controlMap created above
+      const [sourceKey, inx, dataKey] = object.$cmt.split('.')
+      let entry = get(sourcePathMap, sourceKey, {})
+      if (inx) {
+        const paths = get(entry, 'paths', [])
+        let pathMap = paths[inx]
+        if (!pathMap) {
+          pathMap = paths[inx] = {}
+        }
+        pathMap[dataKey] = path
+        entry = { tabId, paths }
+      } else {
+        entry = { tabId, path }
+      }
+      set(sourcePathMap, sourceKey, entry)
+    }
+    let o, p
+    object = object.$v !== undefined ? object.$v : object
+    if (Array.isArray(object)) {
+      for (let i = 0; i < object.length; i++) {
+        o = object[i]
+        if (o.$v !== undefined) {
+          p = `${path}[${i}].$v`
+          syncPathMap(o, p, tabId, sourcePathMap)
+        }
+      }
+    } else if (object && typeof object === 'object') {
+      Object.keys(object).forEach(key => {
+        o = object[key]
+        if (o.$v !== undefined) {
+          if (key.includes('.')) {
+            p = `${path}['${key}'].$v`
+          } else {
+            p = `${path}.${key}.$v`
+          }
+          syncPathMap(o, p, tabId, sourcePathMap)
+        }
+      })
+    }
+  }
 }
 
 export const removeVs = object => {

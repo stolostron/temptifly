@@ -1,6 +1,6 @@
 'use strict'
 
-import { ControlMode } from './control-utils'
+import { ControlMode, reverseTemplate } from './control-utils'
 import get from 'lodash/get'
 import keyBy from 'lodash/keyBy'
 
@@ -9,135 +9,64 @@ import keyBy from 'lodash/keyBy'
 ///////////////////////////////////////////////////////////////////////////////
 
 export function validateControls(
-  editors,
-  parsed,
-  otherYAMLTabs = [],
   controlData,
+  templateObjectMap,
+  templateExceptionMap,
+  sourcePathMap,
   isFinalValidate,
   i18n
 ) {
 
-  const templateObjectMap = { '<<main>>': parsed }
-  const templateExceptionMap = {
-    '<<main>>': {
-      editor: editors[0],
-      exceptions: attachEditorToExceptions(exceptions, editors, 0)
+  reverseTemplate(controlData, templateObjectMap['<<main>>'], sourcePathMap)
+
+  let stopValidating = false
+  controlData.forEach(control => {
+    const {
+      type,
+      active = [],
+      pauseControlCreationHereUntilSelected
+    } = control
+    delete control.exception
+    if (!stopValidating) {
+      switch (type) {
+      case 'group':
+        validateGroupControl(
+          active,
+          controlData,
+          templateObjectMap,
+          templateExceptionMap,
+          isFinalValidate,
+          i18n
+        )
+        break
+
+      case 'table':
+        control.exceptions = []
+        validateTableControl(
+          control,
+          templateObjectMap,
+          templateExceptionMap,
+          isFinalValidate,
+          i18n
+        )
+        break
+
+      default:
+        validateControl(
+          control,
+          controlData,
+          templateObjectMap,
+          templateExceptionMap,
+          isFinalValidate,
+          i18n
+        )
+        break
+      }
     }
-  }
-  otherYAMLTabs.forEach(({ id, templateYAML: yaml }, inx) => {
-    ({ parsed, exceptions } = parseYAML(yaml))
-    templateObjectMap[id] = parsed
-    templateExceptionMap[id] = {
-      editor: editors[inx + 1],
-      exceptions: attachEditorToExceptions(exceptions, editors, inx + 1)
+    if (pauseControlCreationHereUntilSelected) {
+      stopValidating = !active
     }
   })
-
-  // if any syntax errors, report them and leave
-  let hasSyntaxExceptions = false
-  Object.values(templateExceptionMap).forEach(({ exceptions: _exceptions }) => {
-    if (_exceptions.length > 0) {
-      hasSyntaxExceptions = true
-    }
-  })
-
-  // get values from parsed yamls using source paths and verify values are valid
-  if (!hasSyntaxExceptions) {
-    let stopValidating = false
-    controlData.forEach(control => {
-      const {
-        type,
-        active = [],
-        pauseControlCreationHereUntilSelected
-      } = control
-      delete control.exception
-      if (!stopValidating) {
-        switch (type) {
-        case 'group':
-          validateGroupControl(
-            active,
-            controlData,
-            templateObjectMap,
-            templateExceptionMap,
-            isFinalValidate,
-            i18n
-          )
-          break
-
-        case 'table':
-          control.exceptions = []
-          validateTableControl(
-            control,
-            templateObjectMap,
-            templateExceptionMap,
-            isFinalValidate,
-            i18n
-          )
-          break
-
-        default:
-          validateControl(
-            control,
-            controlData,
-            templateObjectMap,
-            templateExceptionMap,
-            isFinalValidate,
-            i18n
-          )
-          break
-        }
-      }
-      if (pauseControlCreationHereUntilSelected) {
-        stopValidating = !active
-      }
-    })
-  }
-
-  // update editors with any format exceptions
-  let hasValidationExceptions = false
-  Object.values(templateExceptionMap).forEach(
-    ({ editor, exceptions: _exceptions }, inx) => {
-      setTimeout(() => {
-        if (editor) {
-          const decorationList = []
-          _exceptions.forEach(({ row = 1, text }) => {
-            decorationList.push({
-              range: new editor.monaco.Range(row, 0, row, 132),
-              options: {
-                isWholeLine: true,
-                glyphMarginClassName: 'errorDecoration',
-                glyphMarginHoverMessage: { value: text },
-                minimap: { color: 'red', position: 1 }
-              }
-            })
-          })
-          _exceptions.forEach(({ row = 1, column = 0 }) => {
-            decorationList.push({
-              range: new editor.monaco.Range(row, column - 6, row, column + 6),
-              options: {
-                className: 'squiggly-error'
-              }
-            })
-          })
-          editor.errorList = decorationList
-          editor.decorations = editor.deltaDecorations(editor.decorations, [
-            ...editor.errorList,
-            ...(editor.changeList || [])
-          ])
-        }
-      }, 0)
-      if (_exceptions.length > 0) {
-        hasValidationExceptions = true
-        attachEditorToExceptions(_exceptions, editors, inx)
-      }
-    }
-  )
-  return {
-    templateObjectMap,
-    templateExceptionMap,
-    hasSyntaxExceptions,
-    hasValidationExceptions
-  }
 }
 
 const validateGroupControl = (

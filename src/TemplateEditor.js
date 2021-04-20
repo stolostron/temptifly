@@ -2,7 +2,6 @@
 
 import React  from 'react'
 import ReactDOM from 'react-dom'
-import EventEmitter from 'events'
 import PropTypes from 'prop-types'
 import {
   Button,
@@ -13,7 +12,6 @@ import {
   initializeControls,
   cacheUserData
 } from './utils/control-utils'
-import { reverseTemplate } from './utils/control-utils'
 import { createTemplateInput } from './utils/create-template-input'
 import ResourceEditor from './ResourceEditor/src'
 import { validateControls } from './utils/validate-controls'
@@ -175,10 +173,6 @@ export default class TemplateEditor extends React.Component {
     this.handleNewEditorMode = this.handleNewEditorMode.bind(this)
     this.handleControlChange = this.handleControlChange.bind(this)
     this.handleGroupChange = this.handleGroupChange.bind(this)
-
-    // on editor change
-    this.editorEvents = new EventEmitter()
-    this.editorEvents.on('change', this.handleEditorChange.bind(this))
   }
 
   componentDidMount() {
@@ -222,11 +216,13 @@ export default class TemplateEditor extends React.Component {
         template={template}
         templateInput={templateInput}
         renderForm={this.renderControls.bind(this)}
+        validateForm={this.validateControls.bind(this)}
         monacoEditor={monacoEditor}
         showEditor={showEditor}
         showLogging={logging}
         editorEvents={this.editorEvents}
         isLoaded={isLoaded}
+        onChange={this.onEditorChange.bind(this)}
       />
     )
   }
@@ -256,29 +252,32 @@ export default class TemplateEditor extends React.Component {
     )
   }
 
-  // 
-  handleEditorChange({editors, parsed, isDirty}) {
+  // respond to changes in the editor
+  validateControls(templateObjectMap, templateExceptionMap, sourcePathMap) {
     const { controlData, isFinalValidate, i18n } = this.state
 
+    // validate control values
+    validateControls(
+      controlData,
+      templateObjectMap,
+      templateExceptionMap,
+      sourcePathMap,
+      isFinalValidate,
+      i18n
+    )
 
-    // // update active values in controls
-    // reverseTemplate(controlData, parsed, null, i18n)
-
-
-    // validateControls(
-    //   editors,
-    //   parsed,
-    //   otherYAMLTabs,
-    //   controlData,
-    //   isFinalValidate,
-    //   i18n
-    // )
     const notifications = controlData.filter(c => {
       return !!c.exception && isFinalValidate
     })
     this.setState({
-      exceptions: [],
-      notifications,
+      notifications
+    })
+  }
+
+  // respond to changes in the editor
+  onEditorChange({parsed, templateObjectMap, sourcePathMap, isDirty}) {
+    const { controlData, isFinalValidate, i18n } = this.state
+    this.setState({
       isDirty
     })
   }

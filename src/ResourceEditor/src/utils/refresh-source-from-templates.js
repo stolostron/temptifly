@@ -1,6 +1,6 @@
 'use strict'
 
-import { parseYAML } from './source-utils'
+import { parseYAML, getSourcePathMap } from './source-utils'
 import { Base64 } from 'js-base64'
 import { helpers } from '../helpers'
 import keyBy from 'lodash/keyBy'
@@ -27,7 +27,7 @@ export const generateSourceFromTemplate = (
         const existingInx = otherYAMLTabs.findIndex(
           ({ id: existingId }) => existingId === id
         )
-       if (existingInx !== -1) {
+        if (existingInx !== -1) {
           const existingTab = otherYAMLTabs[existingInx]
           existingTab.oldTemplateYAML = existingTab.templateYAML
           existingTab.templateYAML = templateYAML
@@ -52,8 +52,8 @@ export const generateSourceFromTemplate = (
   // need to connect changes in source with the active value in the control
   // 1. by adding a reverse path to the control definition --or--
   // 2. by adding a ## controlId to the end of the template line with the value
-  const controlData={}
-/////////////////  yaml = setSourcePaths(yaml, otherYAMLTabs, controlData)
+  const sourcePathMap = {}
+  yaml = getSourcePathMap(yaml, otherYAMLTabs, sourcePathMap)
 
   // generate a map of secrets in yaml
   let secretsMap
@@ -70,6 +70,7 @@ export const generateSourceFromTemplate = (
 
   return {
     templateYAML: yaml,
+    sourcePathMap,
     secretsMap
   }
 

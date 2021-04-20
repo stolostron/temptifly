@@ -2,12 +2,15 @@
 
 import { parseYAML } from './source-utils'
 
-export function refreshSourceParsing(
+export function refreshSourceValidation(
   editors,
   templateYAML,
   otherYAMLTabs = [],
+  validateForm,
+  sourcePathMap
 ) {
 
+  // get parse syntax errors
   let parsed = parseYAML(templateYAML)
   const templateObjectMap = { '<<main>>': parsed.parsed }
   const templateExceptionMap = {
@@ -24,8 +27,23 @@ export function refreshSourceParsing(
       exceptions: attachEditorToExceptions(tabParsed.exceptions, editors, inx + 1)
     }
   })
+
+  let hasSyntaxExceptions = false
+  Object.values(templateExceptionMap).forEach(({ exceptions: _exceptions }) => {
+    if (_exceptions.length > 0) {
+      hasSyntaxExceptions = true
+    }
+  })
+
+  if (!hasSyntaxExceptions) {
+    // add form validation
+    validateForm(templateObjectMap, templateExceptionMap, sourcePathMap)
+  }
+
+  // show errors in editors
   refreshEditorErrors(editors, templateExceptionMap)
-  return {parsed, templateObjectMap, templateExceptionMap}
+
+  return {parsed, templateObjectMap}
 }
 
 
