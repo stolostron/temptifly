@@ -217,6 +217,7 @@ export default class TemplateEditor extends React.Component {
         templateInput={templateInput}
         renderForm={this.renderControls.bind(this)}
         validateForm={this.validateControls.bind(this)}
+        resetForm={this.onResetEditor.bind(this)}
         monacoEditor={monacoEditor}
         showEditor={showEditor}
         showLogging={logging}
@@ -275,10 +276,18 @@ export default class TemplateEditor extends React.Component {
   }
 
   // respond to changes in the editor
-  onEditorChange({parsed, templateObjectMap, sourcePathMap, isDirty}) {
-    const { controlData, isFinalValidate, i18n } = this.state
+  onEditorChange({isDirty}) {
     this.setState({
       isDirty
+    })
+  }
+
+  onResetEditor() {
+    this.setState({
+      controlData: null,
+      previouslySelectedCards: [],
+      notifications: [],
+      isDirty: false,
     })
   }
 

@@ -36,6 +36,7 @@ export default class ResourceEditor extends React.Component {
     onChange: PropTypes.func.isRequired,
     renderForm: PropTypes.func.isRequired,
     validateForm: PropTypes.func.isRequired,
+    resetForm: PropTypes.func.isRequired,
     isLoaded: PropTypes.bool,
     showEditor: PropTypes.bool,
     showLogging: PropTypes.bool,
@@ -655,39 +656,24 @@ export default class ResourceEditor extends React.Component {
   }
 
   resetEditor() {
-    const { controlData: initialControlData } = this.props
-    const { template, editStack = {}, resetInx, editor, i18n } = this.state
-    const cd = cloneDeep(initialControlData)
-    const controlData = {}
-    const otherYAMLTabs = []
+    const { resetForm } = this.props
+    const { editStack = {}, resetInx } = this.state
     if (editStack.initialized) {
       delete editStack.initialized
     }
-    const { templateYAML, templateObject, templateResources } = generateSource(
-      template,
-      editStack,
-      controlData,
-      otherYAMLTabs
-    )
     this.setState({
-      isCustomName: false,
-      template,
-      controlData,
       activeYAMLEditor: 0,
-      exceptions: [],
-      previouslySelectedCards: [],
-      notifications: [],
-      otherYAMLTabs,
+      otherYAMLTabs: [],
+      firstTemplateYAML: null,
+      templateYAML: null,
       hasUndo: false,
       hasRedo: false,
       isFinalValidate: false,
-      templateYAML,
-      templateObject,
-      templateResources,
       editStack,
       resetInx: resetInx + 1,
       isDirty: false,
       editors: []
     })
+    resetForm()
   }
 }
