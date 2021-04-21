@@ -25,17 +25,21 @@ class ControlPanelPrompt extends React.Component {
 
   renderLink(control) {
     const { prompts } = control
-    const { prompt, url, id } = prompts
+    const { prompt, url, href, target='_blank', id } = prompts
     const { i18n } = this.props
     const text = i18n(prompt)
     return (
       <React.Fragment>
         <div className="creation-view-controls-add-value-container bottom-right">
-          <BrowserRouter forceRefresh={true}>
-            <Link to={url} id={id} className="creation-view-controls-add-button">
+          {href ?
+            <a target={target} rel="noopener noreferrer" href={href} id={id} className="creation-view-controls-add-button">
               {text}
-            </Link>
-          </BrowserRouter>
+            </a>
+            : <BrowserRouter forceRefresh={true}>
+              <Link to={url} id={id} className="creation-view-controls-add-button">
+                {text}
+              </Link>
+            </BrowserRouter>}
         </div>
       </React.Fragment>
     )
