@@ -154,6 +154,7 @@ export default class TemplateEditor extends React.Component {
       otherYAMLTabs: [],
       /* eslint-disable-next-line react/no-unused-state */
       hasFormExceptions: false,
+      isDirty: false,
       isFinalValidate: false,
       hasUndo: false,
       hasRedo: false,
@@ -169,7 +170,6 @@ export default class TemplateEditor extends React.Component {
       }
     }
 
-    this.isDirty = false
     this.handleNewEditorMode = this.handleNewEditorMode.bind(this)
     this.handleControlChange = this.handleControlChange.bind(this)
     this.handleGroupChange = this.handleGroupChange.bind(this)
@@ -541,7 +541,7 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderCreateButton(isLoaded) {
-    const { isEditing } = this.state
+    const { isEditing, isDirty } = this.state
     const { portals, createControl={}, i18n } = this.props
     const { createBtn } = portals || Portals
     if (createBtn && isLoaded) {
@@ -550,7 +550,7 @@ export default class TemplateEditor extends React.Component {
         ? (i18n ? i18n('button.save.access.denied') : 'Denied')
         : undefined
       let disableButton = true
-      if (this.isDirty && hasPermissions) {
+      if (isDirty && hasPermissions) {
         disableButton = false
       }
       const portal = document.getElementById(createBtn)
