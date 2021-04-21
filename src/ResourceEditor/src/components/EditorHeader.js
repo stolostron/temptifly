@@ -5,13 +5,13 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Checkbox } from '@patternfly/react-core'
 import '../css/editor-header.scss'
+import { defaultResourceEditorOptions } from '../ResourceEditor'
 
 class EditorHeader extends React.Component {
   static propTypes = {
     children: PropTypes.node,
     handleShowSecretChange: PropTypes.func,
     handleTabChange: PropTypes.func,
-    i18n: PropTypes.func,
     otherYAMLTabs: PropTypes.array,
     showSecrets: PropTypes.bool,
     type: PropTypes.string.isRequired
@@ -22,8 +22,7 @@ class EditorHeader extends React.Component {
   }
 
   render() {
-    const { children, otherYAMLTabs = [], i18n } = this.props
-    const editorToolbarTitle = i18n('editor.toolbar')
+    const { children, otherYAMLTabs = [] } = this.props
     const hasTabs = otherYAMLTabs.length > 0
     const classnames = classNames({
       'creation-view-yaml-header': true,
@@ -34,8 +33,7 @@ class EditorHeader extends React.Component {
         <div
           className="creation-view-yaml-header-toolbar"
           role="region"
-          aria-label={editorToolbarTitle}
-          id={editorToolbarTitle}
+          id='editor-toolbar-title'
         >
           {children}
         </div>
@@ -89,7 +87,7 @@ class EditorHeader extends React.Component {
   };
 
   renderShowSecrets = () => {
-    const { showSecrets, handleShowSecretChange, i18n } = this.props
+    const { showSecrets, handleShowSecretChange } = this.props
     return (
       <div className="creation-view-yaml-header-secrets">
         <Checkbox
@@ -98,7 +96,7 @@ class EditorHeader extends React.Component {
           isChecked={showSecrets}
           onChange={handleShowSecretChange}
         />
-        <div>{i18n('editor.show.secrets')}</div>
+        <div>{defaultResourceEditorOptions.showSecrets}</div>
       </div>
     )
   };

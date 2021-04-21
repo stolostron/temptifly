@@ -29,6 +29,19 @@ const RESOURCE_EDITOR_OPEN_COOKIE = 'resource-editor-open-cookie'
 const RESOURCE_EDITOR_SHOW_SECRETS_COOKIE =
   'resource-editor-show-secrets-cookie'
 
+
+export const defaultResourceEditorOptions = {
+  undoTip: 'Undo',
+  redoTip: 'Redo',
+  previousTip: 'Previous',
+  nextTip: 'Next',
+  resetTip: 'Reset',
+  closeTip: 'Close',
+  findTip: 'Find',
+  showSecrets: 'Show secrets',
+}
+
+
 export default class ResourceEditor extends React.Component {
 
   static propTypes = {
@@ -55,7 +68,6 @@ export default class ResourceEditor extends React.Component {
       showEditor: !!localStorage.getItem(RESOURCE_EDITOR_OPEN_COOKIE),
       showSecrets: !!localStorage.getItem(RESOURCE_EDITOR_SHOW_SECRETS_COOKIE),
       template: props.template,
-      i18n: props.i18n || ((msg) => msg),
       activeYAMLEditor: 0,
       exceptions: [],
       previouslySelectedCards: [],
@@ -82,7 +94,7 @@ export default class ResourceEditor extends React.Component {
 
     // if editing an existing set of resources start an editStack
     if (props.editResources) {
-      this.state.editStack = { editResources:props.editResources, editor:this.state.editor, i18n:this.state.i18n }
+      this.state.editStack = { editResources:props.editResources, editor:this.state.editor }
       this.state.isEditing = true
     }
 
@@ -138,10 +150,10 @@ export default class ResourceEditor extends React.Component {
         !isEqual(prevState.customYAMLTabs, this.state.customYAMLTabs)) {
         const { template, templateInput } = this.props
         let { firstTemplateYAML } = this.state
-        const {customYAMLTabs, editStack, otherYAMLTabs} = this.state
+        const {customYAMLTabs, editStack, otherYAMLTabs, showSecrets} = this.state
   
         const {templateYAML, sourcePathMap, secretsMap} =
-          generateSource(template, {...templateInput, customYAMLTabs}, editStack, otherYAMLTabs)
+          generateSource(template, {...templateInput, customYAMLTabs, showSecrets}, editStack, otherYAMLTabs)
 
         // keep track of dirty state
         if (!firstTemplateYAML) {
@@ -293,10 +305,9 @@ export default class ResourceEditor extends React.Component {
       customYAMLTabs,
       editStack,
       otherYAMLTabs,
-      i18n
     } = this.state
     const { templateYAML } =
-      generateSource(template, {...templateInput, customYAMLTabs}, editStack, otherYAMLTabs)
+      generateSource(template, {...templateInput, customYAMLTabs, showSecrets}, editStack, otherYAMLTabs)
 
     return (
       <div className="creation-view-yaml">
@@ -306,7 +317,6 @@ export default class ResourceEditor extends React.Component {
           handleShowSecretChange={this.handleShowSecrets.bind(this)}
           showSecrets={showSecrets}
           type={type}
-          i18n={i18n}
         >
           <EditorBar
             title={title}
@@ -317,7 +327,6 @@ export default class ResourceEditor extends React.Component {
             gotoEditorLine={this.gotoEditorLine}
             handleEditorCommand={this.handleEditorCommand}
             handleSearchChange={this.handleSearchChange}
-            i18n={this.props.i18n}
           />
         </EditorHeader>
         {this.renderEditors(templateYAML, otherYAMLTabs)}
@@ -459,20 +468,13 @@ export default class ResourceEditor extends React.Component {
   }
 
   handleShowSecrets() {
-    const { showSecrets, controlData } = this.state
+    const { showSecrets } = this.state
     if (showSecrets) {
       localStorage.removeItem(RESOURCE_EDITOR_SHOW_SECRETS_COOKIE)
     } else {
       localStorage.setItem(RESOURCE_EDITOR_SHOW_SECRETS_COOKIE, 'true')
     }
-    const showControl = controlData.find(
-      ({ id: idCtrl }) => idCtrl === 'showSecrets'
-    )
-    if (showControl) {
-      showControl.active = !showSecrets
-      this.setState({ showSecrets: !showSecrets })
-      this.handleControlChange(showControl, controlData)
-    }
+    this.setState({ showSecrets: !showSecrets })
   }
 
   handleSearchChange(searchName) {
@@ -556,7 +558,7 @@ export default class ResourceEditor extends React.Component {
   }
 
   getResourceJSON() {
-    const { templateYAML, controlData, otherYAMLTabs, editStack, i18n } = this.state
+    const { templateYAML, controlData, otherYAMLTabs, editStack } = this.state
     let canCreate = false
 //    const {
  //     templateObjectMap,

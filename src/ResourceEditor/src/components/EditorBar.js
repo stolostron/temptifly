@@ -12,7 +12,7 @@ import {
   NextIcon,
   PreviousIcon,
 } from './Icons'
-
+import { defaultResourceEditorOptions } from '../ResourceEditor'
 
 class EditorButton extends React.Component {
   static propTypes = {
@@ -87,7 +87,6 @@ class EditorBar extends React.Component {
     handleSearchChange: PropTypes.func,
     hasRedo: PropTypes.bool,
     hasUndo: PropTypes.bool,
-    i18n: PropTypes.func,
     title: PropTypes.string,
     type: PropTypes.string
   };
@@ -114,19 +113,19 @@ class EditorBar extends React.Component {
   };
 
   render() {
-    const { hasUndo, hasRedo, type, title, i18n } = this.props
+    const { hasUndo, hasRedo, type, title } = this.props
     const { searchName } = this.state
-
+    
     const undoButtons = [
       {
         command: 'undo',
-        tooltip: i18n ? i18n('editor.bar.undo') : 'Undo',
+        tooltip: defaultResourceEditorOptions.undoTip,
         icon: 'undo',
         disabled: !hasUndo
       },
       {
         command: 'redo',
-        tooltip: i18n ? i18n('editor.bar.redo') : 'Redo',
+        tooltip: defaultResourceEditorOptions.redoTip,
         icon: 'redo',
         disabled: !hasRedo
       }
@@ -135,13 +134,13 @@ class EditorBar extends React.Component {
     const nextButtons = [
       {
         command: 'previous',
-        tooltip: i18n ? i18n('editor.bar.previous') : 'Previous',
+        tooltip: defaultResourceEditorOptions.previousTip,
         icon: 'previous',
         disabled: !searchName
       },
       {
         command: 'next',
-        tooltip: i18n ? i18n('editor.bar.next') : 'Next',
+        tooltip: defaultResourceEditorOptions.nextTip,
         icon: 'next',
         disabled: !searchName
       }
@@ -150,7 +149,7 @@ class EditorBar extends React.Component {
     const resetButtons = [
       {
         command: 'restore',
-        tooltip: i18n ? i18n('editor.bar.reset') : 'Reset',
+        tooltip: defaultResourceEditorOptions.resetTip,
         disabled: !hasUndo && !hasRedo
       }
     ]
@@ -158,12 +157,12 @@ class EditorBar extends React.Component {
     const closeButtons = [
       {
         command: 'close',
-        tooltip: i18n ? i18n('editor.bar.close') : 'Close',
+        tooltip: defaultResourceEditorOptions.closeTip,
         icon: 'close'
       }
     ]
 
-    const searchTitle = i18n ? i18n('find.label') : 'Find'
+    const searchTitle = defaultResourceEditorOptions.findTip
     return (
       <div className="editor-bar">
         <div className="editor-bar-group">

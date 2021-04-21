@@ -7,7 +7,7 @@ import keyBy from 'lodash/keyBy'
 
 export const generateSourceFromTemplate = (
   template,
-  {templateData, snippetMap, additionalTabInfo, customYAMLTabs},
+  {templateData, snippetMap, additionalTabInfo, customYAMLTabs, showSecrets},
   otherYAMLTabs
 ) => {
 
@@ -15,6 +15,7 @@ export const generateSourceFromTemplate = (
   // if there are multiple tabs, update the yaml that belongs on each
   /////////////////////////////////////////////////////////
   // if tab(s) were created to show encoded YAML, update that tab's info
+  templateData.showSecrets = showSecrets
   if (otherYAMLTabs) {
     additionalTabInfo.forEach(({ id, control, templateYAML, encode, newTab, snippetKey }, inx) => {
       templateYAML = customYAMLTabs[inx] ? customYAMLTabs[inx] : replaceSnippetMap(templateYAML, snippetMap)
