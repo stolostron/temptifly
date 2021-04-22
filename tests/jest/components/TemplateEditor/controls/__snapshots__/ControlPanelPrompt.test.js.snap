@@ -5,10 +5,11 @@ exports[`ControlPanelPrompt component renders as expected 1`] = `
   <div
     class="creation-view-controls-add-value-container bottom-right"
   >
-    <a
+    <div
       class="creation-view-controls-add-button"
-      href="/mylink"
       id="add-provider-connection"
+      role="button"
+      tabindex="0"
     />
   </div>
 </DocumentFragment>

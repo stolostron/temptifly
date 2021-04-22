@@ -309,7 +309,7 @@ $container-max-width-with-editor: 650px !default;
           position: absolute;
           top: 0;
           right: 0;
-          padding: 0 1rem;
+          padding: 0 4px;
           height: 100%;
           cursor: pointer;
 
@@ -319,6 +319,18 @@ $container-max-width-with-editor: 650px !default;
         }
         .tf--list-box__menu-icon--open {
           transform: rotate(180deg);
+        }
+        .tf--list-box__refresh-icon {
+          position: absolute;
+          top: 0;
+          right: 20px;
+          padding: 0 4px;
+          height: 100%;
+          cursor: pointer;
+
+          svg {
+            height: 100%;
+          }
         }
 
         .tf--list-box__menu {

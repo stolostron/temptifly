@@ -44,7 +44,7 @@ export function discoverControls(controlData, templateObject, editor, i18n) {
     }
   }
   controlData.forEach(control => {
-    discoverControl(control, i18n)
+    discoverControl(control)
   })
 }
 
