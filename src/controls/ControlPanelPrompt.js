@@ -24,7 +24,7 @@ class ControlPanelPrompt extends React.Component {
 
   renderLink(control) {
     const { prompts } = control
-    const { prompt, url, id } = prompts
+    const { prompt, url, icon, id } = prompts
     const { i18n } = this.props
     const text = i18n(prompt)
 
@@ -44,6 +44,7 @@ class ControlPanelPrompt extends React.Component {
             onKeyPress={createPopupWindow}
           >
             {text}
+            {icon}
           </div>
         </div>
       </React.Fragment>
