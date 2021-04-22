@@ -39,12 +39,10 @@ class EditorHeader extends React.Component {
         >
           {children}
         </div>
-        {hasTabs && (
-          <div className="creation-view-yaml-header-tabs">
-            {this.renderEditorTabs(otherYAMLTabs)}
-            {this.renderShowSecrets()}
-          </div>
-        )}
+        <div className="creation-view-yaml-header-tabs">
+          {this.renderEditorTabs(otherYAMLTabs)}
+          {this.renderShowSecrets()}
+        </div>
       </div>
     )
   }
