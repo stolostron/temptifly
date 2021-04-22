@@ -218,6 +218,7 @@ class ControlPanel extends React.Component {
           return (
             <Query query={query} key={id} variables={variables}>
               {result => {
+                fetchAvailable.refetch = result.refetch
                 setAvailable(control, result)
                 return this.renderControlWithPrompt(id, type, control, grpId)
               }}
