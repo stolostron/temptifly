@@ -214,6 +214,18 @@ class ControlPanel extends React.Component {
               })
             }
           }
+          fetchAvailable.refetch = () => {
+            delete control.isLoaded
+            setAvailable(control, {loading:true})
+            control.forceUpdate()
+            query().then(data=>{
+              setAvailable(control, {loading:false, data})
+              control.forceUpdate()
+            }).catch((err) => {
+              setAvailable(control, {loading:false, error:err})
+              control.forceUpdate()
+            })
+          }
         } else {
           return (
             <Query query={query} key={id} variables={variables}>

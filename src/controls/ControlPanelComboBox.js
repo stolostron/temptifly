@@ -4,6 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import { Spinner } from '@patternfly/react-core'
 import ControlPanelFormGroup from './ControlPanelFormGroup'
 import TimesCircleIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
 import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon'
@@ -206,6 +207,12 @@ class ControlPanelComboBox extends React.Component {
           <ControlPanelFormGroup
             controlId={controlId}
             control={control}>
+            {isLoading ? (
+              <div className="creation-view-controls-singleselect-loading">
+                <Spinner size="md" />
+                <div>{active}</div>
+              </div>
+            ) : (
             <div id={`${controlId}-group`}>
               <div
                 role="listbox"
@@ -289,16 +296,12 @@ class ControlPanelComboBox extends React.Component {
                     tabIndex="0"
                     className="tf--list-box__refresh-icon"
                     type="button"
-                    aria-label={aria}
-                    aria-expanded={isOpen}
-                    aria-haspopup="true"
-                    data-toggle="true"
                     onClick={this.clickRefresh.bind(this)}
                     onKeyPress={this.clickRefresh.bind(this)}
                   >
                     <svg
                       fillRule="evenodd"
-                      height="5"
+                      height="12"
                       role="img"
                       viewBox="0 0 12 12"
                       width="12"
@@ -337,7 +340,7 @@ class ControlPanelComboBox extends React.Component {
                   </div>
                 )}
               </div>
-            </div>
+            </div>)}
           </ControlPanelFormGroup>
         </div>
       </React.Fragment>
@@ -403,21 +406,15 @@ class ControlPanelComboBox extends React.Component {
   clickRefresh(e) {
     e.preventDefault()
     e.stopPropagation()
-    const { control, i18n } = this.props
+    const { control } = this.props
     const { fetchAvailable } = control
     if (fetchAvailable) {
-      delete control.isLoading
-      delete control.isLoaded
       const { refetch } = fetchAvailable
       if (typeof refetch === 'function') {
-        refetch().then(()=>{
-          control.forceUpdate()
-          this.inputRef.placeholder = control.placeholder
-        })
+        delete control.available
+        refetch()
       }
       this.clickClear()
-      control.placeholder = this.inputRef.placeholder
-      this.inputRef.placeholder = i18n(get(control, 'fetchAvailable.loadingDesc', 'resource.loading'))
     }
   }
 
