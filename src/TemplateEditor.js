@@ -829,11 +829,12 @@ export default class TemplateEditor extends React.Component {
   layoutEditors() {
     if (this.containerRef && this.editors.length > 0) {
       const { otherYAMLTabs } = this.state
-      const hasTabs = otherYAMLTabs.length > 0
+      const hasTabs = otherYAMLTabs.length >= 0
       const controlsSize = this.handleSplitterDefault()
       const rect = this.containerRef.getBoundingClientRect()
-      const width = rect.width - controlsSize - 16
+      const width = rect.width - controlsSize - 11
       const height = rect.height - (hasTabs ? 80 : 40)
+      console.log(width)
       this.editors.forEach(editor => {
         editor.layout({ width, height })
       })

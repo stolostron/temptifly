@@ -291,7 +291,7 @@ class ControlPanelComboBox extends React.Component {
                       <path d="M0 0l5 4.998L10 0z" />
                     </svg>
                   </div>}
-                  {fetchAvailable && <div
+                  {fetchAvailable && !(searchText || active) && <div
                     role="button"
                     tabIndex="0"
                     className="tf--list-box__refresh-icon"
