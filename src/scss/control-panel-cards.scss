@@ -8,7 +8,6 @@ $color__white: #ffffff !default;
 
 .tf {
   &--grid-container {
-    max-width: calc(100vw - 350px);
     .tf--grid {
       margin-left: 0px;
       margin-right: 5%;

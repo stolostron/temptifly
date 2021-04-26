@@ -369,8 +369,7 @@ class ControlPanelTable extends React.Component {
               <TableBody />
             </Table>
             <Split>
-              <SplitItem isFilled></SplitItem>
-              <SplitItem>
+              <div style={{margin: 'auto'}}>
                 {available.length === 0 && (
                   <div style={{display: 'flex', paddingTop: '20px', color: 'gray'}}>
                     <EmptyStateIcon icon={NoResourceIcon} />
@@ -400,7 +399,7 @@ class ControlPanelTable extends React.Component {
                     </EmptyState>
                   </div>
                 )}
-              </SplitItem>
+              </div>
               <SplitItem>
                 {available.length !== 0 && (
                   <Pagination

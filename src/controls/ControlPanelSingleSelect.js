@@ -103,7 +103,7 @@ class ControlPanelSingleSelect extends React.Component {
                 })}
               </Select>
               {fetchAvailable && !active && <div
-                style={{position: 'absolute',  top: '6px', left: '540px', cursor: 'pointer' }}
+                style={{position: 'absolute',  top: '6px', right: '40px', cursor: 'pointer' }}
                     role="button"
                     tabIndex="0"
                     className="tf--list-box__refresh-icon"

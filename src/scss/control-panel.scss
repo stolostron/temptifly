@@ -5,9 +5,6 @@ $color__blue-51: #3d70b2 !default;
 $color__navy-gray-6: #5a6872 !default;
 $color__navy-gray-8: #dfe6eb !default;
 $acm_background_color: #f0f0f0 !default;
-$control-max-width-with-editor: 600px !default;
-$control-max-width-without-editor: 600px !default;
-$container-max-width-with-editor: 650px !default;
 
 @keyframes flash {
   0% {
@@ -59,7 +56,6 @@ $container-max-width-with-editor: 650px !default;
       background: white;
       box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
       padding: 20px;
-      max-width: 800px;
 
       .pf-c-form-control {
         background-color: #f4f7fb;
@@ -80,7 +76,6 @@ $container-max-width-with-editor: 650px !default;
   }
 
   .pf-c-skeleton {
-    max-width: $control-max-width-with-editor;
     height: 40px;
     background-color: #e0e0e0;
   }
@@ -91,7 +86,6 @@ $container-max-width-with-editor: 650px !default;
   }
 
   .pf-c-form-control {
-    max-width: $control-max-width-with-editor;
 
     &.input {
       padding: 0;
@@ -106,12 +100,7 @@ $container-max-width-with-editor: 650px !default;
     }
   }
 
-  .pf-c-form__helper-text {
-    max-width: $control-max-width-with-editor;
-  }
-
   .pf-c-alert {
-    max-width: 1000px;
 
     h4 {
       margin: 0;
@@ -200,7 +189,6 @@ $container-max-width-with-editor: 650px !default;
         &-name {
           height: 32px;
           white-space: nowrap;
-          max-width: 600px;
           overflow: hidden;
           text-overflow: hidden;
         }
@@ -276,7 +264,6 @@ $container-max-width-with-editor: 650px !default;
         background-color: white;
         padding: 5px 8px 5px 30px;
         height: 36px;
-        max-width: $control-max-width-with-editor;
         border-bottom: 1px solid #8a8d90;
 
         .pf-c-spinner {
@@ -290,8 +277,6 @@ $container-max-width-with-editor: 650px !default;
         position: relative;
         box-shadow: 0 1px 0 0 #5a6872;
         cursor: pointer;
-        width: $control-max-width-with-editor;
-        max-width: $control-max-width-with-editor;
 
         .tf--list-box__selection {
           position: absolute;
@@ -385,12 +370,11 @@ $container-max-width-with-editor: 650px !default;
 
     &-add-value-container {
       display: flex;
-      max-width: $control-max-width-with-editor;
       margin: 20px 0 24px 20px;
 
       &.bottom-right {
         justify-content: flex-end;
-        margin: 0 0 24px;
+        margin: 0 24px 24px;
       }
 
       a {
@@ -458,7 +442,6 @@ $container-max-width-with-editor: 650px !default;
       position: relative;
 
       .pf-c-select {
-        max-width: $control-max-width-without-editor;
         background-color: white;
       }
     }
@@ -491,7 +474,6 @@ $container-max-width-with-editor: 650px !default;
     }
 
     &-table {
-      max-width: 800px;
 
       .pf-c-toolbar__content-section {
         justify-content: space-between;
@@ -545,7 +527,6 @@ $container-max-width-with-editor: 650px !default;
       }
 
       &-container {
-        max-width: $control-max-width-with-editor;
         min-height: 40px;
         background-color: white;
         box-shadow: 0 1px 0 0 #5a6872;
@@ -593,7 +574,6 @@ $container-max-width-with-editor: 650px !default;
       }
 
       .pf-c-select {
-        width: $control-max-width-without-editor;
         background-color: white;
 
         .pf-c-select__menu {
@@ -644,7 +624,6 @@ $container-max-width-with-editor: 650px !default;
 
     .creation-view-group-container {
       position: relative;
-      max-width: $container-max-width-with-editor;
       border: 1px solid #dfe0e3;
       background: white;
       box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
@@ -739,22 +718,12 @@ $container-max-width-with-editor: 650px !default;
     }
 
     &.showEditor {
-      .creation-view-controls-title {
-        max-width: $control-max-width-with-editor;
-      }
 
       .creation-view-controls-card-container {
         margin-bottom: 20px;
       }
 
-      .creation-view-controls-add-value-container {
-        max-width: $control-max-width-with-editor;
-      }
 
-      .pf-c-select,
-      .pf-c-form-control {
-        max-width: $control-max-width-with-editor;
-      }
     }
 
     &.showEditor,
@@ -766,10 +735,6 @@ $container-max-width-with-editor: 650px !default;
         .creation-view-controls-cards-title-container {
           cursor: pointer;
           display: flex;
-        }
-
-        .tf--providers-container.tf--row {
-          max-width: 1000px;
         }
       }
 
@@ -819,19 +784,14 @@ $container-max-width-with-editor: 650px !default;
     }
 
     .tf--grid-container.small {
-      .tf--grid {
-        .tf--providers-container.tf--row {
-          max-width: 800px;
-        }
-      }
 
       .tf--provider-card {
         .tf--provider-card-container {
-          width: 220px;
+          width: 250px;
 
           .tf--create-cluster-page__provider-card {
-            width: 220px;
-            height: 110px;
+            width: 250px;
+            height: 136px;
           }
         }
       }
