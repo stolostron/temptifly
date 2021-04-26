@@ -35,7 +35,6 @@ class ControlPanelAccordion extends React.Component {
       tooltip,
       note,
       overline,
-      numbered,
       collapsable,
       collapsed = false,
       content = [],

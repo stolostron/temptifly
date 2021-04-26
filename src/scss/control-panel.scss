@@ -86,7 +86,6 @@ $acm_background_color: #f0f0f0 !default;
   }
 
   .pf-c-form-control {
-
     &.input {
       padding: 0;
     }
@@ -101,7 +100,6 @@ $acm_background_color: #f0f0f0 !default;
   }
 
   .pf-c-alert {
-
     h4 {
       margin: 0;
     }
@@ -474,7 +472,6 @@ $acm_background_color: #f0f0f0 !default;
     }
 
     &-table {
-
       .pf-c-toolbar__content-section {
         justify-content: space-between;
       }
@@ -718,12 +715,9 @@ $acm_background_color: #f0f0f0 !default;
     }
 
     &.showEditor {
-
       .creation-view-controls-card-container {
         margin-bottom: 20px;
       }
-
-
     }
 
     &.showEditor,
@@ -745,7 +739,8 @@ $acm_background_color: #f0f0f0 !default;
           width: 250px;
 
           .tf--create-cluster-page__provider-card-isSelected {
-            box-shadow: rgba(3, 3, 3, 0.16) 0px 8px 16px 0px, rgba(3, 3, 3, 0.08) 0px 0px 6px 0px;
+            box-shadow: rgba(3, 3, 3, 0.16) 0px 8px 16px 0px,
+              rgba(3, 3, 3, 0.08) 0px 0px 6px 0px;
           }
           .tf--create-cluster-page__provider-card-isSelected::before {
             position: absolute;
@@ -754,7 +749,7 @@ $acm_background_color: #f0f0f0 !default;
             left: 0;
             height: 3px;
             content: "";
-            background-color: rgb(0, 102, 204); 
+            background-color: rgb(0, 102, 204);
           }
 
           .tf--create-cluster-page__provider-card {
@@ -764,9 +759,10 @@ $acm_background_color: #f0f0f0 !default;
             display: flex;
             flex-direction: column;
             &:hover {
-              box-shadow: rgba(3, 3, 3, 0.16) 0px 8px 16px 0px, rgba(3, 3, 3, 0.08) 0px 0px 6px 0px;
+              box-shadow: rgba(3, 3, 3, 0.16) 0px 8px 16px 0px,
+                rgba(3, 3, 3, 0.08) 0px 0px 6px 0px;
             }
-      
+
             & > * {
               flex: 2 1 auto;
               display: flex;
@@ -778,13 +774,11 @@ $acm_background_color: #f0f0f0 !default;
               }
             }
           }
-
         }
       }
     }
 
     .tf--grid-container.small {
-
       .tf--provider-card {
         .tf--provider-card-container {
           width: 250px;
