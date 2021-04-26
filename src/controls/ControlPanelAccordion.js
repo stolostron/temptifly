@@ -120,11 +120,6 @@ class ControlPanelAccordion extends React.Component {
                   <CaretIcon />
                 </div>
               )}
-              {numbered && (
-                <div className="creation-view-controls-title-circle">
-                  {numbered}
-                </div>
-              )}
               <div className="creation-view-controls-title-main-name">
                 {label}
                 {!info && tooltip &&

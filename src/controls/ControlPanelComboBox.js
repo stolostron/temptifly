@@ -208,7 +208,7 @@ class ControlPanelComboBox extends React.Component {
             controlId={controlId}
             control={control}>
             {isLoading ? (
-              <div className="creation-view-controls-singleselect-loading">
+              <div className="creation-view-controls-singleselect-loading  pf-c-form-control">
                 <Spinner size="md" />
                 <div>{active}</div>
               </div>
