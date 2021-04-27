@@ -122,7 +122,7 @@ export default class TemplateEditor extends React.Component {
         break
 
       case 'ERROR':
-        logCreateErrors(this.props.logging, creationMsg, resourceJSON)
+        logCreateErrors(props.logging, creationMsg, resourceJSON)
         notifications = creationMsg.map(message => {
           return {
             id: 'create',

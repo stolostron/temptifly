@@ -677,7 +677,6 @@ $acm_background_color: #f0f0f0 !default;
         background-color: $acm_background_color;
         border: 1px solid #dfe3e6;
         display: flex;
-        align-items: center;
         cursor: pointer;
       }
     }
@@ -758,6 +757,7 @@ $acm_background_color: #f0f0f0 !default;
             margin: 0 10px 10px 0;
             display: flex;
             flex-direction: column;
+            background-color: white;
             &:hover {
               box-shadow: rgba(3, 3, 3, 0.16) 0px 8px 16px 0px,
                 rgba(3, 3, 3, 0.08) 0px 0px 6px 0px;
@@ -767,10 +767,13 @@ $acm_background_color: #f0f0f0 !default;
               flex: 2 1 auto;
               display: flex;
               justify-items: left;
+              padding-left: 30px;
 
               > img,
               > svg {
                 margin-top: 24px;
+                width: 45px;
+                height: 45px;
               }
             }
           }

@@ -125,6 +125,7 @@ class ControlPanelComboBox extends React.Component {
       hasReplacements,
       isFailed,
       fetchAvailable,
+      isRefetching,
       disabled
     } = control
     let { isLoading } = control
@@ -207,7 +208,7 @@ class ControlPanelComboBox extends React.Component {
           <ControlPanelFormGroup
             controlId={controlId}
             control={control}>
-            {isLoading ? (
+            {isLoading || isRefetching ? (
               <div className="creation-view-controls-singleselect-loading  pf-c-form-control">
                 <Spinner size="md" />
                 <div>{active}</div>

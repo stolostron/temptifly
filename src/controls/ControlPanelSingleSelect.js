@@ -39,6 +39,7 @@ class ControlPanelSingleSelect extends React.Component {
       exception,
       disabled,
       fetchAvailable,
+      isRefetching,
       isLoading,
       isFailed
     } = control
@@ -72,7 +73,7 @@ class ControlPanelSingleSelect extends React.Component {
           <ControlPanelFormGroup
             controlId={controlId}
             control={control}>
-            {isLoading ? (
+            {isLoading || isRefetching ? (
               <div className="creation-view-controls-singleselect-loading  pf-c-form-control">
                 <Spinner size="md" />
                 <div>{active}</div>
