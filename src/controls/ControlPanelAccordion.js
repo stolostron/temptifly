@@ -34,7 +34,6 @@ class ControlPanelAccordion extends React.Component {
       subtitle,
       tooltip,
       note,
-      overline,
       collapsable,
       collapsed = false,
       content = [],
@@ -77,7 +76,6 @@ class ControlPanelAccordion extends React.Component {
     const text = i18n('creation.ocp.toggle')
     const titleClasses = classNames({
       'creation-view-controls-title': true,
-      overline,
       collapsed
     })
     const mainTitleClasses = classNames({

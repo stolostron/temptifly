@@ -159,7 +159,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                 </div>
                 <div
                   aria-label="creation.ocp.toggle"
-                  class="creation-view-controls-title overline"
+                  class="creation-view-controls-title"
                   id="choosedist-creation.ocp.distribution"
                   role="button"
                   tabindex="0"
@@ -668,7 +668,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                 </div>
                 <div
                   aria-label="creation.ocp.toggle"
-                  class="creation-view-controls-title overline"
+                  class="creation-view-controls-title"
                   id="hostssections-creation.ocp.cluster.hosts"
                   role="button"
                   tabindex="0"
@@ -1596,7 +1596,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                 </div>
                 <div
                   aria-label="creation.ocp.toggle"
-                  class="creation-view-controls-title overline collapsed"
+                  class="creation-view-controls-title collapsed"
                   id="networking-creation.ocp.networking"
                   role="button"
                   tabindex="0"

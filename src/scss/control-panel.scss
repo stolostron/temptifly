@@ -222,16 +222,7 @@ $acm_background_color: #f0f0f0 !default;
         padding: 0 0 8px;
       }
 
-      &.overline {
-        border-top: 1px solid $color__navy-gray-8;
-        margin-bottom: 16px;
-      }
-
       &.collapsed {
-        &.overline {
-          margin-bottom: 0;
-        }
-
         .creation-view-controls-title-normal-container {
           display: none;
         }
