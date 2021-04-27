@@ -201,6 +201,21 @@ class ControlPanel extends React.Component {
         variables = variables(control, this.props.controlData)
       }
       if (!control.exception) {
+        const refetch = (func) => {
+          delete control.isLoaded
+          control.isRefetching = true
+          control.forceUpdate()
+          func().then(data=>{
+            control.isRefetching = false
+            setAvailable(control, {data})
+            control.forceUpdate()
+          }).catch((err) => {
+            control.isRefetching = false
+            setAvailable(control, {error:err})
+            control.forceUpdate()
+          })
+        }
+
         if (typeof query === 'function') {
           if (!control.isLoaded) {
             if (!control.isLoading) {
@@ -214,10 +229,12 @@ class ControlPanel extends React.Component {
               })
             }
           }
+          fetchAvailable.refetch = refetch.bind(this, query)
         } else {
           return (
             <Query query={query} key={id} variables={variables}>
               {result => {
+                fetchAvailable.refetch = refetch.bind(this, result.refetch)
                 setAvailable(control, result)
                 return this.renderControlWithPrompt(id, type, control, grpId)
               }}

@@ -42,7 +42,7 @@ class ControlPanelLabels extends React.Component {
           <ControlPanelFormGroup
             controlId={controlId}
             control={control}>
-            <div className="creation-view-controls-labels-container">
+            <div className="creation-view-controls-labels-container pf-c-form-control" style={{height: 'unset'}}>
               {formatted.length!==0 && <div className="creation-view-controls-labels-tag-container">
                 {formatted.map((label, inx) => {
                   return (

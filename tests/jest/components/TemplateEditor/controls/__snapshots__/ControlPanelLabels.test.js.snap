@@ -46,7 +46,7 @@ exports[`ControlPanelLabels component renders as expected 1`] = `
         class="pf-c-form__group-control"
       >
         <div
-          class="creation-view-controls-labels-container"
+          class="creation-view-controls-labels-container pf-c-form-control"
         >
           <div
             class="creation-view-controls-labels-edit-container"
