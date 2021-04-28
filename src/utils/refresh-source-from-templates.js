@@ -174,6 +174,9 @@ export const generateTemplateData = (
             if (gvalue) {
               map[gcontrol.id] = gvalue
             }
+            if (gcontrol.hasReplacements) {
+              gcontrol.groupTemplateData = map
+            }
           })
           return map
         })
@@ -226,7 +229,7 @@ export const generateTemplateData = (
 }
 
 const addCodeSnippetsTemplateData = (
-  templateData,
+  mainTemplateData,
   replacements,
   controlMap
 ) => {
@@ -243,7 +246,7 @@ const addCodeSnippetsTemplateData = (
         const ctrl = controlMap[id]
         if (ctrl && ctrl.type === 'hidden') {
           delete controlMap[id].wasSet
-          delete templateData[id]
+          delete mainTemplateData[id]
         }
       })
     }
@@ -273,8 +276,10 @@ const addCodeSnippetsTemplateData = (
       hasCapturedUserSource,
       customYAML,
       encode: encodeData = [],
+      groupTemplateData,
       userData
     } = control
+    const templateData = groupTemplateData || mainTemplateData
     templateData[`has${capitalize(id)}`] = active.length > 0
     if (typeof active !== 'function' && active.length > 0) {
       if (hasCapturedUserSource) {
