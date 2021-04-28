@@ -1,6 +1,6 @@
 {
   "name": "temptifly",
-  "version": "0.3.21",
+  "version": "0.3.22",
   "description": "Side-by-side template editor",
   "main": "dist/index.js",
   "scripts": {
@@ -50,7 +50,7 @@
     "@patternfly/react-table": "^4.19.5",
     "@patternfly/react-tokens": "^4.9.18",
     "react": "^16.14.0 || ^17.0.0",
-    "react-dom": "^16.14.0"
+    "react-dom": "^16.14.0 || ^17.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
