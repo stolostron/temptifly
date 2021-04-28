@@ -5,9 +5,6 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import Tooltip from '../components/Tooltip'
 import isEmpty from 'lodash/isEmpty'
-import {
-  CheckmarkIcon,
-} from '../icons/Icons'
 
 class ControlPanelCards extends React.Component {
   static propTypes = {
@@ -163,7 +160,6 @@ const ControlPanelCard = ({
   const cardClasses = classNames({
     'tf--create-cluster-page__provider-card': true,
     'tf--create-cluster-page__provider-card-isSelected': selected,
-    'tf--create-cluster-page__provider-card-isDisabled': disabled
   })
   const wrapperClasses = classNames('tf--provider-card', {
     'tf--provider-card-isDisabled': disabled
@@ -183,9 +179,6 @@ const ControlPanelCard = ({
     break
   }
 
-  const half = title.substring(0, title.length / 2).lastIndexOf(' ')
-  const title1 = title.substring(0, half)
-  const title2 = title.substring(half)
   const id = title.replace(/\s+/g, '-').toLowerCase()
   return (
     <div
@@ -200,17 +193,9 @@ const ControlPanelCard = ({
     >
       <div className={'tf--provider-card-container'}>
         <div className={cardClasses}>
-          {image}
-          <p className={'tf--create-cluster-page__provider-card-title'}>
-            {title1}
-            <span>{title2}</span>
-          </p>
+          <div>{image}</div>
+          <div>{title}</div>
         </div>
-        {selected && (
-          <div className="card-checkmark">
-            <CheckmarkIcon />
-          </div>
-        )}
         {tooltip &&
           !selected && (
           <div className="card-tooltip-container">

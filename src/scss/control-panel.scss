@@ -5,9 +5,6 @@ $color__blue-51: #3d70b2 !default;
 $color__navy-gray-6: #5a6872 !default;
 $color__navy-gray-8: #dfe6eb !default;
 $acm_background_color: #f0f0f0 !default;
-$control-max-width-with-editor: 600px !default;
-$control-max-width-without-editor: 600px !default;
-$container-max-width-with-editor: 650px !default;
 
 @keyframes flash {
   0% {
@@ -59,7 +56,6 @@ $container-max-width-with-editor: 650px !default;
       background: white;
       box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
       padding: 20px;
-      max-width: 800px;
 
       .pf-c-form-control {
         background-color: #f4f7fb;
@@ -80,7 +76,6 @@ $container-max-width-with-editor: 650px !default;
   }
 
   .pf-c-skeleton {
-    max-width: $control-max-width-with-editor;
     height: 40px;
     background-color: #e0e0e0;
   }
@@ -91,8 +86,6 @@ $container-max-width-with-editor: 650px !default;
   }
 
   .pf-c-form-control {
-    max-width: $control-max-width-with-editor;
-
     &.input {
       padding: 0;
     }
@@ -106,13 +99,7 @@ $container-max-width-with-editor: 650px !default;
     }
   }
 
-  .pf-c-form__helper-text {
-    max-width: $control-max-width-with-editor;
-  }
-
   .pf-c-alert {
-    max-width: 1000px;
-
     h4 {
       margin: 0;
     }
@@ -168,8 +155,9 @@ $container-max-width-with-editor: 650px !default;
       }
 
       &-main {
-        font-weight: 600;
-        font-size: 18px;
+        color: #004080;
+        font-weight: normal;
+        font-size: 16px;
         padding: 16px 0;
         display: flex;
         align-items: center;
@@ -184,21 +172,21 @@ $container-max-width-with-editor: 650px !default;
         &-collapse-button {
           display: flex;
           position: absolute;
-          left: -24px;
+          left: -30px;
 
           > svg {
             margin: 0 6px;
-            width: 12px;
-            height: 12px;
-            fill: #8c9fa9;
+            width: 16px;
+            height: 16px;
+            fill: #151515;
             transition: all 100ms;
+            transform: rotate(90deg);
           }
         }
 
         &-name {
           height: 32px;
           white-space: nowrap;
-          max-width: 600px;
           overflow: hidden;
           text-overflow: hidden;
         }
@@ -234,16 +222,7 @@ $container-max-width-with-editor: 650px !default;
         padding: 0 0 8px;
       }
 
-      &.overline {
-        border-top: 1px solid $color__navy-gray-8;
-        margin-bottom: 16px;
-      }
-
       &.collapsed {
-        &.overline {
-          margin-bottom: 0;
-        }
-
         .creation-view-controls-title-normal-container {
           display: none;
         }
@@ -251,7 +230,7 @@ $container-max-width-with-editor: 650px !default;
         .creation-view-controls-title-main {
           &-collapse-button {
             > svg {
-              transform: rotate(-180deg);
+              transform: rotate(0);
             }
           }
 
@@ -274,7 +253,6 @@ $container-max-width-with-editor: 650px !default;
         background-color: white;
         padding: 5px 8px 5px 30px;
         height: 36px;
-        max-width: $control-max-width-with-editor;
         border-bottom: 1px solid #8a8d90;
 
         .pf-c-spinner {
@@ -288,8 +266,6 @@ $container-max-width-with-editor: 650px !default;
         position: relative;
         box-shadow: 0 1px 0 0 #5a6872;
         cursor: pointer;
-        width: $control-max-width-with-editor;
-        max-width: $control-max-width-with-editor;
 
         .tf--list-box__selection {
           position: absolute;
@@ -309,7 +285,7 @@ $container-max-width-with-editor: 650px !default;
           position: absolute;
           top: 0;
           right: 0;
-          padding: 0 4px;
+          padding: 0 18px;
           height: 100%;
           cursor: pointer;
 
@@ -323,7 +299,7 @@ $container-max-width-with-editor: 650px !default;
         .tf--list-box__refresh-icon {
           position: absolute;
           top: 0;
-          right: 20px;
+          right: 40px;
           padding: 0 4px;
           height: 100%;
           cursor: pointer;
@@ -383,12 +359,11 @@ $container-max-width-with-editor: 650px !default;
 
     &-add-value-container {
       display: flex;
-      max-width: $control-max-width-with-editor;
       margin: 20px 0 24px 20px;
 
       &.bottom-right {
         justify-content: flex-end;
-        margin: 0 0 24px;
+        margin: 0 24px 24px;
       }
 
       a {
@@ -456,7 +431,6 @@ $container-max-width-with-editor: 650px !default;
       position: relative;
 
       .pf-c-select {
-        max-width: $control-max-width-without-editor;
         background-color: white;
       }
     }
@@ -489,8 +463,6 @@ $container-max-width-with-editor: 650px !default;
     }
 
     &-table {
-      max-width: 800px;
-
       .pf-c-toolbar__content-section {
         justify-content: space-between;
       }
@@ -543,7 +515,6 @@ $container-max-width-with-editor: 650px !default;
       }
 
       &-container {
-        max-width: $control-max-width-with-editor;
         min-height: 40px;
         background-color: white;
         box-shadow: 0 1px 0 0 #5a6872;
@@ -591,7 +562,6 @@ $container-max-width-with-editor: 650px !default;
       }
 
       .pf-c-select {
-        width: $control-max-width-without-editor;
         background-color: white;
 
         .pf-c-select__menu {
@@ -642,7 +612,6 @@ $container-max-width-with-editor: 650px !default;
 
     .creation-view-group-container {
       position: relative;
-      max-width: $container-max-width-with-editor;
       border: 1px solid #dfe0e3;
       background: white;
       box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
@@ -737,21 +706,8 @@ $container-max-width-with-editor: 650px !default;
     }
 
     &.showEditor {
-      .creation-view-controls-title {
-        max-width: $control-max-width-with-editor;
-      }
-
       .creation-view-controls-card-container {
         margin-bottom: 20px;
-      }
-
-      .creation-view-controls-add-value-container {
-        max-width: $control-max-width-with-editor;
-      }
-
-      .pf-c-select,
-      .pf-c-form-control {
-        max-width: $control-max-width-with-editor;
       }
     }
 
@@ -765,61 +721,63 @@ $container-max-width-with-editor: 650px !default;
           cursor: pointer;
           display: flex;
         }
-
-        .tf--providers-container.tf--row {
-          max-width: 1000px;
-        }
       }
 
       .tf--provider-card {
         margin: 10px 16px 0 0;
 
         .tf--provider-card-container {
-          width: 260px;
+          width: 250px;
 
-          .tf--create-cluster-page__provider-card-isSelected {
-            border: 1px solid #3d70b2;
+          .tf--create-cluster-page__provider-card-isSelected::before {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            pointer-events: none;
+            content: "";
+            border: 2px solid #06c;
+            border-radius: 4px;
           }
 
           .tf--create-cluster-page__provider-card {
-            width: 260px;
-            height: 80px;
+            width: 250px;
+            height: 136px;
             margin: 0 10px 10px 0;
-
-            & > img,
-            & > svg {
-              margin: 0 16px;
-              height: 45px;
-              width: 45px;
-            }
-          }
-
-          .tf--create-cluster-page__provider-card-title {
-            font-size: 14px;
-            text-align: left;
-            width: 160px;
             display: flex;
             flex-direction: column;
-            font-weight: bold;
+            background-color: white;
+            &:hover {
+              color: #06c;
+              border: 1px solid #06c;
+            }
+
+            & > * {
+              flex: 2 1 auto;
+              display: flex;
+              justify-content: center;
+
+              > img,
+              > svg {
+                margin-top: 24px;
+                width: 55px;
+                height: 55px;
+              }
+            }
           }
         }
       }
     }
 
     .tf--grid-container.small {
-      .tf--grid {
-        .tf--providers-container.tf--row {
-          max-width: 800px;
-        }
-      }
-
       .tf--provider-card {
         .tf--provider-card-container {
-          width: 220px;
+          width: 250px;
 
           .tf--create-cluster-page__provider-card {
-            width: 220px;
-            height: 70px;
+            width: 250px;
+            height: 136px;
           }
         }
       }
