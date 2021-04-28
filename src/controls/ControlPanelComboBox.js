@@ -4,6 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import { Spinner } from '@patternfly/react-core'
 import ControlPanelFormGroup from './ControlPanelFormGroup'
 import TimesCircleIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
 import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon'
@@ -124,6 +125,7 @@ class ControlPanelComboBox extends React.Component {
       hasReplacements,
       isFailed,
       fetchAvailable,
+      isRefetching,
       disabled
     } = control
     let { isLoading } = control
@@ -206,138 +208,140 @@ class ControlPanelComboBox extends React.Component {
           <ControlPanelFormGroup
             controlId={controlId}
             control={control}>
-            <div id={`${controlId}-group`}>
-              <div
-                role="listbox"
-                aria-label="Choose an item"
-                tabIndex="0"
-                className="tf--list-box"
-              >
+            {isLoading || isRefetching ? (
+              <div className="creation-view-controls-singleselect-loading  pf-c-form-control">
+                <Spinner size="md" />
+                <div>{active}</div>
+              </div>
+            ) : (
+              <div id={`${controlId}-group`}>
                 <div
-                  role="button"
-                  className=""
+                  role="listbox"
+                  aria-label="Choose an item"
                   tabIndex="0"
-                  type="button"
-                  aria-label={aria}
-                  aria-expanded={isOpen}
-                  aria-haspopup="true"
-                  data-toggle="true"
-                  onClick={this.clickToggle.bind(this)}
-                  onKeyPress={this.pressToggle.bind(this)}
+                  className="tf--list-box"
                 >
-                  <div className={inputClasses}>
-                    <input
-                      className="pf-c-combo-control"
-                      aria-label="ListBox input field"
-                      spellCheck="false"
-                      role="combobox"
-                      disabled={disabled}
-                      aria-controls={key}
-                      aria-expanded="true"
-                      autoComplete="off"
-                      id={controlId}
-                      placeholder={placeholder}
-                      ref={this.setInputRef}
-                      style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}
-                      value={value}
-                      onBlur={this.blur.bind(this)}
-                      onKeyUp={this.pressUp.bind(this)}
-                      onKeyDown={this.pressDown.bind(this)}
-                      onFocus={e => {
-                        e.target.select()
-                      }}
-                      onChange={evt =>
-                        this.setState({ searchText: evt.currentTarget.value })
-                      }
-                      data-testid={`combo-${controlId}`}
-                    />
-                  </div>
-                  {!disabled && (searchText || active) && <div
+                  <div
                     role="button"
-                    className="tf--list-box__selection"
+                    className=""
                     tabIndex="0"
-                    title="Clear selected item"
-                    ref={this.setClearRef}
-                    onClick={this.clickClear.bind(this)}
-                    onKeyPress={this.pressClear.bind(this)}
-                  >
-                    <TimesCircleIcon aria-hidden />
-                  </div>}
-                  {!disabled && <div
-                    role="button"
-                    tabIndex="0"
-                    className={toggleClasses}
-                    ref={this.setToggleRef}
-                    onClick={this.clickToggle.bind(this)}
-                    onKeyPress={this.pressToggle.bind(this)}
-                  >
-                    <svg
-                      fillRule="evenodd"
-                      height="5"
-                      role="img"
-                      viewBox="0 0 10 5"
-                      width="10"
-                      alt={aria}
-                      aria-label={aria}
-                    >
-                      <title>Close menu</title>
-                      <path d="M0 0l5 4.998L10 0z" />
-                    </svg>
-                  </div>}
-                  {fetchAvailable && <div
-                    role="button"
-                    tabIndex="0"
-                    className="tf--list-box__refresh-icon"
                     type="button"
                     aria-label={aria}
                     aria-expanded={isOpen}
                     aria-haspopup="true"
                     data-toggle="true"
-                    onClick={this.clickRefresh.bind(this)}
-                    onKeyPress={this.clickRefresh.bind(this)}
+                    onClick={this.clickToggle.bind(this)}
+                    onKeyPress={this.pressToggle.bind(this)}
                   >
-                    <svg
-                      fillRule="evenodd"
-                      height="5"
-                      role="img"
-                      viewBox="0 0 12 12"
-                      width="12"
-                      alt={aria}
-                      aria-label={aria}
+                    <div className={inputClasses}>
+                      <input
+                        className="pf-c-combo-control"
+                        aria-label="ListBox input field"
+                        spellCheck="false"
+                        role="combobox"
+                        disabled={disabled}
+                        aria-controls={key}
+                        aria-expanded="true"
+                        autoComplete="off"
+                        id={controlId}
+                        placeholder={placeholder}
+                        ref={this.setInputRef}
+                        style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}
+                        value={value}
+                        onBlur={this.blur.bind(this)}
+                        onKeyUp={this.pressUp.bind(this)}
+                        onKeyDown={this.pressDown.bind(this)}
+                        onFocus={e => {
+                          e.target.select()
+                        }}
+                        onChange={evt =>
+                          this.setState({ searchText: evt.currentTarget.value })
+                        }
+                        data-testid={`combo-${controlId}`}
+                      />
+                    </div>
+                    {!disabled && (searchText || active) && <div
+                      role="button"
+                      className="tf--list-box__selection"
+                      tabIndex="0"
+                      title="Clear selected item"
+                      ref={this.setClearRef}
+                      onClick={this.clickClear.bind(this)}
+                      onKeyPress={this.pressClear.bind(this)}
                     >
-                      <title>Refresh</title>
-                      <path d="M8.33703191,2.28461538 L6.50516317,0.553494162 L7.02821674,3.11581538e-14 L9.9,2.71384343 L7.02748392,5.41285697 L6.50601674,4.85786795 L8.43419451,3.04615385 L4.95,3.04615385 C2.63677657,3.04615385 0.761538462,4.92139195 0.761538462,7.23461538 C0.761538462,9.54783882 2.63677657,11.4230769 4.95,11.4230769 C7.26322343,11.4230769 9.13846154,9.54783882 9.13846154,7.23461538 L9.9,7.23461538 C9.9,9.9684249 7.68380951,12.1846154 4.95,12.1846154 C2.21619049,12.1846154 0,9.9684249 0,7.23461538 C-1.77635684e-15,4.50080587 2.21619049,2.28461538 4.95,2.28461538 L8.33703191,2.28461538 Z" id="restart"></path>
-                    </svg>
-                  </div>}
-                </div>
-                {!disabled && isOpen && (
-                  <div className="tf--list-box__menu" key={key} id={key} ref={this.setMenuRef} >
-                    {items.map(
-                      ({ label, id }) => {
-                        const itemClasses = classNames({
-                          'tf--list-box__menu-item': true,
-                          searching: searchText,
-                        })
-                        return (
-                          <div
-                            role="button"
-                            key={label}
-                            className={itemClasses}
-                            id={`${controlId}-item-${id}`}
-                            tabIndex="0"
-                            onMouseDown={()=>this.setState({preselect: true})}
-                            onClick={this.clickSelect.bind(this, label)}
-                            onKeyPress={this.pressSelect.bind(this, label)}
-                          >
-                            {this.renderLabel(label, searchText, active)}
-                          </div>
-                        )
-                      }
-                    )}
+                      <TimesCircleIcon aria-hidden />
+                    </div>}
+                    {!disabled && <div
+                      role="button"
+                      tabIndex="0"
+                      className={toggleClasses}
+                      ref={this.setToggleRef}
+                      onClick={this.clickToggle.bind(this)}
+                      onKeyPress={this.pressToggle.bind(this)}
+                    >
+                      <svg
+                        fillRule="evenodd"
+                        height="5"
+                        role="img"
+                        viewBox="0 0 10 5"
+                        width="10"
+                        alt={aria}
+                        aria-label={aria}
+                      >
+                        <title>Close menu</title>
+                        <path d="M0 0l5 4.998L10 0z" />
+                      </svg>
+                    </div>}
+                    {fetchAvailable && !(searchText || active) && <div
+                      role="button"
+                      tabIndex="0"
+                      className="tf--list-box__refresh-icon"
+                      type="button"
+                      onClick={this.clickRefresh.bind(this)}
+                      onKeyPress={this.clickRefresh.bind(this)}
+                    >
+                      <svg
+                        fillRule="evenodd"
+                        height="12"
+                        role="img"
+                        viewBox="0 0 12 12"
+                        width="12"
+                        alt={aria}
+                        aria-label={aria}
+                      >
+                        <title>Refresh</title>
+                        <path d="M8.33703191,2.28461538 L6.50516317,0.553494162 L7.02821674,3.11581538e-14 L9.9,2.71384343 L7.02748392,5.41285697 L6.50601674,4.85786795 L8.43419451,3.04615385 L4.95,3.04615385 C2.63677657,3.04615385 0.761538462,4.92139195 0.761538462,7.23461538 C0.761538462,9.54783882 2.63677657,11.4230769 4.95,11.4230769 C7.26322343,11.4230769 9.13846154,9.54783882 9.13846154,7.23461538 L9.9,7.23461538 C9.9,9.9684249 7.68380951,12.1846154 4.95,12.1846154 C2.21619049,12.1846154 0,9.9684249 0,7.23461538 C-1.77635684e-15,4.50080587 2.21619049,2.28461538 4.95,2.28461538 L8.33703191,2.28461538 Z" id="restart"></path>
+                      </svg>
+                    </div>}
                   </div>
-                )}
-              </div>
-            </div>
+                  {!disabled && isOpen && (
+                    <div className="tf--list-box__menu" key={key} id={key} ref={this.setMenuRef} >
+                      {items.map(
+                        ({ label, id }) => {
+                          const itemClasses = classNames({
+                            'tf--list-box__menu-item': true,
+                            searching: searchText,
+                          })
+                          return (
+                            <div
+                              role="button"
+                              key={label}
+                              className={itemClasses}
+                              id={`${controlId}-item-${id}`}
+                              tabIndex="0"
+                              onMouseDown={()=>this.setState({preselect: true})}
+                              onClick={this.clickSelect.bind(this, label)}
+                              onKeyPress={this.pressSelect.bind(this, label)}
+                            >
+                              {this.renderLabel(label, searchText, active)}
+                            </div>
+                          )
+                        }
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>)}
           </ControlPanelFormGroup>
         </div>
       </React.Fragment>
@@ -403,21 +407,15 @@ class ControlPanelComboBox extends React.Component {
   clickRefresh(e) {
     e.preventDefault()
     e.stopPropagation()
-    const { control, i18n } = this.props
+    const { control } = this.props
     const { fetchAvailable } = control
     if (fetchAvailable) {
-      delete control.isLoading
-      delete control.isLoaded
       const { refetch } = fetchAvailable
       if (typeof refetch === 'function') {
-        refetch().then(()=>{
-          control.forceUpdate()
-          this.inputRef.placeholder = control.placeholder
-        })
+        delete control.available
+        refetch()
       }
       this.clickClear()
-      control.placeholder = this.inputRef.placeholder
-      this.inputRef.placeholder = i18n(get(control, 'fetchAvailable.loadingDesc', 'resource.loading'))
     }
   }
 

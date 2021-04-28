@@ -34,8 +34,6 @@ class ControlPanelAccordion extends React.Component {
       subtitle,
       tooltip,
       note,
-      overline,
-      numbered,
       collapsable,
       collapsed = false,
       content = [],
@@ -78,7 +76,6 @@ class ControlPanelAccordion extends React.Component {
     const text = i18n('creation.ocp.toggle')
     const titleClasses = classNames({
       'creation-view-controls-title': true,
-      overline,
       collapsed
     })
     const mainTitleClasses = classNames({
@@ -118,11 +115,6 @@ class ControlPanelAccordion extends React.Component {
                   }
                 >
                   <CaretIcon />
-                </div>
-              )}
-              {numbered && (
-                <div className="creation-view-controls-title-circle">
-                  {numbered}
                 </div>
               )}
               <div className="creation-view-controls-title-main-name">
