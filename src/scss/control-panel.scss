@@ -668,6 +668,7 @@ $acm_background_color: #f0f0f0 !default;
         background-color: $acm_background_color;
         border: 1px solid #dfe3e6;
         display: flex;
+        align-items: center;
         cursor: pointer;
       }
     }
@@ -728,18 +729,16 @@ $acm_background_color: #f0f0f0 !default;
         .tf--provider-card-container {
           width: 250px;
 
-          .tf--create-cluster-page__provider-card-isSelected {
-            box-shadow: rgba(3, 3, 3, 0.16) 0px 8px 16px 0px,
-              rgba(3, 3, 3, 0.08) 0px 0px 6px 0px;
-          }
           .tf--create-cluster-page__provider-card-isSelected::before {
             position: absolute;
             top: 0;
             right: 0;
+            bottom: 0;
             left: 0;
-            height: 3px;
+            pointer-events: none;
             content: "";
-            background-color: rgb(0, 102, 204);
+            border: 2px solid #06c;
+            border-radius: 4px;
           }
 
           .tf--create-cluster-page__provider-card {
@@ -750,21 +749,20 @@ $acm_background_color: #f0f0f0 !default;
             flex-direction: column;
             background-color: white;
             &:hover {
-              box-shadow: rgba(3, 3, 3, 0.16) 0px 8px 16px 0px,
-                rgba(3, 3, 3, 0.08) 0px 0px 6px 0px;
+              color: #06c;
+              border: 1px solid #06c;
             }
 
             & > * {
               flex: 2 1 auto;
               display: flex;
-              justify-items: left;
-              padding-left: 30px;
+              justify-content: center;
 
               > img,
               > svg {
                 margin-top: 24px;
-                width: 45px;
-                height: 45px;
+                width: 55px;
+                height: 55px;
               }
             }
           }
