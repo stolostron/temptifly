@@ -75,6 +75,11 @@ $acm_background_color: #f0f0f0 !default;
     max-height: 0;
   }
 
+  
+  .pf-c-wizard__footer {
+    box-shadow: rgba(3, 3, 3, 0.16) 0px -2px 4px -1px    
+  }
+
   .pf-c-skeleton {
     height: 40px;
     background-color: #e0e0e0;

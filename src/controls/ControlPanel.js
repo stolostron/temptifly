@@ -3,7 +3,7 @@
 import React from 'react'
 import { Query } from 'react-apollo'
 import PropTypes from 'prop-types'
-import { Alert, AlertActionLink } from '@patternfly/react-core'
+import { Alert, AlertActionLink, Wizard } from '@patternfly/react-core'
 import classNames from 'classnames'
 import ControlPanelAccordion from './ControlPanelAccordion'
 import ControlPanelTextInput from './ControlPanelTextInput'
@@ -24,6 +24,7 @@ import {
   TrashIcon,
   AddIcon,
 } from '../icons/Icons'
+import { StepBackwardIcon } from '@patternfly/react-icons'
 
 class ControlPanel extends React.Component {
   static propTypes = {
@@ -80,54 +81,125 @@ class ControlPanel extends React.Component {
       'pf-c-form': true,
       showEditor
     })
-
-    // render notifications and collapsable control sections
     return (
       <div className="creation-view-controls-container">
-        <div
-          className={controlClasses}
-          ref={this.setCreationViewRef}
-          onScroll={this.refreshFading.bind(this)}
-        >
-          {this.renderPortals()}
-          <div id="notifications" />
-          {this.renderNotifications()}
-          <div className="content">
-            {this.renderControlSections(controlData)}
-          </div>
-        </div>
-        <div
-          className="creation-view-controls-container-blurr bottom"
-          ref={this.setCreationViewBottomBlurrRef}
-        />
+        {this.renderControlFormOrWizard(controlData, controlClasses)}
       </div>
     )
   }
 
-  renderControlSections(controlData, grpId = '') {
-    // create collapsable control sections
+  renderControlFormOrWizard(controlData, controlClasses) {
+    let step
     let section
     let content = []
+    let steps = []
+    let sections = []
+    let activeStep
+    let activeSection
     let stopRendering = false
     let stopRenderingOnNextControl = false
-    const controlSections = []
-    controlData.forEach(control => {
+    controlData.forEach((control, inx) => {
       const { type, pauseControlCreationHereUntilSelected } = control
       stopRendering = stopRenderingOnNextControl
       if (pauseControlCreationHereUntilSelected) {
         stopRenderingOnNextControl = !control.active
       }
       if (!stopRendering) {
-        if (type === 'section') {
-          content = []
-          section = { title: control, content }
-          controlSections.push(section)
-        } else {
-          content.push(control)
+        switch (type) {
+          case 'step':
+            if (!activeStep) {
+              if (content.length && !activeSection) {
+                section={title: {id: `section${inx}`, type: 'section'}, content}
+                sections.push(section)
+              }
+              if (activeSection) {
+                step={title: {id: `step${inx}`, type: 'step'}, sections}
+                steps.push(step)
+              }
+            }
+            sections = []
+            content = []
+            activeSection = null
+            activeStep = { title: control, sections }
+            steps.push(activeStep)
+            break
+          case 'section':
+            if (content.length && !activeSection) {
+              section={title: {id: `section${inx}`, type: 'section'}, content}
+              sections.push(section)
+            }
+            content = []
+            activeSection = { title: control, content }
+            sections.push(activeSection)
+            break
+          default:
+            if (!activeSection) {
+              activeSection={title: {id: `section${inx}`, type: 'section'}, content}
+              sections.push(activeSection)
+            }
+            content.push(control)
+            break
         }
       }
     })
+    // if no steps, just do a form
+    if (steps.length===0) {
+      return this.renderControlForm(sections, controlClasses)
+    } else {
+    // else do a wizard
+      return this.renderControlWizard(steps, controlClasses)
+    }
+  }
 
+  renderControlForm(sections, controlClasses) {
+    return (
+      <React.Fragment>
+        <div
+          className={controlClasses}
+          ref={this.setCreationViewRef}
+          onScroll={this.refreshFading.bind(this)}
+        >
+        {this.renderPortals()}
+        <div id="notifications" />
+          {this.renderNotifications()}
+          <div className="content">
+            {this.renderControlSections(sections)}
+          </div>
+        </div>
+        <div
+          className="creation-view-controls-container-blurr bottom"
+          ref={this.setCreationViewBottomBlurrRef}
+        />
+      </React.Fragment>
+    )
+  }
+
+  renderControlWizard(steps, controlClasses) {
+    steps = steps.map(({title, sections}, inx)=>{
+      return {
+        name: title.title,
+        component: <div className={controlClasses}>
+                      {this.renderControlSections(sections)}
+                    </div>
+      }
+    })
+    steps.push({
+      name: 'Review', 
+      component: <div className={controlClasses}>Review step content</div>, 
+      nextButtonText: 'Finish'
+    })
+    const title = 'Basic wizard';
+    return (
+      <Wizard
+        navAriaLabel={`${title} steps`}
+        mainAriaLabel={`${title} content`}
+        steps={steps}
+        height={'100%'}
+      />
+    );
+  }
+
+  renderControlSections(controlSections, grpId = '') {
     return controlSections.map(({ title, content: _content }) => {
       const { id, collapsed = false, shadowed } = title
       const sectionClasses = classNames({
@@ -179,7 +251,7 @@ class ControlPanel extends React.Component {
                 {prompts &&
                   active.length > 1 &&
                   this.renderDeleteGroupButton(control, inx)}
-                {this.renderControlSections(controlData, groupId)}
+                {this.renderGroupControlSections(controlData, groupId)}
               </div>
               {prompts &&
                 active.length - 1 === inx &&
@@ -189,6 +261,32 @@ class ControlPanel extends React.Component {
         })}
       </React.Fragment>
     )
+  }
+
+  renderGroupControlSections(controlData, grpId = '') {
+    // create collapsable control sections
+    let section
+    let content = []
+    let stopRendering = false
+    let stopRenderingOnNextControl = false
+    const controlSections = []
+    controlData.forEach(control => {
+      const { type, pauseControlCreationHereUntilSelected } = control
+      stopRendering = stopRenderingOnNextControl
+      if (pauseControlCreationHereUntilSelected) {
+        stopRenderingOnNextControl = !control.active
+      }
+      if (!stopRendering) {
+        if (type === 'section') {
+          content = []
+          section = { title: control, content }
+          controlSections.push(section)
+        } else {
+          content.push(control)
+        }
+      }
+    })
+    return this.renderControlSections(controlSections, grpId)
   }
 
   // if data for 'available' is fetched from server, use apollo component
