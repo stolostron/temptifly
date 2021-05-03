@@ -70,6 +70,10 @@ class ControlPanel extends React.Component {
     }
   };
 
+  setWizardRef = (ref) => {
+    this.wizardRef = ref
+  };
+
   setControlSectionRef = (title, ref) => {
     title.sectionRef = ref
   };
@@ -175,9 +179,23 @@ class ControlPanel extends React.Component {
   }
 
   renderControlWizard(steps, controlClasses) {
-    steps = steps.map(({title, sections}, inx)=>{
+    steps = steps.map(({title:control, sections})=>{
+      const { title, activeId } = control
+      let name = title
+      if (activeId) {
+        sections.forEach(({ content }) => {
+          var targetCtrl = content.find(({id})=>id===activeId)
+          if (targetCtrl) {
+            if (typeof targetCtrl.active === 'string') {
+              name = targetCtrl.active
+            } else if (Array.isArray(targetCtrl.active)) {
+              name = targetCtrl.active[0]
+            }
+          }
+        })
+      }
       return {
-        name: title.title,
+        name,
         component: <div className={controlClasses}>
                       {this.renderControlSections(sections)}
                     </div>
@@ -191,6 +209,7 @@ class ControlPanel extends React.Component {
     const title = 'Basic wizard';
     return (
       <Wizard
+        ref={this.setWizardRef.bind(this)}
         navAriaLabel={`${title} steps`}
         mainAriaLabel={`${title} content`}
         steps={steps}
@@ -623,7 +642,6 @@ class ControlPanel extends React.Component {
       delete control.syncedWith
       delete syncedControl.syncWith
     }
-
     this.props.handleControlChange(control, controlData, isCustomName)
     return field
   }
@@ -657,7 +675,7 @@ class ControlPanel extends React.Component {
       if (selection) {
         control.active.push(selection)
       }
-      this.props.handleNewEditorMode(control, controlData, this.creationView)
+      this.props.handleNewEditorMode(control, controlData, this.creationView, this.wizardRef)
     }
   }
 

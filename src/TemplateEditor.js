@@ -554,7 +554,7 @@ export default class TemplateEditor extends React.Component {
     this.isDirty = firstTemplateYAML !== newYAML
   }
 
-  handleNewEditorMode(control, controlData, creationView) {
+  handleNewEditorMode(control, controlData, creationView, wizardRef) {
     let { notifications } = this.state
     const {
       controlData: newControlData,
@@ -584,7 +584,7 @@ export default class TemplateEditor extends React.Component {
       otherYAMLTabs
     })
 
-    this.handleScrollAndCollapse(control, controlData, creationView)
+    this.handleScrollAndCollapse(control, controlData, creationView, wizardRef)
   }
 
   // change editor mode based on what card is selected
@@ -659,8 +659,10 @@ export default class TemplateEditor extends React.Component {
     }
   }
 
-  handleScrollAndCollapse(control, controlData, creationView) {
-    if (creationView) {
+  handleScrollAndCollapse(control, controlData, creationView, wizardRef) {
+    if (wizardRef) {
+      wizardRef.onNext()
+    } else {
       const { showEditor, previouslySelectedCards } = this.state
       // user chose a card with new controls in it---scroll the view down to the new fields
       const {
