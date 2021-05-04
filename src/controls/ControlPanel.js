@@ -19,6 +19,10 @@ import ControlPanelTable from './ControlPanelTable'
 import ControlPanelLabels from './ControlPanelLabels'
 import ControlPanelPrompt from './ControlPanelPrompt'
 import ControlPanelSkeleton from './ControlPanelSkeleton'
+import ControlPanelFinish from './ControlPanelFinish'
+import get from 'lodash/get'
+import set from 'lodash/set'
+import cloneDeep from 'lodash/cloneDeep'
 import '../scss/control-panel.scss'
 import {
   TrashIcon,
@@ -33,6 +37,8 @@ class ControlPanel extends React.Component {
     handleControlChange: PropTypes.func,
     handleGroupChange: PropTypes.func,
     handleNewEditorMode: PropTypes.func,
+    handleCreateResource: PropTypes.func,
+    handleCancelCreate: PropTypes.func,
     i18n: PropTypes.func,
     isCustomName: PropTypes.bool,
     isLoaded: PropTypes.bool,
@@ -44,16 +50,24 @@ class ControlPanel extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      step: 1
+    }
   }
 
   componentDidMount() {
     this.refreshFading()
   }
 
+  componentWillUnmount() {
+    const {controlData} = this.props
+    controlData.push({saveStep: get(this, 'wizardRef.state.currentStep')})
+  }
+
   setCreationViewRef = ref => {
     this.creationView = ref
-  };
+  }
+
   setCreationViewBottomBlurrRef = ref => {
     this.creationViewBottomBlurrRef = ref
   };
@@ -179,23 +193,20 @@ class ControlPanel extends React.Component {
   }
 
   renderControlWizard(steps, controlClasses) {
-    steps = steps.map(({title:control, sections})=>{
-      const { title, activeId } = control
+    let step = 1
+    const controlMap=[]
+    const details = cloneDeep(steps)
+    steps = steps.map(({title:control, sections}, inx)=>{
+      const { id, title } = control
       let name = title
-      if (activeId) {
-        sections.forEach(({ content }) => {
-          var targetCtrl = content.find(({id})=>id===activeId)
-          if (targetCtrl) {
-            if (typeof targetCtrl.active === 'string') {
-              name = targetCtrl.active
-            } else if (Array.isArray(targetCtrl.active)) {
-              name = targetCtrl.active[0]
-            }
-          }
-        })
+      controlMap[id] = control
+      if (control.currentStep) {
+        step = inx+1
       }
       return {
-        name,
+        id,
+        name:title,
+        control,
         component: <div className={controlClasses}>
                       {this.renderControlSections(sections)}
                     </div>
@@ -203,10 +214,25 @@ class ControlPanel extends React.Component {
     })
     steps.push({
       name: 'Review', 
-      component: <div className={controlClasses}>Review step content</div>, 
-      nextButtonText: 'Finish'
+      component: <ControlPanelFinish 
+                    className={controlClasses} 
+                    details={details}
+                    renderNotifications={this.renderNotifications.bind(this)}
+                    />, 
+      nextButtonText: 'Create'
     })
-    const title = 'Basic wizard';
+    const onMove = (curr) => {
+      steps.forEach(step => {
+        set(step, 'control.currentStep', step.id===curr.id)
+      })
+    }
+    const onSave = () => {
+      this.props.handleCreateResource()
+    }
+    const onClose = () => {
+      this.props.handleCancelCreate()
+    }
+    const title = 'Create wizard';
     return (
       <Wizard
         ref={this.setWizardRef.bind(this)}
@@ -214,6 +240,12 @@ class ControlPanel extends React.Component {
         mainAriaLabel={`${title} content`}
         steps={steps}
         height={'100%'}
+        onNext={onMove}
+        onBack={onMove}
+        onGoToStep={onMove}
+        onSave={onSave}
+        onClose={onClose}
+        startAtStep={step}
       />
     );
   }

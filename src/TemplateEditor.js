@@ -181,6 +181,10 @@ export default class TemplateEditor extends React.Component {
         controlData
       ))
 
+      const hasStep = controlData.find(
+        ({ type }) => type === 'step'
+      )
+
       newState = {
         ...newState,
         templateYAML,
@@ -188,7 +192,8 @@ export default class TemplateEditor extends React.Component {
         templateObject,
         templateResources,
         editStack,
-        isEditing: !!customResources
+        isEditing: !!customResources,
+        showWizard: !!hasStep
       }
     }
 
@@ -334,7 +339,7 @@ export default class TemplateEditor extends React.Component {
   };
 
   render() {
-    const { isLoaded, isFailed, showEditor, resetInx, hasPauseCreate, i18n } = this.state
+    const { isLoaded, isFailed, showEditor, showWizard, resetInx, hasPauseCreate, i18n } = this.state
     if (!showEditor) {
       this.editors = []
     }
@@ -349,7 +354,8 @@ export default class TemplateEditor extends React.Component {
     }
     const viewClasses = classNames({
       'temptifly': true,
-      showEditor
+      showEditor,
+      showWizard
     })
     return (
       <div
@@ -395,7 +401,10 @@ export default class TemplateEditor extends React.Component {
             {this.renderEditor()}
           </SplitPane>
         ) : (
-          this.renderControls(isLoaded)
+          <div style={{height:'100%'}}>
+          {this.renderControls(isLoaded)}
+        </div>
+            
         )}
       </div>
     )
@@ -419,6 +428,9 @@ export default class TemplateEditor extends React.Component {
         notifications={notifications}
         showEditor={showEditor}
         showPortals={this.props.portals ? null : Portals}
+        wizardData = {this.wizardData}
+        handleCreateResource={this.handleCreateResource.bind(this)}
+        handleCancelCreate={this.handleCancelCreate.bind(this)}
         isCustomName={isCustomName}
         isLoaded={isLoaded}
         i18n={i18n}
@@ -515,6 +527,7 @@ export default class TemplateEditor extends React.Component {
       }
 
       // scroll down
+      if (creationView) {
       setTimeout(() => {
         (showEditor ? creationView : window).scrollBy({
           top: 260,
@@ -522,6 +535,7 @@ export default class TemplateEditor extends React.Component {
           behavior: 'smooth'
         })
       }, 100)
+      }
     } else {
       active.splice(inx, 1)
     }
@@ -1200,10 +1214,10 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderCreateButton(isLoaded) {
-    const { isEditing } = this.state
+    const { showWizard, isEditing } = this.state
     const { portals, createControl={}, i18n } = this.props
     const { createBtn } = portals || Portals
-    if (createBtn && isLoaded) {
+    if (createBtn && !showWizard && isLoaded) {
       const { hasPermissions = true } = createControl
       const titleText = !hasPermissions
         ? (i18n ? i18n('button.save.access.denied') : 'Denied')
@@ -1255,14 +1269,14 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderCancelButton() {
-    const { portals, createControl={}, i18n } = this.props
+    const { showWizard } = this.state
+    const { portals, i18n } = this.props
     const { cancelBtn } = portals || Portals
-    if (cancelBtn) {
+    if (cancelBtn && !showWizard) {
       const portal = document.getElementById(cancelBtn)
       if (portal) {
-        const { cancelCreate } = createControl
         return ReactDOM.createPortal(
-          <Button id={cancelBtn} onClick={cancelCreate} variant={'secondary'}>
+          <Button id={cancelBtn} onClick={this.handleCancelCreate.bind(this)} variant={'secondary'}>
             {i18n ? i18n('button.cancel') : 'Cancel'}
           </Button>,
           portal
@@ -1270,6 +1284,12 @@ export default class TemplateEditor extends React.Component {
       }
     }
     return null
+  }
+
+  handleCancelCreate() {
+    const { createControl } = this.props
+    const { cancelCreate } = createControl
+    cancelCreate()
   }
 
   resetEditor() {
