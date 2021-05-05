@@ -1,0 +1,61 @@
+.temptifly,
+.creation-view {
+  .tf--finish-details {
+    .tf--finish-step {
+      &-title {
+        display: flex;
+        font-size: 16px;
+      }
+
+      &-circle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        margin: 0 10px;
+        background: #f0f0f0;
+        border: 3px solid #f0f0f0;
+        color: black;
+        font-size: 14px;
+      }
+
+      &-section {
+        padding: 10px 0 20px 40px;
+        grid-template-columns: 250px;
+      }
+    }
+  }
+  .tf--finish-step-prompt {
+    font-weight: bold;
+    font-size: 14px;
+    margin-right: 20px;
+  }
+  .tf--finish-step-table {
+    display: grid;
+    padding: 10px 0 20px 40px;
+    grid-template-columns: 150px;
+
+    > div {
+      word-break: keep-all;
+    }
+  }
+
+  .tf--finish-step-button {
+    display: flex;
+    &-error {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      margin: 0 9px;
+      background: red;
+      border: 2px solid red;
+      color: white;
+      font-size: 12px;
+    }
+  }
+}

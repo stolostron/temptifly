@@ -1,5 +1,6 @@
 @import "./control-panel-cards.scss";
 @import "./control-panel-controls.scss";
+@import "./control-panel-finish.scss";
 
 $color__blue-51: #3d70b2 !default;
 $color__navy-gray-6: #5a6872 !default;
@@ -73,6 +74,10 @@ $acm_background_color: #f0f0f0 !default;
   .creation-view-controls-section.collapsed {
     overflow: hidden;
     max-height: 0;
+  }
+
+  .pf-c-wizard__footer {
+    box-shadow: rgba(3, 3, 3, 0.16) 0px -2px 4px -1px;
   }
 
   .pf-c-skeleton {

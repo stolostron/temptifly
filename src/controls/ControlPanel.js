@@ -3,7 +3,7 @@
 import React from 'react'
 import { Query } from 'react-apollo'
 import PropTypes from 'prop-types'
-import { Alert, AlertActionLink } from '@patternfly/react-core'
+import { Alert, Wizard } from '@patternfly/react-core'
 import classNames from 'classnames'
 import ControlPanelAccordion from './ControlPanelAccordion'
 import ControlPanelTextInput from './ControlPanelTextInput'
@@ -19,6 +19,10 @@ import ControlPanelTable from './ControlPanelTable'
 import ControlPanelLabels from './ControlPanelLabels'
 import ControlPanelPrompt from './ControlPanelPrompt'
 import ControlPanelSkeleton from './ControlPanelSkeleton'
+import ControlPanelFinish from './ControlPanelFinish'
+import get from 'lodash/get'
+import set from 'lodash/set'
+import cloneDeep from 'lodash/cloneDeep'
 import '../scss/control-panel.scss'
 import {
   TrashIcon,
@@ -29,7 +33,9 @@ class ControlPanel extends React.Component {
   static propTypes = {
     controlData: PropTypes.array,
     fetchData: PropTypes.object,
+    handleCancelCreate: PropTypes.func,
     handleControlChange: PropTypes.func,
+    handleCreateResource: PropTypes.func,
     handleGroupChange: PropTypes.func,
     handleNewEditorMode: PropTypes.func,
     i18n: PropTypes.func,
@@ -43,16 +49,21 @@ class ControlPanel extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state = {}
   }
 
   componentDidMount() {
     this.refreshFading()
   }
 
+  componentWillUnmount() {
+    const {controlData} = this.props
+    controlData.push({saveStep: get(this, 'wizardRef.state.currentStep')})
+  }
+
   setCreationViewRef = ref => {
     this.creationView = ref
-  };
+  }
+
   setCreationViewBottomBlurrRef = ref => {
     this.creationViewBottomBlurrRef = ref
   };
@@ -69,6 +80,10 @@ class ControlPanel extends React.Component {
     }
   };
 
+  setWizardRef = (ref) => {
+    this.wizardRef = ref
+  };
+
   setControlSectionRef = (title, ref) => {
     title.sectionRef = ref
   };
@@ -80,10 +95,79 @@ class ControlPanel extends React.Component {
       'pf-c-form': true,
       showEditor
     })
-
-    // render notifications and collapsable control sections
     return (
       <div className="creation-view-controls-container">
+        {this.renderControlFormOrWizard(controlData, controlClasses)}
+      </div>
+    )
+  }
+
+  renderControlFormOrWizard(controlData, controlClasses) {
+    let step
+    let section
+    let content = []
+    const steps = []
+    let sections = []
+    let activeStep
+    let activeSection
+    let stopRendering = false
+    let stopRenderingOnNextControl = false
+    controlData.forEach((control, inx) => {
+      const { type, pauseControlCreationHereUntilSelected } = control
+      stopRendering = stopRenderingOnNextControl
+      if (pauseControlCreationHereUntilSelected) {
+        stopRenderingOnNextControl = !control.active
+      }
+      if (!stopRendering) {
+        switch (type) {
+        case 'step':
+          if (!activeStep) {
+            if (content.length && !activeSection) {
+              section={title: {id: `section${inx}`, type: 'section'}, content}
+              sections.push(section)
+            }
+            if (activeSection) {
+              step={title: {id: `step${inx}`, type: 'step'}, sections}
+              steps.push(step)
+            }
+          }
+          sections = []
+          content = []
+          activeSection = null
+          activeStep = { title: control, sections }
+          steps.push(activeStep)
+          break
+        case 'section':
+          if (content.length && !activeSection) {
+            section={title: {id: `section${inx}`, type: 'section'}, content}
+            sections.push(section)
+          }
+          content = []
+          activeSection = { title: control, content }
+          sections.push(activeSection)
+          break
+        default:
+          if (!activeSection) {
+            activeSection={title: {id: `section${inx}`, type: 'section'}, content}
+            sections.push(activeSection)
+          }
+          content.push(control)
+          break
+        }
+      }
+    })
+    // if no steps, just do a form
+    if (steps.length===0) {
+      return this.renderControlForm(sections, controlClasses)
+    } else {
+    // else do a wizard
+      return this.renderControlWizard(steps, controlClasses)
+    }
+  }
+
+  renderControlForm(sections, controlClasses) {
+    return (
+      <React.Fragment>
         <div
           className={controlClasses}
           ref={this.setCreationViewRef}
@@ -93,41 +177,88 @@ class ControlPanel extends React.Component {
           <div id="notifications" />
           {this.renderNotifications()}
           <div className="content">
-            {this.renderControlSections(controlData)}
+            {this.renderControlSections(sections)}
           </div>
         </div>
         <div
           className="creation-view-controls-container-blurr bottom"
           ref={this.setCreationViewBottomBlurrRef}
         />
-      </div>
+      </React.Fragment>
     )
   }
 
-  renderControlSections(controlData, grpId = '') {
-    // create collapsable control sections
-    let section
-    let content = []
-    let stopRendering = false
-    let stopRenderingOnNextControl = false
-    const controlSections = []
-    controlData.forEach(control => {
-      const { type, pauseControlCreationHereUntilSelected } = control
-      stopRendering = stopRenderingOnNextControl
-      if (pauseControlCreationHereUntilSelected) {
-        stopRenderingOnNextControl = !control.active
+  renderControlWizard(steps, controlClasses) {
+    let step = 1
+    const controlMap=[]
+    const details = cloneDeep(steps)
+    steps = steps.map(({title:control, sections}, inx)=>{
+      const { id, title } = control
+      controlMap[id] = control
+      if (control.currentStep) {
+        step = inx+1
       }
-      if (!stopRendering) {
-        if (type === 'section') {
-          content = []
-          section = { title: control, content }
-          controlSections.push(section)
-        } else {
-          content.push(control)
-        }
+      let errors=0
+      sections.forEach(({content})=>{
+        content.forEach(({exception})=> {
+          if (exception) {
+            errors++
+          }
+        })
+      })
+      return {
+        id,
+        name:<div className="tf--finish-step-button">
+          {title}
+          {errors>0&&<div className="tf--finish-step-button-error">
+            {errors}
+          </div>}
+        </div>,
+        control,
+        component: <div className={controlClasses}>
+          {this.renderControlSections(sections)}
+        </div>
       }
     })
+    steps.push({
+      name: 'Review',
+      component: <ControlPanelFinish
+        className={controlClasses}
+        details={details}
+        renderNotifications={this.renderNotifications.bind(this)}
+      />,
+      nextButtonText: 'Create'
+    })
+    const onMove = (curr) => {
+      steps.forEach(step => {
+        set(step, 'control.currentStep', step.id===curr.id)
+      })
+    }
+    const onSave = () => {
+      this.props.handleCreateResource()
+    }
+    const onClose = () => {
+      this.props.handleCancelCreate()
+    }
+    const title = 'Create wizard'
+    return (
+      <Wizard
+        ref={this.setWizardRef.bind(this)}
+        navAriaLabel={`${title} steps`}
+        mainAriaLabel={`${title} content`}
+        steps={steps}
+        height={'100%'}
+        onNext={onMove}
+        onBack={onMove}
+        onGoToStep={onMove}
+        onSave={onSave}
+        onClose={onClose}
+        startAtStep={step}
+      />
+    )
+  }
 
+  renderControlSections(controlSections, grpId = '') {
     return controlSections.map(({ title, content: _content }) => {
       const { id, collapsed = false, shadowed } = title
       const sectionClasses = classNames({
@@ -179,7 +310,7 @@ class ControlPanel extends React.Component {
                 {prompts &&
                   active.length > 1 &&
                   this.renderDeleteGroupButton(control, inx)}
-                {this.renderControlSections(controlData, groupId)}
+                {this.renderGroupControlSections(controlData, groupId)}
               </div>
               {prompts &&
                 active.length - 1 === inx &&
@@ -189,6 +320,32 @@ class ControlPanel extends React.Component {
         })}
       </React.Fragment>
     )
+  }
+
+  renderGroupControlSections(controlData, grpId = '') {
+    // create collapsable control sections
+    let section
+    let content = []
+    let stopRendering = false
+    let stopRenderingOnNextControl = false
+    const controlSections = []
+    controlData.forEach(control => {
+      const { type, pauseControlCreationHereUntilSelected } = control
+      stopRendering = stopRenderingOnNextControl
+      if (pauseControlCreationHereUntilSelected) {
+        stopRenderingOnNextControl = !control.active
+      }
+      if (!stopRendering) {
+        if (type === 'section') {
+          content = []
+          section = { title: control, content }
+          controlSections.push(section)
+        } else {
+          content.push(control)
+        }
+      }
+    })
+    return this.renderControlSections(controlSections, grpId)
   }
 
   // if data for 'available' is fetched from server, use apollo component
@@ -525,7 +682,6 @@ class ControlPanel extends React.Component {
       delete control.syncedWith
       delete syncedControl.syncWith
     }
-
     this.props.handleControlChange(control, controlData, isCustomName)
     return field
   }
@@ -559,7 +715,7 @@ class ControlPanel extends React.Component {
       if (selection) {
         control.active.push(selection)
       }
-      this.props.handleNewEditorMode(control, controlData, this.creationView)
+      this.props.handleNewEditorMode(control, controlData, this.creationView, this.wizardRef)
     }
   }
 
@@ -589,45 +745,9 @@ class ControlPanel extends React.Component {
         <React.Fragment>
           {notifications.map(
             ({
-              controlId,
               exception,
-              kind = 'error',
-              ref,
-              tabInx = 0,
-              text,
-              editor,
-              row
+              kind = 'error'
             }) => {
-              const handleClick = () => {
-                if (ref || controlId) {
-                  ref = document.getElementById(controlId) || ref
-                  if (ref) {
-
-                    // uncollapse all parents
-                    let parent = ref.parentNode
-                    while (parent && !parent.classList.contains('creation-view-controls')) {
-                      parent.classList.remove('collapsed')
-                      parent = parent.parentNode
-                    }
-                    ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
-                  }
-                } else if (editor && row) {
-                  const tabContainer = document.querySelector(
-                    '.creation-view-yaml-header-tabs'
-                  )
-                  if (tabContainer) {
-                    const tabs = tabContainer.getElementsByClassName(
-                      '.tf--tabs__nav-link'
-                    )
-                    if (tabs.length > 0) {
-                      tabs[tabInx].click()
-                    }
-                  }
-                  setTimeout(() => {
-                    editor.revealLineInCenter(row)
-                  }, 0)
-                }
-              }
 
               let variant = 'success'
               switch (kind) {
@@ -640,11 +760,6 @@ class ControlPanel extends React.Component {
                   variant={variant}
                   title={exception}
                   isInline
-                  actionLinks={
-                    <React.Fragment>
-                      {variant !== 'success' && text && <AlertActionLink onClick={handleClick}>View details</AlertActionLink>}
-                    </React.Fragment>
-                  }
                 >
                 </Alert>
               )

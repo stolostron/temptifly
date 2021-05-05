@@ -181,6 +181,10 @@ export default class TemplateEditor extends React.Component {
         controlData
       ))
 
+      const hasStep = controlData.find(
+        ({ type }) => type === 'step'
+      )
+
       newState = {
         ...newState,
         templateYAML,
@@ -188,7 +192,8 @@ export default class TemplateEditor extends React.Component {
         templateObject,
         templateResources,
         editStack,
-        isEditing: !!customResources
+        isEditing: !!customResources,
+        showWizard: !!hasStep
       }
     }
 
@@ -334,7 +339,7 @@ export default class TemplateEditor extends React.Component {
   };
 
   render() {
-    const { isLoaded, isFailed, showEditor, resetInx, hasPauseCreate, i18n } = this.state
+    const { isLoaded, isFailed, showEditor, showWizard, resetInx, hasPauseCreate, i18n } = this.state
     if (!showEditor) {
       this.editors = []
     }
@@ -349,7 +354,8 @@ export default class TemplateEditor extends React.Component {
     }
     const viewClasses = classNames({
       'temptifly': true,
-      showEditor
+      showEditor,
+      showWizard
     })
     return (
       <div
@@ -395,7 +401,10 @@ export default class TemplateEditor extends React.Component {
             {this.renderEditor()}
           </SplitPane>
         ) : (
-          this.renderControls(isLoaded)
+          <div style={{height:'100%'}}>
+            {this.renderControls(isLoaded)}
+          </div>
+
         )}
       </div>
     )
@@ -419,6 +428,9 @@ export default class TemplateEditor extends React.Component {
         notifications={notifications}
         showEditor={showEditor}
         showPortals={this.props.portals ? null : Portals}
+        wizardData = {this.wizardData}
+        handleCreateResource={this.handleCreateResource.bind(this)}
+        handleCancelCreate={this.handleCancelCreate.bind(this)}
         isCustomName={isCustomName}
         isLoaded={isLoaded}
         i18n={i18n}
@@ -515,13 +527,15 @@ export default class TemplateEditor extends React.Component {
       }
 
       // scroll down
-      setTimeout(() => {
-        (showEditor ? creationView : window).scrollBy({
-          top: 260,
-          left: 0,
-          behavior: 'smooth'
-        })
-      }, 100)
+      if (creationView) {
+        setTimeout(() => {
+          (showEditor ? creationView : window).scrollBy({
+            top: 260,
+            left: 0,
+            behavior: 'smooth'
+          })
+        }, 100)
+      }
     } else {
       active.splice(inx, 1)
     }
@@ -554,7 +568,7 @@ export default class TemplateEditor extends React.Component {
     this.isDirty = firstTemplateYAML !== newYAML
   }
 
-  handleNewEditorMode(control, controlData, creationView) {
+  handleNewEditorMode(control, controlData, creationView, wizardRef) {
     let { notifications } = this.state
     const {
       controlData: newControlData,
@@ -584,7 +598,7 @@ export default class TemplateEditor extends React.Component {
       otherYAMLTabs
     })
 
-    this.handleScrollAndCollapse(control, controlData, creationView)
+    this.handleScrollAndCollapse(control, controlData, creationView, wizardRef)
   }
 
   // change editor mode based on what card is selected
@@ -659,76 +673,81 @@ export default class TemplateEditor extends React.Component {
     }
   }
 
-  handleScrollAndCollapse(control, controlData, creationView) {
-    const { showEditor, previouslySelectedCards } = this.state
-    // user chose a card with new controls in it---scroll the view down to the new fields
-    const {
-      id,
-      ref,
-      uniqueGroupID = 0,
-      scrollViewAfterSelection,
-      collapseAboveAfterSelection,
-      scrollViewToTopOnSelect
-    } = control
-    if (
-      scrollViewAfterSelection ||
-      collapseAboveAfterSelection ||
-      scrollViewToTopOnSelect
-    ) {
-      const wasPreviouslySelected = previouslySelectedCards.includes(
-        id + uniqueGroupID
-      )
-      if (!wasPreviouslySelected) {
-        if (!creationView) {
-          creationView = document.getElementsByClassName('content')[0]
-        }
-        const scrollView = showEditor && creationView.scrollBy ? creationView : window
-        const controlTop = ref.getBoundingClientRect().top
-        const panelTop = showEditor
-          ? creationView.getBoundingClientRect().top
-          : 200
-        setTimeout(() => {
-          switch (true) {
-          // collapse section above when this control is selected
-          case collapseAboveAfterSelection === true:
-            controlData.some(({ id: tid, sectionRef, sectionTitleRef }) => {
-              if (sectionRef && sectionTitleRef) {
-                sectionRef.classList.toggle('collapsed', true)
-                sectionTitleRef.classList.toggle('collapsed', true)
-              }
-              return id === tid
-            })
-            setTimeout(() => {
-              scrollView.scrollTo({
-                top: 0,
-                left: 0
-              })
-            }, 100)
-            break
-
-            // scroll view down after control is selected by 'scrollViewAfterSelection' pixels
-          case scrollViewAfterSelection !== undefined:
-            scrollView.scrollBy({
-              top: scrollViewAfterSelection,
-              left: 0,
-              behavior: 'smooth'
-            })
-            break
-
-            // scroll control to top when cards have been collapsed (only one card shown)
-          case scrollViewToTopOnSelect !== undefined:
-            scrollView.scrollBy({
-              top: controlTop - panelTop,
-              left: 0,
-              behavior: 'smooth'
-            })
-            break
+  handleScrollAndCollapse(control, controlData, creationView, wizardRef) {
+    if (wizardRef) {
+      wizardRef.onNext()
+    } else {
+      const { showEditor, previouslySelectedCards } = this.state
+      // user chose a card with new controls in it---scroll the view down to the new fields
+      const {
+        id,
+        ref,
+        uniqueGroupID = 0,
+        scrollViewAfterSelection,
+        collapseAboveAfterSelection,
+        scrollViewToTopOnSelect
+      } = control
+      if (
+        scrollViewAfterSelection ||
+        collapseAboveAfterSelection ||
+        scrollViewToTopOnSelect
+      ) {
+        const wasPreviouslySelected = previouslySelectedCards.includes(
+          id + uniqueGroupID
+        )
+        if (!wasPreviouslySelected) {
+          if (!creationView) {
+            creationView = document.getElementsByClassName('content')[0]
           }
-        }, 100)
-        previouslySelectedCards.push(id + uniqueGroupID)
+          const scrollView = showEditor && creationView.scrollBy ? creationView : window
+          const controlTop = ref.getBoundingClientRect().top
+          const panelTop = showEditor
+            ? creationView.getBoundingClientRect().top
+            : 200
+          setTimeout(() => {
+            switch (true) {
+            // collapse section above when this control is selected
+            case collapseAboveAfterSelection === true:
+              controlData.some(({ id: tid, sectionRef, sectionTitleRef }) => {
+                if (sectionRef && sectionTitleRef) {
+                  sectionRef.classList.toggle('collapsed', true)
+                  sectionTitleRef.classList.toggle('collapsed', true)
+                }
+                return id === tid
+              })
+              setTimeout(() => {
+                scrollView.scrollTo({
+                  top: 0,
+                  left: 0
+                })
+              }, 100)
+              break
+
+              // scroll view down after control is selected by 'scrollViewAfterSelection' pixels
+            case scrollViewAfterSelection !== undefined:
+              scrollView.scrollBy({
+                top: scrollViewAfterSelection,
+                left: 0,
+                behavior: 'smooth'
+              })
+              break
+
+              // scroll control to top when cards have been collapsed (only one card shown)
+            case scrollViewToTopOnSelect !== undefined:
+              scrollView.scrollBy({
+                top: controlTop - panelTop,
+                left: 0,
+                behavior: 'smooth'
+              })
+              break
+            }
+          }, 100)
+          previouslySelectedCards.push(id + uniqueGroupID)
+        }
       }
+      this.setState({ previouslySelectedCards })
+
     }
-    this.setState({ previouslySelectedCards })
   }
 
   renderEditor() {
@@ -1195,10 +1214,10 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderCreateButton(isLoaded) {
-    const { isEditing } = this.state
+    const { showWizard, isEditing } = this.state
     const { portals, createControl={}, i18n } = this.props
     const { createBtn } = portals || Portals
-    if (createBtn && isLoaded) {
+    if (createBtn && !showWizard && isLoaded) {
       const { hasPermissions = true } = createControl
       const titleText = !hasPermissions
         ? (i18n ? i18n('button.save.access.denied') : 'Denied')
@@ -1250,14 +1269,14 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderCancelButton() {
-    const { portals, createControl={}, i18n } = this.props
+    const { showWizard } = this.state
+    const { portals, i18n } = this.props
     const { cancelBtn } = portals || Portals
-    if (cancelBtn) {
+    if (cancelBtn && !showWizard) {
       const portal = document.getElementById(cancelBtn)
       if (portal) {
-        const { cancelCreate } = createControl
         return ReactDOM.createPortal(
-          <Button id={cancelBtn} onClick={cancelCreate} variant={'secondary'}>
+          <Button id={cancelBtn} onClick={this.handleCancelCreate.bind(this)} variant={'secondary'}>
             {i18n ? i18n('button.cancel') : 'Cancel'}
           </Button>,
           portal
@@ -1265,6 +1284,12 @@ export default class TemplateEditor extends React.Component {
       }
     }
     return null
+  }
+
+  handleCancelCreate() {
+    const { createControl } = this.props
+    const { cancelCreate } = createControl
+    cancelCreate()
   }
 
   resetEditor() {
