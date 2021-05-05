@@ -1,35 +1,31 @@
 .temptifly,
 .creation-view {
-
   .tf--finish-details {
+    .tf--finish-step {
+      &-title {
+        display: flex;
+        font-size: 16px;
+      }
 
-  .tf--finish-step {
+      &-circle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        margin: 0 10px;
+        background: #f0f0f0;
+        border: 3px solid #f0f0f0;
+        color: black;
+        font-size: 14px;
+      }
 
-    &-title {
-      display: flex;
-      font-size: 16px;
+      &-section {
+        padding: 10px 0 20px 40px;
+        grid-template-columns: 250px;
+      }
     }
-
-    &-circle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      margin: 0 10px;
-      background: #F0F0F0;
-      border: 3px solid #F0F0F0;
-      color: black;
-      font-size: 14px;
-    }
-
-    &-section {
-      padding: 10px 0 20px 40px;
-      grid-template-columns: 250px;
-    }
-
-  }
   }
   .tf--finish-step-prompt {
     font-weight: bold;
@@ -39,7 +35,7 @@
   .tf--finish-step-table {
     display: grid;
     padding: 10px 0 20px 40px;
-    grid-template-columns: 150px;    
+    grid-template-columns: 150px;
 
     > div {
       word-break: keep-all;
@@ -47,7 +43,7 @@
   }
 
   .tf--finish-step-button {
-    display:flex;
+    display: flex;
     &-error {
       display: flex;
       align-items: center;

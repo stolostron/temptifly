@@ -31,33 +31,35 @@ class ControlPanelFinish extends React.Component {
   renderDetails(details) {
     let step = 1
     return (
-    <div className="tf--finish-details">
-      {details.map(({title, sections})=>{
-        return (
-          <div className="tf--finish-step">
-            <div className="tf--finish-step-title" >
-              <div className="tf--finish-step-circle">
-                {step++}
+      <div className="tf--finish-details">
+        {details.map(({title, sections})=>{
+          return (
+            <div key={step} className="tf--finish-step">
+              <div className="tf--finish-step-title" >
+                <div className="tf--finish-step-circle">
+                  {step++}
+                </div>
+                <div>{title.title}</div>
               </div>
-              <div>{title.title}</div>
+              <div className="tf--finish-step-sections">
+                {this.renderSections(sections)}
+              </div>
             </div>
-            <div className="tf--finish-step-sections">
-              {this.renderSections(sections)}
-            </div>
-          </div>
-        )
-      })}
-        </div>)
+          )
+        })}
+      </div>)
   }
 
   renderSections(sections) {
     const tables = []
+    let id
     sections.forEach(section =>{
       section.content = section.content.filter(control=>{
         if (control.type==='table') {
           tables.push(control)
           return false
         }
+        id = control.id
         return true
       })
     })
@@ -65,10 +67,10 @@ class ControlPanelFinish extends React.Component {
       <React.Fragment>
         {this.renderTables(tables)}
         {sections.map(({content})=> {
-        return <div className="pf-c-description-list__group tf--finish-step-section">
-          {this.renderContent(content)}
-        </div>
-      })}
+          return <div key={id} className="pf-c-description-list__group tf--finish-step-section">
+            {this.renderContent(content)}
+          </div>
+        })}
       </React.Fragment>
     )
   }
@@ -96,7 +98,7 @@ class ControlPanelFinish extends React.Component {
     return (
       <React.Fragment>
         {active.map((controlData) => {
-            return this.renderContent(controlData)
+          return this.renderContent(controlData)
         })}
       </React.Fragment>
     )
@@ -134,15 +136,15 @@ class ControlPanelFinish extends React.Component {
         {tables.map(table=>{
           const { active = [], controlData } = table
           const columns = controlData.filter(({mode})=>!mode)
-          return (<div className="tf--finish-step-table">
+          return (<div key ={table.id} className="tf--finish-step-table">
             {columns.map(({name}, inx)=>{
               return (
-                <div style={{gridColumn: inx+1, fontWeight: 'bold'}}>{name}</div>
+                <div key={name} style={{gridColumn: inx+1, fontWeight: 'bold'}}>{name}</div>
               )
             })}
             {active.map(row=> (
               columns.map(({id}, inx)=> (
-                  <div style={{gridColumn: inx+1}}>{row[id]}</div>
+                <div key={id} style={{gridColumn: inx+1}}>{row[id]}</div>
               ))
             ))}
           </div>)
@@ -156,47 +158,47 @@ class ControlPanelFinish extends React.Component {
     let term
     let desc
     switch(type) {
-      case 'text':
-      case 'singleselect':
-      case 'multiselect':
-      case 'combobox':
-      case 'treeselect':
-        term = name
-        desc = active
-        break
-      case 'number':
-        term = name
-        desc = active
-        break
-      case 'checkbox':
-        term = name
-        desc = active
-        break
-        case 'cards':
-        term = capitalize(id)
-        desc = active
-        break
-      case 'labels':
-        term = name
-        desc = active.map(({ key: k, value }) => {
-          return `${k}=${value}`
-        }).join(', ')
+    case 'text':
+    case 'singleselect':
+    case 'multiselect':
+    case 'combobox':
+    case 'treeselect':
+      term = name
+      desc = active
+      break
+    case 'number':
+      term = name
+      desc = active
+      break
+    case 'checkbox':
+      term = name
+      desc = active
+      break
+    case 'cards':
+      term = capitalize(id)
+      desc = active
+      break
+    case 'labels':
+      term = name
+      desc = active.map(({ key: k, value }) => {
+        return `${k}=${value}`
+      }).join(', ')
     }
     if (term) {
       let styles = {}
       if (exception) {
         desc = '*Fix exceptions'
-        styles = {color: "red"}
+        styles = {color: 'red'}
       } else if (typeof desc==='string' && desc.length>64) {
         desc = `${desc.substr(0, 32)}...${desc.substr(-32)}`
       } else if (!desc && validation && validation.required) {
         desc = '*Required'
-        styles = {color: "red"}
+        styles = {color: 'red'}
       }
       return (
         <React.Fragment>
-          <dt class="pf-c-description-list__term"><span class="pf-c-description-list__text">{term}</span></dt>
-          <dd class="pf-c-description-list__description"><div class="pf-c-description-list__text" style={styles}>{desc}</div></dd>
+          <dt className="pf-c-description-list__term"><span className="pf-c-description-list__text">{term}</span></dt>
+          <dd className="pf-c-description-list__description"><div className="pf-c-description-list__text" style={styles}>{desc}</div></dd>
         </React.Fragment>
       )
     } else {

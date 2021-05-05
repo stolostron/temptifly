@@ -3,7 +3,7 @@
 import React from 'react'
 import { Query } from 'react-apollo'
 import PropTypes from 'prop-types'
-import { Alert, AlertActionLink, Wizard } from '@patternfly/react-core'
+import { Alert, Wizard } from '@patternfly/react-core'
 import classNames from 'classnames'
 import ControlPanelAccordion from './ControlPanelAccordion'
 import ControlPanelTextInput from './ControlPanelTextInput'
@@ -28,17 +28,16 @@ import {
   TrashIcon,
   AddIcon,
 } from '../icons/Icons'
-import { StepBackwardIcon } from '@patternfly/react-icons'
 
 class ControlPanel extends React.Component {
   static propTypes = {
     controlData: PropTypes.array,
     fetchData: PropTypes.object,
+    handleCancelCreate: PropTypes.func,
     handleControlChange: PropTypes.func,
+    handleCreateResource: PropTypes.func,
     handleGroupChange: PropTypes.func,
     handleNewEditorMode: PropTypes.func,
-    handleCreateResource: PropTypes.func,
-    handleCancelCreate: PropTypes.func,
     i18n: PropTypes.func,
     isCustomName: PropTypes.bool,
     isLoaded: PropTypes.bool,
@@ -50,9 +49,6 @@ class ControlPanel extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state = {
-      step: 1
-    }
   }
 
   componentDidMount() {
@@ -110,7 +106,7 @@ class ControlPanel extends React.Component {
     let step
     let section
     let content = []
-    let steps = []
+    const steps = []
     let sections = []
     let activeStep
     let activeSection
@@ -124,39 +120,39 @@ class ControlPanel extends React.Component {
       }
       if (!stopRendering) {
         switch (type) {
-          case 'step':
-            if (!activeStep) {
-              if (content.length && !activeSection) {
-                section={title: {id: `section${inx}`, type: 'section'}, content}
-                sections.push(section)
-              }
-              if (activeSection) {
-                step={title: {id: `step${inx}`, type: 'step'}, sections}
-                steps.push(step)
-              }
-            }
-            sections = []
-            content = []
-            activeSection = null
-            activeStep = { title: control, sections }
-            steps.push(activeStep)
-            break
-          case 'section':
+        case 'step':
+          if (!activeStep) {
             if (content.length && !activeSection) {
               section={title: {id: `section${inx}`, type: 'section'}, content}
               sections.push(section)
             }
-            content = []
-            activeSection = { title: control, content }
-            sections.push(activeSection)
-            break
-          default:
-            if (!activeSection) {
-              activeSection={title: {id: `section${inx}`, type: 'section'}, content}
-              sections.push(activeSection)
+            if (activeSection) {
+              step={title: {id: `step${inx}`, type: 'step'}, sections}
+              steps.push(step)
             }
-            content.push(control)
-            break
+          }
+          sections = []
+          content = []
+          activeSection = null
+          activeStep = { title: control, sections }
+          steps.push(activeStep)
+          break
+        case 'section':
+          if (content.length && !activeSection) {
+            section={title: {id: `section${inx}`, type: 'section'}, content}
+            sections.push(section)
+          }
+          content = []
+          activeSection = { title: control, content }
+          sections.push(activeSection)
+          break
+        default:
+          if (!activeSection) {
+            activeSection={title: {id: `section${inx}`, type: 'section'}, content}
+            sections.push(activeSection)
+          }
+          content.push(control)
+          break
         }
       }
     })
@@ -177,8 +173,8 @@ class ControlPanel extends React.Component {
           ref={this.setCreationViewRef}
           onScroll={this.refreshFading.bind(this)}
         >
-        {this.renderPortals()}
-        <div id="notifications" />
+          {this.renderPortals()}
+          <div id="notifications" />
           {this.renderNotifications()}
           <div className="content">
             {this.renderControlSections(sections)}
@@ -213,24 +209,24 @@ class ControlPanel extends React.Component {
       return {
         id,
         name:<div className="tf--finish-step-button">
-              {title}                
-              {errors>0&&<div className="tf--finish-step-button-error">
-                {errors}
-              </div>}
-              </div>,
+          {title}
+          {errors>0&&<div className="tf--finish-step-button-error">
+            {errors}
+          </div>}
+        </div>,
         control,
         component: <div className={controlClasses}>
-                      {this.renderControlSections(sections)}
-                    </div>
+          {this.renderControlSections(sections)}
+        </div>
       }
     })
     steps.push({
-      name: 'Review', 
-      component: <ControlPanelFinish 
-                    className={controlClasses} 
-                    details={details}
-                    renderNotifications={this.renderNotifications.bind(this)}
-                    />, 
+      name: 'Review',
+      component: <ControlPanelFinish
+        className={controlClasses}
+        details={details}
+        renderNotifications={this.renderNotifications.bind(this)}
+      />,
       nextButtonText: 'Create'
     })
     const onMove = (curr) => {
@@ -244,7 +240,7 @@ class ControlPanel extends React.Component {
     const onClose = () => {
       this.props.handleCancelCreate()
     }
-    const title = 'Create wizard';
+    const title = 'Create wizard'
     return (
       <Wizard
         ref={this.setWizardRef.bind(this)}
@@ -259,7 +255,7 @@ class ControlPanel extends React.Component {
         onClose={onClose}
         startAtStep={step}
       />
-    );
+    )
   }
 
   renderControlSections(controlSections, grpId = '') {
@@ -749,45 +745,9 @@ class ControlPanel extends React.Component {
         <React.Fragment>
           {notifications.map(
             ({
-              controlId,
               exception,
-              kind = 'error',
-              ref,
-              tabInx = 0,
-              text,
-              editor,
-              row
+              kind = 'error'
             }) => {
-              const handleClick = () => {
-                if (ref || controlId) {
-                  ref = document.getElementById(controlId) || ref
-                  if (ref) {
-
-                    // uncollapse all parents
-                    let parent = ref.parentNode
-                    while (parent && !parent.classList.contains('creation-view-controls')) {
-                      parent.classList.remove('collapsed')
-                      parent = parent.parentNode
-                    }
-                    ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
-                  }
-                } else if (editor && row) {
-                  const tabContainer = document.querySelector(
-                    '.creation-view-yaml-header-tabs'
-                  )
-                  if (tabContainer) {
-                    const tabs = tabContainer.getElementsByClassName(
-                      '.tf--tabs__nav-link'
-                    )
-                    if (tabs.length > 0) {
-                      tabs[tabInx].click()
-                    }
-                  }
-                  setTimeout(() => {
-                    editor.revealLineInCenter(row)
-                  }, 0)
-                }
-              }
 
               let variant = 'success'
               switch (kind) {

@@ -402,9 +402,9 @@ export default class TemplateEditor extends React.Component {
           </SplitPane>
         ) : (
           <div style={{height:'100%'}}>
-          {this.renderControls(isLoaded)}
-        </div>
-            
+            {this.renderControls(isLoaded)}
+          </div>
+
         )}
       </div>
     )
@@ -528,13 +528,13 @@ export default class TemplateEditor extends React.Component {
 
       // scroll down
       if (creationView) {
-      setTimeout(() => {
-        (showEditor ? creationView : window).scrollBy({
-          top: 260,
-          left: 0,
-          behavior: 'smooth'
-        })
-      }, 100)
+        setTimeout(() => {
+          (showEditor ? creationView : window).scrollBy({
+            top: 260,
+            left: 0,
+            behavior: 'smooth'
+          })
+        }, 100)
       }
     } else {
       active.splice(inx, 1)
@@ -722,7 +722,7 @@ export default class TemplateEditor extends React.Component {
                 })
               }, 100)
               break
-  
+
               // scroll view down after control is selected by 'scrollViewAfterSelection' pixels
             case scrollViewAfterSelection !== undefined:
               scrollView.scrollBy({
@@ -731,7 +731,7 @@ export default class TemplateEditor extends React.Component {
                 behavior: 'smooth'
               })
               break
-  
+
               // scroll control to top when cards have been collapsed (only one card shown)
             case scrollViewToTopOnSelect !== undefined:
               scrollView.scrollBy({
@@ -746,7 +746,7 @@ export default class TemplateEditor extends React.Component {
         }
       }
       this.setState({ previouslySelectedCards })
-  
+
     }
   }
 
