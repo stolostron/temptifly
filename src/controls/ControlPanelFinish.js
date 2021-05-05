@@ -51,13 +51,26 @@ class ControlPanelFinish extends React.Component {
   }
 
   renderSections(sections) {
-    return sections.map(({content})=>{
-      return (
-        <div className="pf-c-description-list__group tf--finish-step-section">
+    const tables = []
+    sections.forEach(section =>{
+      section.content = section.content.filter(control=>{
+        if (control.type==='table') {
+          tables.push(control)
+          return false
+        }
+        return true
+      })
+    })
+    return (
+      <React.Fragment>
+        {this.renderTables(tables)}
+        {sections.map(({content})=> {
+        return <div className="pf-c-description-list__group tf--finish-step-section">
           {this.renderContent(content)}
         </div>
-      )
-    })
+      })}
+      </React.Fragment>
+    )
   }
 
   renderContent(controlData) {
@@ -68,6 +81,8 @@ class ControlPanelFinish extends React.Component {
           switch (type) {
           case 'group':
             return this.renderGroup(control)
+          case 'table':
+            return this.renderTable(control)
           default:
             return this.renderControl(control)
           }
@@ -113,6 +128,29 @@ class ControlPanelFinish extends React.Component {
     return this.renderControlSections(controlSections, grpId)
   }
 
+  renderTables(tables) {
+    return (
+      <div>
+        {tables.map(table=>{
+          const { active = [], controlData } = table
+          const columns = controlData.filter(({mode})=>!mode)
+          return (<div className="tf--finish-step-table">
+            {columns.map(({name}, inx)=>{
+              return (
+                <div style={{gridColumn: inx+1, fontWeight: 'bold'}}>{name}</div>
+              )
+            })}
+            {active.map(row=> (
+              columns.map(({id}, inx)=> (
+                  <div style={{gridColumn: inx+1}}>{row[id]}</div>
+              ))
+            ))}
+          </div>)
+        })}
+      </div>
+    )
+  }
+
   renderControl(control) {
     const {type, active, name, id, exception, validation} = control
     let term
@@ -149,8 +187,8 @@ class ControlPanelFinish extends React.Component {
       if (exception) {
         desc = '*Fix exceptions'
         styles = {color: "red"}
-      } else if (typeof desc==='string' && desc.length>32) {
-        desc = `${desc.substr(0, 16)}...${desc.substr(-16)}`
+      } else if (typeof desc==='string' && desc.length>64) {
+        desc = `${desc.substr(0, 32)}...${desc.substr(-32)}`
       } else if (!desc && validation && validation.required) {
         desc = '*Required'
         styles = {color: "red"}
