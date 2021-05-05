@@ -43,7 +43,9 @@ $color__white: #ffffff !default;
     margin-right: 30px;
     margin-bottom: 40px;
     padding-left: 0;
-    text-align: left;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    text-align: center;
     &:focus {
       outline: none;
     }

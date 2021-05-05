@@ -198,14 +198,26 @@ class ControlPanel extends React.Component {
     const details = cloneDeep(steps)
     steps = steps.map(({title:control, sections}, inx)=>{
       const { id, title } = control
-      let name = title
       controlMap[id] = control
       if (control.currentStep) {
         step = inx+1
       }
+      let errors=0
+      sections.forEach(({content})=>{
+        content.forEach(({exception})=> {
+          if (exception) {
+            errors++
+          }
+        })
+      })
       return {
         id,
-        name:title,
+        name:<div className="tf--finish-step-button">
+              {title}                
+              {errors>0&&<div className="tf--finish-step-button-error">
+                {errors}
+              </div>}
+              </div>,
         control,
         component: <div className={controlClasses}>
                       {this.renderControlSections(sections)}
@@ -788,11 +800,6 @@ class ControlPanel extends React.Component {
                   variant={variant}
                   title={exception}
                   isInline
-                  actionLinks={
-                    <React.Fragment>
-                      {variant !== 'success' && text && <AlertActionLink onClick={handleClick}>View details</AlertActionLink>}
-                    </React.Fragment>
-                  }
                 >
                 </Alert>
               )
