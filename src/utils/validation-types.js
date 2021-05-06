@@ -40,6 +40,12 @@ export const VALIDATE_IP = {
   required: true
 }
 
+export const VALIDATE_IP_OPTIONAL = {
+  tester: IP_ADDRESS_TESTER,
+  notification: 'creation.ocp.cluster.valid.ip',
+  required: false
+}
+
 export const VALIDATE_CIDR = {
   tester: {
     test: value => {
