@@ -43,7 +43,7 @@ exports[`EditorHeader component renders as expected 1`] = `
         class="creation-view-yaml-header-secrets"
       >
         <div
-          class="pf-c-check"
+          class="pf-c-check pf-m-standalone"
         >
           <input
             aria-invalid="false"

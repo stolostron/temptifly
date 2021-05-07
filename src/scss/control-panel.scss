@@ -327,13 +327,26 @@ $acm_background_color: #f0f0f0 !default;
           z-index: 500;
           cursor: pointer;
 
+          .tf--list-box__menu-item-container {
+            display: flex;
+            flex-direction: column;
+            margin: 8px 0;
+          }
+
+          .tf--list-box__menu-item-title {
+            font-weight: bold;
+            line-height: 12px;
+            font-size: 18px;
+          }
+
           .tf--list-box__menu-item {
             display: flex;
             align-items: center;
-            height: 2rem;
+            height: fit-content;
             padding: 0 1rem;
             cursor: pointer;
             position: relative;
+            white-space: nowrap;
 
             &:hover {
               background-color: rgba(85, 150, 230, 0.1);
