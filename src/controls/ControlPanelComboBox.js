@@ -126,7 +126,8 @@ class ControlPanelComboBox extends React.Component {
       isFailed,
       fetchAvailable,
       isRefetching,
-      disabled
+      disabled,
+      simplified,
     } = control
     let { isLoading } = control
     let { active, available=[], placeholder = '' } = control
@@ -201,7 +202,9 @@ class ControlPanelComboBox extends React.Component {
     })
     const aria = isOpen ? 'Close menu' : 'Open menu'
     const validated = exception ? 'error' : undefined
-    const value = typeof searchText === 'string' ? searchText : active || ''
+    let value = typeof searchText === 'string' ? searchText : active || ''
+    value = simplified && simplified(value)
+
     return (
       <React.Fragment>
         <div className="creation-view-controls-combobox">
@@ -333,7 +336,7 @@ class ControlPanelComboBox extends React.Component {
                               onClick={this.clickSelect.bind(this, label)}
                               onKeyPress={this.pressSelect.bind(this, label)}
                             >
-                              {this.renderLabel(label, searchText, active)}
+                              {this.renderLabel(label, searchText, active, simplified)}
                             </div>
                           )
                         }
@@ -348,7 +351,7 @@ class ControlPanelComboBox extends React.Component {
     )
   }
 
-  renderLabel(label, searchText, active) {
+  renderLabel(label, searchText, active, simplified) {
     const inx =
       searchText &&
       searchText.length &&
@@ -367,13 +370,15 @@ class ControlPanelComboBox extends React.Component {
         </React.Fragment>
       )
     } else {
+      const title = simplified && simplified(label)
       return (
-        <React.Fragment>
-          {label}
+        <div className='tf--list-box__menu-item-container'>
+          {title&&<div style={{fontWeight: 'bold', lineHeight: '12px', fontSize: '18px'}}>{title}</div>}
+          <div style={{fontSize: '14px'}}>{label}</div>
           {label===active && <span className="tf-select__menu-item-icon">
             <CheckIcon aria-hidden />
           </span>}
-        </React.Fragment>
+        </div>
       )
     }
   }
