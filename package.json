@@ -1,7 +1,7 @@
 {
   "name": "temptifly",
   "version": "0.3.29",
-  "description": "Side-by-sided template editor",
+  "description": "Side-by-side template editor",
   "main": "dist/index.js",
   "scripts": {
     "build": "npm run clean && webpack --progress",

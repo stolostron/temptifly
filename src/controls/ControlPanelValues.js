@@ -4,16 +4,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { TextInput, Label } from '@patternfly/react-core'
 import ControlPanelFormGroup from './ControlPanelFormGroup'
-// import keyBy from 'lodash/keyBy'
-
-// export const DNS_LABEL = '[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?'
-// export const PREFIX = `${DNS_LABEL}(?:\\.${DNS_LABEL})*/`
-// export const NAME_OR_VALUE = '[a-z0-9A-Z](?:[a-z0-9A-Z_.-]{0,61}[a-z0-9A-Z])?'
-// export const regex = new RegExp(
-//   `^((?:${PREFIX})?${NAME_OR_VALUE})=(${NAME_OR_VALUE})?$`
-// )
-// export const KEY_CAPTURE_GROUP_INDEX = 1
-// export const VALUE_CAPTURE_GROUP_INDEX = 2
 
 class ControlPanelValues extends React.Component {
   static propTypes = {
