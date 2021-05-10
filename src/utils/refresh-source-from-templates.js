@@ -200,6 +200,7 @@ export const generateTemplateData = (
         !multiselect &&
         type !== 'table' &&
         type !== 'labels' &&
+        type !== 'values' &&
         Array.isArray(active)
       ) {
         ret = active[0]

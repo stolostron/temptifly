@@ -183,6 +183,11 @@ class ControlPanelFinish extends React.Component {
       desc = active.map(({ key: k, value }) => {
         return `${k}=${value}`
       }).join(', ')
+      break
+    case 'values':
+      term = name
+      desc = active.join(', ')
+      break
     }
     if (term) {
       let styles = {}

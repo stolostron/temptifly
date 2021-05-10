@@ -211,6 +211,11 @@ class ControlPanelAccordion extends React.Component {
               summary.push(`${k}=${value}`)
             })
             break
+          case 'values':
+            active.forEach(value => {
+              summary.push(value)
+            })
+            break
           default:
             if (hasValueDescription && availableMap) {
               summary.push(availableMap[active] || active)

@@ -17,6 +17,7 @@ import ControlPanelMultiSelect from './ControlPanelMultiSelect'
 import ControlPanelCards from './ControlPanelCards'
 import ControlPanelTable from './ControlPanelTable'
 import ControlPanelLabels from './ControlPanelLabels'
+import ControlPanelValues from './ControlPanelValues'
 import ControlPanelPrompt from './ControlPanelPrompt'
 import ControlPanelSkeleton from './ControlPanelSkeleton'
 import ControlPanelFinish from './ControlPanelFinish'
@@ -581,6 +582,16 @@ class ControlPanel extends React.Component {
     case 'labels':
       return (
         <ControlPanelLabels
+          key={controlId}
+          controlId={controlId}
+          control={control}
+          handleChange={this.handleControlChange.bind(this, control)}
+          i18n={i18n}
+        />
+      )
+    case 'values':
+      return (
+        <ControlPanelValues
           key={controlId}
           controlId={controlId}
           control={control}
