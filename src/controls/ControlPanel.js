@@ -29,6 +29,7 @@ import {
   TrashIcon,
   AddIcon,
 } from '../icons/Icons'
+import { makeStyles } from '@material-ui/styles'
 
 class ControlPanel extends React.Component {
   static propTypes = {
@@ -189,10 +190,22 @@ class ControlPanel extends React.Component {
     )
   }
 
+  useStyles = makeStyles({
+    wizardBody: {
+          height:'90%',
+          '& pf-c-wizard__main-body':{
+              height:'90%'
+          }
+    },
+  })
+
   renderControlWizard(steps, controlClasses) {
     let step = 1
     const controlMap=[]
     const details = cloneDeep(steps)
+
+    const classes = useStyles()
+
     steps = steps.map(({title:control, sections}, inx)=>{
       const { id, title } = control
       controlMap[id] = control
@@ -244,11 +257,11 @@ class ControlPanel extends React.Component {
     const title = 'Create wizard'
     return (
       <Wizard
+        className={classes.wizardBody}
         ref={this.setWizardRef.bind(this)}
         navAriaLabel={`${title} steps`}
         mainAriaLabel={`${title} content`}
         steps={steps}
-        height={'100%'}
         onNext={onMove}
         onBack={onMove}
         onGoToStep={onMove}
