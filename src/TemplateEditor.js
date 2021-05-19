@@ -75,6 +75,7 @@ export default class TemplateEditor extends React.Component {
     template: PropTypes.func.isRequired,
     title: PropTypes.string,
     type: PropTypes.string,
+    wizardClassName: PropTypes.string,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -419,6 +420,7 @@ export default class TemplateEditor extends React.Component {
     const { fetchData } = fetchControl || {}
     return (
       <ControlPanel
+        wizardClassName={this.props.wizardClassName}
         handleControlChange={this.handleControlChange}
         handleNewEditorMode={this.handleNewEditorMode}
         handleGroupChange={this.handleGroupChange}

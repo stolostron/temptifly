@@ -46,7 +46,8 @@ class ControlPanel extends React.Component {
     notifications: PropTypes.array,
     originalControlData: PropTypes.array,
     showEditor: PropTypes.bool,
-    showPortals: PropTypes.object
+    showPortals: PropTypes.object,
+    wizardClassName: PropTypes.string
   };
 
   constructor(props) {
@@ -190,21 +191,10 @@ class ControlPanel extends React.Component {
     )
   }
 
-  useStyles = makeStyles({
-    wizardBody: {
-          height:'90%',
-          '& pf-c-wizard__main-body':{
-              height:'90%'
-          }
-    },
-  })
-
   renderControlWizard(steps, controlClasses) {
     let step = 1
     const controlMap=[]
     const details = cloneDeep(steps)
-
-    const classes = useStyles()
 
     steps = steps.map(({title:control, sections}, inx)=>{
       const { id, title } = control
