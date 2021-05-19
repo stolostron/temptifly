@@ -615,7 +615,8 @@ export default class TemplateEditor extends React.Component {
     const insertInx = parentControlData.findIndex(
       ({ id }) => id === control.id
     )
-    const deleteLen = parentControlData.length - insertInx - 1
+    const deleteLen = parentControlData.length - insertInx - 4
+    console.log('checking deleteLen: ', deleteLen)
     if (deleteLen) {
       parentControlData.splice(insertInx + 1, deleteLen)
     }
