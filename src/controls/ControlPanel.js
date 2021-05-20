@@ -757,14 +757,9 @@ class ControlPanel extends React.Component {
           {notifications.map(
             ({
               exception,
-              kind = 'error'
+              variant = 'danger'
             }) => {
 
-              let variant = 'success'
-              switch (kind) {
-              case 'error':
-                variant='danger'
-              }
               return (
                 <Alert
                   key={exception}
