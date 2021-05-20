@@ -91,7 +91,7 @@ export default class TemplateEditor extends React.Component {
         notifications = [
           {
             id: 'creating',
-            kind: 'info',
+            variant: 'info',
             exception: Array.isArray(creationMsg) && creationMsg.length
               ? creationMsg[0]
               : i18n(
@@ -108,7 +108,7 @@ export default class TemplateEditor extends React.Component {
         notifications = [
           {
             id: 'success',
-            kind: 'success',
+            variant: 'success',
             exception: Array.isArray(creationMsg)
               ? creationMsg[0]
               : i18n(
@@ -126,7 +126,7 @@ export default class TemplateEditor extends React.Component {
         notifications = creationMsg.map(message => {
           return {
             id: 'create',
-            kind: 'error',
+            variant: 'danger',
             exception: message.message || message
           }
         })
@@ -1029,7 +1029,7 @@ export default class TemplateEditor extends React.Component {
           exceptions.forEach(({ row, text, editor, tabInx }) => {
             notifications.push({
               id: 'error',
-              kind: 'error',
+              variant: 'danger',
               exception: i18n('error.create.syntax', [text]),
               text,
               row,
@@ -1099,7 +1099,7 @@ export default class TemplateEditor extends React.Component {
         exceptions.forEach(({ row, text, editor, tabInx, controlId, ref }) => {
           notifications.push({
             id: 'error',
-            kind: 'error',
+            variant: 'danger',
             exception: i18n('error.create.syntax', [text]),
             text,
             row,
