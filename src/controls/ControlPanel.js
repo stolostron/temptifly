@@ -29,7 +29,6 @@ import {
   TrashIcon,
   AddIcon,
 } from '../icons/Icons'
-import { makeStyles } from '@material-ui/styles'
 
 class ControlPanel extends React.Component {
   static propTypes = {
