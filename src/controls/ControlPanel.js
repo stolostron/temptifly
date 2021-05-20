@@ -246,7 +246,7 @@ class ControlPanel extends React.Component {
     const title = 'Create wizard'
     return (
       <Wizard
-        className={classes.wizardBody}
+        className={this.props.wizardClassName}
         ref={this.setWizardRef.bind(this)}
         navAriaLabel={`${title} steps`}
         mainAriaLabel={`${title} content`}
