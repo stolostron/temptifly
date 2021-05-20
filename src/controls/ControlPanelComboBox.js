@@ -370,7 +370,7 @@ class ControlPanelComboBox extends React.Component {
         </React.Fragment>
       )
     } else {
-      const title = simplified && simplified(label) || label
+      const title = simplified && simplified(label)
       return (
         <div className='tf--list-box__menu-item-container'>
           {title&&<div style={{fontWeight: 'bold', lineHeight: '12px', fontSize: '18px'}}>{title}</div>}
