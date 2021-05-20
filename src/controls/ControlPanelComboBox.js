@@ -203,7 +203,7 @@ class ControlPanelComboBox extends React.Component {
     const aria = isOpen ? 'Close menu' : 'Open menu'
     const validated = exception ? 'error' : undefined
     let value = typeof searchText === 'string' ? searchText : active || ''
-    value = simplified && simplified(value)
+    value = simplified && simplified(value) || value
 
     return (
       <React.Fragment>
@@ -370,7 +370,7 @@ class ControlPanelComboBox extends React.Component {
         </React.Fragment>
       )
     } else {
-      const title = simplified && simplified(label)
+      const title = simplified && simplified(label) || label
       return (
         <div className='tf--list-box__menu-item-container'>
           {title&&<div style={{fontWeight: 'bold', lineHeight: '12px', fontSize: '18px'}}>{title}</div>}
