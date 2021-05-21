@@ -678,7 +678,6 @@ class ControlPanel extends React.Component {
         } else {
           cname = originalControlData.find(({ id }) => id === 'name').active
         }
-
         nname.active = cname.toLowerCase()
       }
     }
