@@ -1263,12 +1263,12 @@ export default class TemplateEditor extends React.Component {
   }
 
   handleCreateResource() {
-    const { createControl, controlData } = this.props
+    const { createControl } = this.props
     const { createResource } = createControl
     const resourceJSON = this.getResourceJSON()
     if (resourceJSON) {
       this.setState({resourceJSON})
-      createResource(resourceJSON, controlData)
+      createResource(resourceJSON)
     }
   }
 
