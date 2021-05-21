@@ -252,6 +252,7 @@ class ControlPanel extends React.Component {
         navAriaLabel={`${title} steps`}
         mainAriaLabel={`${title} content`}
         steps={steps}
+        height={'100%'}
         onNext={onMove}
         onBack={onMove}
         onGoToStep={onMove}
