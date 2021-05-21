@@ -76,6 +76,7 @@ export default class TemplateEditor extends React.Component {
     title: PropTypes.string,
     type: PropTypes.string,
     wizardClassName: PropTypes.string,
+    setSelectedTemplate: PropTypes.func
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -436,6 +437,7 @@ export default class TemplateEditor extends React.Component {
         isCustomName={isCustomName}
         isLoaded={isLoaded}
         i18n={i18n}
+        setSelectedTemplate={this.props.setSelectedTemplate}
       />
     )
   }
@@ -1262,12 +1264,12 @@ export default class TemplateEditor extends React.Component {
   }
 
   handleCreateResource() {
-    const { createControl } = this.props
+    const { createControl, controlData } = this.props
     const { createResource } = createControl
     const resourceJSON = this.getResourceJSON()
     if (resourceJSON) {
       this.setState({resourceJSON})
-      createResource(resourceJSON)
+      createResource(resourceJSON, controlData)
     }
   }
 

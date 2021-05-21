@@ -46,7 +46,8 @@ class ControlPanel extends React.Component {
     originalControlData: PropTypes.array,
     showEditor: PropTypes.bool,
     showPortals: PropTypes.object,
-    wizardClassName: PropTypes.string
+    wizardClassName: PropTypes.string,
+    setSelectedTemplate: PropTypes.func
   };
 
   constructor(props) {
@@ -649,8 +650,13 @@ class ControlPanel extends React.Component {
   handleChange(control) {
     let updateName = false
     let { isCustomName } = this.props
-    const { controlData, originalControlData } = this.props
+    const { controlData, originalControlData, setSelectedTemplate } = this.props
     const { id: field, type, syncWith, syncedWith } = control
+
+    if(control.id === 'templateName'){
+      setSelectedTemplate(control.active)
+    }
+
     switch (type) {
     case 'text':
       isCustomName = field === 'name'
@@ -674,6 +680,7 @@ class ControlPanel extends React.Component {
         } else {
           cname = originalControlData.find(({ id }) => id === 'name').active
         }
+
         nname.active = cname.toLowerCase()
       }
     }
