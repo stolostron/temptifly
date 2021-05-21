@@ -383,7 +383,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                   placeholder="creation.ocp.cloud.select.ocp.image"
                                   role="combobox"
                                   spellcheck="false"
-                                  value=""
+                                  value="4.3.40-x86_64"
                                 />
                               </div>
                               <div

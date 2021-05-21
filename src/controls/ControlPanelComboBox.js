@@ -203,7 +203,7 @@ class ControlPanelComboBox extends React.Component {
     const aria = isOpen ? 'Close menu' : 'Open menu'
     const validated = exception ? 'error' : undefined
     let value = typeof searchText === 'string' ? searchText : active || ''
-    value = simplified && simplified(value)
+    value = simplified && simplified(value) || value
 
     return (
       <React.Fragment>
