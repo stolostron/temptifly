@@ -75,6 +75,8 @@ export default class TemplateEditor extends React.Component {
     template: PropTypes.func.isRequired,
     title: PropTypes.string,
     type: PropTypes.string,
+    wizardClassName: PropTypes.string,
+    setSelectedTemplate: PropTypes.func
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -419,6 +421,7 @@ export default class TemplateEditor extends React.Component {
     const { fetchData } = fetchControl || {}
     return (
       <ControlPanel
+        wizardClassName={this.props.wizardClassName}
         handleControlChange={this.handleControlChange}
         handleNewEditorMode={this.handleNewEditorMode}
         handleGroupChange={this.handleGroupChange}
@@ -434,6 +437,7 @@ export default class TemplateEditor extends React.Component {
         isCustomName={isCustomName}
         isLoaded={isLoaded}
         i18n={i18n}
+        setSelectedTemplate={this.props.setSelectedTemplate}
       />
     )
   }
@@ -615,7 +619,8 @@ export default class TemplateEditor extends React.Component {
     const insertInx = parentControlData.findIndex(
       ({ id }) => id === control.id
     )
-    const deleteLen = parentControlData.length - insertInx - 1
+    const deleteLen = parentControlData.length - insertInx - 4
+    console.log('checking deleteLen: ', deleteLen)
     if (deleteLen) {
       parentControlData.splice(insertInx + 1, deleteLen)
     }
@@ -1259,12 +1264,12 @@ export default class TemplateEditor extends React.Component {
   }
 
   handleCreateResource() {
-    const { createControl } = this.props
+    const { createControl, controlData } = this.props
     const { createResource } = createControl
     const resourceJSON = this.getResourceJSON()
     if (resourceJSON) {
       this.setState({resourceJSON})
-      createResource(resourceJSON)
+      createResource(resourceJSON, controlData)
     }
   }
 
