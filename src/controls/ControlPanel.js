@@ -47,7 +47,7 @@ class ControlPanel extends React.Component {
     showEditor: PropTypes.bool,
     showPortals: PropTypes.object,
     wizardClassName: PropTypes.string,
-    setSelectedTemplate: PropTypes.func
+    onChange: PropTypes.func
   };
 
   constructor(props) {
@@ -649,11 +649,11 @@ class ControlPanel extends React.Component {
   handleChange(control) {
     let updateName = false
     let { isCustomName } = this.props
-    const { controlData, originalControlData, setSelectedTemplate } = this.props
+    const { controlData, originalControlData, onChange } = this.props
     const { id: field, type, syncWith, syncedWith } = control
 
-    if(control.id === 'templateName'){
-      setSelectedTemplate(control.active)
+    if(onChange){
+      onChange(control)
     }
 
     switch (type) {
