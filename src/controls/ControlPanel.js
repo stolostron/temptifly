@@ -45,7 +45,9 @@ class ControlPanel extends React.Component {
     notifications: PropTypes.array,
     originalControlData: PropTypes.array,
     showEditor: PropTypes.bool,
-    showPortals: PropTypes.object
+    showPortals: PropTypes.object,
+    wizardClassName: PropTypes.string,
+    onChange: PropTypes.func
   };
 
   constructor(props) {
@@ -193,6 +195,7 @@ class ControlPanel extends React.Component {
     let step = 1
     const controlMap=[]
     const details = cloneDeep(steps)
+
     steps = steps.map(({title:control, sections}, inx)=>{
       const { id, title } = control
       controlMap[id] = control
@@ -244,6 +247,7 @@ class ControlPanel extends React.Component {
     const title = 'Create wizard'
     return (
       <Wizard
+        className={this.props.wizardClassName}
         ref={this.setWizardRef.bind(this)}
         navAriaLabel={`${title} steps`}
         mainAriaLabel={`${title} content`}
@@ -645,8 +649,13 @@ class ControlPanel extends React.Component {
   handleChange(control) {
     let updateName = false
     let { isCustomName } = this.props
-    const { controlData, originalControlData } = this.props
+    const { controlData, originalControlData, onChange } = this.props
     const { id: field, type, syncWith, syncedWith } = control
+
+    if(onChange){
+      onChange(control)
+    }
+
     switch (type) {
     case 'text':
       isCustomName = field === 'name'

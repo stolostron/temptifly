@@ -75,6 +75,8 @@ export default class TemplateEditor extends React.Component {
     template: PropTypes.func.isRequired,
     title: PropTypes.string,
     type: PropTypes.string,
+    wizardClassName: PropTypes.string,
+    onChange: PropTypes.func
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -419,6 +421,7 @@ export default class TemplateEditor extends React.Component {
     const { fetchData } = fetchControl || {}
     return (
       <ControlPanel
+        wizardClassName={this.props.wizardClassName}
         handleControlChange={this.handleControlChange}
         handleNewEditorMode={this.handleNewEditorMode}
         handleGroupChange={this.handleGroupChange}
@@ -434,6 +437,7 @@ export default class TemplateEditor extends React.Component {
         isCustomName={isCustomName}
         isLoaded={isLoaded}
         i18n={i18n}
+        onChange={this.props.onChange}
       />
     )
   }
@@ -615,7 +619,8 @@ export default class TemplateEditor extends React.Component {
     const insertInx = parentControlData.findIndex(
       ({ id }) => id === control.id
     )
-    const deleteLen = parentControlData.length - insertInx - 1
+    const deleteLen = parentControlData.filter((data)=>data.isInsertedData).length
+
     if (deleteLen) {
       parentControlData.splice(insertInx + 1, deleteLen)
     }
@@ -627,11 +632,17 @@ export default class TemplateEditor extends React.Component {
 
       // insert control data into main control data
       if (insertControlData) {
+        // label inserted cards
+        const labeledControlData = insertControlData.map((data) => {
+          data['isInsertedData'] = true
+          return data
+        })
+
         // splice control data with data from this card
         parentControlData.splice(
           insertInx + 1,
           0,
-          ...cloneDeep(insertControlData)
+          ...cloneDeep(labeledControlData)
         )
 
         // if this card control is in a group, tell each control
