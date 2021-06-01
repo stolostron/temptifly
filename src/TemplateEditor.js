@@ -83,7 +83,7 @@ export default class TemplateEditor extends React.Component {
     const { monacoEditor, createControl = {}, type, initialOpen } = props
     const { i18n, resourceJSON } = state
 
-    // update notifications
+    // update notifications test
     let { notifications } = state
     const { hasFormExceptions, isEditing } = state
     const { creationStatus, creationMsg } = createControl
