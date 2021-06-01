@@ -71,12 +71,12 @@ export default class TemplateEditor extends React.Component {
     initialOpen: PropTypes.bool,
     logging: PropTypes.bool,
     monacoEditor: PropTypes.element,
+    onChange: PropTypes.func,
     portals: PropTypes.object,
     template: PropTypes.func.isRequired,
     title: PropTypes.string,
     type: PropTypes.string,
-    wizardClassName: PropTypes.string,
-    onChange: PropTypes.func
+    wizardClassName: PropTypes.string
   };
 
   static getDerivedStateFromProps(props, state) {

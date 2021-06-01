@@ -43,22 +43,6 @@ module.exports = {
             },
           },
           {
-            loader: 'postcss-loader?sourceMap',
-            options: {
-              plugins: function () {
-                return [
-                  require('autoprefixer')
-                ]
-              },
-            },
-          },
-          {
-            loader: 'resolve-url-loader',
-            options: {
-              sourceMap: true
-            }
-          },
-          {
             loader: 'sass-loader?sourceMap',
           },
         ],
