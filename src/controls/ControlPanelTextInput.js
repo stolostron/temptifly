@@ -71,7 +71,7 @@ class ControlPanelTextInput extends React.Component {
 
   handleChange(id, evt) {
     const { control, handleChange } = this.props
-    control.active = evt
+    control.active = (evt||'').trim()
     handleChange(evt)
   }
 }
