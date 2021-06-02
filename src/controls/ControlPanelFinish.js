@@ -75,9 +75,10 @@ class ControlPanelFinish extends React.Component {
     )
   }
 
-  renderContent(controlData) {
+  renderContent(controlData, divider) {
     return (
       <React.Fragment>
+        {divider && '---'}
         {controlData.map(control => {
           const { type } = control
           switch (type) {
@@ -98,7 +99,7 @@ class ControlPanelFinish extends React.Component {
     return (
       <React.Fragment>
         {active.map((controlData) => {
-          return this.renderContent(controlData)
+          return this.renderContent(controlData, true)
         })}
       </React.Fragment>
     )
@@ -154,7 +155,7 @@ class ControlPanelFinish extends React.Component {
   }
 
   renderControl(control) {
-    const {type, active, name, id, exception, validation} = control
+    const {type, active, name, id, exception, validation, hidden} = control
     let term
     let desc
     switch(type) {
@@ -176,7 +177,7 @@ class ControlPanelFinish extends React.Component {
       break
     case 'cards':
       term = capitalize(id)
-      desc = active
+      desc = typeof active === 'function' ? active() : active
       break
     case 'labels':
       term = name
@@ -189,7 +190,8 @@ class ControlPanelFinish extends React.Component {
       desc = active.join(', ')
       break
     }
-    if (term) {
+    const isHidden = typeof hidden === 'function' ? hidden() : hidden
+    if (term && !isHidden) {
       let styles = {}
       if (exception) {
         desc = '*Fix exceptions'

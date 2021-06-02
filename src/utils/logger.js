@@ -70,11 +70,15 @@ export const logSourceErrors = (logging, templateYAML, controlData, otherYAMLTab
       replacements,
       controlMap
     )
-    const input = jsYaml.safeDump(templateData, {
-      noRefs: true,
-      lineWidth: 200
-    })
-    console.info(input)
+    try {
+      const input = jsYaml.safeDump(templateData, {
+        noRefs: true,
+        lineWidth: 200
+      })
+      console.info(input)
+    } catch (e) {
+      // nothing
+    }
     console.groupEnd()
   }
 }
