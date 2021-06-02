@@ -214,9 +214,7 @@ class ControlPanel extends React.Component {
         id,
         name:<div className="tf--finish-step-button">
           {title}
-          {errors>0&&<div className="tf--finish-step-button-error">
-            {errors}
-          </div>}
+          {errors>0&&<div className="tf--finish-step-button-error">!</div>}
         </div>,
         control,
         component: <div className={controlClasses}>
