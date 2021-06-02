@@ -43,11 +43,11 @@ class ControlPanel extends React.Component {
     isCustomName: PropTypes.bool,
     isLoaded: PropTypes.bool,
     notifications: PropTypes.array,
+    onChange: PropTypes.func,
     originalControlData: PropTypes.array,
     showEditor: PropTypes.bool,
     showPortals: PropTypes.object,
-    wizardClassName: PropTypes.string,
-    onChange: PropTypes.func
+    wizardClassName: PropTypes.string
   };
 
   constructor(props) {

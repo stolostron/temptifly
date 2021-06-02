@@ -24,7 +24,7 @@ class ControlPanelComboBox extends React.Component {
   static getDerivedStateFromProps(props, state) {
     const { control, handleControlChange } = props
     const handleComboChange = selectedItem => {
-      control.active = selectedItem
+      control.active = (selectedItem||'').trim()
       handleControlChange()
     }
     const { active } = control
@@ -393,7 +393,7 @@ class ControlPanelComboBox extends React.Component {
       const { control, handleControlChange } = this.props
       control.userData = control.userData || []
       control.userData.push(searchText)
-      control.active = searchText
+      control.active = (searchText||'').trim()
       handleControlChange()
       this.setState({
         currentSelection: undefined,

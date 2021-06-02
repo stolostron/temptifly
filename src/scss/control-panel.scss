@@ -34,10 +34,6 @@ $acm_background_color: #f0f0f0 !default;
     display: flex;
     flex-direction: column;
 
-    .content {
-      margin-left: 26px;
-    }
-
     div:focus {
       outline: none;
     }
@@ -176,8 +172,6 @@ $acm_background_color: #f0f0f0 !default;
 
         &-collapse-button {
           display: flex;
-          position: absolute;
-          left: -30px;
 
           > svg {
             margin: 0 6px;

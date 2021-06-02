@@ -71,12 +71,12 @@ export default class TemplateEditor extends React.Component {
     initialOpen: PropTypes.bool,
     logging: PropTypes.bool,
     monacoEditor: PropTypes.element,
+    onChange: PropTypes.func,
     portals: PropTypes.object,
     template: PropTypes.func.isRequired,
     title: PropTypes.string,
     type: PropTypes.string,
-    wizardClassName: PropTypes.string,
-    onChange: PropTypes.func
+    wizardClassName: PropTypes.string
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -292,6 +292,11 @@ export default class TemplateEditor extends React.Component {
         this.forceUpdate()
       }, 0)
     }
+    const temptifly = document.getElementsByClassName('temptifly')[0]
+    const resizeObserver = new ResizeObserver((()=>{
+      this.layoutEditors()
+    }).bind(this))
+    resizeObserver.observe(temptifly)
     this.innerWidth = window.innerWidth
     window.addEventListener('resize', (()=>{
       if (this.innerWidth !== window.innerWidth) {

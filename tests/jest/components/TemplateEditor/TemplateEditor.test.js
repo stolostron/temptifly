@@ -19,10 +19,21 @@ const i18n = (key) => {
   return key
 }
 
+class ResizeObserver {
+  observe() {
+    // do nothing
+  }
+  unobserve() {
+    // do nothing
+  }
+}
+
 describe('TemplateEditor component',() => {
   it('renders as expected',  async () => {
 
     jest.setTimeout(30000)
+
+    window.ResizeObserver = ResizeObserver
 
     window.scrollBy = () => {}
     const createResource = (json) => {
