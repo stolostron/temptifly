@@ -292,11 +292,13 @@ export default class TemplateEditor extends React.Component {
         this.forceUpdate()
       }, 0)
     }
-    const temptifly = document.getElementsByClassName('temptifly')[0]
-    const resizeObserver = new ResizeObserver((()=>{
-      this.layoutEditors()
-    }).bind(this))
-    resizeObserver.observe(temptifly)
+    if (window.ResizeObserver) {
+      const temptifly = document.getElementsByClassName('temptifly')[0]
+      const resizeObserver = new ResizeObserver((()=>{
+        this.layoutEditors()
+      }).bind(this))
+      resizeObserver.observe(temptifly)
+    }
     this.innerWidth = window.innerWidth
     window.addEventListener('resize', (()=>{
       if (this.innerWidth !== window.innerWidth) {
