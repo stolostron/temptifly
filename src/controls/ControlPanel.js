@@ -121,6 +121,7 @@ class ControlPanel extends React.Component {
       if (pauseControlCreationHereUntilSelected) {
         stopRenderingOnNextControl = !control.active
       }
+      const isHidden = this.isHidden(control, controlData)
       if (!stopRendering) {
         switch (type) {
         case 'step':
@@ -138,7 +139,9 @@ class ControlPanel extends React.Component {
           content = []
           activeSection = null
           activeStep = { title: control, sections }
-          steps.push(activeStep)
+          if (!isHidden) {
+            steps.push(activeStep)
+          }
           break
         case 'section':
           if (content.length && !activeSection) {
@@ -147,7 +150,9 @@ class ControlPanel extends React.Component {
           }
           content = []
           activeSection = { title: control, content }
-          sections.push(activeSection)
+          if (!isHidden) {
+            sections.push(activeSection)
+          }
           break
         default:
           if (!activeSection) {
@@ -451,12 +456,7 @@ class ControlPanel extends React.Component {
 
   renderControl(id, type, control, grpId) {
     const { controlData, showEditor, isLoaded, i18n } = this.props
-    const { hidden } = control
-    if (
-      hidden === true ||
-      hidden === 'true' ||
-      (typeof hidden === 'function' && hidden(control, controlData))
-    ) {
+    if (this.isHidden(control, controlData)) {
       return null
     }
     const controlId = `${id}${grpId}`.replace('name', 'eman').replace('address', 'sserdda')
@@ -842,6 +842,15 @@ class ControlPanel extends React.Component {
           <AddIcon className='icon' />
         </div>
       </div>
+    )
+  }
+
+  isHidden(control, controlData) {
+    const { hidden } = control
+    return (
+      hidden === true ||
+      hidden === 'true' ||
+      (typeof hidden === 'function' && hidden(control, controlData))
     )
   }
 }
