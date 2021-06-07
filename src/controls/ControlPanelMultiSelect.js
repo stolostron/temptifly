@@ -129,6 +129,7 @@ class ControlPanelMultiSelect extends React.Component {
                 isDisabled={disabled}
                 onFilter={onFilter}
                 hasInlineFilter
+                data-testid={`multi-${controlId}`}
               >
                 {this.options}
               </Select>

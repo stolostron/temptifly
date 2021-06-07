@@ -8,7 +8,6 @@ import { Spinner } from '@patternfly/react-core'
 import ControlPanelFormGroup from './ControlPanelFormGroup'
 import TimesCircleIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
 import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon'
-import set from 'lodash/set'
 import get from 'lodash/get'
 import uniq from 'lodash/uniq'
 import invert from 'lodash/invert'
@@ -44,19 +43,6 @@ class ControlPanelComboBox extends React.Component {
       // nothing selected, filter list
       if (currentSelection === undefined) {
         if (!isOpen || isBlurred) {
-          const {userData=[]} = control
-          if (!userData.includes(searchText)) {
-            control.active = searchText
-            userData.push(searchText)
-            set(control, 'userData', userData)
-
-            // if this combobox is fetched from server, make sure whatever user types in has an availableMap entry
-            const setAvailableMap = get(control, 'fetchAvailable.setAvailableMap')
-            if (setAvailableMap) {
-              setAvailableMap(control)
-            }
-
-          }
           handleComboChange(searchText)
           searchText = null
           isOpen = false
@@ -203,7 +189,7 @@ class ControlPanelComboBox extends React.Component {
     const aria = isOpen ? 'Close menu' : 'Open menu'
     const validated = exception ? 'error' : undefined
     let value = typeof searchText === 'string' ? searchText : active || ''
-    value = simplified && simplified(value) || value
+    value = simplified && simplified(value, control) || value
 
     return (
       <React.Fragment>
@@ -336,7 +322,7 @@ class ControlPanelComboBox extends React.Component {
                               onClick={this.clickSelect.bind(this, label)}
                               onKeyPress={this.pressSelect.bind(this, label)}
                             >
-                              {this.renderLabel(label, searchText, active, simplified)}
+                              {this.renderLabel(label, searchText, active, control, simplified)}
                             </div>
                           )
                         }
@@ -351,30 +337,35 @@ class ControlPanelComboBox extends React.Component {
     )
   }
 
-  renderLabel(label, searchText, active, simplified) {
-    const inx =
-      searchText &&
-      searchText.length &&
-      label.toLowerCase().indexOf(searchText.toLowerCase())
-    if (inx !== null && inx >= 0) {
-      label = [
-        label.substr(0, inx),
-        label.substr(inx, searchText.length),
-        label.substr(inx + searchText.length)
-      ]
-      return (
-        <React.Fragment>
-          {label[0]}
-          <b>{label[1]}</b>
-          {label[2]}
-        </React.Fragment>
-      )
+  renderLabel(label, searchText, active, control, simplified) {
+    if (!simplified || (simplified && searchText)) {
+      if (!searchText) {
+        return (
+          <React.Fragment>
+            {label}
+          </React.Fragment>
+        )
+      } else {
+        const inx = label.toLowerCase().indexOf(searchText.toLowerCase())
+        label = [
+          label.substr(0, inx),
+          label.substr(inx, searchText.length),
+          label.substr(inx + searchText.length)
+        ]
+        return (
+          <React.Fragment>
+            {label[0]}
+            <b>{label[1]}</b>
+            {label[2]}
+          </React.Fragment>
+        )
+      }
     } else {
-      const title = simplified && simplified(label)
+      const title = simplified && simplified(label, control)
       return (
         <div className='tf--list-box__menu-item-container'>
-          {title&&<div style={{fontWeight: 'bold', lineHeight: '12px', fontSize: '18px'}}>{title}</div>}
-          <div style={{fontSize: '14px'}}>{label}</div>
+          {title&&<div style={{lineHeight: '14px', fontSize: '16px'}}>{title}</div>}
+          <div style={{fontSize: '12px'}}>{label}</div>
           {label===active && <span className="tf-select__menu-item-icon">
             <CheckIcon aria-hidden />
           </span>}
@@ -439,6 +430,10 @@ class ControlPanelComboBox extends React.Component {
     const clickedWithinClear = e && this.clearRef && this.clearRef.contains && this.clearRef.contains(e.target)
     const clickedWithinToggle = e && this.toggleRef && this.toggleRef.contains && this.toggleRef.contains(e.target)
     if (!(this.state.searchText || clickedWithinClear) || clickedWithinToggle) {
+      const { control } = this.props
+      const {
+        simplified,
+      } = control
       this.setState(preState => {
         let {
           currentAvailable,
@@ -451,6 +446,8 @@ class ControlPanelComboBox extends React.Component {
           currentAvailable = []
           currentSelection = undefined
           searchText = null
+        } else if (this.inputRef.value && !simplified) {
+          searchText = this.inputRef.value
         }
         return {
           currentAvailable,
@@ -479,7 +476,7 @@ class ControlPanelComboBox extends React.Component {
   }
 
   clickClear() {
-    this.setState({ searchText: '' })
+    this.setState({ searchText: null })
     const { control, handleControlChange } = this.props
     control.active = ''
     handleControlChange()
