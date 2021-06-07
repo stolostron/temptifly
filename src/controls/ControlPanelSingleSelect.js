@@ -97,6 +97,7 @@ class ControlPanelSingleSelect extends React.Component {
                   onClear={() => {onChange(undefined)}}
                   placeholderText={placeholder}
                   isDisabled={disabled}
+                  data-testid={`select-${controlId}`}
                 >
                   {available.map((item, inx)=>{
                   /* eslint-disable-next-line react/no-array-index-key */
