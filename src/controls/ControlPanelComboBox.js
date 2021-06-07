@@ -338,7 +338,7 @@ class ControlPanelComboBox extends React.Component {
   }
 
   renderLabel(label, searchText, active, control, simplified) {
-    if (!simplified || !searchText) {
+    if (!simplified || (simplified && searchText)) {
       if (!searchText) {
         return (
           <React.Fragment>
@@ -430,6 +430,10 @@ class ControlPanelComboBox extends React.Component {
     const clickedWithinClear = e && this.clearRef && this.clearRef.contains && this.clearRef.contains(e.target)
     const clickedWithinToggle = e && this.toggleRef && this.toggleRef.contains && this.toggleRef.contains(e.target)
     if (!(this.state.searchText || clickedWithinClear) || clickedWithinToggle) {
+      const { control } = this.props
+      const {
+        simplified,
+      } = control
       this.setState(preState => {
         let {
           currentAvailable,
@@ -442,7 +446,7 @@ class ControlPanelComboBox extends React.Component {
           currentAvailable = []
           currentSelection = undefined
           searchText = null
-        } else if (this.inputRef.value) {
+        } else if (this.inputRef.value && !simplified) {
           searchText = this.inputRef.value
         }
         return {
