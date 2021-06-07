@@ -8,6 +8,7 @@ import { Spinner } from '@patternfly/react-core'
 import ControlPanelFormGroup from './ControlPanelFormGroup'
 import TimesCircleIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
 import CheckIcon from '@patternfly/react-icons/dist/js/icons/check-icon'
+import set from 'lodash/set'
 import get from 'lodash/get'
 import uniq from 'lodash/uniq'
 import invert from 'lodash/invert'
@@ -43,6 +44,19 @@ class ControlPanelComboBox extends React.Component {
       // nothing selected, filter list
       if (currentSelection === undefined) {
         if (!isOpen || isBlurred) {
+          const {userData=[]} = control
+          if (!userData.includes(searchText)) {
+            control.active = searchText
+            userData.push(searchText)
+            set(control, 'userData', userData)
+
+            // if this combobox is fetched from server, make sure whatever user types in has an availableMap entry
+            const setAvailableMap = get(control, 'fetchAvailable.setAvailableMap')
+            if (setAvailableMap) {
+              setAvailableMap(control)
+            }
+
+          }
           handleComboChange(searchText)
           searchText = null
           isOpen = false
@@ -169,9 +183,6 @@ class ControlPanelComboBox extends React.Component {
       currentAvailable = available.filter(item => {
         return item.toLowerCase().includes(findText)
       })
-      if (currentAvailable.length===0) {
-        currentAvailable = available
-      }
     }
     const items = currentAvailable.map((label, inx) => {
       return { label, id: inx }
@@ -189,7 +200,7 @@ class ControlPanelComboBox extends React.Component {
     const aria = isOpen ? 'Close menu' : 'Open menu'
     const validated = exception ? 'error' : undefined
     let value = typeof searchText === 'string' ? searchText : active || ''
-    value = simplified && simplified(value, control) || value
+    value = !searchText && simplified && simplified(value, control) || value
 
     return (
       <React.Fragment>
@@ -338,7 +349,7 @@ class ControlPanelComboBox extends React.Component {
   }
 
   renderLabel(label, searchText, active, control, simplified) {
-    if (!simplified || (simplified && searchText)) {
+    if (!simplified || searchText) {
       if (!searchText) {
         return (
           <React.Fragment>
