@@ -388,6 +388,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                               </div>
                               <div
                                 class="tf--list-box__selection"
+                                color="#6a6e73"
                                 role="button"
                                 tabindex="0"
                                 title="Clear selected item"

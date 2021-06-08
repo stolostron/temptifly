@@ -91,7 +91,8 @@ class ControlPanelComboBox extends React.Component {
     this.state = {
       isOpen: false,
       isBlurred: false,
-      searchText: null
+      searchText: null,
+      sortToTop: null
     }
   }
 
@@ -115,6 +116,7 @@ class ControlPanelComboBox extends React.Component {
     const {
       isOpen,
       searchText,
+      sortToTop,
     } = this.state
     const { controlId, i18n, control } = this.props
     const {
@@ -128,6 +130,7 @@ class ControlPanelComboBox extends React.Component {
       isRefetching,
       disabled,
       simplified,
+      describe,
     } = control
     let { isLoading } = control
     let { active, available=[], placeholder = '' } = control
@@ -183,6 +186,14 @@ class ControlPanelComboBox extends React.Component {
       currentAvailable = available.filter(item => {
         return item.toLowerCase().includes(findText)
       })
+    } else if (sortToTop) {
+      currentAvailable.sort((a,b)=>{
+        if (a.includes(sortToTop) && !b.includes(sortToTop)) {
+          return -1
+        } else if (!a.includes(sortToTop) && b.includes(sortToTop)) {
+          return 1
+        }
+      })
     }
     const items = currentAvailable.map((label, inx) => {
       return { label, id: inx }
@@ -200,7 +211,8 @@ class ControlPanelComboBox extends React.Component {
     const aria = isOpen ? 'Close menu' : 'Open menu'
     const validated = exception ? 'error' : undefined
     let value = typeof searchText === 'string' ? searchText : active || ''
-    value = !searchText && simplified && simplified(value, control) || value
+    const isCustom = userData.includes(value)
+    value = !isOpen && !searchText && !isCustom && simplified && simplified(value, control) || value
 
     return (
       <React.Fragment>
@@ -264,6 +276,7 @@ class ControlPanelComboBox extends React.Component {
                       role="button"
                       className="tf--list-box__selection"
                       tabIndex="0"
+                      color="#6a6e73"
                       title="Clear selected item"
                       ref={this.setClearRef}
                       onClick={this.clickClear.bind(this)}
@@ -333,7 +346,7 @@ class ControlPanelComboBox extends React.Component {
                               onClick={this.clickSelect.bind(this, label)}
                               onKeyPress={this.pressSelect.bind(this, label)}
                             >
-                              {this.renderLabel(label, searchText, active, control, simplified)}
+                              {this.renderLabel(label, searchText, active, control, simplified, describe)}
                             </div>
                           )
                         }
@@ -348,8 +361,21 @@ class ControlPanelComboBox extends React.Component {
     )
   }
 
-  renderLabel(label, searchText, active, control, simplified) {
-    if (!simplified || searchText) {
+  renderLabel(label, searchText, active, control, simplified, describe) {
+    if (describe) {
+      const desc = describe(label, control)
+      return (
+        <div className='tf--list-box__menu-item-container'>
+          <div style={{lineHeight: '14px', fontSize: '16px'}}>{label}</div>
+          <div style={{fontSize: '12px'}}>{desc}</div>
+          {label===active && <span className="tf-select__menu-item-icon">
+            <CheckIcon aria-hidden />
+          </span>}
+        </div>
+      )
+    }
+    const isCustom = control.userData && control.userData.includes(label)
+    if (isCustom || !simplified || searchText) {
       if (!searchText) {
         return (
           <React.Fragment>
@@ -449,6 +475,7 @@ class ControlPanelComboBox extends React.Component {
         let {
           currentAvailable,
           currentSelection,
+          sortToTop,
           searchText,
           isOpen
         } = preState
@@ -458,11 +485,12 @@ class ControlPanelComboBox extends React.Component {
           currentSelection = undefined
           searchText = null
         } else if (this.inputRef.value && !simplified) {
-          searchText = this.inputRef.value
+          sortToTop = this.inputRef.value
         }
         return {
           currentAvailable,
           currentSelection,
+          sortToTop,
           searchText,
           isOpen
         }
