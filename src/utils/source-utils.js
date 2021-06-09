@@ -20,12 +20,14 @@ export const ControlMode = Object.freeze({
 export const initializeControls = (
   initialControlData,
   editor,
+  onControlInitialize,
   i18n,
   uniqueGroupID,
   inGroup
 ) => {
   const controlData = initializeControlData(
     initialControlData,
+    onControlInitialize,
     i18n,
     uniqueGroupID,
     inGroup
