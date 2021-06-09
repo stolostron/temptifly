@@ -99,7 +99,7 @@ class ControlPanelFinish extends React.Component {
     return (
       <React.Fragment>
         {active.map((controlData) => {
-          return this.renderContent(controlData, true)
+          return this.renderContent(controlData, active.length>1)
         })}
       </React.Fragment>
     )

@@ -30,8 +30,6 @@ class ControlPanelAccordion extends React.Component {
   render() {
     const { controlId, i18n, control, controlData } = this.props
     const {
-      title,
-      subtitle,
       tooltip,
       note,
       collapsable,
@@ -39,7 +37,13 @@ class ControlPanelAccordion extends React.Component {
       content = [],
       techPreview
     } = control
-    let { info } = control
+    let { title, subtitle, info } = control
+    if (typeof title === 'function') {
+      title = title(control, controlData, i18n)
+    }
+    if (typeof subtitle === 'function') {
+      subtitle = subtitle(control, controlData, i18n)
+    }
     if (typeof info === 'function') {
       info = info(control, controlData, i18n)
     }
@@ -90,36 +94,37 @@ class ControlPanelAccordion extends React.Component {
     id = id.replace(/\s+/g, '-').toLowerCase()
     return (
       <React.Fragment>
-        <div
-          id={id}
-          className={titleClasses}
-          tabIndex="0"
-          role={'button'}
-          title={text}
-          aria-label={text}
-          onClick={handleCollapse}
-          onKeyPress={handleCollapseKey}
-          ref={this.setControlSectionTitleRef.bind(this, control)}
-        >
-          {note && (
-            <div className="creation-view-controls-note">
-              {i18n(note)}
-            </div>
-          )}
-          {label && (
-            <div className={mainTitleClasses}>
-              {collapsable && (
-                <div
-                  className={
-                    'creation-view-controls-title-main-collapse-button'
-                  }
-                >
-                  <CaretIcon />
-                </div>
-              )}
-              <div className="creation-view-controls-title-main-name">
-                {label}
-                {!info && tooltip &&
+        {label || info ?
+          <div
+            id={id}
+            className={titleClasses}
+            tabIndex="0"
+            role={'button'}
+            title={text}
+            aria-label={text}
+            onClick={handleCollapse}
+            onKeyPress={handleCollapseKey}
+            ref={this.setControlSectionTitleRef.bind(this, control)}
+          >
+            {note && (
+              <div className="creation-view-controls-note">
+                {i18n(note)}
+              </div>
+            )}
+            {label && (
+              <div className={mainTitleClasses}>
+                {collapsable && (
+                  <div
+                    className={
+                      'creation-view-controls-title-main-collapse-button'
+                    }
+                  >
+                    <CaretIcon />
+                  </div>
+                )}
+                <div className="creation-view-controls-title-main-name">
+                  {label}
+                  {!info && tooltip &&
                   <Popover
                     id={`${controlId}-label-help-popover`}
                     bodyContent={tooltip}
@@ -136,35 +141,35 @@ class ControlPanelAccordion extends React.Component {
                       <HelpIcon noVerticalAlign />
                     </button>
                   </Popover>
-                }
-                {techPreview && (
-                  <div variant="primary" className="techPreviewTag">
-                    {i18n('creation.app.section.techPreview')}
-                  </div>
-                )}
-                <span className="creation-view-controls-title-main-summary">
-                  {summary.map((tag, inx) => {
-                    return (
-                      <Badge
+                  }
+                  {techPreview && (
+                    <div variant="primary" className="techPreviewTag">
+                      {i18n('creation.app.section.techPreview')}
+                    </div>
+                  )}
+                  <span className="creation-view-controls-title-main-summary">
+                    {summary.map((tag, inx) => {
+                      return (
+                        <Badge
                         /* eslint-disable-next-line react/no-array-index-key */
-                        key={`${id}-${tag}-${inx}`}
-                        className="tag"
-                        type="custom"
-                      >
-                        {tag}
-                      </Badge>
-                    )
-                  })}
-                </span>
+                          key={`${id}-${tag}-${inx}`}
+                          className="tag"
+                          type="custom"
+                        >
+                          {tag}
+                        </Badge>
+                      )
+                    })}
+                  </span>
+                </div>
               </div>
-            </div>
-          )}
-          <div className="creation-view-controls-title-normal-container">
-            {info && (
-              <div className="creation-view-controls-title-normal">{info}</div>
             )}
-          </div>
-        </div>
+            <div className="creation-view-controls-title-normal-container">
+              {info && (
+                <div className="creation-view-controls-title-normal">{info}</div>
+              )}
+            </div>
+          </div> : null}
       </React.Fragment>
     )
   }

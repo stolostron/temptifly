@@ -33,3 +33,27 @@ export const labelControlData = [
     active: [],
   },
 ]
+
+export const automationControlData = [
+  ///////////////////////  automation  /////////////////////////////////////
+  {
+    id: 'integrationStep',
+    type: 'step',
+    title: 'template.clusterCreate.title',
+  },
+  {
+    id: 'chooseTemplate',
+    type: 'title',
+    info: 'template.clusterCreate.info',
+  },
+  {
+    name: 'template.clusterCreate.name',
+    id: 'templateName',
+    type: 'singleselect',
+    placeholder: 'template.clusterCreate.select.placeholder',
+    available: [],
+    validation: {
+      required: false,
+    },
+  },
+]
