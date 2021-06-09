@@ -369,8 +369,7 @@ class ControlPanelTable extends React.Component {
               <TableBody />
             </Table>
             <Split>
-              <SplitItem isFilled></SplitItem>
-              <SplitItem>
+              <SplitItem style={{margin: 'auto'}}>
                 {available.length === 0 && (
                   <div style={{display: 'flex', paddingTop: '20px', color: 'gray'}}>
                     <EmptyStateIcon icon={NoResourceIcon} />

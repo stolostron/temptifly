@@ -626,8 +626,7 @@ export default class TemplateEditor extends React.Component {
     const insertInx = parentControlData.findIndex(
       ({ id }) => id === control.id
     )
-    const deleteLen = parentControlData.filter((data)=>data.isInsertedData).length
-
+    const deleteLen = parentControlData.length - insertInx - 1
     if (deleteLen) {
       parentControlData.splice(insertInx + 1, deleteLen)
     }
@@ -639,17 +638,11 @@ export default class TemplateEditor extends React.Component {
 
       // insert control data into main control data
       if (insertControlData) {
-        // label inserted cards
-        const labeledControlData = insertControlData.map((data) => {
-          data['isInsertedData'] = true
-          return data
-        })
-
         // splice control data with data from this card
         parentControlData.splice(
           insertInx + 1,
           0,
-          ...cloneDeep(labeledControlData)
+          ...cloneDeep(insertControlData)
         )
 
         // if this card control is in a group, tell each control
@@ -693,7 +686,15 @@ export default class TemplateEditor extends React.Component {
 
   handleScrollAndCollapse(control, controlData, creationView, wizardRef) {
     if (wizardRef) {
-      wizardRef.onNext()
+      const creationView = document.getElementsByClassName('creation-view-controls')[0]
+      setTimeout(() => {
+        creationView.scrollBy({
+          top: creationView.scrollHeight,
+          left: 0,
+          behavior: 'smooth'
+        })
+      }, 100)
+
     } else {
       const { showEditor, previouslySelectedCards } = this.state
       // user chose a card with new controls in it---scroll the view down to the new fields

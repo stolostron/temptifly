@@ -1,5 +1,6 @@
 import {
   networkingControlData,
+  automationControlData,
   labelControlData,
 } from './ControlDataHelpers'
 import {
@@ -290,6 +291,7 @@ const controlDataBMC = [
     available: ['false', 'true'],
   },
   ...networkingControlData,
+  ...automationControlData
 ]
 
 export default controlDataBMC

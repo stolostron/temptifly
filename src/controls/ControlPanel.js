@@ -223,17 +223,21 @@ class ControlPanel extends React.Component {
         </div>,
         control,
         component: <div className={controlClasses}>
+          <h2>{title}</h2>
           {this.renderControlSections(sections)}
         </div>
       }
     })
     steps.push({
       name: 'Review',
-      component: <ControlPanelFinish
-        className={controlClasses}
-        details={details}
-        renderNotifications={this.renderNotifications.bind(this)}
-      />,
+      component: <div className={controlClasses}>
+        <h2>Review</h2>
+        <ControlPanelFinish
+          className={controlClasses}
+          details={details}
+          renderNotifications={this.renderNotifications.bind(this)}
+        />
+      </div>,
       nextButtonText: 'Create'
     })
     const onMove = (curr) => {
@@ -318,7 +322,7 @@ class ControlPanel extends React.Component {
                 {prompts &&
                   active.length > 1 &&
                   this.renderDeleteGroupButton(control, inx)}
-                {this.renderGroupControlSections(controlData, groupId)}
+                {this.renderGroupControlSections(controlData, inx, groupId)}
               </div>
               {prompts &&
                 active.length - 1 === inx &&
@@ -330,7 +334,7 @@ class ControlPanel extends React.Component {
     )
   }
 
-  renderGroupControlSections(controlData, grpId = '') {
+  renderGroupControlSections(controlData, grpNum, grpId = '') {
     // create collapsable control sections
     let section
     let content = []
@@ -345,6 +349,7 @@ class ControlPanel extends React.Component {
       }
       if (!stopRendering) {
         if (type === 'section') {
+          control.grpNum = grpNum
           content = []
           section = { title: control, content }
           controlSections.push(section)

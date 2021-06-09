@@ -795,4 +795,22 @@ $acm_background_color: #f0f0f0 !default;
       }
     }
   }
+
+  .pf-c-wizard {
+    .creation-view-controls {
+      .creation-view-controls-title-main-name {
+        font-weight: bold;
+        margin-left: -30px;
+      }
+      .creation-view-controls-title-main-collapse-button {
+        left: -30px;
+      }
+      .creation-view-group-container {
+        border: none;
+        box-shadow: none;
+        padding: 0 0 0 12px;
+        margin-left: 10px;
+      }
+    }
+  }
 }
