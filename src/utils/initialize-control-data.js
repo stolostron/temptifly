@@ -167,6 +167,7 @@ const initializeMsgs = (control, i18n) => {
       if (change.insertControlData) {
         change.insertControlData.forEach(ctrl => {
           if (!ctrl.isInitialized) {
+            initializeControlActive(ctrl.type, ctrl)
             initializeMsgs(ctrl, i18n)
             ctrl.isInitialized = true
           }
