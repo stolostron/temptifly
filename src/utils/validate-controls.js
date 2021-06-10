@@ -77,6 +77,7 @@ export function validateControls(
           control.exceptions = []
           validateTableControl(
             control,
+            controlData,
             templateObjectMap,
             templateExceptionMap,
             isFinalValidate,
@@ -175,6 +176,7 @@ const validateGroupControl = (
 
 const validateTableControl = (
   table,
+  globalControlData,
   templateObjectMap,
   templateExceptionMap,
   isFinalValidate,
@@ -238,7 +240,7 @@ const validateTableControl = (
     table.exception = i18n(
       `creation.ocp.validation.errors${hidden ? '.hidden' : ''}`)
   } else if (typeof tester === 'function') {
-    const exception = tester(rows)
+    const exception = tester(rows, table, globalControlData)
     if (exception) {
       table.exception = i18n(exception)
     }
@@ -348,6 +350,7 @@ const validateControl = (
     case 'table':
       validateTableControl(
         control,
+        controlData,
         templateObjectMap,
         templateExceptionMap,
         i18n
