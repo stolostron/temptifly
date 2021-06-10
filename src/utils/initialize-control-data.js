@@ -7,6 +7,7 @@ import get from 'lodash/get'
 ///////////////////////////////////////////////////////////////////////////////
 export const initializeControlData = (
   initialControlData,
+  onControlInitialize,
   i18n,
   uniqueGroupID,
   inGroup
@@ -26,6 +27,7 @@ export const initializeControlData = (
         active.push(
           initializeControlData(
             controlData,
+            onControlInitialize,
             i18n,
             control.nextUniqueGroupID,
             true
@@ -36,7 +38,7 @@ export const initializeControlData = (
       return control
     }
     default:
-      return initialControl(control, i18n)
+      return initialControl(control, onControlInitialize, i18n)
     }
   })
 
@@ -60,7 +62,7 @@ export const initializeControlData = (
 ///////////////////////////////////////////////////////////////////////////////
 // initialze each control
 ///////////////////////////////////////////////////////////////////////////////
-const initialControl = (control, i18n) => {
+const initialControl = (control, onControlInitialize, i18n) => {
   const { type, isInitialized } = control
   if (!isInitialized) {
     control = Object.assign({}, control)
@@ -81,6 +83,10 @@ const initialControl = (control, i18n) => {
     initializeValidation(type, control)
 
     control.isInitialized = true
+  }
+  // user init
+  if (onControlInitialize) {
+    onControlInitialize(control)
   }
   return control
 }

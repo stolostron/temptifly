@@ -71,7 +71,8 @@ export default class TemplateEditor extends React.Component {
     initialOpen: PropTypes.bool,
     logging: PropTypes.bool,
     monacoEditor: PropTypes.element,
-    onChange: PropTypes.func,
+    onControlChange: PropTypes.func,
+    onControlInitialize: PropTypes.func,
     portals: PropTypes.object,
     template: PropTypes.func.isRequired,
     title: PropTypes.string,
@@ -145,7 +146,7 @@ export default class TemplateEditor extends React.Component {
     let newState = { isLoaded, isFailed, showEditor }
 
     // has control data been initialized?
-    const { controlData: initialControlData } = props
+    const { controlData: initialControlData, onControlInitialize } = props
     let {
       controlData,
       templateYAML,
@@ -157,7 +158,7 @@ export default class TemplateEditor extends React.Component {
     if (!controlData) {
       // initialize control data
       const cd = cloneDeep(initialControlData)
-      controlData = initializeControls(cd, editor, i18n)
+      controlData = initializeControls(cd, editor, onControlInitialize, i18n)
       newState = { ...newState, controlData }
 
       const showControl = controlData.find(
@@ -444,7 +445,7 @@ export default class TemplateEditor extends React.Component {
         isCustomName={isCustomName}
         isLoaded={isLoaded}
         i18n={i18n}
-        onChange={this.props.onChange}
+        onChange={this.props.onControlChange}
       />
     )
   }
@@ -520,12 +521,14 @@ export default class TemplateEditor extends React.Component {
       i18n
     } = this.state
     const { active, controlData: cd } = control
+    const { onControlInitialize } = this.props
     if (inx === undefined) {
       // add new group
       const { prompts: { nameId, baseName } } = control
       const newGroup = initializeControls(
         cd,
         editor,
+        onControlInitialize,
         i18n,
         control.nextUniqueGroupID,
         true
@@ -615,6 +618,7 @@ export default class TemplateEditor extends React.Component {
   // change editor mode based on what card is selected
   changeEditorMode(control, controlData) {
     let { template } = this.props
+    const { onControlInitialize } = this.props
     const { editStack, otherYAMLTabs, editor, i18n } = this.state
     let { templateYAML, templateObject, templateResources } = this.state
     let newYAML = templateYAML
@@ -652,7 +656,7 @@ export default class TemplateEditor extends React.Component {
             cd.groupControlData = groupControlData
           })
         }
-        controlData = initializeControls(controlData, editor, i18n)
+        controlData = initializeControls(controlData, editor, onControlInitialize, i18n)
       }
 
       // replace template and regenerate templateYAML and highlight diffs
@@ -687,13 +691,15 @@ export default class TemplateEditor extends React.Component {
   handleScrollAndCollapse(control, controlData, creationView, wizardRef) {
     if (wizardRef) {
       const creationView = document.getElementsByClassName('creation-view-controls')[0]
-      setTimeout(() => {
-        creationView.scrollBy({
-          top: creationView.scrollHeight,
-          left: 0,
-          behavior: 'smooth'
-        })
-      }, 100)
+      if (creationView && creationView.scrollBy) {
+        setTimeout(() => {
+          creationView.scrollBy({
+            top: creationView.scrollHeight,
+            left: 0,
+            behavior: 'smooth'
+          })
+        }, 100)
+      }
 
     } else {
       const { showEditor, previouslySelectedCards } = this.state
@@ -1312,10 +1318,10 @@ export default class TemplateEditor extends React.Component {
   }
 
   resetEditor() {
-    const { controlData: initialControlData } = this.props
+    const { controlData: initialControlData, onControlInitialize } = this.props
     const { template, editStack = {}, resetInx, editor, i18n } = this.state
     const cd = cloneDeep(initialControlData)
-    const controlData = initializeControls(cd, editor, i18n)
+    const controlData = initializeControls(cd, editor, onControlInitialize, i18n)
     const otherYAMLTabs = []
     if (editStack.initialized) {
       delete editStack.initialized
