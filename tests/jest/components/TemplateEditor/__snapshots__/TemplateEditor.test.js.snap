@@ -473,8 +473,8 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                       </div>
                                       <div
                                         class="tf--list-box__selection"
-                                        color="#6a6e73"
                                         role="button"
+                                        style="color: rgb(106, 110, 115);"
                                         tabindex="0"
                                         title="Clear selected item"
                                       >
@@ -650,7 +650,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                         aria-expanded="true"
                                         aria-label="ListBox input field"
                                         autocomplete="new-password"
-                                        class="pf-c-form-control"
+                                        class="pf-c-combo-control"
                                         data-testid="tree-workerType"
                                         id="workerType-input"
                                         placeholder=""
@@ -661,6 +661,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                       <div
                                         class="tf--list-box__selection"
                                         role="button"
+                                        style="color: rgb(106, 110, 115);"
                                         tabindex="0"
                                         title="Clear selected item"
                                       >

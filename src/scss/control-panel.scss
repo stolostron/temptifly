@@ -92,7 +92,7 @@ $acm_background_color: #f0f0f0 !default;
     }
 
     .pf-c-combo-control {
-      width: 90%;
+      width: 86%;
       height: 100%;
       border: none;
       text-overflow: ellipsis;
@@ -271,8 +271,8 @@ $acm_background_color: #f0f0f0 !default;
           top: 0;
           bottom: 0;
           height: 100%;
-          right: 1.625rem;
-          padding: 0 1rem;
+          right: 0.8rem;
+          padding: 0 2.2rem;
           cursor: pointer;
 
           svg {
@@ -309,7 +309,8 @@ $acm_background_color: #f0f0f0 !default;
         }
 
         .tf--list-box__menu {
-          box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.1);
+          box-shadow: rgba(3, 3, 3, 0.12) 0px 4px 8px 0px,
+            rgba(3, 3, 3, 0.06) 0px 0px 4px 0px;
           position: absolute;
           left: 0;
           right: 0;
@@ -317,7 +318,7 @@ $acm_background_color: #f0f0f0 !default;
           width: 100%;
           overflow-y: auto;
           background-color: #fff;
-          max-height: 14rem;
+          max-height: 8rem;
           z-index: 500;
           cursor: pointer;
 
@@ -797,6 +798,9 @@ $acm_background_color: #f0f0f0 !default;
   }
 
   .pf-c-wizard {
+    .pf-c-wizard__main-body {
+      padding-bottom: 0;
+    }
     .creation-view-controls {
       .creation-view-controls-title-main-name {
         font-weight: bold;

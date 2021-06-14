@@ -148,13 +148,15 @@ export const parseYAML = yaml => {
       const post = new RegExp(/[\r\n]+$/).test(snip)
       snip = snip.trim()
       const $synced = new YamlParser().parse(snip, absLine)
-      $synced.$r = absLine
-      $synced.$l = snip.split(/[\r\n]+/g).length
-      values.push({ $raw: obj, $yml: snip, $synced })
-      resources.push(obj)
-      absLine += $synced.$l
-      if (post) {
-        absLine++
+      if ($synced) {
+        $synced.$r = absLine
+        $synced.$l = snip.split(/[\r\n]+/g).length
+        values.push({ $raw: obj, $yml: snip, $synced })
+        resources.push(obj)
+        absLine += $synced.$l
+        if (post) {
+          absLine++
+        }
       }
     })
   } catch (e) {
