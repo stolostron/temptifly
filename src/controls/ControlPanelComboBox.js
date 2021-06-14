@@ -94,7 +94,22 @@ class ControlPanelComboBox extends React.Component {
       searchText: null,
       sortToTop: null
     }
+    this.onDocClick = this.onDocClick.bind(this)
   }
+
+  componentDidMount() {
+    document.addEventListener('click', this.onDocClick)
+    document.addEventListener('touchstart', this.onDocClick)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.onDocClick)
+    document.removeEventListener('touchstart', this.onDocClick)
+  }
+
+  setControlRef = (ref) => {
+    this.controlRef = ref
+  };
 
   setInputRef = (ref) => {
     this.inputRef = ref
@@ -213,6 +228,8 @@ class ControlPanelComboBox extends React.Component {
     let value = typeof searchText === 'string' ? searchText : active || ''
     const isCustom = userData.includes(value)
     value = !isOpen && !searchText && !isCustom && simplified && simplified(value, control) || value
+    const cancelToggle = simplified && !(!isOpen && !searchText && !isCustom)
+    const noop = ()=>{}
 
     return (
       <React.Fragment>
@@ -226,7 +243,9 @@ class ControlPanelComboBox extends React.Component {
                 <div>{active}</div>
               </div>
             ) : (
-              <div id={`${controlId}-group`}>
+              <div id={`${controlId}-group`}
+                ref={this.setControlRef}
+              >
                 <div
                   role="listbox"
                   aria-label="Choose an item"
@@ -242,8 +261,8 @@ class ControlPanelComboBox extends React.Component {
                     aria-expanded={isOpen}
                     aria-haspopup="true"
                     data-toggle="true"
-                    onClick={this.clickToggle.bind(this)}
-                    onKeyPress={this.pressToggle.bind(this)}
+                    onClick={cancelToggle?noop:this.clickToggle.bind(this)}
+                    onKeyPress={cancelToggle?noop:this.pressToggle.bind(this)}
                   >
                     <div className={inputClasses}>
                       <input
@@ -260,11 +279,12 @@ class ControlPanelComboBox extends React.Component {
                         ref={this.setInputRef}
                         style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}
                         value={value}
-                        onBlur={this.blur.bind(this)}
                         onKeyUp={this.pressUp.bind(this)}
                         onKeyDown={this.pressDown.bind(this)}
                         onFocus={e => {
-                          e.target.select()
+                          if (!simplified) {
+                            e.target.select()
+                          }
                         }}
                         onChange={evt =>
                           this.setState({ searchText: evt.currentTarget.value })
@@ -276,7 +296,7 @@ class ControlPanelComboBox extends React.Component {
                       role="button"
                       className="tf--list-box__selection"
                       tabIndex="0"
-                      color="#6a6e73"
+                      style={{color: '#6a6e73'}}
                       title="Clear selected item"
                       ref={this.setClearRef}
                       onClick={this.clickClear.bind(this)}
@@ -411,8 +431,14 @@ class ControlPanelComboBox extends React.Component {
     }
   }
 
-  blur() {
-    this.setState({isBlurred: true})
+  onDocClick(event) {
+    const {isOpen} = this.state
+    const clickedOnToggle = this.controlRef && this.controlRef.current && this.controlRef.current.contains(event.target)
+    const clickedWithinMenu =
+      this.menuRef && this.menuRef.current && this.menuRef.current.contains && this.menuRef.current.contains(event.target)
+    if (isOpen && !(clickedOnToggle || clickedWithinMenu)) {
+      this.setState({isBlurred: true})
+    }
   }
 
   pressUp(e) {
@@ -434,6 +460,8 @@ class ControlPanelComboBox extends React.Component {
   pressDown(e) {
     if (e.key === 'Escape') {
       this.clickClear()
+    } else if (e.key === 'Tab') {
+      this.setState({isBlurred: true})
     }
   }
 

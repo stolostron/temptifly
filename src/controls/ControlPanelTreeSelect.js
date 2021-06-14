@@ -271,7 +271,7 @@ class ControlPanelTreeSelect extends React.Component {
                   onKeyPress={this.pressToggle.bind(this)}
                 >
                   <input
-                    className="pf-c-form-control"
+                    className="pf-c-combo-control"
                     aria-label="ListBox input field"
                     ref={this.setParentRef}
                     spellCheck="false"
@@ -297,6 +297,7 @@ class ControlPanelTreeSelect extends React.Component {
                     role="button"
                     className="tf--list-box__selection"
                     tabIndex="0"
+                    style={{color: '#6a6e73'}}
                     title="Clear selected item"
                     ref={this.setClearRef}
                     onClick={this.clickClear.bind(this)}

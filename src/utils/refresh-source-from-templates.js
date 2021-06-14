@@ -217,8 +217,11 @@ export const generateTemplateData = (
     return ret
   }
   controlData.forEach(control => {
-    const value = getTemplateData(control)
+    let value = getTemplateData(control)
     if (value !== undefined) {
+      if (typeof value==='string') {
+        value = value.replace(/'/g, '\'\'')
+      }
       templateData[control.id] = value
       const { type, onlyOne } = control
       if (type === 'group' && onlyOne) {
