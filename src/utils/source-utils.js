@@ -234,6 +234,25 @@ export const getSourcePath = path => {
   return sourcePath
 }
 
+export const escapeYAML = object => {
+  if (object) {
+    if (typeof object === 'string') {
+      object = object.replace(/'/g, '')
+    } else if (Array.isArray(object)) {
+      for (let i = 0; i < object.length; i++) {
+        const o = object[i]
+        object[i] = o !== undefined ? escapeYAML(o) : o
+      }
+    } else if (!!object && typeof object === 'object') {
+      Object.entries(object).forEach(([k, oo]) => {
+        object[k] = oo !== undefined ? escapeYAML(oo) : oo
+      })
+    }
+  }
+  return object
+}
+
+
 export const removeVs = object => {
   if (object) {
     let o

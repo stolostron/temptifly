@@ -433,9 +433,8 @@ class ControlPanelComboBox extends React.Component {
 
   onDocClick(event) {
     const {isOpen} = this.state
-    const clickedOnToggle = this.controlRef && this.controlRef.current && this.controlRef.current.contains(event.target)
-    const clickedWithinMenu =
-      this.menuRef && this.menuRef.current && this.menuRef.current.contains && this.menuRef.current.contains(event.target)
+    const clickedOnToggle = this.controlRef && this.controlRef.contains(event.target)
+    const clickedWithinMenu = this.menuRef && this.menuRef.contains && this.menuRef.contains(event.target)
     if (isOpen && !(clickedOnToggle || clickedWithinMenu)) {
       this.setState({isBlurred: true})
     }
