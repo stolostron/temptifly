@@ -43,7 +43,7 @@ class ControlPanelComboBox extends React.Component {
     if (searchText && searchText.length && !preselect) {
       // nothing selected, filter list
       if (currentSelection === undefined) {
-        if (!isOpen || isBlurred) {
+        if (isBlurred) {
           const {userData=[]} = control
           if (!userData.includes(searchText)) {
             control.active = searchText
@@ -279,6 +279,7 @@ class ControlPanelComboBox extends React.Component {
                         ref={this.setInputRef}
                         style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}
                         value={value}
+                        onBlur={this.blur.bind(this)}
                         onKeyUp={this.pressUp.bind(this)}
                         onKeyDown={this.pressDown.bind(this)}
                         onFocus={e => {
@@ -432,13 +433,24 @@ class ControlPanelComboBox extends React.Component {
   }
 
   onDocClick(event) {
-    const {isOpen} = this.state
-    const clickedOnToggle = this.controlRef && this.controlRef.contains(event.target)
-    const clickedWithinMenu = this.menuRef && this.menuRef.contains && this.menuRef.contains(event.target)
-    if (isOpen && !(clickedOnToggle || clickedWithinMenu)) {
+    if (this.canBeBlurred(event)) {
       this.setState({isBlurred: true})
     }
   }
+
+  blur(event) {
+    if (this.canBeBlurred(event)) {
+      this.setState({isBlurred: true})
+    }
+  }
+
+  canBeBlurred(event) {
+    const {isOpen} = this.state
+    const clickedOnToggle = this.controlRef && this.controlRef.contains(event.target)
+    const clickedWithinMenu = this.menuRef && this.menuRef.contains && this.menuRef.contains(event.target)
+    return (isOpen && !(clickedOnToggle || clickedWithinMenu))
+  }
+
 
   pressUp(e) {
     if (e.key === 'Enter' && this.state.searchText) {
