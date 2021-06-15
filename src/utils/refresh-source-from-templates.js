@@ -1,6 +1,6 @@
 'use strict'
 
-import { parseYAML } from './source-utils'
+import { parseYAML, escapeYAML } from './source-utils'
 import { setSourcePaths } from './initialize-control-functions'
 import { Base64 } from 'js-base64'
 import {
@@ -44,6 +44,7 @@ export const generateSourceFromTemplate = (
     replacements,
     controlMap
   )
+  escapeYAML(templateData)
 
   /////////////////////////////////////////////////////////
   // add replacements to templateData
@@ -217,11 +218,8 @@ export const generateTemplateData = (
     return ret
   }
   controlData.forEach(control => {
-    let value = getTemplateData(control)
+    const value = getTemplateData(control)
     if (value !== undefined) {
-      if (typeof value==='string') {
-        value = value.replace(/'/g, '\'\'')
-      }
       templateData[control.id] = value
       const { type, onlyOne } = control
       if (type === 'group' && onlyOne) {
