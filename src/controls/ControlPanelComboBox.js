@@ -279,7 +279,7 @@ class ControlPanelComboBox extends React.Component {
                         ref={this.setInputRef}
                         style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}
                         value={value}
-                        onBlur={this.blur.bind(this)}
+                        onBlur={this.onDocClick}
                         onKeyUp={this.pressUp.bind(this)}
                         onKeyDown={this.pressDown.bind(this)}
                         onFocus={e => {
