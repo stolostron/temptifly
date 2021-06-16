@@ -438,12 +438,6 @@ class ControlPanelComboBox extends React.Component {
     }
   }
 
-  blur(event) {
-    if (this.canBeBlurred(event)) {
-      this.setState({isBlurred: true})
-    }
-  }
-
   canBeBlurred(event) {
     const {isOpen} = this.state
     const clickedOnToggle = this.controlRef && this.controlRef.contains(event.target)
