@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import { FormGroup, Popover } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 
+
 class ControlPanelFormGroup extends React.Component {
   static propTypes = {
     children: PropTypes.node,
@@ -18,7 +19,8 @@ class ControlPanelFormGroup extends React.Component {
       name,
       exception,
       tooltip,
-      validation = {}
+      validation = {},
+      icon
     } = control
 
     const validated = exception ? 'error' : undefined
@@ -46,6 +48,9 @@ class ControlPanelFormGroup extends React.Component {
                 >
                   <HelpIcon noVerticalAlign />
                 </button>
+                {icon? <div style = {{display: 'inline-block', marginLeft: '20px'}}>
+                  {icon}
+                </div> : null}
               </Popover>
             ) : (
               <React.Fragment />

@@ -279,7 +279,7 @@ class ControlPanelComboBox extends React.Component {
                         ref={this.setInputRef}
                         style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}
                         value={value}
-                        onBlur={this.onDocClick}
+                        onBlur={this.blur.bind(this)}
                         onKeyUp={this.pressUp.bind(this)}
                         onKeyDown={this.pressDown.bind(this)}
                         onFocus={e => {
@@ -349,7 +349,16 @@ class ControlPanelComboBox extends React.Component {
                     </div>}
                   </div>
                   {!disabled && isOpen && (
-                    <div className="tf--list-box__menu" key={key} id={key} ref={this.setMenuRef} >
+                    <div
+                      role="button"
+                      className="tf--list-box__menu"
+                      key={key}
+                      id={key}
+                      ref={this.setMenuRef}
+                      onMouseDown={()=>{this.menuClick=true}}
+                      onMouseUp={()=>{this.menuClick=false}}
+                      tabIndex="0"
+                    >
                       {items.map(
                         ({ label, id }) => {
                           const itemClasses = classNames({
@@ -432,17 +441,19 @@ class ControlPanelComboBox extends React.Component {
     }
   }
 
-  onDocClick(event) {
-    if (this.canBeBlurred(event)) {
+  blur() {
+    if (!this.menuClick) {
       this.setState({isBlurred: true})
     }
   }
 
-  canBeBlurred(event) {
+  onDocClick(event) {
     const {isOpen} = this.state
     const clickedOnToggle = this.controlRef && this.controlRef.contains(event.target)
     const clickedWithinMenu = this.menuRef && this.menuRef.contains && this.menuRef.contains(event.target)
-    return (isOpen && !(clickedOnToggle || clickedWithinMenu))
+    if (isOpen && !(clickedOnToggle || clickedWithinMenu)) {
+      this.setState({isBlurred: true})
+    }
   }
 
 
