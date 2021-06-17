@@ -253,7 +253,7 @@ const validateControl = (
   i18n
 ) => {
   // if final validation before creating template, if this value is required, throw error
-  const { type, isHidden } = control
+  const { active, type, isHidden, disabled, editing } = control
   if (
     isHidden === true ||
     isHidden === 'true' ||
@@ -261,36 +261,28 @@ const validateControl = (
   ) {
     return
   }
+  const { exceptions } = templateExceptionMap['<<main>>']
+  if (disabled && editing) {
+    const { disabled, immutable } = editing
+    if (immutable && disabled && active!==immutable) {
+      control.exception = i18n('creation.input.must.not.change', [immutable])
+      reportException(control, exceptions)
+      return
+    }
+  }
   if ((isFinalValidate || type === 'number') && control.validation) {
-    const { exceptions } = templateExceptionMap['<<main>>']
     if (type === 'custom') {
       control.validation(exceptions)
       return
     } else {
       const {
         name,
-        active,
         validation: { required, notification },
-        controlId,
-        ref
       } = control
-      if (required && (!active || (type === 'cards' && active.length === 0))) {
-        let row = 0
+      if (required && ((!active && active !== 0) || (type === 'cards' && (active.length === 0 || typeof active[0] !== 'string')))) {
         const msg = notification ? notification : 'creation.missing.input'
         control.exception = i18n(msg, [name])
-        const { sourcePath } = control
-        if (sourcePath) {
-          //({ exceptions } = templateExceptionMap[tabId])
-          row = getRow(sourcePath)
-        }
-        exceptions.push({
-          row,
-          column: 0,
-          text: control.exception,
-          type: 'error',
-          controlId,
-          ref
-        })
+        reportException(control, exceptions)
         return
       }
     }
@@ -569,6 +561,22 @@ const validateMultiSelectReplacementControl = (
   if (!active) {
     addException(sourcePath, exceptions, i18n)
   }
+}
+
+const reportException = (control, exceptions) => {
+  let row = 0
+  const { sourcePath, controlId, exception, ref } = control
+  if (sourcePath) {
+    row = getRow(sourcePath)
+  }
+  exceptions.push({
+    row,
+    column: 0,
+    text: exception,
+    type: 'error',
+    controlId,
+    ref
+  })
 }
 
 const addException = (sourcePath, exceptions, i18n) => {
