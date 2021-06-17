@@ -58,11 +58,6 @@ class ControlPanel extends React.Component {
     this.refreshFading()
   }
 
-  componentWillUnmount() {
-    const {controlData} = this.props
-    controlData.push({saveStep: get(this, 'wizardRef.state.currentStep')})
-  }
-
   setCreationViewRef = ref => {
     this.creationView = ref
   }
@@ -197,16 +192,12 @@ class ControlPanel extends React.Component {
   }
 
   renderControlWizard(steps, controlClasses) {
-    let step = 1
     const controlMap=[]
     const details = cloneDeep(steps)
 
-    steps = steps.map(({title:control, sections}, inx)=>{
+    steps = steps.map(({title:control, sections})=>{
       const { id, title } = control
       controlMap[id] = control
-      if (control.currentStep) {
-        step = inx+1
-      }
       let errors=0
       sections.forEach(({content})=>{
         content.forEach(({exception})=> {
@@ -229,6 +220,7 @@ class ControlPanel extends React.Component {
       }
     })
     steps.push({
+      id: 'review',
       name: 'Review',
       component: <div className={controlClasses}>
         <h2>Review</h2>
@@ -241,9 +233,7 @@ class ControlPanel extends React.Component {
       nextButtonText: 'Create'
     })
     const onMove = (curr) => {
-      steps.forEach(step => {
-        set(step, 'control.currentStep', step.id===curr.id)
-      })
+      set(steps[0], 'control.currentStep', curr.id)
     }
     const onSave = () => {
       this.props.handleCreateResource()
@@ -252,6 +242,9 @@ class ControlPanel extends React.Component {
       this.props.handleCancelCreate()
     }
     const title = 'Create wizard'
+    const currentStep = get(steps[0], 'control.currentStep')
+    let step = steps.findIndex(({id})=>id===currentStep) + 1
+    if (step<1) step = 1
     return (
       <Wizard
         className={this.props.wizardClassName}
