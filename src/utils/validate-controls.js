@@ -267,7 +267,7 @@ const validateControl = (
   const { exceptions } = templateExceptionMap['<<main>>']
   if (disabled && editing) {
     const { disabled, immutable } = editing
-    if (disabled && active!==immutable) {
+    if (immutable && disabled && active!==immutable) {
       control.exception = i18n('creation.input.must.not.change', [immutable])
       reportException(control, exceptions)
       return
