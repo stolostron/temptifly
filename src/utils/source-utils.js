@@ -91,6 +91,7 @@ export function setEditingMode(controlData) {
       // if editing existing app, disable this field
       if (disabled) {
         control.disabled = true
+        control.editing.immutable = active
       }
       // if editing existing app, disable this field
       if (collapsed) {
