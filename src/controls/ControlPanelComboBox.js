@@ -60,6 +60,8 @@ class ControlPanelComboBox extends React.Component {
           handleComboChange(searchText)
           searchText = null
           isOpen = false
+        } else {
+          isOpen = true
         }
       } else {
         // handle change
