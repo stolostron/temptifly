@@ -97,11 +97,15 @@ export const logCreateErrors = (logging, creationMsg, resourceJSON) => {
 
     //////////////////////////////// INPUT //////////////////////////////////////
     console.groupCollapsed('==================RESOURCE JSON======================')
-    const input = jsYaml.safeDump(resourceJSON, {
-      noRefs: true,
-      lineWidth: 200
-    })
-    console.info(input)
+    try {
+      const input = jsYaml.safeDump(resourceJSON.createResources, {
+        noRefs: true,
+        lineWidth: 200
+      })
+      console.info(input)
+    } catch (e) {
+      // nothing
+    }
     console.groupEnd()
   }
 }

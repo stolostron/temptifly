@@ -1,6 +1,6 @@
 {
   "name": "temptifly",
-  "version": "0.3.54",
+  "version": "0.3.55",
   "description": "Side-by-side YAML resource editor",
   "main": "dist/index.js",
   "scripts": {
