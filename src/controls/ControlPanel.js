@@ -649,6 +649,7 @@ class ControlPanel extends React.Component {
     const { id: field, type, syncWith, syncedWith } = control
 
     if(onChange){
+      control.refresh = ()=>this.props.handleControlChange(control, controlData)
       onChange(control)
     }
 
@@ -734,7 +735,11 @@ class ControlPanel extends React.Component {
   }
 
   handleControlChange(control) {
-    const { controlData } = this.props
+    const { controlData, onChange } = this.props
+    if(onChange){
+      control.refresh = ()=>this.props.handleControlChange(control, controlData)
+      onChange(control)
+    }
     this.props.handleControlChange(control, controlData)
   }
 
