@@ -461,17 +461,7 @@ class ControlPanelComboBox extends React.Component {
 
   pressUp(e) {
     if (e.key === 'Enter' && this.state.searchText) {
-      const { searchText } = this.state
-      const { control, handleControlChange } = this.props
-      control.userData = control.userData || []
-      control.userData.push(searchText)
-      control.active = (searchText||'').trim()
-      handleControlChange()
-      this.setState({
-        currentSelection: undefined,
-        isOpen:false,
-        searchText: null
-      })
+      this.setState({isBlurred: true})
     }
   }
 
