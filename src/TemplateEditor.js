@@ -481,6 +481,7 @@ export default class TemplateEditor extends React.Component {
       this.editors,
       newYAML,
       otherYAMLTabs,
+      undefined,
       controlData,
       isFinalValidate,
       i18n
@@ -562,6 +563,7 @@ export default class TemplateEditor extends React.Component {
       this.editors,
       newYAML,
       otherYAMLTabs,
+      undefined,
       controlData,
       isFinalValidate,
       i18n
@@ -1022,12 +1024,13 @@ export default class TemplateEditor extends React.Component {
       isFinalValidate,
       i18n
     } = this.state
+    let tab
     let { editStack, templateYAML, notifications } = this.state
 
     if (activeYAMLEditor === 0) {
       templateYAML = yaml
     } else {
-      const tab = otherYAMLTabs[activeYAMLEditor - 1]
+      tab = otherYAMLTabs[activeYAMLEditor - 1]
       // protect user edits from being clobbered by form updates
       tab.control.customYAML = yaml
       // update the yaml shown in this tab
@@ -1043,6 +1046,7 @@ export default class TemplateEditor extends React.Component {
       this.editors,
       templateYAML,
       otherYAMLTabs,
+      tab ? tab.id : undefined,
       controlData,
       isFinalValidate,
       i18n
@@ -1113,6 +1117,7 @@ export default class TemplateEditor extends React.Component {
       this.editors,
       templateYAML,
       otherYAMLTabs,
+      undefined,
       controlData,
       true,
       i18n

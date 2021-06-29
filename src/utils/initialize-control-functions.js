@@ -2,6 +2,7 @@
 
 import { parseYAML, getSourcePath, removeVs } from './source-utils'
 import get from 'lodash/get'
+import set from 'lodash/set'
 
 ///////////////////////////////////////////////////////////////////////////////
 //intialize controls and groups
@@ -81,57 +82,69 @@ const initialControl = (control, editor) => {
       editor.forceUpdate()
     }
 
-    const setActiveVal = (ctrl, path, templateObject) => {
+    const setActiveVal = (ctrl, path, templateObject, activeTabId='<<main>>') => {
       let sourcePath
-      if (path) {
-        sourcePath = getSourcePath(path)
-      } else if (ctrl.sourcePaths) {
-        sourcePath = ctrl.sourcePaths.path
+      if (ctrl.sourcePathMap) {
+        sourcePath = ctrl.sourcePathMap[activeTabId]
         if (typeof sourcePath === 'string' && sourcePath.endsWith('.$v')) {
           sourcePath = sourcePath.substring(0, sourcePath.length-3)
         }
+      } else if (path) {
+        sourcePath = getSourcePath(path)
       }
       if (sourcePath) {
-        let active = get(templateObject, sourcePath)
-        switch (ctrl.type) {
-        case 'checkbox':
-          if (!active) {
-            active = { $v: false }
-          } else if (active.$v === undefined) {
-            active = { $v: !!active }
-          } else {
-            active.$v = !!active.$v
-          }
-          break
 
-        default:
-          break
+        const getCheckActive = (active) => {
+          if (ctrl.type === 'checkbox') {
+            if (!active) {
+              active = { $v: false }
+            } else if (active.$v === undefined) {
+              active = { $v: !!active }
+            } else {
+              active.$v = !!active.$v
+            }
+          }
+          return active
         }
-        if (active) {
-          ctrl.active = removeVs(active.$v)
-          ctrl.sourcePath = active
+
+        if (Array.isArray(sourcePath)) {
+          sourcePath.forEach((path, inx)=>{
+            Object.entries(path).forEach(([key, value]) =>{
+              if (ctrl.active[inx]) {
+                ctrl.active[inx][key] = getCheckActive(get(templateObject, value))
+              }
+            })
+          })
+        } else {
+          const active = getCheckActive(get(templateObject, sourcePath))
+          if (active) {
+            ctrl.active = removeVs(active.$v)
+            ctrl.sourcePath = active
+          }
         }
       }
     }
+
+
     if (reverse) {
       switch (true) { // match any case that is true
       case typeof reverse === 'string':
-        control.reverse = (ctrl, templateObject) => {
-          setActiveVal(ctrl, reverse, templateObject)
+        control.reverse = (ctrl, templateObject, activeTabId) => {
+          setActiveVal(ctrl, reverse, templateObject, activeTabId)
         }
         break
 
       case Array.isArray(reverse):
-        control.reverse = (ctrl, templateObject) => {
+        control.reverse = (ctrl, templateObject, activeTabId) => {
           reverse.forEach(path => {
-            setActiveVal(ctrl, path, templateObject)
+            setActiveVal(ctrl, path, templateObject, activeTabId)
           })
         }
         break
       }
     } else {
-      control.reverse = (ctrl, templateObject) => {
-        setActiveVal(ctrl, null, templateObject)
+      control.reverse = (ctrl, templateObject, activeTabId) => {
+        setActiveVal(ctrl, null, templateObject, activeTabId)
       }
     }
   }
@@ -160,7 +173,7 @@ export function setSourcePaths(yaml, otherYAMLTabs = [], controlData) {
 
     case 'table':
       // each table cell has its own source path
-      control.sourcePaths = { paths: [] }
+      delete control.sourcePathMap
       break
     }
   })
@@ -201,14 +214,11 @@ const syncControls = (object, path, controlMap, tabId) => {
               control = cdm[dataKey]
             }
           }
-          control.sourcePaths = { tabId, path }
+          set(control, `sourcePathMap.${tabId}`, path)
         } else if (inx) {
-          control.sourcePaths.tabId = tabId
-          let pathMap = control.sourcePaths.paths[inx]
-          if (!pathMap) {
-            pathMap = control.sourcePaths.paths[inx] = {}
-          }
+          const pathMap = get(control, `sourcePathMap.${tabId}.${inx}`, {})
           pathMap[dataKey] = path
+          set(control, `sourcePathMap.${tabId}.${inx}`, pathMap)
         }
       }
     }

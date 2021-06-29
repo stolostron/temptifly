@@ -461,7 +461,7 @@ class ControlPanelComboBox extends React.Component {
 
   pressUp(e) {
     if (e.key === 'Enter' && this.state.searchText) {
-      this.setState({isBlurred: true})
+      this.inputRef.blur()
     }
   }
 

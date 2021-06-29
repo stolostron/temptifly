@@ -51,7 +51,7 @@ export function discoverControls(controlData, templateObject, editor, i18n) {
 }
 
 //reverse control active valuess from template
-export function reverseTemplate(controlData, templateObject) {
+export function reverseTemplate(controlData, templateObject, activeTabId) {
   templateObject = cloneDeep(templateObject)
   const reverseControl = control => {
     const { type, active = [], reverse, shift } = control
@@ -65,7 +65,7 @@ export function reverseTemplate(controlData, templateObject) {
         }
       })
     } else if (typeof reverse === 'function') {
-      reverse(control, templateObject)
+      reverse(control, templateObject, activeTabId)
     }
   }
   controlData.forEach(control => {
