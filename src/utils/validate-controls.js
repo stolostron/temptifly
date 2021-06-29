@@ -12,6 +12,7 @@ export function validateControls(
   editors,
   templateYAML,
   otherYAMLTabs = [],
+  activeTabId='<<main>>',
   controlData,
   isFinalValidate,
   i18n
@@ -20,11 +21,6 @@ export function validateControls(
   const results = parseYAML(templateYAML)
   let { parsed, exceptions } = results
   const { resources } = results
-
-  // update active values in controls
-  if (exceptions.length === 0) {
-    reverseTemplate(controlData, parsed, null, i18n)
-  }
 
   const templateObjectMap = { '<<main>>': parsed }
   const templateExceptionMap = {
@@ -41,6 +37,11 @@ export function validateControls(
       exceptions: attachEditorToExceptions(exceptions, editors, inx + 1)
     }
   })
+
+  // update active values in controls
+  if (exceptions.length === 0) {
+    reverseTemplate(controlData, templateObjectMap[activeTabId]||parsed, activeTabId)
+  }
 
   // if any syntax errors, report them and leave
   let hasSyntaxExceptions = false

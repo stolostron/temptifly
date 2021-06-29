@@ -150,16 +150,19 @@ class ControlPanelTable extends React.Component {
         // update table row
         row.selected = !!activeMap[id]
         if (!row.isEditable) {
-          row.cells.forEach(cell=>{
-            const {props} = cell||{}
-            if (props && activeMap[id]) {
-              /* eslint-disable-next-line react/prop-types */
-              const {name} = props
-              const value = activeMap[id][name]
-              /* eslint-disable-next-line react/prop-types */
-              props.selected = value
-              /* eslint-disable-next-line react/prop-types */
-              props.value = value
+          row.cells.forEach((cell, inx)=>{
+            if (activeMap[id]) {
+              const {props} = cell||{}
+              const key = columns[inx].key
+              const value = activeMap[id][key]
+              if (typeof cell === 'string') {
+                row.cells[inx] = value
+              } else if (props) {
+                /* eslint-disable-next-line react/prop-types */
+                props.selected = value
+                /* eslint-disable-next-line react/prop-types */
+                props.value = value
+              }
             }
           })
         }
