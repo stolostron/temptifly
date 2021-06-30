@@ -75,6 +75,7 @@ export default class TemplateEditor extends React.Component {
     onControlInitialize: PropTypes.func,
     portals: PropTypes.object,
     template: PropTypes.func.isRequired,
+    theme: PropTypes.string,
     title: PropTypes.string,
     type: PropTypes.string,
     wizardClassName: PropTypes.string
@@ -815,7 +816,7 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderEditors = () => {
-    const { monacoEditor } = this.props
+    const { monacoEditor, theme } = this.props
     const { activeYAMLEditor, otherYAMLTabs, templateYAML } = this.state
     return (
       <React.Fragment>
@@ -828,6 +829,7 @@ export default class TemplateEditor extends React.Component {
           wrapEnabled={true}
           setEditor={this.addEditor}
           onYamlChange={this.handleEditorChange}
+          theme={theme}
           yaml={templateYAML}
         />
         {otherYAMLTabs.map(({ id, templateYAML: yaml }, inx) => {
@@ -841,6 +843,7 @@ export default class TemplateEditor extends React.Component {
               height={'100%'}
               wrapEnabled={true}
               setEditor={this.addEditor}
+              theme={theme}
               onYamlChange={this.handleEditorChange}
               yaml={yaml}
             />
