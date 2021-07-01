@@ -73,6 +73,7 @@ export default class TemplateEditor extends React.Component {
     monacoEditor: PropTypes.element,
     onControlChange: PropTypes.func,
     onControlInitialize: PropTypes.func,
+    onControlValidation: PropTypes.func,
     portals: PropTypes.object,
     template: PropTypes.func.isRequired,
     theme: PropTypes.string,
@@ -483,6 +484,7 @@ export default class TemplateEditor extends React.Component {
       newYAML,
       otherYAMLTabs,
       undefined,
+      this.props.onControlValidation,
       controlData,
       isFinalValidate,
       i18n
@@ -565,6 +567,7 @@ export default class TemplateEditor extends React.Component {
       newYAML,
       otherYAMLTabs,
       undefined,
+      this.props.onControlValidation,
       controlData,
       isFinalValidate,
       i18n
@@ -1050,6 +1053,7 @@ export default class TemplateEditor extends React.Component {
       templateYAML,
       otherYAMLTabs,
       tab ? tab.id : undefined,
+      this.props.onControlValidation,
       controlData,
       isFinalValidate,
       i18n
@@ -1121,6 +1125,7 @@ export default class TemplateEditor extends React.Component {
       templateYAML,
       otherYAMLTabs,
       undefined,
+      this.props.onControlValidation,
       controlData,
       true,
       i18n

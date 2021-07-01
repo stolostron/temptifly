@@ -13,6 +13,7 @@ export function validateControls(
   templateYAML,
   otherYAMLTabs = [],
   activeTabId='<<main>>',
+  controlValidation,
   controlData,
   isFinalValidate,
   i18n
@@ -26,7 +27,8 @@ export function validateControls(
   const templateExceptionMap = {
     '<<main>>': {
       editor: editors[0],
-      exceptions: attachEditorToExceptions(exceptions, editors, 0)
+      exceptions: attachEditorToExceptions(exceptions, editors, 0),
+      controlValidation
     }
   }
   otherYAMLTabs.forEach(({ id, templateYAML: yaml }, inx) => {
@@ -265,7 +267,7 @@ const validateControl = (
   ) {
     return
   }
-  const { exceptions } = templateExceptionMap['<<main>>']
+  const { exceptions, controlValidation } = templateExceptionMap['<<main>>']
   if (disabled && editing) {
     const { disabled, immutable } = editing
     if (immutable && disabled && active!==immutable) {
@@ -273,6 +275,9 @@ const validateControl = (
       reportException(control, exceptions)
       return
     }
+  }
+  if (controlValidation) {
+    controlValidation(control)
   }
   if ((isFinalValidate || type === 'number') && control.validation) {
     if (type === 'custom') {
