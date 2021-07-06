@@ -167,7 +167,7 @@ export default class TemplateEditor extends React.Component {
         ({ id: idCtrl }) => idCtrl === 'showSecrets'
       )
       if (showControl) {
-        showControl.active = showSecrets
+        showControl.active = showSecrets || !showEditor
       }
     }
 
@@ -1223,14 +1223,28 @@ export default class TemplateEditor extends React.Component {
     if (monacoEditor && editBtn && isLoaded) {
       const portal = document.getElementById(editBtn)
       if (portal) {
-        const { showEditor } = this.state
+        const { showSecrets, controlData } = this.state
+        let { showEditor } = this.state
         const handleToggle = () => {
           if (showEditor) {
             localStorage.removeItem(TEMPLATE_EDITOR_OPEN_COOKIE)
           } else {
             localStorage.setItem(TEMPLATE_EDITOR_OPEN_COOKIE, 'true')
           }
-          this.setState({ showEditor: !showEditor })
+          showEditor = !showEditor
+          this.setState({ showEditor })
+
+          // if was closed before and now open
+          // secrets may be shown, so hide if necessary
+          if (showEditor && !showSecrets) {
+            const showControl = controlData.find(
+              ({ id: idCtrl }) => idCtrl === 'showSecrets'
+            )
+            if (showControl) {
+              showControl.active = false
+              this.handleControlChange(showControl, controlData)
+            }
+          }
         }
         this.renderedPortals = true
         return ReactDOM.createPortal(
