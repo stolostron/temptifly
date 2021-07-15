@@ -74,6 +74,7 @@ export default class TemplateEditor extends React.Component {
     onControlChange: PropTypes.func,
     onControlInitialize: PropTypes.func,
     onControlValidation: PropTypes.func,
+    onStepChange: PropTypes.func,
     portals: PropTypes.object,
     template: PropTypes.func.isRequired,
     theme: PropTypes.string,
@@ -448,6 +449,8 @@ export default class TemplateEditor extends React.Component {
         isLoaded={isLoaded}
         i18n={i18n}
         onChange={this.props.onControlChange}
+        onStepChange={this.props.onStepChange}
+        templateYAML={this.state.templateYAML}
       />
     )
   }
@@ -1312,13 +1315,14 @@ export default class TemplateEditor extends React.Component {
     return null
   }
 
-  handleCreateResource() {
+  handleCreateResource(noRedirect) {
     const { createControl } = this.props
     const { createResource } = createControl
     const resourceJSON = this.getResourceJSON()
     if (resourceJSON) {
       this.setState({resourceJSON})
-      createResource(resourceJSON)
+      createResource(resourceJSON, noRedirect)
+      return resourceJSON
     }
   }
 

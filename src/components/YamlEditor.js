@@ -108,7 +108,7 @@ class YamlEditor extends React.Component {
 
   shouldComponentUpdate(nextProps) {
     return (
-      this.props.yaml !== nextProps.yaml || this.props.hide !== nextProps.hide
+      this.props.yaml !== nextProps.yaml || this.props.hide !== nextProps.hide || this.props.editor !== nextProps.editor
     )
   }
 
@@ -126,7 +126,7 @@ class YamlEditor extends React.Component {
         className="yamlEditorContainer"
         style={{ display: hide ? 'none' : 'block', minHeight: '100px' }}
       >
-        {editor && React.cloneElement(editor, {value: yaml})}
+        {editor && React.cloneElement(editor, {value: yaml, options: {...this.state.editor.props.options, ...(this.props.editor.props.options || {})}})}
       </div>
     )
   }
