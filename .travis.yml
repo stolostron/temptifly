@@ -18,9 +18,7 @@ jobs:
       if: type = pull_request
       script:
         - make
-#        - make sonar/js/jest-init
         - npm test
-#        - make sonar/js
 
     - stage: 
       if: type = push AND branch = main
