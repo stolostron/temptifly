@@ -224,8 +224,7 @@ const initializeAvailableChoices = (type, control) => {
         if (control.hasReplacements) {
           choice.replacements = replaces
         }
-        control.newEditorMode =
-          change.insertControlData && type === 'cards' && !multiselect
+        control.newEditorMode = type === 'cards' && !multiselect
       }
       control.availableMap[availableKey] = choice
       return availableKey

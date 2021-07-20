@@ -4,7 +4,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import Tooltip from '../components/Tooltip'
-import isEmpty from 'lodash/isEmpty'
 
 class ControlPanelCards extends React.Component {
   static propTypes = {
@@ -14,28 +13,6 @@ class ControlPanelCards extends React.Component {
     i18n: PropTypes.func,
     showEditor: PropTypes.bool
   };
-
-  static getDerivedStateFromProps(props, state) {
-    const { initialized } = state
-    if (!initialized) {
-      const { control } = props
-      const { active, collapseCardsControlOnSelect } = control
-      return { collapsed: collapseCardsControlOnSelect && !isEmpty(active), initialized: true}
-    }
-    return null
-  }
-
-  constructor(props) {
-    super(props)
-    const { control } = props
-    const { active, collapsed, collapseCardsControlOnSelect } = control
-
-    // if active was preset by loading an existing resource
-    // collapse cards on that selection
-    this.state = {
-      collapsed: collapsed || (collapseCardsControlOnSelect && !!active)
-    }
-  }
 
   setControlRef = (control, ref) => {
     this.multiSelect = control.ref = ref
@@ -55,7 +32,6 @@ class ControlPanelCards extends React.Component {
   render() {
     const { i18n, control, showEditor } = this.props
     const { available=[], availableMap } = control
-    const { collapsed } = this.state
     let { active } = control
     active = active||[]
     const gridClasses = classNames({
@@ -70,14 +46,8 @@ class ControlPanelCards extends React.Component {
         >
           <div className={gridClasses}>
             <div className={'tf--grid'}>
-              {this.renderTitle(control)}
               <div className={'tf--providers-container tf--row'}>
                 {available
-                  .filter(id => {
-                    return (
-                      active.length === 0 || !collapsed || active.includes(id)
-                    )
-                  })
                   .map(availableKey => {
                     const choice = availableMap[availableKey]
                     const { id, hidden } = choice
@@ -100,52 +70,8 @@ class ControlPanelCards extends React.Component {
     )
   }
 
-  renderTitle(control) {
-    const { title, collapsable, validation={} } = control
-    const { required } = validation
-    if (title && collapsable) {
-      const handleCollapse = () => {
-        this.setState(prevState => {
-          return { collapsed: !prevState.collapsed }
-        })
-      }
-      const handleCollapseKey = e => {
-        if (e.type === 'click' || e.key === 'Enter') {
-          handleCollapse()
-        }
-      }
-      return (
-        <div
-          className="creation-view-controls-cards-title-container"
-          tabIndex="0"
-          role={'button'}
-          title={title}
-          aria-label={title}
-          onClick={handleCollapse}
-          onKeyPress={handleCollapseKey}
-        >
-          <div className="creation-view-controls-cards-title">
-            {title}
-            {required && (
-              <div className="creation-view-controls-required">*</div>
-            )}
-          </div>
-        </div>
-      )
-    }
-    return null
-  }
-
   handleChange(id) {
-    const { collapsed } = this.state
-    const { control } = this.props
-    const { collapseCardsControlOnSelect } = control
-    if (collapseCardsControlOnSelect) {
-      this.setState(prevState => {
-        return { collapsed: !prevState.collapsed }
-      })
-    }
-    this.props.handleChange(collapsed ? null : id)
+    this.props.handleChange(id)
   }
 }
 
@@ -196,8 +122,7 @@ const ControlPanelCard = ({
           <div>{image}</div>
           <div>{title}</div>
         </div>
-        {tooltip &&
-          !selected && (
+        {tooltip && (
           <div className="card-tooltip-container">
             <Tooltip control={{ tooltip, learnMore }} i18n={i18n} />
           </div>

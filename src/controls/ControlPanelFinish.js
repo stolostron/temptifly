@@ -105,7 +105,7 @@ class ControlPanelFinish extends React.Component {
     )
   }
 
-  renderGroupControlSections(controlData, grpId = '') {
+  renderGroupControlSections(controlData, grpNum, grpId = '') {
     // create collapsable control sections
     let section
     let content = []
