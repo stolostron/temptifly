@@ -730,50 +730,52 @@ export default class TemplateEditor extends React.Component {
           if (!creationView) {
             creationView = document.getElementsByClassName('content')[0]
           }
-          const scrollView = showEditor && creationView.scrollBy ? creationView : window
-          const controlTop = ref.getBoundingClientRect().top
-          const panelTop = showEditor
-            ? creationView.getBoundingClientRect().top
-            : 200
-          setTimeout(() => {
-            switch (true) {
-            // collapse section above when this control is selected
-            case collapseAboveAfterSelection === true:
-              controlData.some(({ id: tid, sectionRef, sectionTitleRef }) => {
-                if (sectionRef && sectionTitleRef) {
-                  sectionRef.classList.toggle('collapsed', true)
-                  sectionTitleRef.classList.toggle('collapsed', true)
-                }
-                return id === tid
-              })
-              setTimeout(() => {
-                scrollView.scrollTo({
-                  top: 0,
-                  left: 0
+          if (creationView) {
+            const scrollView = showEditor && creationView.scrollBy ? creationView : window
+            const controlTop = ref.getBoundingClientRect().top
+            const panelTop = showEditor
+              ? creationView.getBoundingClientRect().top
+              : 200
+            setTimeout(() => {
+              switch (true) {
+              // collapse section above when this control is selected
+              case collapseAboveAfterSelection === true:
+                controlData.some(({ id: tid, sectionRef, sectionTitleRef }) => {
+                  if (sectionRef && sectionTitleRef) {
+                    sectionRef.classList.toggle('collapsed', true)
+                    sectionTitleRef.classList.toggle('collapsed', true)
+                  }
+                  return id === tid
                 })
-              }, 100)
-              break
+                setTimeout(() => {
+                  scrollView.scrollTo({
+                    top: 0,
+                    left: 0
+                  })
+                }, 100)
+                break
 
-              // scroll view down after control is selected by 'scrollViewAfterSelection' pixels
-            case scrollViewAfterSelection !== undefined:
-              scrollView.scrollBy({
-                top: scrollViewAfterSelection,
-                left: 0,
-                behavior: 'smooth'
-              })
-              break
+                // scroll view down after control is selected by 'scrollViewAfterSelection' pixels
+              case scrollViewAfterSelection !== undefined:
+                scrollView.scrollBy({
+                  top: scrollViewAfterSelection,
+                  left: 0,
+                  behavior: 'smooth'
+                })
+                break
 
-              // scroll control to top when cards have been collapsed (only one card shown)
-            case scrollViewToTopOnSelect !== undefined:
-              scrollView.scrollBy({
-                top: controlTop - panelTop,
-                left: 0,
-                behavior: 'smooth'
-              })
-              break
-            }
-          }, 100)
-          previouslySelectedCards.push(id + uniqueGroupID)
+                // scroll control to top when cards have been collapsed (only one card shown)
+              case scrollViewToTopOnSelect !== undefined:
+                scrollView.scrollBy({
+                  top: controlTop - panelTop,
+                  left: 0,
+                  behavior: 'smooth'
+                })
+                break
+              }
+            }, 100)
+            previouslySelectedCards.push(id + uniqueGroupID)
+          }
         }
       }
       this.setState({ previouslySelectedCards })

@@ -304,14 +304,23 @@ class ControlPanel extends React.Component {
 
   renderGroup(control, grpId = '') {
     const { id, active = [], prompts } = control
+    active.forEach(controlData => {
+      controlData.forEach(ctrl => {
+        ctrl.group = control
+      })
+    })
     return (
       <React.Fragment key={id}>
         {active.map((controlData, inx) => {
           const groupId = inx > 0 ? `${grpId}grp${inx}` : ''
+
+          const card = controlData.find(({type})=>type==='cards' )
+          const groupType = card ? (card.active||[]).join() : 'general'
+
           return (
             /* eslint-disable-next-line react/no-array-index-key */
             <React.Fragment key={`${controlData[0].id}Group${inx}`}>
-              <div className="creation-view-group-container">
+              <div className="creation-view-group-container" key={groupType}>
                 {prompts &&
                   active.length > 1 &&
                   this.renderDeleteGroupButton(control, inx)}
