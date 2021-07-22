@@ -10,6 +10,7 @@ class YamlEditor extends React.Component {
     editor: PropTypes.element,
     hide: PropTypes.bool,
     onYamlChange: PropTypes.func,
+    readOnly: PropTypes.bool,
     setEditor: PropTypes.func,
     theme: PropTypes.string,
     yaml: PropTypes.oneOfType([PropTypes.object, PropTypes.string])
@@ -108,7 +109,7 @@ class YamlEditor extends React.Component {
 
   shouldComponentUpdate(nextProps) {
     return (
-      this.props.yaml !== nextProps.yaml || this.props.hide !== nextProps.hide || this.props.editor !== nextProps.editor
+      this.props.yaml !== nextProps.yaml || this.props.hide !== nextProps.hide || this.props.readOnly !== nextProps.readOnly
     )
   }
 
@@ -126,7 +127,7 @@ class YamlEditor extends React.Component {
         className="yamlEditorContainer"
         style={{ display: hide ? 'none' : 'block', minHeight: '100px' }}
       >
-        {editor && React.cloneElement(editor, {value: yaml, options: {...this.state.editor.props.options, ...(this.props.editor.props.options || {})}})}
+        {editor && React.cloneElement(editor, {value: yaml, options: {...this.state.editor.props.options, readOnly: this.props.readOnly}})}
       </div>
     )
   }
