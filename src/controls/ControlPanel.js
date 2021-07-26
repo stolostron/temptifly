@@ -44,10 +44,12 @@ class ControlPanel extends React.Component {
     isLoaded: PropTypes.bool,
     notifications: PropTypes.array,
     onChange: PropTypes.func,
+    onStepChange: PropTypes.func,
     originalControlData: PropTypes.array,
     showEditor: PropTypes.bool,
     showPortals: PropTypes.object,
-    wizardClassName: PropTypes.string
+    templateYAML: PropTypes.any,
+    wizardClassName: PropTypes.string,
   };
 
   constructor(props) {
@@ -232,8 +234,9 @@ class ControlPanel extends React.Component {
       </div>,
       nextButtonText: 'Create'
     })
-    const onMove = (curr) => {
+    const onMove = (curr, prev) => {
       set(steps[0], 'control.currentStep', curr.id)
+      this.props.onStepChange(steps.find(({ id }) => id === curr.id), steps.find(({ id }) => id === prev.id))
     }
     const onSave = () => {
       this.props.handleCreateResource()
@@ -462,7 +465,7 @@ class ControlPanel extends React.Component {
   };
 
   renderControl(id, type, control, grpId) {
-    const { controlData, showEditor, isLoaded, i18n } = this.props
+    const { controlData, showEditor, isLoaded, i18n, templateYAML, handleCreateResource } = this.props
     if (this.isHidden(control, controlData)) {
       return null
     }
@@ -619,7 +622,7 @@ class ControlPanel extends React.Component {
     case 'custom':
       return (
         <React.Fragment key={controlId}>
-          {this.renderCustom(control, controlId)}
+          {this.renderCustom(control, controlId, templateYAML, handleCreateResource)}
         </React.Fragment>
       )
     }
@@ -630,14 +633,16 @@ class ControlPanel extends React.Component {
     control.ref = ref
   };
 
-  renderCustom(control, controlId) {
+  renderCustom(control, controlId, templateYAML, handleCreateResource) {
     const { i18n } = this.props
     const { component } = control
     const custom = React.cloneElement(component, {
       control,
       i18n,
       controlId,
-      handleChange: this.handleChange.bind(this, control)
+      handleChange: this.handleChange.bind(this, control),
+      templateYAML,
+      handleCreateResource
     })
     return (
       <React.Fragment>

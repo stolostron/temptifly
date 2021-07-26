@@ -61,6 +61,7 @@ export default class TemplateEditor extends React.Component {
       creationStatus: PropTypes.string,
       creationMsg: PropTypes.array
     }).isRequired,
+    editorReadOnly: PropTypes.bool,
     fetchControl: PropTypes.shape({
       resources: PropTypes.array,
       isLoaded: PropTypes.bool,
@@ -74,6 +75,7 @@ export default class TemplateEditor extends React.Component {
     onControlChange: PropTypes.func,
     onControlInitialize: PropTypes.func,
     onControlValidation: PropTypes.func,
+    onStepChange: PropTypes.func,
     portals: PropTypes.object,
     template: PropTypes.func.isRequired,
     theme: PropTypes.string,
@@ -448,6 +450,8 @@ export default class TemplateEditor extends React.Component {
         isLoaded={isLoaded}
         i18n={i18n}
         onChange={this.props.onControlChange}
+        onStepChange={this.props.onStepChange}
+        templateYAML={this.state.templateYAML}
       />
     )
   }
@@ -821,7 +825,7 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderEditors = () => {
-    const { monacoEditor, theme } = this.props
+    const { monacoEditor, editorReadOnly, theme } = this.props
     const { activeYAMLEditor, otherYAMLTabs, templateYAML } = this.state
     return (
       <React.Fragment>
@@ -836,6 +840,7 @@ export default class TemplateEditor extends React.Component {
           onYamlChange={this.handleEditorChange}
           theme={theme}
           yaml={templateYAML}
+          readOnly={editorReadOnly}
         />
         {otherYAMLTabs.map(({ id, templateYAML: yaml }, inx) => {
           return (
@@ -851,6 +856,7 @@ export default class TemplateEditor extends React.Component {
               theme={theme}
               onYamlChange={this.handleEditorChange}
               yaml={yaml}
+              readOnly={editorReadOnly}
             />
           )
         })}
@@ -1312,13 +1318,14 @@ export default class TemplateEditor extends React.Component {
     return null
   }
 
-  handleCreateResource() {
+  handleCreateResource(noRedirect) {
     const { createControl } = this.props
     const { createResource } = createControl
     const resourceJSON = this.getResourceJSON()
     if (resourceJSON) {
       this.setState({resourceJSON})
-      createResource(resourceJSON)
+      createResource(resourceJSON, noRedirect)
+      return resourceJSON
     }
   }
 

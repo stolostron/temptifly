@@ -3,6 +3,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import groupBy from 'lodash/groupBy'
+import { Title, TitleSizes } from '@patternfly/react-core'
 import Tooltip from '../components/Tooltip'
 
 class ControlPanelCards extends React.Component {
@@ -38,6 +40,14 @@ class ControlPanelCards extends React.Component {
       'tf--grid-container': true,
       small: showEditor
     })
+
+    const availableCards = Object.keys(availableMap).reduce((acc, curr) => {
+      if (available.includes(curr)) {
+        acc.push(availableMap[curr])
+      }
+      return acc
+    }, [])
+    const cardGroups = groupBy(availableCards, (c) => c.section)
     return (
       <React.Fragment>
         <div
@@ -46,23 +56,26 @@ class ControlPanelCards extends React.Component {
         >
           <div className={gridClasses}>
             <div className={'tf--grid'}>
-              <div className={'tf--providers-container tf--row'}>
-                {available
-                  .map(availableKey => {
-                    const choice = availableMap[availableKey]
-                    const { id, hidden } = choice
-                    return hidden ? null : (
-                      <ControlPanelCard
-                        key={id}
-                        type={id}
-                        selected={active.includes && active.includes(id)}
-                        choice={choice}
-                        handleOnClick={this.handleChange.bind(this, id)}
-                        i18n={i18n}
-                      />
-                    )
-                  })}
-              </div>
+              {Object.keys(cardGroups).map((group) => (
+                <React.Fragment key={group}>
+                  {group !== 'undefined' && <Title headingLevel="h1" size={TitleSizes.xl}>{group}</Title>}
+                  <div className={'tf--providers-container tf--row'}>
+                    {cardGroups[group].map((choice) => {
+                      const { id, hidden } = choice
+                      return !hidden && (
+                        <ControlPanelCard
+                          key={id}
+                          type={id}
+                          selected={active.includes && active.includes(id)}
+                          choice={choice}
+                          handleOnClick={this.handleChange.bind(this, id)}
+                          i18n={i18n}
+                        />
+                      )
+                    })}
+                  </div>
+                </React.Fragment>
+              ))}
             </div>
           </div>
         </div>
