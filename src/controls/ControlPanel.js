@@ -236,7 +236,9 @@ class ControlPanel extends React.Component {
     })
     const onMove = (curr, prev) => {
       set(steps[0], 'control.currentStep', curr.id)
-      this.props.onStepChange(steps.find(({ id }) => id === curr.id), steps.find(({ id }) => id === prev.id))
+      if (this.props.onStepChange) {
+        this.props.onStepChange(steps.find(({ id }) => id === curr.id), steps.find(({ id }) => id === prev.id))
+      }
     }
     const onSave = () => {
       this.props.handleCreateResource()
@@ -318,7 +320,7 @@ class ControlPanel extends React.Component {
           const groupId = inx > 0 ? `${grpId}grp${inx}` : ''
 
           const card = controlData.find(({type})=>type==='cards' )
-          const groupType = card ? (card.active||[]).join() : 'general'
+          const groupType = card && Array.isArray(card.active) ? card.active.join() : 'general'
 
           return (
             /* eslint-disable-next-line react/no-array-index-key */
