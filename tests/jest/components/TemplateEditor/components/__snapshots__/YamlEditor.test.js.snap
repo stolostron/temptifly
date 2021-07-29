@@ -4,7 +4,7 @@ exports[`YamlEditor renders as expected 1`] = `
 <DocumentFragment>
   <div
     class="yamlEditorContainer"
-    style="display: block; min-height: 100px;"
+    style="display: block; min-height: 100px; border-left: 1px solid #c8c8c8;"
   />
 </DocumentFragment>
 `;

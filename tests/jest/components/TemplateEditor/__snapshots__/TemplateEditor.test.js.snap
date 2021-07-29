@@ -899,7 +899,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                             >
                               <div
                                 class="pf-c-toolbar"
-                                id="pf-random-id-0"
+                                id="pf-random-id-1"
                               >
                                 <div
                                   class="pf-c-toolbar__content"
@@ -966,7 +966,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                                   aria-disabled="false"
                                                   aria-label="Reset"
                                                   class="pf-c-button pf-m-plain"
-                                                  data-ouia-component-id="OUIA-Generated-Button-plain-32"
+                                                  data-ouia-component-id="OUIA-Generated-Button-plain-33"
                                                   data-ouia-component-type="PF4/Button"
                                                   data-ouia-safe="true"
                                                   type="button"
@@ -997,7 +997,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                   </div>
                                   <div
                                     class="pf-c-toolbar__expandable-content"
-                                    id="pf-random-id-0-expandable-content-13"
+                                    id="pf-random-id-1-expandable-content-13"
                                   >
                                     <div
                                       class="pf-c-toolbar__group"
@@ -1358,7 +1358,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                               aria-disabled="false"
                                               aria-label="Save edits for row 0"
                                               class="pf-c-button pf-m-plain"
-                                              data-ouia-component-id="OUIA-Generated-Button-plain-33"
+                                              data-ouia-component-id="OUIA-Generated-Button-plain-34"
                                               data-ouia-component-type="PF4/Button"
                                               data-ouia-safe="true"
                                               type="button"
@@ -1385,7 +1385,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                               aria-disabled="false"
                                               aria-label="Cancel edits for row 0"
                                               class="pf-c-button pf-m-plain"
-                                              data-ouia-component-id="OUIA-Generated-Button-plain-34"
+                                              data-ouia-component-id="OUIA-Generated-Button-plain-35"
                                               data-ouia-component-type="PF4/Button"
                                               data-ouia-safe="true"
                                               type="button"
@@ -1413,7 +1413,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                             aria-disabled="false"
                                             aria-label="Edit row 0"
                                             class="pf-c-button pf-m-plain"
-                                            data-ouia-component-id="OUIA-Generated-Button-plain-35"
+                                            data-ouia-component-id="OUIA-Generated-Button-plain-36"
                                             data-ouia-component-type="PF4/Button"
                                             data-ouia-safe="true"
                                             type="button"
@@ -1518,7 +1518,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                           aria-label="Go to first page"
                                           class="pf-c-button pf-m-plain pf-m-disabled"
                                           data-action="first"
-                                          data-ouia-component-id="OUIA-Generated-Button-plain-16"
+                                          data-ouia-component-id="OUIA-Generated-Button-plain-17"
                                           data-ouia-component-type="PF4/Button"
                                           data-ouia-safe="true"
                                           disabled=""
@@ -1547,7 +1547,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                           aria-label="Go to previous page"
                                           class="pf-c-button pf-m-plain pf-m-disabled"
                                           data-action="previous"
-                                          data-ouia-component-id="OUIA-Generated-Button-plain-17"
+                                          data-ouia-component-id="OUIA-Generated-Button-plain-18"
                                           data-ouia-component-type="PF4/Button"
                                           data-ouia-safe="true"
                                           disabled=""
@@ -1594,7 +1594,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                           aria-label="Go to next page"
                                           class="pf-c-button pf-m-plain pf-m-disabled"
                                           data-action="next"
-                                          data-ouia-component-id="OUIA-Generated-Button-plain-18"
+                                          data-ouia-component-id="OUIA-Generated-Button-plain-19"
                                           data-ouia-component-type="PF4/Button"
                                           data-ouia-safe="true"
                                           disabled=""
@@ -1623,7 +1623,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                           aria-label="Go to last page"
                                           class="pf-c-button pf-m-plain pf-m-disabled"
                                           data-action="last"
-                                          data-ouia-component-id="OUIA-Generated-Button-plain-19"
+                                          data-ouia-component-id="OUIA-Generated-Button-plain-20"
                                           data-ouia-component-type="PF4/Button"
                                           data-ouia-safe="true"
                                           disabled=""
@@ -2272,6 +2272,47 @@ exports[`TemplateEditor component renders as expected 1`] = `
                   <div>
                     editor.show.secrets
                   </div>
+                </div>
+                <div
+                  class="pf-c-clipboard-copy pf-m-inline pf-m-block"
+                >
+                  <span
+                    class="pf-c-clipboard-copy__text"
+                    id="text-input-0"
+                  />
+                  <span
+                    class="pf-c-clipboard-copy__actions"
+                  >
+                    <span
+                      class="pf-c-clipboard-copy__actions-item"
+                    >
+                      <button
+                        aria-disabled="false"
+                        aria-label="Copy to clipboard"
+                        aria-labelledby="copy-button-0 text-input-0"
+                        class="pf-c-button pf-m-plain"
+                        data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                        data-ouia-component-type="PF4/Button"
+                        data-ouia-safe="true"
+                        id="copy-button-0"
+                        type="button"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          fill="currentColor"
+                          height="1em"
+                          role="img"
+                          style="vertical-align: -0.125em;"
+                          viewBox="0 0 448 512"
+                          width="1em"
+                        >
+                          <path
+                            d="M320 448v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V120c0-13.255 10.745-24 24-24h72v296c0 30.879 25.121 56 56 56h168zm0-344V0H152c-13.255 0-24 10.745-24 24v368c0 13.255 10.745 24 24 24h272c13.255 0 24-10.745 24-24V128H344c-13.2 0-24-10.8-24-24zm120.971-31.029L375.029 7.029A24 24 0 0 0 358.059 0H352v96h96v-6.059a24 24 0 0 0-7.029-16.97z"
+                          />
+                        </svg>
+                      </button>
+                    </span>
+                  </span>
                 </div>
               </div>
             </div>

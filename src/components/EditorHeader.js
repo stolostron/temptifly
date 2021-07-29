@@ -3,17 +3,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { Checkbox } from '@patternfly/react-core'
+import { Alert, AlertActionCloseButton, ClipboardCopy, Checkbox } from '@patternfly/react-core'
 import '../scss/editor-header.scss'
 
 class EditorHeader extends React.Component {
   static propTypes = {
     children: PropTypes.node,
+    handleEditorCommand: PropTypes.func,
     handleShowSecretChange: PropTypes.func,
     handleTabChange: PropTypes.func,
     i18n: PropTypes.func,
     otherYAMLTabs: PropTypes.array,
+    readOnly: PropTypes.bool,
     showSecrets: PropTypes.bool,
+    title: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired
   };
 
@@ -22,29 +25,57 @@ class EditorHeader extends React.Component {
   }
 
   render() {
-    const { children, otherYAMLTabs = [], i18n } = this.props
+    const { children, readOnly, otherYAMLTabs = [], title, handleEditorCommand, i18n } = this.props
     const editorToolbarTitle = i18n('editor.toolbar')
-    const hasTabs = otherYAMLTabs.length > 0
-    const classnames = classNames({
-      'creation-view-yaml-header': true,
-      hasTabs: hasTabs
-    })
-    return (
-      <div className={classnames}>
-        <div
-          className="creation-view-yaml-header-toolbar"
-          role="region"
-          aria-label={editorToolbarTitle}
-          id={editorToolbarTitle}
-        >
-          {children}
+    if (readOnly) {
+      return (
+        <div>
+          <Alert
+            isInline
+            title={i18n('editor.bar.readonly')}
+            variant={'info'}
+            style={{background: '#E7F1FA', padding: '10px 20px'}}
+            actionClose={<AlertActionCloseButton onClose={() => handleEditorCommand('close')} />}
+          />
+          <div className='readonly-editor-bar'>
+            <div>{title}</div>
+            <ClipboardCopy
+              variant="inline-compact"
+              isBlock
+              onCopy={() => handleEditorCommand('copyAll')}
+            />
+          </div>
         </div>
-        <div className="creation-view-yaml-header-tabs">
-          {this.renderEditorTabs(otherYAMLTabs)}
-          {this.renderShowSecrets()}
+
+      )
+    } else {
+      const hasTabs = otherYAMLTabs.length > 0
+      const classnames = classNames({
+        'creation-view-yaml-header': true,
+        hasTabs: hasTabs
+      })
+      return (
+        <div className={classnames}>
+          <div
+            className="creation-view-yaml-header-toolbar"
+            role="region"
+            aria-label={editorToolbarTitle}
+            id={editorToolbarTitle}
+          >
+            {children}
+          </div>
+          <div className="creation-view-yaml-header-tabs">
+            {this.renderEditorTabs(otherYAMLTabs)}
+            {this.renderShowSecrets()}
+            <ClipboardCopy
+              variant="inline-compact"
+              isBlock
+              onCopy={() => handleEditorCommand('copyAll')}
+            />
+          </div>
         </div>
-      </div>
-    )
+      )
+    }
   }
 
   setTabsRef = ref => {

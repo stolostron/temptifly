@@ -788,7 +788,7 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderEditor() {
-    const { type = 'main', title='YAML' } = this.props
+    const { type = 'main', editorReadOnly, title='YAML' } = this.props
     const {
       hasUndo,
       hasRedo,
@@ -803,7 +803,10 @@ export default class TemplateEditor extends React.Component {
           otherYAMLTabs={otherYAMLTabs}
           handleTabChange={this.handleTabChange}
           handleShowSecretChange={this.handleShowSecrets.bind(this)}
+          handleEditorCommand={this.handleEditorCommand}
           showSecrets={showSecrets}
+          readOnly={editorReadOnly}
+          title={title}
           type={type}
           i18n={i18n}
         >
@@ -934,6 +937,16 @@ export default class TemplateEditor extends React.Component {
             0
           )
         }
+      }
+      break
+    case 'copyAll':
+      if (editor) {
+        const save = editor.getSelection()
+        const range = editor.getModel().getFullModelRange()
+        editor.setSelection(range)
+        editor.focus()
+        document.execCommand('copy')
+        editor.setSelection(save)
       }
       break
     case 'undo':
@@ -1226,7 +1239,7 @@ export default class TemplateEditor extends React.Component {
   };
 
   renderEditButton(isLoaded) {
-    const { monacoEditor, portals, i18n } = this.props
+    const { monacoEditor, portals, editorReadOnly, i18n } = this.props
     const { editBtn } = portals || Portals
     if (monacoEditor && editBtn && isLoaded) {
       const portal = document.getElementById(editBtn)
@@ -1261,7 +1274,7 @@ export default class TemplateEditor extends React.Component {
               id="edit-yaml"
               key={`is${showEditor}`}
               isChecked={showEditor}
-              label={i18n ? i18n('edit.yaml.on') : 'Show Yaml'}
+              label={i18n ? i18n(editorReadOnly? 'edit.yaml.on.ro' : 'edit.yaml.on') : 'Show Yaml'}
               labelOff={i18n ? i18n('edit.yaml.off') : 'Hide Yaml'}
               onChange={handleToggle}
             />
