@@ -126,6 +126,7 @@ const initializeMsgs = (control, i18n) => {
     'placeholder',
     'title',
     'subtitle',
+    'section',
     'prompt',
     'info',
     'tooltip'

@@ -19,15 +19,13 @@ class YamlEditor extends React.Component {
   constructor(props) {
     super(props)
 
-    const { editor, onYamlChange, theme='resource-editor' } = this.props
+    const { editor, onYamlChange } = this.props
     this.state = {
       editor: editor && React.cloneElement(editor, {
         language: 'yaml',
-        theme,
         height: '100%',
         width: '100%',
         options: {
-          readOnly: false,
           wordWrap: 'wordWrapColumn',
           wordWrapColumn: 132,
           wordWrapMinified: false,
@@ -52,7 +50,6 @@ class YamlEditor extends React.Component {
       base: 'vs-dark',
       inherit: true,
       rules: [
-        // avoid pf tokens for `rules` since tokens are opaque strings that might not be hex values
         { token: 'number', foreground: 'ace12e' },
         { token: 'type', foreground: '73bcf7' },
         { token: 'string', foreground: 'f0ab00' },
@@ -63,6 +60,23 @@ class YamlEditor extends React.Component {
         'editorGutter.background': '#292e34', // no pf token defined
         'editorLineNumber.activeForeground': '#fff',
         'editorLineNumber.foreground': '#f0f0f0',
+      },
+    })
+    monaco.editor.defineTheme('readonly-resource-editor', {
+      base: 'vs',
+      inherit: true,
+      rules: [
+        { background: 'f0f0f0' },
+        { token: 'number', foreground: '000000' },
+        { token: 'type', foreground: '000000' },
+        { token: 'string', foreground: '000000' },
+        { token: 'keyword', foreground: '0451a5' },
+      ],
+      colors: {
+        'editor.background': '#f0f0f0',
+        'editorGutter.background': '#f0f0f0', // no pf token defined
+        'editorLineNumber.activeForeground': '#000000',
+        'editorLineNumber.foreground': '#000000',
       },
     })
     // Monaco uses <span> to measure character sizes
@@ -120,14 +134,23 @@ class YamlEditor extends React.Component {
   }
 
   render() {
-    const { yaml, hide = false } = this.props
+    const { yaml, readOnly, hide = false } = this.props
+    let {theme='resource-editor' } = this.props
     const { editor } = this.state
+    const style = {
+      display: hide ? 'none' : 'block',
+      minHeight: '100px',
+    }
+    if (readOnly) {
+      style.borderLeft = '1px solid #c8c8c8'
+      theme = 'readonly-resource-editor'
+    }
     return (
       <div
         className="yamlEditorContainer"
-        style={{ display: hide ? 'none' : 'block', minHeight: '100px' }}
+        style={style}
       >
-        {editor && React.cloneElement(editor, {value: yaml, options: {...this.state.editor.props.options, readOnly: this.props.readOnly}})}
+        {editor && React.cloneElement(editor, {value: yaml, theme, options: {...this.state.editor.props.options, readOnly}})}
       </div>
     )
   }
