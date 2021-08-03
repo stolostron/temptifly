@@ -1,17 +1,30 @@
 import { ReactNode } from 'react';
+import { StringMappingType } from 'typescript';
 export declare function TemplateEditor(props: {
     type?: string;
     title?: string;
     monacoEditor?: React.ReactNode;
     controlData: any[];
+    wizardClassName?: string;
     template: any;
-    portals?: any[];
-    createControl?: {
-        createResource: (query: string) => void;
-        cancelCreate: (void) => void;
-        pauseCreate: (void) => void;
-        creationStatus?: string;
-        creationMsg?: string;
+    logging?: boolean;
+    portals?: {
+        editBtn: string;
+        createBtn: string;
+        cancelBtn: string;    
     };
-    i18n?: (key: string) => string;
+    fetchControl?: {
+            isLoaded: boolean;
+            fetchData: { requestedUIDs: any[] };
+        } | null ;
+    createControl?: {
+        createResource: (resourceJSON: { createResources: any[] }) => void;
+        cancelCreate: () => void;
+        pauseCreate: () => void;
+        creationStatus?: string;
+        creationMsg?: any[] | null | undefined;
+    };
+    i18n?: (key: string, arg: any) => string;
+    onControlInitialize: (control: any) => void
+    onControlChange?: (control: any) => void
 }): JSX.Element;
