@@ -61,6 +61,7 @@ export default class TemplateEditor extends React.Component {
       creationStatus: PropTypes.string,
       creationMsg: PropTypes.array
     }).isRequired,
+    editorReadOnly: PropTypes.bool,
     fetchControl: PropTypes.shape({
       resources: PropTypes.array,
       isLoaded: PropTypes.bool,
@@ -73,8 +74,11 @@ export default class TemplateEditor extends React.Component {
     monacoEditor: PropTypes.element,
     onControlChange: PropTypes.func,
     onControlInitialize: PropTypes.func,
+    onControlValidation: PropTypes.func,
+    onStepChange: PropTypes.func,
     portals: PropTypes.object,
     template: PropTypes.func.isRequired,
+    theme: PropTypes.string,
     title: PropTypes.string,
     type: PropTypes.string,
     wizardClassName: PropTypes.string
@@ -165,7 +169,7 @@ export default class TemplateEditor extends React.Component {
         ({ id: idCtrl }) => idCtrl === 'showSecrets'
       )
       if (showControl) {
-        showControl.active = showSecrets
+        showControl.active = showSecrets || !showEditor
       }
     }
 
@@ -446,6 +450,8 @@ export default class TemplateEditor extends React.Component {
         isLoaded={isLoaded}
         i18n={i18n}
         onChange={this.props.onControlChange}
+        onStepChange={this.props.onStepChange}
+        templateYAML={this.state.templateYAML}
       />
     )
   }
@@ -481,6 +487,8 @@ export default class TemplateEditor extends React.Component {
       this.editors,
       newYAML,
       otherYAMLTabs,
+      undefined,
+      this.props.onControlValidation,
       controlData,
       isFinalValidate,
       i18n
@@ -562,6 +570,8 @@ export default class TemplateEditor extends React.Component {
       this.editors,
       newYAML,
       otherYAMLTabs,
+      undefined,
+      this.props.onControlValidation,
       controlData,
       isFinalValidate,
       i18n
@@ -724,50 +734,52 @@ export default class TemplateEditor extends React.Component {
           if (!creationView) {
             creationView = document.getElementsByClassName('content')[0]
           }
-          const scrollView = showEditor && creationView.scrollBy ? creationView : window
-          const controlTop = ref.getBoundingClientRect().top
-          const panelTop = showEditor
-            ? creationView.getBoundingClientRect().top
-            : 200
-          setTimeout(() => {
-            switch (true) {
-            // collapse section above when this control is selected
-            case collapseAboveAfterSelection === true:
-              controlData.some(({ id: tid, sectionRef, sectionTitleRef }) => {
-                if (sectionRef && sectionTitleRef) {
-                  sectionRef.classList.toggle('collapsed', true)
-                  sectionTitleRef.classList.toggle('collapsed', true)
-                }
-                return id === tid
-              })
-              setTimeout(() => {
-                scrollView.scrollTo({
-                  top: 0,
-                  left: 0
+          if (creationView) {
+            const scrollView = showEditor && creationView.scrollBy ? creationView : window
+            const controlTop = ref.getBoundingClientRect().top
+            const panelTop = showEditor
+              ? creationView.getBoundingClientRect().top
+              : 200
+            setTimeout(() => {
+              switch (true) {
+              // collapse section above when this control is selected
+              case collapseAboveAfterSelection === true:
+                controlData.some(({ id: tid, sectionRef, sectionTitleRef }) => {
+                  if (sectionRef && sectionTitleRef) {
+                    sectionRef.classList.toggle('collapsed', true)
+                    sectionTitleRef.classList.toggle('collapsed', true)
+                  }
+                  return id === tid
                 })
-              }, 100)
-              break
+                setTimeout(() => {
+                  scrollView.scrollTo({
+                    top: 0,
+                    left: 0
+                  })
+                }, 100)
+                break
 
-              // scroll view down after control is selected by 'scrollViewAfterSelection' pixels
-            case scrollViewAfterSelection !== undefined:
-              scrollView.scrollBy({
-                top: scrollViewAfterSelection,
-                left: 0,
-                behavior: 'smooth'
-              })
-              break
+                // scroll view down after control is selected by 'scrollViewAfterSelection' pixels
+              case scrollViewAfterSelection !== undefined:
+                scrollView.scrollBy({
+                  top: scrollViewAfterSelection,
+                  left: 0,
+                  behavior: 'smooth'
+                })
+                break
 
-              // scroll control to top when cards have been collapsed (only one card shown)
-            case scrollViewToTopOnSelect !== undefined:
-              scrollView.scrollBy({
-                top: controlTop - panelTop,
-                left: 0,
-                behavior: 'smooth'
-              })
-              break
-            }
-          }, 100)
-          previouslySelectedCards.push(id + uniqueGroupID)
+                // scroll control to top when cards have been collapsed (only one card shown)
+              case scrollViewToTopOnSelect !== undefined:
+                scrollView.scrollBy({
+                  top: controlTop - panelTop,
+                  left: 0,
+                  behavior: 'smooth'
+                })
+                break
+              }
+            }, 100)
+            previouslySelectedCards.push(id + uniqueGroupID)
+          }
         }
       }
       this.setState({ previouslySelectedCards })
@@ -776,7 +788,7 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderEditor() {
-    const { type = 'main', title='YAML' } = this.props
+    const { type = 'main', editorReadOnly, title='YAML' } = this.props
     const {
       hasUndo,
       hasRedo,
@@ -791,7 +803,10 @@ export default class TemplateEditor extends React.Component {
           otherYAMLTabs={otherYAMLTabs}
           handleTabChange={this.handleTabChange}
           handleShowSecretChange={this.handleShowSecrets.bind(this)}
+          handleEditorCommand={this.handleEditorCommand}
           showSecrets={showSecrets}
+          readOnly={editorReadOnly}
+          title={title}
           type={type}
           i18n={i18n}
         >
@@ -813,7 +828,7 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderEditors = () => {
-    const { monacoEditor } = this.props
+    const { monacoEditor, editorReadOnly, theme } = this.props
     const { activeYAMLEditor, otherYAMLTabs, templateYAML } = this.state
     return (
       <React.Fragment>
@@ -826,7 +841,9 @@ export default class TemplateEditor extends React.Component {
           wrapEnabled={true}
           setEditor={this.addEditor}
           onYamlChange={this.handleEditorChange}
+          theme={theme}
           yaml={templateYAML}
+          readOnly={editorReadOnly}
         />
         {otherYAMLTabs.map(({ id, templateYAML: yaml }, inx) => {
           return (
@@ -839,8 +856,10 @@ export default class TemplateEditor extends React.Component {
               height={'100%'}
               wrapEnabled={true}
               setEditor={this.addEditor}
+              theme={theme}
               onYamlChange={this.handleEditorChange}
               yaml={yaml}
+              readOnly={editorReadOnly}
             />
           )
         })}
@@ -918,6 +937,16 @@ export default class TemplateEditor extends React.Component {
             0
           )
         }
+      }
+      break
+    case 'copyAll':
+      if (editor) {
+        const save = editor.getSelection()
+        const range = editor.getModel().getFullModelRange()
+        editor.setSelection(range)
+        editor.focus()
+        document.execCommand('copy')
+        editor.setSelection(save)
       }
       break
     case 'undo':
@@ -1022,12 +1051,13 @@ export default class TemplateEditor extends React.Component {
       isFinalValidate,
       i18n
     } = this.state
+    let tab
     let { editStack, templateYAML, notifications } = this.state
 
     if (activeYAMLEditor === 0) {
       templateYAML = yaml
     } else {
-      const tab = otherYAMLTabs[activeYAMLEditor - 1]
+      tab = otherYAMLTabs[activeYAMLEditor - 1]
       // protect user edits from being clobbered by form updates
       tab.control.customYAML = yaml
       // update the yaml shown in this tab
@@ -1043,6 +1073,8 @@ export default class TemplateEditor extends React.Component {
       this.editors,
       templateYAML,
       otherYAMLTabs,
+      tab ? tab.id : undefined,
+      this.props.onControlValidation,
       controlData,
       isFinalValidate,
       i18n
@@ -1113,6 +1145,8 @@ export default class TemplateEditor extends React.Component {
       this.editors,
       templateYAML,
       otherYAMLTabs,
+      undefined,
+      this.props.onControlValidation,
       controlData,
       true,
       i18n
@@ -1205,19 +1239,33 @@ export default class TemplateEditor extends React.Component {
   };
 
   renderEditButton(isLoaded) {
-    const { monacoEditor, portals, i18n } = this.props
+    const { monacoEditor, portals, editorReadOnly, i18n } = this.props
     const { editBtn } = portals || Portals
     if (monacoEditor && editBtn && isLoaded) {
       const portal = document.getElementById(editBtn)
       if (portal) {
-        const { showEditor } = this.state
+        const { showSecrets, controlData } = this.state
+        let { showEditor } = this.state
         const handleToggle = () => {
           if (showEditor) {
             localStorage.removeItem(TEMPLATE_EDITOR_OPEN_COOKIE)
           } else {
             localStorage.setItem(TEMPLATE_EDITOR_OPEN_COOKIE, 'true')
           }
-          this.setState({ showEditor: !showEditor })
+          showEditor = !showEditor
+          this.setState({ showEditor })
+
+          // if was closed before and now open
+          // secrets may be shown, so hide if necessary
+          if (showEditor && !showSecrets) {
+            const showControl = controlData.find(
+              ({ id: idCtrl }) => idCtrl === 'showSecrets'
+            )
+            if (showControl) {
+              showControl.active = false
+              this.handleControlChange(showControl, controlData)
+            }
+          }
         }
         this.renderedPortals = true
         return ReactDOM.createPortal(
@@ -1226,7 +1274,7 @@ export default class TemplateEditor extends React.Component {
               id="edit-yaml"
               key={`is${showEditor}`}
               isChecked={showEditor}
-              label={i18n ? i18n('edit.yaml.on') : 'Show Yaml'}
+              label={i18n ? i18n(editorReadOnly? 'edit.yaml.on.ro' : 'edit.yaml.on') : 'Show Yaml'}
               labelOff={i18n ? i18n('edit.yaml.off') : 'Hide Yaml'}
               onChange={handleToggle}
             />
@@ -1283,13 +1331,14 @@ export default class TemplateEditor extends React.Component {
     return null
   }
 
-  handleCreateResource() {
+  handleCreateResource(noRedirect) {
     const { createControl } = this.props
     const { createResource } = createControl
     const resourceJSON = this.getResourceJSON()
     if (resourceJSON) {
       this.setState({resourceJSON})
-      createResource(resourceJSON)
+      createResource(resourceJSON, noRedirect)
+      return resourceJSON
     }
   }
 

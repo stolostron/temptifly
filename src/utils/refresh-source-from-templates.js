@@ -1,6 +1,6 @@
 'use strict'
 
-import { parseYAML } from './source-utils'
+import { parseYAML, escapeYAML } from './source-utils'
 import { setSourcePaths } from './initialize-control-functions'
 import { Base64 } from 'js-base64'
 import {
@@ -44,6 +44,7 @@ export const generateSourceFromTemplate = (
     replacements,
     controlMap
   )
+  escapeYAML(templateData)
 
   /////////////////////////////////////////////////////////
   // add replacements to templateData

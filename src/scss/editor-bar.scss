@@ -111,6 +111,17 @@
     height: 1rem;
   }
 }
+.readonly-editor-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  justify-content: space-between;
+  border: 1px solid #c8c8c8;
+  background: #f0f0f0;
+  padding: 0 10px;
+}
 
 .editor-error-button-item {
   font-size: 0.75rem;

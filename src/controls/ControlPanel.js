@@ -44,10 +44,12 @@ class ControlPanel extends React.Component {
     isLoaded: PropTypes.bool,
     notifications: PropTypes.array,
     onChange: PropTypes.func,
+    onStepChange: PropTypes.func,
     originalControlData: PropTypes.array,
     showEditor: PropTypes.bool,
     showPortals: PropTypes.object,
-    wizardClassName: PropTypes.string
+    templateYAML: PropTypes.any,
+    wizardClassName: PropTypes.string,
   };
 
   constructor(props) {
@@ -56,11 +58,6 @@ class ControlPanel extends React.Component {
 
   componentDidMount() {
     this.refreshFading()
-  }
-
-  componentWillUnmount() {
-    const {controlData} = this.props
-    controlData.push({saveStep: get(this, 'wizardRef.state.currentStep')})
   }
 
   setCreationViewRef = ref => {
@@ -197,16 +194,12 @@ class ControlPanel extends React.Component {
   }
 
   renderControlWizard(steps, controlClasses) {
-    let step = 1
     const controlMap=[]
     const details = cloneDeep(steps)
 
-    steps = steps.map(({title:control, sections}, inx)=>{
+    steps = steps.map(({title:control, sections})=>{
       const { id, title } = control
       controlMap[id] = control
-      if (control.currentStep) {
-        step = inx+1
-      }
       let errors=0
       sections.forEach(({content})=>{
         content.forEach(({exception})=> {
@@ -222,13 +215,14 @@ class ControlPanel extends React.Component {
           {errors>0&&<div className="tf--finish-step-button-error">!</div>}
         </div>,
         control,
-        component: <div className={controlClasses}>
+        component: <div key={id} className={controlClasses}>
           <h2>{title}</h2>
           {this.renderControlSections(sections)}
         </div>
       }
     })
     steps.push({
+      id: 'review',
       name: 'Review',
       component: <div className={controlClasses}>
         <h2>Review</h2>
@@ -240,10 +234,11 @@ class ControlPanel extends React.Component {
       </div>,
       nextButtonText: 'Create'
     })
-    const onMove = (curr) => {
-      steps.forEach(step => {
-        set(step, 'control.currentStep', step.id===curr.id)
-      })
+    const onMove = (curr, prev) => {
+      set(steps[0], 'control.currentStep', curr.id)
+      if (this.props.onStepChange) {
+        this.props.onStepChange(steps.find(({ id }) => id === curr.id), steps.find(({ id }) => id === prev.id))
+      }
     }
     const onSave = () => {
       this.props.handleCreateResource()
@@ -252,6 +247,9 @@ class ControlPanel extends React.Component {
       this.props.handleCancelCreate()
     }
     const title = 'Create wizard'
+    const currentStep = get(steps[0], 'control.currentStep')
+    let step = steps.findIndex(({id})=>id===currentStep) + 1
+    if (step<1) step = 1
     return (
       <Wizard
         className={this.props.wizardClassName}
@@ -311,14 +309,23 @@ class ControlPanel extends React.Component {
 
   renderGroup(control, grpId = '') {
     const { id, active = [], prompts } = control
+    active.forEach(controlData => {
+      controlData.forEach(ctrl => {
+        ctrl.group = control
+      })
+    })
     return (
       <React.Fragment key={id}>
         {active.map((controlData, inx) => {
           const groupId = inx > 0 ? `${grpId}grp${inx}` : ''
+
+          const card = controlData.find(({type})=>type==='cards' )
+          const groupType = card && Array.isArray(card.active) ? card.active.join() : 'general'
+
           return (
             /* eslint-disable-next-line react/no-array-index-key */
             <React.Fragment key={`${controlData[0].id}Group${inx}`}>
-              <div className="creation-view-group-container">
+              <div className="creation-view-group-container" key={groupType}>
                 {prompts &&
                   active.length > 1 &&
                   this.renderDeleteGroupButton(control, inx)}
@@ -460,7 +467,7 @@ class ControlPanel extends React.Component {
   };
 
   renderControl(id, type, control, grpId) {
-    const { controlData, showEditor, isLoaded, i18n } = this.props
+    const { controlData, showEditor, isLoaded, i18n, templateYAML, handleCreateResource } = this.props
     if (this.isHidden(control, controlData)) {
       return null
     }
@@ -617,7 +624,7 @@ class ControlPanel extends React.Component {
     case 'custom':
       return (
         <React.Fragment key={controlId}>
-          {this.renderCustom(control, controlId)}
+          {this.renderCustom(control, controlId, templateYAML, handleCreateResource)}
         </React.Fragment>
       )
     }
@@ -628,14 +635,16 @@ class ControlPanel extends React.Component {
     control.ref = ref
   };
 
-  renderCustom(control, controlId) {
+  renderCustom(control, controlId, templateYAML, handleCreateResource) {
     const { i18n } = this.props
     const { component } = control
     const custom = React.cloneElement(component, {
       control,
       i18n,
       controlId,
-      handleChange: this.handleChange.bind(this, control)
+      handleChange: this.handleChange.bind(this, control),
+      templateYAML,
+      handleCreateResource
     })
     return (
       <React.Fragment>
@@ -656,6 +665,7 @@ class ControlPanel extends React.Component {
     const { id: field, type, syncWith, syncedWith } = control
 
     if(onChange){
+      control.refresh = ()=>this.props.handleControlChange(control, controlData)
       onChange(control)
     }
 
@@ -741,7 +751,11 @@ class ControlPanel extends React.Component {
   }
 
   handleControlChange(control) {
-    const { controlData } = this.props
+    const { controlData, onChange } = this.props
+    if(onChange){
+      control.refresh = ()=>this.props.handleControlChange(control, controlData)
+      onChange(control)
+    }
     this.props.handleControlChange(control, controlData)
   }
 

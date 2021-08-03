@@ -86,5 +86,13 @@
       border-bottom: 1px solid #55585c;
       height: 30px;
     }
+
+    .pf-c-clipboard-copy {
+      background: transparent;
+
+      .pf-c-button.pf-m-plain:hover {
+        color: white;
+      }
+    }
   }
 }

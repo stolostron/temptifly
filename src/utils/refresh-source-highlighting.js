@@ -107,7 +107,7 @@ export const highlightChanges = (editor, oldYAML, newYAML) => {
                 isEncoded = false
               }
             }
-            if (!firstModRow && !isEncoded) {
+            if (!isEncoded && (!firstModRow || firstModRow > obj.$r)) {
               firstModRow = obj.$r
             }
           }
@@ -216,12 +216,14 @@ export const highlightAllChanges = (
         }
       }
       if (editorOnTab) {
-        setTimeout(() => {
-          editorOnTab.revealLineInCenter(
-            editorOnTab.errorLine || editorOnTab.changed || 1
-          )
-        }, 0)
+        const r =  editorOnTab.getVisibleRanges()[0]
+        const scrollTo = editorOnTab.errorLine || editorOnTab.changed || 1
+        if (scrollTo<r.startLineNumber || scrollTo>r.endLineNumber) {
+          setTimeout(() => {
+            editorOnTab.revealLineInCenter(scrollTo)
+          })
+        }
       }
-    }, 0)
+    })
   }
 }

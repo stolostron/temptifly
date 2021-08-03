@@ -51,7 +51,7 @@ export function discoverControls(controlData, templateObject, editor, i18n) {
 }
 
 //reverse control active valuess from template
-export function reverseTemplate(controlData, templateObject) {
+export function reverseTemplate(controlData, templateObject, activeTabId) {
   templateObject = cloneDeep(templateObject)
   const reverseControl = control => {
     const { type, active = [], reverse, shift } = control
@@ -65,7 +65,7 @@ export function reverseTemplate(controlData, templateObject) {
         }
       })
     } else if (typeof reverse === 'function') {
-      reverse(control, templateObject)
+      reverse(control, templateObject, activeTabId)
     }
   }
   controlData.forEach(control => {
@@ -96,6 +96,7 @@ export function setEditingMode(controlData) {
       // if editing existing app, disable this field
       if (disabled) {
         control.disabled = true
+        control.editing.immutable = active
       }
       // if editing existing app, disable this field
       if (collapsed) {
@@ -148,13 +149,15 @@ export const parseYAML = yaml => {
       const post = new RegExp(/[\r\n]+$/).test(snip)
       snip = snip.trim()
       const $synced = new YamlParser().parse(snip, absLine)
-      $synced.$r = absLine
-      $synced.$l = snip.split(/[\r\n]+/g).length
-      values.push({ $raw: obj, $yml: snip, $synced })
-      resources.push(obj)
-      absLine += $synced.$l
-      if (post) {
-        absLine++
+      if ($synced) {
+        $synced.$r = absLine
+        $synced.$l = snip.split(/[\r\n]+/g).length
+        values.push({ $raw: obj, $yml: snip, $synced })
+        resources.push(obj)
+        absLine += $synced.$l
+        if (post) {
+          absLine++
+        }
       }
     })
   } catch (e) {
@@ -231,6 +234,25 @@ export const getSourcePath = path => {
     sourcePath.length > 0 ? pathBase + `.${sourcePath.join('.$v.')}` : pathBase
   return sourcePath
 }
+
+export const escapeYAML = object => {
+  if (object) {
+    if (typeof object === 'string') {
+      object = object.replace(/'/g, '')
+    } else if (Array.isArray(object)) {
+      for (let i = 0; i < object.length; i++) {
+        const o = object[i]
+        object[i] = o !== undefined ? escapeYAML(o) : o
+      }
+    } else if (!!object && typeof object === 'object') {
+      Object.entries(object).forEach(([k, oo]) => {
+        object[k] = oo !== undefined ? escapeYAML(oo) : oo
+      })
+    }
+  }
+  return object
+}
+
 
 export const removeVs = object => {
   if (object) {

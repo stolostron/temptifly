@@ -12,6 +12,8 @@ export function validateControls(
   editors,
   templateYAML,
   otherYAMLTabs = [],
+  activeTabId='<<main>>',
+  controlValidation,
   controlData,
   isFinalValidate,
   i18n
@@ -21,16 +23,12 @@ export function validateControls(
   let { parsed, exceptions } = results
   const { resources } = results
 
-  // update active values in controls
-  if (exceptions.length === 0) {
-    reverseTemplate(controlData, parsed, null, i18n)
-  }
-
   const templateObjectMap = { '<<main>>': parsed }
   const templateExceptionMap = {
     '<<main>>': {
       editor: editors[0],
-      exceptions: attachEditorToExceptions(exceptions, editors, 0)
+      exceptions: attachEditorToExceptions(exceptions, editors, 0),
+      controlValidation
     }
   }
   otherYAMLTabs.forEach(({ id, templateYAML: yaml }, inx) => {
@@ -41,6 +39,11 @@ export function validateControls(
       exceptions: attachEditorToExceptions(exceptions, editors, inx + 1)
     }
   })
+
+  // update active values in controls
+  if (exceptions.length === 0) {
+    reverseTemplate(controlData, templateObjectMap[activeTabId]||parsed, activeTabId)
+  }
 
   // if any syntax errors, report them and leave
   let hasSyntaxExceptions = false
@@ -256,7 +259,7 @@ const validateControl = (
   i18n
 ) => {
   // if final validation before creating template, if this value is required, throw error
-  const { type, hidden } = control
+  const { active, type, hidden, disabled, editing } = control
   if (
     hidden === true ||
     hidden === 'true' ||
@@ -264,36 +267,31 @@ const validateControl = (
   ) {
     return
   }
+  const { exceptions, controlValidation } = templateExceptionMap['<<main>>']
+  if (disabled && editing) {
+    const { disabled, immutable } = editing
+    if (immutable && disabled && active!==immutable) {
+      control.exception = i18n('creation.input.must.not.change', [immutable])
+      reportException(control, exceptions)
+      return
+    }
+  }
+  if (controlValidation) {
+    controlValidation(control)
+  }
   if ((isFinalValidate || type === 'number') && control.validation) {
-    const { exceptions } = templateExceptionMap['<<main>>']
     if (type === 'custom') {
       control.validation(exceptions)
       return
     } else {
       const {
         name,
-        active,
         validation: { required, notification },
-        controlId,
-        ref
       } = control
       if (required && ((!active && active !== 0) || (type === 'cards' && (active.length === 0 || typeof active[0] !== 'string')))) {
-        let row = 0
         const msg = notification ? notification : 'creation.missing.input'
         control.exception = i18n(msg, [name])
-        const { sourcePath } = control
-        if (sourcePath) {
-          //({ exceptions } = templateExceptionMap[tabId])
-          row = getRow(sourcePath)
-        }
-        exceptions.push({
-          row,
-          column: 0,
-          text: control.exception,
-          type: 'error',
-          controlId,
-          ref
-        })
+        reportException(control, exceptions)
         return
       }
     }
@@ -573,6 +571,22 @@ const validateMultiSelectReplacementControl = (
   if (!active) {
     addException(sourcePath, exceptions, i18n)
   }
+}
+
+const reportException = (control, exceptions) => {
+  let row = 0
+  const { sourcePath, controlId, exception, ref } = control
+  if (sourcePath) {
+    row = getRow(sourcePath)
+  }
+  exceptions.push({
+    row,
+    column: 0,
+    text: exception,
+    type: 'error',
+    controlId,
+    ref
+  })
 }
 
 const addException = (sourcePath, exceptions, i18n) => {

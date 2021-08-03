@@ -126,6 +126,7 @@ const initializeMsgs = (control, i18n) => {
     'placeholder',
     'title',
     'subtitle',
+    'section',
     'prompt',
     'info',
     'tooltip'
@@ -167,6 +168,7 @@ const initializeMsgs = (control, i18n) => {
       if (change.insertControlData) {
         change.insertControlData.forEach(ctrl => {
           if (!ctrl.isInitialized) {
+            initializeControlActive(ctrl.type, ctrl)
             initializeMsgs(ctrl, i18n)
             ctrl.isInitialized = true
           }
@@ -223,8 +225,7 @@ const initializeAvailableChoices = (type, control) => {
         if (control.hasReplacements) {
           choice.replacements = replaces
         }
-        control.newEditorMode =
-          change.insertControlData && type === 'cards' && !multiselect
+        control.newEditorMode = type === 'cards' && !multiselect
       }
       control.availableMap[availableKey] = choice
       return availableKey
