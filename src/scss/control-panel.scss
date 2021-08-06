@@ -376,7 +376,7 @@ $acm_background_color: #f0f0f0 !default;
 
       &.bottom-right {
         justify-content: flex-end;
-        margin: 0 0 24px;
+        margin: -17px 0 0;
       }
 
       a {
@@ -407,7 +407,7 @@ $acm_background_color: #f0f0f0 !default;
       margin-bottom: 8px;
 
       svg {
-        margin: 0 6px;
+        margin: 0 .3125rem 0 8px;
         width: 16px;
         height: 16px;
         fill: $color__blue-51;
