@@ -53,6 +53,7 @@ const Portals = Object.freeze({
 export default class TemplateEditor extends React.Component {
   static propTypes = {
     controlData: PropTypes.array.isRequired,
+    controlProps: PropTypes.object,
     createControl: PropTypes.shape({
       hasPermissions: PropTypes.bool,
       createResource: PropTypes.func,
@@ -452,6 +453,7 @@ export default class TemplateEditor extends React.Component {
         onChange={this.props.onControlChange}
         onStepChange={this.props.onStepChange}
         templateYAML={this.state.templateYAML}
+        controlProps={this.props.controlProps}
       />
     )
   }

@@ -33,6 +33,7 @@ import {
 class ControlPanel extends React.Component {
   static propTypes = {
     controlData: PropTypes.array,
+    controlProps: PropTypes.object,
     fetchData: PropTypes.object,
     handleCancelCreate: PropTypes.func,
     handleControlChange: PropTypes.func,
@@ -467,7 +468,7 @@ class ControlPanel extends React.Component {
   };
 
   renderControl(id, type, control, grpId) {
-    const { controlData, showEditor, isLoaded, i18n, templateYAML, handleCreateResource } = this.props
+    const { controlData, showEditor, isLoaded, i18n, templateYAML, handleCreateResource, controlProps } = this.props
     if (this.isHidden(control, controlData)) {
       return null
     }
@@ -624,7 +625,7 @@ class ControlPanel extends React.Component {
     case 'custom':
       return (
         <React.Fragment key={controlId}>
-          {this.renderCustom(control, controlId, templateYAML, handleCreateResource)}
+          {this.renderCustom(control, controlId, templateYAML, handleCreateResource, controlProps)}
         </React.Fragment>
       )
     }
@@ -635,7 +636,7 @@ class ControlPanel extends React.Component {
     control.ref = ref
   };
 
-  renderCustom(control, controlId, templateYAML, handleCreateResource) {
+  renderCustom(control, controlId, templateYAML, handleCreateResource, controlProps) {
     const { i18n } = this.props
     const { component } = control
     const custom = React.cloneElement(component, {
@@ -644,7 +645,8 @@ class ControlPanel extends React.Component {
       controlId,
       handleChange: this.handleChange.bind(this, control),
       templateYAML,
-      handleCreateResource
+      handleCreateResource,
+      controlProps,
     })
     return (
       <React.Fragment>
