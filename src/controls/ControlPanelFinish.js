@@ -7,6 +7,7 @@ import capitalize from 'lodash/capitalize'
 class ControlPanelFinish extends React.Component {
   static propTypes = {
     className: PropTypes.string,
+    comment: PropTypes.string,
     details: PropTypes.array,
     renderNotifications: PropTypes.func,
   };
@@ -16,13 +17,18 @@ class ControlPanelFinish extends React.Component {
   }
 
   render() {
-    const { className, details, renderNotifications } = this.props
+    const { className, details, comment, renderNotifications } = this.props
 
     return (
       <React.Fragment>
         <div className={className}>
-          {renderNotifications()}
           {this.renderDetails(details)}
+          {renderNotifications()}
+          {comment && 
+            <div className='tf--finish-comment'>
+              {comment}
+            </div>
+          }
         </div>
       </React.Fragment>
     )
@@ -155,9 +161,10 @@ class ControlPanelFinish extends React.Component {
   }
 
   renderControl(control) {
-    const {type, active, name, id, exception, validation, hidden} = control
+    const {type, active, name, id, exception, validation, summary, hidden} = control
     let term
     let desc
+    let summaries
     switch(type) {
     case 'text':
     case 'singleselect':
@@ -189,23 +196,43 @@ class ControlPanelFinish extends React.Component {
       term = name
       desc = active.join(', ')
       break
+    case 'custom':
+      if (typeof summary === 'function') {
+        summaries = summary()
+      }
+      break
     }
-    const isHidden = typeof hidden === 'function' ? hidden() : hidden
-    if (term && !isHidden) {
-      let styles = {}
-      if (exception) {
-        desc = '*Fix exceptions'
-        styles = {color: 'red'}
-      } else if (typeof desc==='string' && desc.length>64) {
-        desc = `${desc.substr(0, 32)}...${desc.substr(-32)}`
-      } else if (!desc && validation && validation.required) {
-        desc = '*Required'
-        styles = {color: 'red'}
+
+    const isHidden = (!term && !summaries) || (typeof hidden === 'function' ? hidden() : hidden)
+    if (!isHidden) {
+      if (!summaries) {
+        summaries=[{
+          term,
+          desc,
+          exception,
+          validation
+        }]
       }
       return (
         <React.Fragment>
-          <dt className="pf-c-description-list__term"><span className="pf-c-description-list__text">{term}</span></dt>
-          <dd className="pf-c-description-list__description"><div className="pf-c-description-list__text" style={styles}>{desc}</div></dd>
+          {summaries.map(({term, desc, exception, validation})=>{
+            let styles = {}
+            if (exception) {
+              desc = '*Fix exceptions'
+              styles = {color: 'red'}
+            } else if (typeof desc==='string' && desc.length>64) {
+              desc = `${desc.substr(0, 32)}...${desc.substr(-32)}`
+            } else if (!desc && validation && validation.required) {
+              desc = '*Required'
+              styles = {color: 'red'}
+            }
+            return (
+              <React.Fragment>
+                <dt className="pf-c-description-list__term"><span className="pf-c-description-list__text">{term}</span></dt>
+                <dd className="pf-c-description-list__description"><div className="pf-c-description-list__text" style={styles}>{desc||'-none-'}</div></dd>
+              </React.Fragment>
+            )
+          })}
         </React.Fragment>
       )
     } else {

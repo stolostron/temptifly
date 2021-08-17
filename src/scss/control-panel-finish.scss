@@ -27,6 +27,15 @@
       }
     }
   }
+  .tf--finish-comment {
+    border: 1px solid #BFE2F4;
+    background-color: #E8F1FA;
+    padding: 5px;
+    margin: 5px;
+    line-height: 24px;
+    white-space: pre;
+  }
+
   .tf--finish-step-prompt {
     font-weight: bold;
     font-size: 14px;

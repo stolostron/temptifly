@@ -700,16 +700,17 @@ export default class TemplateEditor extends React.Component {
 
   handleScrollAndCollapse(control, controlData, creationView, wizardRef) {
     if (wizardRef) {
-      const creationView = document.getElementsByClassName('creation-view-controls')[0]
-      if (creationView && creationView.scrollBy) {
-        setTimeout(() => {
-          creationView.scrollBy({
-            top: creationView.scrollHeight,
-            left: 0,
-            behavior: 'smooth'
-          })
-        }, 100)
-      }
+      wizardRef.onNext()
+      // const creationView = document.getElementsByClassName('creation-view-controls')[0]
+      // if (creationView && creationView.scrollBy) {
+      //   setTimeout(() => {
+      //     creationView.scrollBy({
+      //       top: creationView.scrollHeight,
+      //       left: 0,
+      //       behavior: 'smooth'
+      //     })
+      //   }, 100)
+      // }
 
     } else {
       const { showEditor, previouslySelectedCards } = this.state
