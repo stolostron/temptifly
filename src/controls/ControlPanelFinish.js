@@ -161,7 +161,7 @@ class ControlPanelFinish extends React.Component {
   }
 
   renderControl(control) {
-    const {type, active, name, id, exception, validation, summary, hidden} = control
+    const {type, active, availableMap, name, id, exception, validation, summary, hidden} = control
     let term
     let desc
     let summaries
@@ -185,6 +185,9 @@ class ControlPanelFinish extends React.Component {
     case 'cards':
       term = capitalize(id)
       desc = typeof active === 'function' ? active() : active
+      if (availableMap) {
+        desc = availableMap[desc].title
+      }
       break
     case 'labels':
       term = name

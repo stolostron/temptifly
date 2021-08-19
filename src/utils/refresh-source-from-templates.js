@@ -63,30 +63,34 @@ export const generateSourceFromTemplate = (
   /////////////////////////////////////////////////////////
   // if tab(s) were created to show encoded YAML, update that tab's info
   if (otherYAMLTabs) {
-    encodeInfo.forEach(({ id, control, templateYAML, encode, newTab, snippetKey }) => {
-      templateYAML = replaceSnippetMap(templateYAML, snippetMap)
-      if (encode) {
-        snippetMap[snippetKey] = Base64.encode(
-          templateYAML.replace(/\s*##.+$/gm, '')
-        )
-      }
-      if (newTab) {
-        const existingInx = otherYAMLTabs.findIndex(
-          ({ id: existingId }) => existingId === id
-        )
-        if (existingInx !== -1) {
-          const existingTab = otherYAMLTabs[existingInx]
-          existingTab.oldTemplateYAML = existingTab.templateYAML
-          existingTab.templateYAML = templateYAML
-        } else {
-          otherYAMLTabs.push({
-            id,
-            control,
-            templateYAML
-          })
+    if (encodeInfo.length>0) {
+      encodeInfo.forEach(({ id, control, templateYAML, encode, newTab, snippetKey }) => {
+        templateYAML = replaceSnippetMap(templateYAML, snippetMap)
+        if (encode) {
+          snippetMap[snippetKey] = Base64.encode(
+            templateYAML.replace(/\s*##.+$/gm, '')
+          )
         }
+        if (newTab) {
+          const existingInx = otherYAMLTabs.findIndex(
+            ({ id: existingId }) => existingId === id
+          )
+          if (existingInx !== -1) {
+            const existingTab = otherYAMLTabs[existingInx]
+            existingTab.oldTemplateYAML = existingTab.templateYAML
+            existingTab.templateYAML = templateYAML
+          } else {
+            otherYAMLTabs.push({
+              id,
+              control,
+              templateYAML
+            })
+          }
+        }
+      })
+      } else {
+        otherYAMLTabs.length=0
       }
-    })
   }
 
   /////////////////////////////////////////////////////////

@@ -43,6 +43,7 @@ class ControlPanel extends React.Component {
     onChange: PropTypes.func,
     onStepChange: PropTypes.func,
     originalControlData: PropTypes.array,
+    setEditorReadOnly: PropTypes.func,
     showEditor: PropTypes.bool,
     showPortals: PropTypes.object,
     templateYAML: PropTypes.any,
@@ -192,7 +193,7 @@ class ControlPanel extends React.Component {
   }
 
   renderControlWizard(steps, controlClasses) {
-    const {onStepChange, handleCreateResource, handleCancelCreate } = this.props
+    const {onStepChange, handleCreateResource, handleCancelCreate, setEditorReadOnly } = this.props
     return (
       <ControlPanelWizard
         steps={steps}
@@ -203,6 +204,7 @@ class ControlPanel extends React.Component {
         handleCancelCreate={handleCancelCreate}
         renderControlSections={this.renderControlSections.bind(this)}
         renderNotifications={this.renderNotifications.bind(this)}
+        setEditorReadOnly={setEditorReadOnly}
       />
     )
   }

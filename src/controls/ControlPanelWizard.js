@@ -25,18 +25,20 @@ class ControlPanelWizard extends React.Component {
     // determine valid last step
     let validStepIndex
     steps.some(({title:control, controls=[]}, index)=>{
-      const {exception, type='step'} = control
+      const {isComplete, type='step'} = control
       switch (type) {
       case 'step':
         controls.some(({mustValidate})=>{
-          if (mustValidate && (exception===undefined || exception)) {
+          if (mustValidate && !isComplete) {
             validStepIndex = index
             return true
           }
         })
         break
       case 'review':
-        validStepIndex = index
+        if (!isComplete) {
+          validStepIndex = index
+        }
         break
       }
       return validStepIndex
@@ -118,25 +120,47 @@ class ControlPanelWizard extends React.Component {
       this.props.handleCancelCreate()
     }
 
-
     const validateNextStep = (activeStep, onNext) => {
-      const validateControls = activeStep.controls.filter(control=>control.validate)
-      if (validateControls.length>0){
-        let hasErrors = false
-        const promises = (validateControls.map(control=>control.validate()))
-        Promise.allSettled(promises).then((results) => {
-          results.some((result) => {
-            hasErrors=!isEmpty(result.value)
-            return hasErrors
-          })
-          activeStep.control.exception = hasErrors
-          if (!hasErrors) {
+      const { type, mutation, disableEditorOnSuccess, disablePreviousControlsOnSuccess } = activeStep.control
+      switch(type) {
+        case 'step':
+          const validateControls = activeStep.controls.filter(control=>control.validate)
+          if (validateControls.length>0){
+            let hasErrors = false
+            const promises = (validateControls.map(control=>control.validate()))
+            Promise.allSettled(promises).then((results) => {
+              results.some((result) => {
+                hasErrors=!isEmpty(result.value)
+                return hasErrors
+              })
+              activeStep.control.exception = hasErrors
+              if (!hasErrors) {
+                activeStep.control.isComplete = true
+                onNext()
+              }
+              this.forceUpdate()
+            })
+          } else {
             onNext()
           }
-          this.forceUpdate()
-        })
-      } else {
-        onNext()
+          break
+        case 'review':
+          if (mutation) {
+              mutation().then((status)=>{
+                if (disableEditorOnSuccess) {
+                  this.props.setEditorReadOnly(true)
+                }
+                if (disablePreviousControlsOnSuccess) {
+                  
+                }
+                activeStep.control.isComplete = true
+                onNext()
+              })
+          }
+          break
+        default:
+          onNext()
+          break
       }
     }
 
@@ -193,6 +217,7 @@ ControlPanelWizard.propTypes = {
   handleOnClick: PropTypes.func,
   i18n: PropTypes.func,
   selected: PropTypes.bool,
+  setEditorReadOnly: PropTypes.func,
   type: PropTypes.string
 }
 

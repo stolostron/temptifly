@@ -85,7 +85,7 @@ export default class TemplateEditor extends React.Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { monacoEditor, createControl = {}, type, initialOpen } = props
+    const { monacoEditor, createControl = {}, type, initialOpen, editorReadOnly } = props
     const { i18n, resourceJSON } = state
 
     // update notifications
@@ -200,6 +200,7 @@ export default class TemplateEditor extends React.Component {
         templateResources,
         editStack,
         isEditing: !!customResources,
+        editorReadOnly: state.editorReadOnly || editorReadOnly,
         showWizard: !!hasStep
       }
     }
@@ -352,6 +353,10 @@ export default class TemplateEditor extends React.Component {
     this.layoutEditors()
   };
 
+  setEditorReadOnly = readonly => {
+    this.setState({'editorReadOnly': readonly})
+  };
+
   render() {
     const { isLoaded, isFailed, showEditor, showWizard, resetInx, hasPauseCreate, i18n } = this.state
     if (!showEditor) {
@@ -452,6 +457,7 @@ export default class TemplateEditor extends React.Component {
         onChange={this.props.onControlChange}
         onStepChange={this.props.onStepChange}
         templateYAML={this.state.templateYAML}
+        setEditorReadOnly={this.setEditorReadOnly.bind(this)}
       />
     )
   }
@@ -678,6 +684,9 @@ export default class TemplateEditor extends React.Component {
           templateObject,
           templateResources
         } = generateSource(template, editStack, controlData, newYAMLTabs))
+        if (newYAMLTabs.length===0 && this.editors.length>1) {
+          this.editors.length = 1
+        }
         highlightAllChanges(
           this.editors,
           templateYAML,
@@ -700,17 +709,20 @@ export default class TemplateEditor extends React.Component {
 
   handleScrollAndCollapse(control, controlData, creationView, wizardRef) {
     if (wizardRef) {
-      wizardRef.onNext()
-      // const creationView = document.getElementsByClassName('creation-view-controls')[0]
-      // if (creationView && creationView.scrollBy) {
-      //   setTimeout(() => {
-      //     creationView.scrollBy({
-      //       top: creationView.scrollHeight,
-      //       left: 0,
-      //       behavior: 'smooth'
-      //     })
-      //   }, 100)
-      // }
+      if (control.nextPageAfterSelection) {
+        wizardRef.onNext()
+      } else {
+        const creationView = document.getElementsByClassName('creation-view-controls')[0]
+        if (creationView && creationView.scrollBy) {
+          setTimeout(() => {
+            creationView.scrollBy({
+              top: creationView.scrollHeight,
+              left: 0,
+              behavior: 'smooth'
+            })
+          }, 100)
+        }
+    }
 
     } else {
       const { showEditor, previouslySelectedCards } = this.state
@@ -789,7 +801,8 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderEditor() {
-    const { type = 'main', editorReadOnly, title='YAML' } = this.props
+    const { type = 'main', title='YAML' } = this.props
+    const { editorReadOnly } = this.state
     const {
       hasUndo,
       hasRedo,
@@ -829,8 +842,8 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderEditors = () => {
-    const { monacoEditor, editorReadOnly, theme } = this.props
-    const { activeYAMLEditor, otherYAMLTabs, templateYAML } = this.state
+    const { monacoEditor, theme } = this.props
+    const { activeYAMLEditor, otherYAMLTabs, editorReadOnly, templateYAML } = this.state
     return (
       <React.Fragment>
         <YamlEditor
@@ -1134,7 +1147,7 @@ export default class TemplateEditor extends React.Component {
     return templateYAML // for jest test
   };
 
-  getResourceJSON() {
+  getResourceJSON = () => {
     const { templateYAML, controlData, otherYAMLTabs, editStack, i18n } = this.state
     let canCreate = false
     const {
@@ -1240,7 +1253,8 @@ export default class TemplateEditor extends React.Component {
   };
 
   renderEditButton(isLoaded) {
-    const { monacoEditor, portals, editorReadOnly, i18n } = this.props
+    const { monacoEditor, portals, i18n } = this.props
+    const { editorReadOnly } = this.state
     const { editBtn } = portals || Portals
     if (monacoEditor && editBtn && isLoaded) {
       const portal = document.getElementById(editBtn)
