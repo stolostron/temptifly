@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
-import { StringMappingType } from 'typescript';
-export declare function TemplateEditor(props: {
+export default function TemplateEditor(props: {
     type?: string;
     title?: string;
     monacoEditor?: React.ReactNode;
