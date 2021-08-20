@@ -146,16 +146,26 @@ class ControlPanelWizard extends React.Component {
           break
         case 'review':
           if (mutation) {
-              mutation().then((status)=>{
-                if (disableEditorOnSuccess) {
-                  this.props.setEditorReadOnly(true)
+              mutation(this.props.controlData).then((status)=>{
+                if (status==='ERROR') {
+                  if (disableEditorOnSuccess) {
+                    this.props.setEditorReadOnly(true)
+                  }
+                  if (disablePreviousControlsOnSuccess) {
+                    steps.slice(0, activeStep.index).reverse().forEach(step=>{
+                      step.controls.forEach(control=>{
+                        control.disabled = true
+                      })
+                    })
+                  }
+                  activeStep.control.isComplete = true
+                  delete activeStep.control.mutation
+                  delete activeStep.control.nextButtonLabel
+                  onNext()
                 }
-                if (disablePreviousControlsOnSuccess) {
-                  
-                }
-                activeStep.control.isComplete = true
-                onNext()
               })
+          } else {
+            onNext()
           }
           break
         default:
@@ -214,6 +224,7 @@ class ControlPanelWizard extends React.Component {
 
 ControlPanelWizard.propTypes = {
   choice: PropTypes.object,
+  controlData: PropTypes.array,
   handleOnClick: PropTypes.func,
   i18n: PropTypes.func,
   selected: PropTypes.bool,

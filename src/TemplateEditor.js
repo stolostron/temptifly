@@ -60,7 +60,8 @@ export default class TemplateEditor extends React.Component {
       pauseCreate: PropTypes.func,
       cancelCreate: PropTypes.func,
       creationStatus: PropTypes.string,
-      creationMsg: PropTypes.array
+      creationMsg: PropTypes.array,
+      resetStatus: PropTypes.func,
     }).isRequired,
     editorReadOnly: PropTypes.bool,
     fetchControl: PropTypes.shape({
@@ -355,6 +356,9 @@ export default class TemplateEditor extends React.Component {
   };
 
   setEditorReadOnly = readonly => {
+    const editor = this.editors[0]
+    editor.decorations = editor.deltaDecorations(editor.decorations, [])
+    editor.revealLineInCenter(1)
     this.setState({'editorReadOnly': readonly})
   };
 
@@ -618,7 +622,7 @@ export default class TemplateEditor extends React.Component {
         return !!c.exception
       })
     }
-
+    this.props.createControl.resetStatus()
     this.setState({
       controlData,
       template: template,
@@ -627,6 +631,9 @@ export default class TemplateEditor extends React.Component {
       templateResources,
       notifications,
       exceptions: [],
+      editorReadOnly: false,
+      isFinalValidate: false,
+      notifications: [],
       otherYAMLTabs
     })
 

@@ -166,7 +166,7 @@ class ControlPanel extends React.Component {
       return this.renderControlForm(sections, controlClasses)
     } else {
     // else do a wizard
-      return this.renderControlWizard(steps, controlClasses)
+      return this.renderControlWizard(steps, controlClasses, controlData)
     }
   }
 
@@ -193,11 +193,12 @@ class ControlPanel extends React.Component {
     )
   }
 
-  renderControlWizard(steps, controlClasses) {
+  renderControlWizard(steps, controlClasses, controlData) {
     const {onStepChange, handleCreateResource, handleCancelCreate, setEditorReadOnly } = this.props
     return (
       <ControlPanelWizard
         steps={steps}
+        controlData={controlData}
         controlClasses={controlClasses}
         onStepChange={onStepChange}
         setWizardRef={this.setWizardRef.bind(this)}
