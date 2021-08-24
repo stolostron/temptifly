@@ -622,7 +622,10 @@ export default class TemplateEditor extends React.Component {
         return !!c.exception
       })
     }
-    this.props.createControl.resetStatus()
+    const resetStatus = get(this.props, 'createControl.resetStatus')
+    if (typeof resetStatus === 'function') {
+      resetStatus()
+    }
     this.setState({
       controlData,
       template: template,
