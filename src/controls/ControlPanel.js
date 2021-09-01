@@ -3,7 +3,7 @@
 import React from 'react'
 import { Query } from 'react-apollo'
 import PropTypes from 'prop-types'
-import { Alert, Wizard } from '@patternfly/react-core'
+import { Alert } from '@patternfly/react-core'
 import classNames from 'classnames'
 import ControlPanelAccordion from './ControlPanelAccordion'
 import ControlPanelTextInput from './ControlPanelTextInput'
@@ -18,12 +18,9 @@ import ControlPanelCards from './ControlPanelCards'
 import ControlPanelTable from './ControlPanelTable'
 import ControlPanelLabels from './ControlPanelLabels'
 import ControlPanelValues from './ControlPanelValues'
+import ControlPanelWizard from './ControlPanelWizard'
 import ControlPanelPrompt from './ControlPanelPrompt'
 import ControlPanelSkeleton from './ControlPanelSkeleton'
-import ControlPanelFinish from './ControlPanelFinish'
-import get from 'lodash/get'
-import set from 'lodash/set'
-import cloneDeep from 'lodash/cloneDeep'
 import '../scss/control-panel.scss'
 import {
   TrashIcon,
@@ -42,15 +39,17 @@ class ControlPanel extends React.Component {
     handleNewEditorMode: PropTypes.func,
     i18n: PropTypes.func,
     isCustomName: PropTypes.bool,
+    isEditing:  PropTypes.bool,
     isLoaded: PropTypes.bool,
     notifications: PropTypes.array,
     onChange: PropTypes.func,
     onStepChange: PropTypes.func,
     originalControlData: PropTypes.array,
+    setEditorReadOnly: PropTypes.func,
     showEditor: PropTypes.bool,
     showPortals: PropTypes.object,
     templateYAML: PropTypes.any,
-    wizardClassName: PropTypes.string,
+    // wizardClassName: PropTypes.string,
   };
 
   constructor(props) {
@@ -123,6 +122,7 @@ class ControlPanel extends React.Component {
       if (!stopRendering) {
         switch (type) {
         case 'step':
+        case 'review':
           if (!activeStep) {
             if (content.length && !activeSection) {
               section={title: {id: `section${inx}`, type: 'section'}, content}
@@ -167,7 +167,7 @@ class ControlPanel extends React.Component {
       return this.renderControlForm(sections, controlClasses)
     } else {
     // else do a wizard
-      return this.renderControlWizard(steps, controlClasses)
+      return this.renderControlWizard(steps, controlClasses, controlData)
     }
   }
 
@@ -194,77 +194,21 @@ class ControlPanel extends React.Component {
     )
   }
 
-  renderControlWizard(steps, controlClasses) {
-    const controlMap=[]
-    const details = cloneDeep(steps)
-
-    steps = steps.map(({title:control, sections})=>{
-      const { id, title } = control
-      controlMap[id] = control
-      let errors=0
-      sections.forEach(({content})=>{
-        content.forEach(({exception})=> {
-          if (exception) {
-            errors++
-          }
-        })
-      })
-      return {
-        id,
-        name:<div className="tf--finish-step-button">
-          {title}
-          {errors>0&&<div className="tf--finish-step-button-error">!</div>}
-        </div>,
-        control,
-        component: <div key={id} className={controlClasses}>
-          <h2>{title}</h2>
-          {this.renderControlSections(sections)}
-        </div>
-      }
-    })
-    steps.push({
-      id: 'review',
-      name: 'Review',
-      component: <div className={controlClasses}>
-        <h2>Review</h2>
-        <ControlPanelFinish
-          className={controlClasses}
-          details={details}
-          renderNotifications={this.renderNotifications.bind(this)}
-        />
-      </div>,
-      nextButtonText: 'Create'
-    })
-    const onMove = (curr, prev) => {
-      set(steps[0], 'control.currentStep', curr.id)
-      if (this.props.onStepChange) {
-        this.props.onStepChange(steps.find(({ id }) => id === curr.id), steps.find(({ id }) => id === prev.id))
-      }
-    }
-    const onSave = () => {
-      this.props.handleCreateResource()
-    }
-    const onClose = () => {
-      this.props.handleCancelCreate()
-    }
-    const title = 'Create wizard'
-    const currentStep = get(steps[0], 'control.currentStep')
-    let step = steps.findIndex(({id})=>id===currentStep) + 1
-    if (step<1) step = 1
+  renderControlWizard(steps, controlClasses, controlData) {
+    const {onStepChange, handleCreateResource, handleCancelCreate, setEditorReadOnly, isEditing } = this.props
     return (
-      <Wizard
-        className={this.props.wizardClassName}
-        ref={this.setWizardRef.bind(this)}
-        navAriaLabel={`${title} steps`}
-        mainAriaLabel={`${title} content`}
+      <ControlPanelWizard
         steps={steps}
-        height={'100%'}
-        onNext={onMove}
-        onBack={onMove}
-        onGoToStep={onMove}
-        onSave={onSave}
-        onClose={onClose}
-        startAtStep={step}
+        controlData={controlData}
+        controlClasses={controlClasses}
+        onStepChange={onStepChange}
+        setWizardRef={this.setWizardRef.bind(this)}
+        handleCreateResource={handleCreateResource}
+        handleCancelCreate={handleCancelCreate}
+        renderControlSections={this.renderControlSections.bind(this)}
+        renderNotifications={this.renderNotifications.bind(this)}
+        setEditorReadOnly={setEditorReadOnly}
+        isEditing={isEditing}
       />
     )
   }
@@ -780,25 +724,27 @@ class ControlPanel extends React.Component {
     if (notifications.length > 0) {
       return (
         <React.Fragment>
-          {notifications.map(
-            ({
-              exception,
-              variant = 'danger'
-            }) => {
-
-              return (
-                <Alert
-                  key={exception}
-                  variant={variant}
-                  title={exception}
-                  isInline
-                >
-                </Alert>
-              )
-
-            }
-          )}
-        </React.Fragment>)
+          <div className='creation-view-controls-notifications' style={{margin: '20px 0'}}>
+            {notifications.map(
+              ({
+                exception,
+                variant = 'danger'
+              }) => {
+                return (
+                  <Alert
+                    key={exception}
+                    variant={variant}
+                    title={exception}
+                    isInline
+                  >
+                  </Alert>
+                )
+              }
+            )}
+          </div>
+          <div className='creation-view-controls-notifications-footer' />
+        </React.Fragment>
+      )
     }
     return null
   }

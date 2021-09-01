@@ -6,9 +6,10 @@ import capitalize from 'lodash/capitalize'
 
 class ControlPanelFinish extends React.Component {
   static propTypes = {
-    className: PropTypes.string,
+    comment: PropTypes.string,
     details: PropTypes.array,
     renderNotifications: PropTypes.func,
+    startStep: PropTypes.number
   };
 
   constructor(props) {
@@ -16,36 +17,46 @@ class ControlPanelFinish extends React.Component {
   }
 
   render() {
-    const { className, details, renderNotifications } = this.props
+    const { details, comment, renderNotifications } = this.props
 
     return (
       <React.Fragment>
-        <div className={className}>
-          {renderNotifications()}
+        <div>
           {this.renderDetails(details)}
+          {comment &&
+            <div className='tf--finish-comment'>
+              {comment}
+            </div>
+          }
+          {renderNotifications()}
         </div>
       </React.Fragment>
     )
   }
 
   renderDetails(details) {
-    let step = 1
+    let step = this.props.startStep+1
     return (
       <div className="tf--finish-details">
         {details.map(({title, sections})=>{
-          return (
-            <div key={step} className="tf--finish-step">
-              <div className="tf--finish-step-title" >
-                <div className="tf--finish-step-circle">
-                  {step++}
+          if (title.type !== 'review') {
+            return (
+              <div key={step} className="tf--finish-step">
+                <div className="tf--finish-step-title" >
+                  <div className="tf--finish-step-circle">
+                    {step++}
+                  </div>
+                  <div>{title.title}</div>
                 </div>
-                <div>{title.title}</div>
+                <div className="tf--finish-step-sections">
+                  {this.renderSections(sections)}
+                </div>
               </div>
-              <div className="tf--finish-step-sections">
-                {this.renderSections(sections)}
-              </div>
-            </div>
-          )
+            )
+          } else {
+            step++
+            return null
+          }
         })}
       </div>)
   }
@@ -155,9 +166,10 @@ class ControlPanelFinish extends React.Component {
   }
 
   renderControl(control) {
-    const {type, active, name, id, exception, validation, hidden} = control
+    const {type, active, availableMap, name, id, exception, validation, summary, hidden} = control
     let term
     let desc
+    let summaries
     switch(type) {
     case 'text':
     case 'singleselect':
@@ -173,11 +185,14 @@ class ControlPanelFinish extends React.Component {
       break
     case 'checkbox':
       term = name
-      desc = active
+      desc = active ? active.toString() : 'false'
       break
     case 'cards':
       term = capitalize(id)
       desc = typeof active === 'function' ? active() : active
+      if (availableMap) {
+        desc = availableMap[desc].title
+      }
       break
     case 'labels':
       term = name
@@ -189,23 +204,43 @@ class ControlPanelFinish extends React.Component {
       term = name
       desc = active.join(', ')
       break
+    case 'custom':
+      if (typeof summary === 'function') {
+        summaries = summary()
+      }
+      break
     }
-    const isHidden = typeof hidden === 'function' ? hidden() : hidden
-    if (term && !isHidden) {
-      let styles = {}
-      if (exception) {
-        desc = '*Fix exceptions'
-        styles = {color: 'red'}
-      } else if (typeof desc==='string' && desc.length>64) {
-        desc = `${desc.substr(0, 32)}...${desc.substr(-32)}`
-      } else if (!desc && validation && validation.required) {
-        desc = '*Required'
-        styles = {color: 'red'}
+
+    const isHidden = (!term && !summaries) || (typeof hidden === 'function' ? hidden() : hidden)
+    if (!isHidden) {
+      if (!summaries) {
+        summaries=[{
+          term,
+          desc,
+          exception,
+          validation
+        }]
       }
       return (
         <React.Fragment>
-          <dt className="pf-c-description-list__term"><span className="pf-c-description-list__text">{term}</span></dt>
-          <dd className="pf-c-description-list__description"><div className="pf-c-description-list__text" style={styles}>{desc}</div></dd>
+          {summaries.map(({term, desc, exception, validation})=>{
+            let styles = {}
+            if (exception) {
+              desc = '*Fix exceptions'
+              styles = {color: 'red'}
+            } else if (typeof desc==='string' && desc.length>64) {
+              desc = `${desc.substr(0, 32)}...${desc.substr(-32)}`
+            } else if (!desc && validation && validation.required) {
+              desc = '*Required'
+              styles = {color: 'red'}
+            }
+            return (
+              <React.Fragment key={desc}>
+                <dt className="pf-c-description-list__term"><span className="pf-c-description-list__text">{term}</span></dt>
+                <dd className="pf-c-description-list__description"><div className="pf-c-description-list__text" style={styles}>{desc||'-none-'}</div></dd>
+              </React.Fragment>
+            )
+          })}
         </React.Fragment>
       )
     } else {

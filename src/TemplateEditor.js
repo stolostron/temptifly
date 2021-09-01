@@ -60,7 +60,8 @@ export default class TemplateEditor extends React.Component {
       pauseCreate: PropTypes.func,
       cancelCreate: PropTypes.func,
       creationStatus: PropTypes.string,
-      creationMsg: PropTypes.array
+      creationMsg: PropTypes.array,
+      resetStatus: PropTypes.func,
     }).isRequired,
     editorReadOnly: PropTypes.bool,
     fetchControl: PropTypes.shape({
@@ -86,7 +87,7 @@ export default class TemplateEditor extends React.Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { monacoEditor, createControl = {}, type, initialOpen } = props
+    const { monacoEditor, createControl = {}, type, initialOpen, editorReadOnly } = props
     const { i18n, resourceJSON } = state
 
     // update notifications
@@ -148,7 +149,7 @@ export default class TemplateEditor extends React.Component {
     const { isLoaded, isFailed } = fetchControl || { isLoaded: true }
     const showEditor =
       (monacoEditor||initialOpen) && isLoaded && !!localStorage.getItem(TEMPLATE_EDITOR_OPEN_COOKIE)
-    let newState = { isLoaded, isFailed, showEditor }
+    let newState = { isLoaded, isFailed, showEditor, notifications: [] }
 
     // has control data been initialized?
     const { controlData: initialControlData, onControlInitialize } = props
@@ -201,6 +202,7 @@ export default class TemplateEditor extends React.Component {
         templateResources,
         editStack,
         isEditing: !!customResources,
+        editorReadOnly: state.editorReadOnly || editorReadOnly,
         showWizard: !!hasStep
       }
     }
@@ -353,6 +355,13 @@ export default class TemplateEditor extends React.Component {
     this.layoutEditors()
   };
 
+  setEditorReadOnly = readonly => {
+    const editor = this.editors[0]
+    editor.decorations = editor.deltaDecorations(editor.decorations, [])
+    editor.revealLineInCenter(1)
+    this.setState({'editorReadOnly': readonly})
+  };
+
   render() {
     const { isLoaded, isFailed, showEditor, showWizard, resetInx, hasPauseCreate, i18n } = this.state
     if (!showEditor) {
@@ -426,7 +435,7 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderControls(isLoaded) {
-    const { controlData, showEditor, isCustomName, notifications, i18n } = this.state
+    const { controlData, showEditor, isCustomName, isEditing, notifications, i18n } = this.state
     const {
       controlData: originalControlData,
       fetchControl
@@ -448,11 +457,13 @@ export default class TemplateEditor extends React.Component {
         handleCreateResource={this.handleCreateResource.bind(this)}
         handleCancelCreate={this.handleCancelCreate.bind(this)}
         isCustomName={isCustomName}
+        isEditing={isEditing}
         isLoaded={isLoaded}
         i18n={i18n}
         onChange={this.props.onControlChange}
         onStepChange={this.props.onStepChange}
         templateYAML={this.state.templateYAML}
+        setEditorReadOnly={this.setEditorReadOnly.bind(this)}
         controlProps={this.props.controlProps}
       />
     )
@@ -612,7 +623,10 @@ export default class TemplateEditor extends React.Component {
         return !!c.exception
       })
     }
-
+    const resetStatus = get(this.props, 'createControl.resetStatus')
+    if (typeof resetStatus === 'function') {
+      resetStatus()
+    }
     this.setState({
       controlData,
       template: template,
@@ -621,6 +635,8 @@ export default class TemplateEditor extends React.Component {
       templateResources,
       notifications,
       exceptions: [],
+      editorReadOnly: false,
+      isFinalValidate: false,
       otherYAMLTabs
     })
 
@@ -680,6 +696,9 @@ export default class TemplateEditor extends React.Component {
           templateObject,
           templateResources
         } = generateSource(template, editStack, controlData, newYAMLTabs))
+        if (newYAMLTabs.length===0 && this.editors.length>1) {
+          this.editors.length = 1
+        }
         highlightAllChanges(
           this.editors,
           templateYAML,
@@ -702,15 +721,19 @@ export default class TemplateEditor extends React.Component {
 
   handleScrollAndCollapse(control, controlData, creationView, wizardRef) {
     if (wizardRef) {
-      const creationView = document.getElementsByClassName('creation-view-controls')[0]
-      if (creationView && creationView.scrollBy) {
-        setTimeout(() => {
-          creationView.scrollBy({
-            top: creationView.scrollHeight,
-            left: 0,
-            behavior: 'smooth'
-          })
-        }, 100)
+      if (control.nextPageAfterSelection) {
+        wizardRef.onNext()
+      } else {
+        const creationView = document.getElementsByClassName('creation-view-controls')[0]
+        if (creationView && creationView.scrollBy) {
+          setTimeout(() => {
+            creationView.scrollBy({
+              top: creationView.scrollHeight,
+              left: 0,
+              behavior: 'smooth'
+            })
+          }, 100)
+        }
       }
 
     } else {
@@ -790,7 +813,8 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderEditor() {
-    const { type = 'main', editorReadOnly, title='YAML' } = this.props
+    const { type = 'main', title='YAML' } = this.props
+    const { editorReadOnly } = this.state
     const {
       hasUndo,
       hasRedo,
@@ -830,8 +854,8 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderEditors = () => {
-    const { monacoEditor, editorReadOnly, theme } = this.props
-    const { activeYAMLEditor, otherYAMLTabs, templateYAML } = this.state
+    const { monacoEditor, theme } = this.props
+    const { activeYAMLEditor, otherYAMLTabs, editorReadOnly, templateYAML } = this.state
     return (
       <React.Fragment>
         <YamlEditor
@@ -1135,7 +1159,7 @@ export default class TemplateEditor extends React.Component {
     return templateYAML // for jest test
   };
 
-  getResourceJSON() {
+  getResourceJSON = () => {
     const { templateYAML, controlData, otherYAMLTabs, editStack, i18n } = this.state
     let canCreate = false
     const {
@@ -1185,7 +1209,7 @@ export default class TemplateEditor extends React.Component {
       isFinalValidate: true
     })
     this.isDirty = false
-    this.scrollControlPaneToTop()
+    this.scrollControlPaneToNotifications()
 
     if (canCreate) {
       // cache user data
@@ -1227,21 +1251,20 @@ export default class TemplateEditor extends React.Component {
     }
   };
 
-  scrollControlPaneToTop = () => {
+  scrollControlPaneToNotifications = () => {
     setTimeout(() => {
       if (this.containerRef) {
-        const notifications = this.containerRef.getElementsByClassName(
-          'pf-c-alert'
-        )
-        if (notifications && notifications.length && notifications[0].scrollIntoView) {
-          notifications[0].scrollIntoView({ behavior: 'smooth', block: 'end' })
+        const notifications = document.getElementsByClassName('creation-view-controls-notifications-footer')[0]
+        if (notifications && notifications.scrollIntoView) {
+          notifications.scrollIntoView({ behavior: 'smooth', block: 'end' })
         }
       }
     }, 0)
   };
 
   renderEditButton(isLoaded) {
-    const { monacoEditor, portals, editorReadOnly, i18n } = this.props
+    const { monacoEditor, portals, i18n } = this.props
+    const { editorReadOnly } = this.state
     const { editBtn } = portals || Portals
     if (monacoEditor && editBtn && isLoaded) {
       const portal = document.getElementById(editBtn)
