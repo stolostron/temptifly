@@ -2,7 +2,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Wizard, WizardFooter, WizardContextConsumer } from '@patternfly/react-core';
+import { Button, Wizard, WizardFooter, WizardContextConsumer } from '@patternfly/react-core'
 import ControlPanelFinish from './ControlPanelFinish'
 import get from 'lodash/get'
 import set from 'lodash/set'
@@ -12,13 +12,16 @@ import cloneDeep from 'lodash/cloneDeep'
 class ControlPanelWizard extends React.Component {
 
   render() {
-    const { controlClasses, setWizardRef, renderControlSections, renderNotifications } = this.props
+    const { controlClasses, setWizardRef, renderControlSections, renderNotifications, isEditing } = this.props
     let { steps } = this.props
     const details = cloneDeep(steps)
     steps.forEach(step=>{
       step.controls = []
       step.sections.forEach(({content})=>{
         step.controls = step.controls.concat(content)
+        content.forEach(ctrl=>{
+          ctrl.step = step
+        })
       })
     })
 
@@ -45,22 +48,26 @@ class ControlPanelWizard extends React.Component {
     })
     validStepIndex = validStepIndex || steps.length+1
 
-    const renderReview = (details, comment) => {
+    const renderReview = (details, lastReviewInx, comment) => {
       return (
         <ControlPanelFinish
-          className={controlClasses}
           details={details}
           comment={comment}
+          startStep={lastReviewInx}
           renderNotifications={renderNotifications.bind(this)}
         />
       )
     }
 
     let lastType
+    let lastReviewInx=0
     steps = steps.map(({title:control, controls, sections}, inx)=>{
       const { id, type, title, comment, exception } = control
       lastType = type
-      
+      if (inx-1>0 && steps[inx-1].title.type==='review') {
+        lastReviewInx = inx-1
+      }
+
       // put error ! on step with errors
       let hasErrors=exception
       controls.forEach(({exception})=>{
@@ -81,7 +88,7 @@ class ControlPanelWizard extends React.Component {
         canJumpTo: inx <= validStepIndex,
         component: <div key={id} className={controlClasses}>
           <h2>{title}</h2>
-          {control.type==='review'? renderReview(details.slice(0,inx), comment) : renderControlSections(sections)}
+          {control.type==='review'? renderReview(details.slice(lastReviewInx,inx), lastReviewInx, comment) : renderControlSections(sections)}
         </div>
       }
     })
@@ -89,14 +96,10 @@ class ControlPanelWizard extends React.Component {
       steps.push({
         id: 'review',
         name: 'Review',
-        control: {nextButtonLabel: 'Create'},
+        control: {nextButtonLabel: isEditing? 'Save': 'Create'},
         component: <div className={controlClasses}>
           <h2>Review</h2>
-          <ControlPanelFinish
-            className={controlClasses}
-            details={details}
-            renderNotifications={renderNotifications.bind(this)}
-          />
+          {renderReview(details.slice(lastReviewInx), lastReviewInx)}
         </div>,
         canJumpTo: steps.length+1 <= validStepIndex,
       })
@@ -113,7 +116,10 @@ class ControlPanelWizard extends React.Component {
     }
 
     const onSave = () => {
-      this.props.handleCreateResource()
+      // if last step was a review, it already did  a mutate
+      if (lastType!=='review') {
+        this.props.handleCreateResource()
+      }
     }
 
     const onClose = () => {
@@ -123,54 +129,56 @@ class ControlPanelWizard extends React.Component {
     const validateNextStep = (activeStep, onNext) => {
       const { type, mutation, disableEditorOnSuccess, disablePreviousControlsOnSuccess } = activeStep.control
       switch(type) {
-        case 'step':
-          const validateControls = activeStep.controls.filter(control=>control.validate)
-          if (validateControls.length>0){
-            let hasErrors = false
-            const promises = (validateControls.map(control=>control.validate()))
-            Promise.allSettled(promises).then((results) => {
-              results.some((result) => {
-                hasErrors=!isEmpty(result.value)
-                return hasErrors
-              })
-              activeStep.control.exception = hasErrors
-              if (!hasErrors) {
-                activeStep.control.isComplete = true
-                onNext()
-              }
-              this.forceUpdate()
+      case 'step': {
+        const validateControls = activeStep.controls.filter(control=>control.validate)
+        if (validateControls.length>0){
+          let hasErrors = false
+          const promises = (validateControls.map(control=>control.validate()))
+          Promise.allSettled(promises).then((results) => {
+            results.some((result) => {
+              hasErrors=!isEmpty(result.value)
+              return hasErrors
             })
-          } else {
-            onNext()
-          }
-          break
-        case 'review':
-          if (mutation) {
-              mutation(this.props.controlData).then((status)=>{
-                if (status==='ERROR') {
-                  if (disableEditorOnSuccess) {
-                    this.props.setEditorReadOnly(true)
-                  }
-                  if (disablePreviousControlsOnSuccess) {
-                    steps.slice(0, activeStep.index).reverse().forEach(step=>{
-                      step.controls.forEach(control=>{
-                        control.disabled = true
-                      })
-                    })
-                  }
-                  activeStep.control.isComplete = true
-                  delete activeStep.control.mutation
-                  delete activeStep.control.nextButtonLabel
-                  onNext()
-                }
-              })
-          } else {
-            onNext()
-          }
-          break
-        default:
+            activeStep.control.exception = hasErrors
+            if (!hasErrors) {
+              activeStep.control.isComplete = true
+              onNext()
+            }
+            this.forceUpdate()
+          })
+        } else {
           onNext()
-          break
+        }
+      }
+        break
+      case 'review':
+        if (mutation) {
+          mutation(this.props.controlData).then((status)=>{
+            if (status!=='ERROR') {
+              if (disableEditorOnSuccess) {
+                this.props.setEditorReadOnly(true)
+              }
+              if (disablePreviousControlsOnSuccess) {
+                steps.slice(0, activeStep.index).reverse().forEach(step=>{
+                  step.controls.forEach(control=>{
+                    control.disabled = true
+                  })
+                })
+              }
+              activeStep.control.isComplete = true
+              delete activeStep.control.mutation
+              delete activeStep.control.nextButtonLabel
+              onNext()
+              this.forceUpdate()
+            }
+          })
+        } else {
+          onNext()
+        }
+        break
+      default:
+        onNext()
+        break
       }
     }
 
@@ -178,24 +186,24 @@ class ControlPanelWizard extends React.Component {
       <WizardFooter>
         <WizardContextConsumer>
           {({ activeStep, onNext, onBack, onClose }) => {
-              return (
-                <>
-                  <Button variant="primary" onClick={validateNextStep.bind(null, activeStep, onNext)}>
-                    {activeStep.control.nextButtonLabel || 'Next'}
-                  </Button>
-                  <Button variant="secondary" onClick={onBack} isAriaDisabled={activeStep.index===0}>
-                    Back
-                  </Button>
-                  <Button variant="link" onClick={onClose}>
-                    Cancel
-                  </Button>
-                </>
-              )
+            return (
+              <React.Fragment>
+                <Button variant='primary' onClick={validateNextStep.bind(null, activeStep, onNext)}>
+                  {activeStep.control.nextButtonLabel || 'Next'}
+                </Button>
+                <Button variant='secondary' onClick={onBack} isAriaDisabled={activeStep.index===0}>
+                  Back
+                </Button>
+                <Button variant='link' onClick={onClose}>
+                  Cancel
+                </Button>
+              </React.Fragment>
+            )
           }
-        }
+          }
         </WizardContextConsumer>
       </WizardFooter>
-    );
+    )
 
 
     const title = 'Create wizard'
@@ -204,7 +212,6 @@ class ControlPanelWizard extends React.Component {
     if (startAtStep<1) startAtStep = 1
     return (
       <Wizard
-        className={this.props.wizardClassName}
         ref={setWizardRef}
         navAriaLabel={`${title} steps`}
         mainAriaLabel={`${title} content`}
@@ -223,13 +230,17 @@ class ControlPanelWizard extends React.Component {
 }
 
 ControlPanelWizard.propTypes = {
-  choice: PropTypes.object,
+  controlClasses: PropTypes.array,
   controlData: PropTypes.array,
-  handleOnClick: PropTypes.func,
-  i18n: PropTypes.func,
-  selected: PropTypes.bool,
+  handleCancelCreate: PropTypes.func,
+  handleCreateResource: PropTypes.func,
+  isEditing:  PropTypes.bool,
+  onStepChange: PropTypes.func,
+  renderControlSections: PropTypes.func,
+  renderNotifications: PropTypes.func,
   setEditorReadOnly: PropTypes.func,
-  type: PropTypes.string
+  setWizardRef: PropTypes.func,
+  steps: PropTypes.array,
 }
 
 export default ControlPanelWizard

@@ -149,7 +149,7 @@ export default class TemplateEditor extends React.Component {
     const { isLoaded, isFailed } = fetchControl || { isLoaded: true }
     const showEditor =
       (monacoEditor||initialOpen) && isLoaded && !!localStorage.getItem(TEMPLATE_EDITOR_OPEN_COOKIE)
-    let newState = { isLoaded, isFailed, showEditor }
+    let newState = { isLoaded, isFailed, showEditor, notifications: [] }
 
     // has control data been initialized?
     const { controlData: initialControlData, onControlInitialize } = props
@@ -435,7 +435,7 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderControls(isLoaded) {
-    const { controlData, showEditor, isCustomName, notifications, i18n } = this.state
+    const { controlData, showEditor, isCustomName, isEditing, notifications, i18n } = this.state
     const {
       controlData: originalControlData,
       fetchControl
@@ -457,6 +457,7 @@ export default class TemplateEditor extends React.Component {
         handleCreateResource={this.handleCreateResource.bind(this)}
         handleCancelCreate={this.handleCancelCreate.bind(this)}
         isCustomName={isCustomName}
+        isEditing={isEditing}
         isLoaded={isLoaded}
         i18n={i18n}
         onChange={this.props.onControlChange}
@@ -636,7 +637,6 @@ export default class TemplateEditor extends React.Component {
       exceptions: [],
       editorReadOnly: false,
       isFinalValidate: false,
-      notifications: [],
       otherYAMLTabs
     })
 
@@ -734,7 +734,7 @@ export default class TemplateEditor extends React.Component {
             })
           }, 100)
         }
-    }
+      }
 
     } else {
       const { showEditor, previouslySelectedCards } = this.state
@@ -1209,7 +1209,7 @@ export default class TemplateEditor extends React.Component {
       isFinalValidate: true
     })
     this.isDirty = false
-    this.scrollControlPaneToTop()
+    this.scrollControlPaneToNotifications()
 
     if (canCreate) {
       // cache user data
@@ -1251,14 +1251,12 @@ export default class TemplateEditor extends React.Component {
     }
   };
 
-  scrollControlPaneToTop = () => {
+  scrollControlPaneToNotifications = () => {
     setTimeout(() => {
       if (this.containerRef) {
-        const notifications = this.containerRef.getElementsByClassName(
-          'pf-c-alert'
-        )
-        if (notifications && notifications.length && notifications[0].scrollIntoView) {
-          notifications[0].scrollIntoView({ behavior: 'smooth', block: 'end' })
+        const notifications = document.getElementsByClassName('creation-view-controls-notifications-footer')[0]
+        if (notifications && notifications.scrollIntoView) {
+          notifications.scrollIntoView({ behavior: 'smooth', block: 'end' })
         }
       }
     }, 0)

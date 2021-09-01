@@ -39,6 +39,7 @@ class ControlPanel extends React.Component {
     handleNewEditorMode: PropTypes.func,
     i18n: PropTypes.func,
     isCustomName: PropTypes.bool,
+    isEditing:  PropTypes.bool,
     isLoaded: PropTypes.bool,
     notifications: PropTypes.array,
     onChange: PropTypes.func,
@@ -48,7 +49,7 @@ class ControlPanel extends React.Component {
     showEditor: PropTypes.bool,
     showPortals: PropTypes.object,
     templateYAML: PropTypes.any,
-    wizardClassName: PropTypes.string,
+    // wizardClassName: PropTypes.string,
   };
 
   constructor(props) {
@@ -122,7 +123,7 @@ class ControlPanel extends React.Component {
         switch (type) {
         case 'step':
         case 'review':
-              if (!activeStep) {
+          if (!activeStep) {
             if (content.length && !activeSection) {
               section={title: {id: `section${inx}`, type: 'section'}, content}
               sections.push(section)
@@ -194,7 +195,7 @@ class ControlPanel extends React.Component {
   }
 
   renderControlWizard(steps, controlClasses, controlData) {
-    const {onStepChange, handleCreateResource, handleCancelCreate, setEditorReadOnly } = this.props
+    const {onStepChange, handleCreateResource, handleCancelCreate, setEditorReadOnly, isEditing } = this.props
     return (
       <ControlPanelWizard
         steps={steps}
@@ -207,6 +208,7 @@ class ControlPanel extends React.Component {
         renderControlSections={this.renderControlSections.bind(this)}
         renderNotifications={this.renderNotifications.bind(this)}
         setEditorReadOnly={setEditorReadOnly}
+        isEditing={isEditing}
       />
     )
   }
@@ -722,25 +724,27 @@ class ControlPanel extends React.Component {
     if (notifications.length > 0) {
       return (
         <React.Fragment>
-          {notifications.map(
-            ({
-              exception,
-              variant = 'danger'
-            }) => {
-
-              return (
-                <Alert
-                  key={exception}
-                  variant={variant}
-                  title={exception}
-                  isInline
-                >
-                </Alert>
-              )
-
-            }
-          )}
-        </React.Fragment>)
+          <div className='creation-view-controls-notifications' style={{margin: '20px 0'}}>
+            {notifications.map(
+              ({
+                exception,
+                variant = 'danger'
+              }) => {
+                return (
+                  <Alert
+                    key={exception}
+                    variant={variant}
+                    title={exception}
+                    isInline
+                  >
+                  </Alert>
+                )
+              }
+            )}
+          </div>
+          <div className='creation-view-controls-notifications-footer' />
+        </React.Fragment>
+      )
     }
     return null
   }

@@ -88,9 +88,9 @@ export const generateSourceFromTemplate = (
           }
         }
       })
-      } else {
-        otherYAMLTabs.length=0
-      }
+    } else {
+      otherYAMLTabs.length=0
+    }
   }
 
   /////////////////////////////////////////////////////////

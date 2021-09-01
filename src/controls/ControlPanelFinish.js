@@ -6,10 +6,10 @@ import capitalize from 'lodash/capitalize'
 
 class ControlPanelFinish extends React.Component {
   static propTypes = {
-    className: PropTypes.string,
     comment: PropTypes.string,
     details: PropTypes.array,
     renderNotifications: PropTypes.func,
+    startStep: PropTypes.number
   };
 
   constructor(props) {
@@ -17,41 +17,46 @@ class ControlPanelFinish extends React.Component {
   }
 
   render() {
-    const { className, details, comment, renderNotifications } = this.props
+    const { details, comment, renderNotifications } = this.props
 
     return (
       <React.Fragment>
-        <div className={className}>
+        <div>
           {this.renderDetails(details)}
-          {renderNotifications()}
-          {comment && 
+          {comment &&
             <div className='tf--finish-comment'>
               {comment}
             </div>
           }
+          {renderNotifications()}
         </div>
       </React.Fragment>
     )
   }
 
   renderDetails(details) {
-    let step = 1
+    let step = this.props.startStep+1
     return (
       <div className="tf--finish-details">
         {details.map(({title, sections})=>{
-          return (
-            <div key={step} className="tf--finish-step">
-              <div className="tf--finish-step-title" >
-                <div className="tf--finish-step-circle">
-                  {step++}
+          if (title.type !== 'review') {
+            return (
+              <div key={step} className="tf--finish-step">
+                <div className="tf--finish-step-title" >
+                  <div className="tf--finish-step-circle">
+                    {step++}
+                  </div>
+                  <div>{title.title}</div>
                 </div>
-                <div>{title.title}</div>
+                <div className="tf--finish-step-sections">
+                  {this.renderSections(sections)}
+                </div>
               </div>
-              <div className="tf--finish-step-sections">
-                {this.renderSections(sections)}
-              </div>
-            </div>
-          )
+            )
+          } else {
+            step++
+            return null
+          }
         })}
       </div>)
   }
@@ -180,7 +185,7 @@ class ControlPanelFinish extends React.Component {
       break
     case 'checkbox':
       term = name
-      desc = active
+      desc = active ? active.toString() : 'false'
       break
     case 'cards':
       term = capitalize(id)
@@ -230,7 +235,7 @@ class ControlPanelFinish extends React.Component {
               styles = {color: 'red'}
             }
             return (
-              <React.Fragment>
+              <React.Fragment key={desc}>
                 <dt className="pf-c-description-list__term"><span className="pf-c-description-list__text">{term}</span></dt>
                 <dd className="pf-c-description-list__description"><div className="pf-c-description-list__text" style={styles}>{desc||'-none-'}</div></dd>
               </React.Fragment>

@@ -273,5 +273,5 @@ export const removeVs = object => {
 }
 
 export const getValue = (templateObject, path, def) => {
-  return removeVs(get(templateObject,getSourcePath(path), def))       
+  return removeVs(get(templateObject,getSourcePath(path), def))
 }
