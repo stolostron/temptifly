@@ -190,7 +190,7 @@ class ControlPanelFinish extends React.Component {
     case 'cards':
       term = capitalize(id)
       desc = typeof active === 'function' ? active() : active
-      if (availableMap) {
+      if (desc && availableMap) {
         desc = availableMap[desc].title
       }
       break
