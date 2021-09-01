@@ -91,8 +91,6 @@ class ControlPanelCards extends React.Component {
                           active.length === 0 || !collapsed || active.includes(choice.id)
                         )
                       })
-
-
                       .map((choice) => {
                         const { id, hidden } = choice
                         return !hidden && (
@@ -109,32 +107,6 @@ class ControlPanelCards extends React.Component {
                   </div>
                 </React.Fragment>
               ))}
-
-
-
-              {/* {this.renderTitle(control)}
-              <div className={'tf--providers-container tf--row'}>
-                {available
-                  .filter(id => {
-                    return (
-                      active.length === 0 || !collapsed || active.includes(id)
-                    )
-                  })
-                  .map(availableKey => {
-                    const choice = availableMap[availableKey]
-                    const { id, hidden } = choice
-                    return hidden ? null : (
-                      <ControlPanelCard
-                        key={id}
-                        type={id}
-                        selected={active.includes && active.includes(id)}
-                        choice={choice}
-                        handleOnClick={this.handleChange.bind(this, id)}
-                        i18n={i18n}
-                      />
-                    )
-                  })}
-              </div> */}
             </div>
           </div>
         </div>
