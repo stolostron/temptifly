@@ -114,42 +114,6 @@ class ControlPanelCards extends React.Component {
     )
   }
 
-  renderTitle(control) {
-    const { title, collapsable, validation={} } = control
-    const { required } = validation
-    if (title && collapsable) {
-      const handleCollapse = () => {
-        this.setState(prevState => {
-          return { collapsed: !prevState.collapsed }
-        })
-      }
-      const handleCollapseKey = e => {
-        if (e.type === 'click' || e.key === 'Enter') {
-          handleCollapse()
-        }
-      }
-      return (
-        <div
-          className="creation-view-controls-cards-title-container"
-          tabIndex="0"
-          role={'button'}
-          title={title}
-          aria-label={title}
-          onClick={handleCollapse}
-          onKeyPress={handleCollapseKey}
-        >
-          <div className="creation-view-controls-cards-title">
-            {title}
-            {required && (
-              <div className="creation-view-controls-required">*</div>
-            )}
-          </div>
-        </div>
-      )
-    }
-    return null
-  }
-
   handleChange(id) {
     const { collapsed } = this.state
     const { control } = this.props
