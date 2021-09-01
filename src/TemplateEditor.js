@@ -357,8 +357,10 @@ export default class TemplateEditor extends React.Component {
 
   setEditorReadOnly = readonly => {
     const editor = this.editors[0]
-    editor.decorations = editor.deltaDecorations(editor.decorations, [])
-    editor.revealLineInCenter(1)
+    if (editor) {
+      editor.decorations = editor.deltaDecorations(editor.decorations, [])
+      editor.revealLineInCenter(1)
+    }
     this.setState({'editorReadOnly': readonly})
   };
 
