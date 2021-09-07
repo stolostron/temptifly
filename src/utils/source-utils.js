@@ -140,7 +140,7 @@ export const parseYAML = yaml => {
   // check for syntax errors
   try {
     yamls.forEach(snip => {
-      const obj = jsYaml.safeLoad(snip)
+      const obj = jsYaml.load(snip)
       const key = get(obj, 'kind', 'unknown')
       let values = parsed[key]
       if (!values) {

@@ -34,7 +34,7 @@ class EditorHeader extends React.Component {
             isInline
             title={i18n('editor.bar.readonly')}
             variant={'info'}
-            style={{background: '#E7F1FA', padding: '10px 20px'}}
+            style={{background: '#E7F1FA', padding: '15px 20px'}}
             actionClose={<AlertActionCloseButton onClose={() => handleEditorCommand('close')} />}
           />
           <div className='readonly-editor-bar'>

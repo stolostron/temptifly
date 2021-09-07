@@ -22,11 +22,13 @@ export default function TemplateEditor(props: {
         pauseCreate: () => void;
         creationStatus?: string;
         creationMsg?: any[] | null | undefined;
+        resetStatus?: () => void;
     };
     i18n?: (key: string, arg: any) => string;
     onControlInitialize?: (control: any) => void
     onControlChange?: (control: any) => void
     editorReadOnly?: boolean
     onStepChange?: (step: any, prevStep: any) => void;
+    ref?: any;
     controlProps?: any;
 }): JSX.Element;

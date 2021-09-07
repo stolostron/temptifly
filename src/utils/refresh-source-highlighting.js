@@ -21,6 +21,7 @@ export const highlightChanges = (editor, oldYAML, newYAML) => {
   const newSynced = getInsideObject('$synced', newParse.parsed)
   let firstModRow = undefined
   let firstNewRow = undefined
+  let encodedRow = undefined
   const ignorePaths = []
   normalize(oldRaw, newRaw)
   const diffs = diff(oldRaw, newRaw)
@@ -109,6 +110,8 @@ export const highlightChanges = (editor, oldYAML, newYAML) => {
             }
             if (!isEncoded && (!firstModRow || firstModRow > obj.$r)) {
               firstModRow = obj.$r
+            } else {
+              encodedRow = obj.$r
             }
           }
           break
@@ -140,7 +143,7 @@ export const highlightChanges = (editor, oldYAML, newYAML) => {
   } else {
     editor.decorations = editor.deltaDecorations(editor.decorations, [])
   }
-  editor.changed = firstNewRow || firstModRow
+  editor.changed = firstNewRow || firstModRow || encodedRow
 }
 
 // if there are arrays make sure equal array entries line up
