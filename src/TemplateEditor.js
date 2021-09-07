@@ -2,7 +2,6 @@
 
 import React  from 'react'
 import ReactDOM from 'react-dom'
-import loadable from '@loadable/component'
 import { Prompt } from 'react-router-dom'
 import SplitPane from 'react-split-pane'
 import classNames from 'classnames'
@@ -30,6 +29,7 @@ import {
 } from './utils/refresh-source-highlighting'
 import ControlPanel from './controls/ControlPanel'
 import EditorHeader from './components/EditorHeader'
+import YamlEditor from './components/YamlEditor'
 import EditorBar from './components/EditorBar'
 import './scss/template-editor.scss'
 import cloneDeep from 'lodash/cloneDeep'
@@ -37,8 +37,6 @@ import get from 'lodash/get'
 import debounce from 'lodash/debounce'
 import keyBy from 'lodash/keyBy'
 import merge from 'lodash/merge'
-
-export const YamlEditor = loadable(() => import(/* webpackChunkName: "YamlEditor" */ './components/YamlEditor'))
 
 const TEMPLATE_EDITOR_OPEN_COOKIE = 'template-editor-open-cookie'
 const TEMPLATE_EDITOR_SHOW_SECRETS_COOKIE =
@@ -93,7 +91,7 @@ export default class TemplateEditor extends React.Component {
     // update notifications
     let { notifications } = state
     const { hasFormExceptions, isEditing } = state
-    const { creationStatus, creationMsg } = createControl
+    const { creationStatus, creationMsg, resetStatus } = createControl
     if (creationStatus && !hasFormExceptions) {
       switch (creationStatus) {
       case 'IN_PROGRESS':
@@ -201,6 +199,7 @@ export default class TemplateEditor extends React.Component {
         templateObject,
         templateResources,
         editStack,
+        resetStatus: typeof resetStatus === 'function' ? resetStatus : ()=>{},
         isEditing: !!customResources,
         editorReadOnly: state.editorReadOnly || editorReadOnly,
         showWizard: !!hasStep
@@ -467,6 +466,7 @@ export default class TemplateEditor extends React.Component {
         templateYAML={this.state.templateYAML}
         setEditorReadOnly={this.setEditorReadOnly.bind(this)}
         controlProps={this.props.controlProps}
+        resetStatus={this.state.resetStatus}
       />
     )
   }
@@ -625,10 +625,7 @@ export default class TemplateEditor extends React.Component {
         return !!c.exception
       })
     }
-    const resetStatus = get(this.props, 'createControl.resetStatus')
-    if (typeof resetStatus === 'function') {
-      resetStatus()
-    }
+    this.state.resetStatus()
     this.setState({
       controlData,
       template: template,

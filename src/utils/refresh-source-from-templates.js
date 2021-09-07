@@ -222,14 +222,20 @@ export const generateTemplateData = (
     return ret
   }
   controlData.forEach(control => {
-    const value = getTemplateData(control)
+    let value = getTemplateData(control)
     if (value !== undefined) {
-      templateData[control.id] = value
-      const { type, onlyOne } = control
+      const { type, onlyOne, encodeValues } = control
       if (type === 'group' && onlyOne) {
         templateData = { ...templateData, ...value[0] }
       }
+      if (encodeValues) {
+        value = {...value}
+        encodeValues.forEach(key=>{
+          value[key] = Base64.encode(value[key])
+        })
+      }
     }
+    templateData[control.id] = value
   })
   return templateData
 }

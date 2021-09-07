@@ -130,6 +130,7 @@ class ControlPanelWizard extends React.Component {
       const { type, mutation, disableEditorOnSuccess, disablePreviousControlsOnSuccess } = activeStep.control
       switch(type) {
       case 'step': {
+        this.props.resetStatus()
         const validateControls = activeStep.controls.filter(control=>control.validate)
         if (validateControls.length>0){
           let hasErrors = false
@@ -238,6 +239,7 @@ ControlPanelWizard.propTypes = {
   onStepChange: PropTypes.func,
   renderControlSections: PropTypes.func,
   renderNotifications: PropTypes.func,
+  resetStatus:  PropTypes.func,
   setEditorReadOnly: PropTypes.func,
   setWizardRef: PropTypes.func,
   steps: PropTypes.array,
