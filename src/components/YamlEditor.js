@@ -129,8 +129,10 @@ class YamlEditor extends React.Component {
 
   componentDidUpdate() {
     // stop flickering
-    const model = this.editor.getModel()
-    model.forceTokenization(model.getLineCount())
+    if (this.editor && this.editor.getModel()) {
+      const model = this.editor.getModel()
+      model.forceTokenization(model.getLineCount())
+    }
   }
 
   render() {
