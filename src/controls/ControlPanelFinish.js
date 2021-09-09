@@ -3,6 +3,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import capitalize from 'lodash/capitalize'
+import { Alert } from '@patternfly/react-core'
 
 class ControlPanelFinish extends React.Component {
   static propTypes = {
@@ -24,9 +25,7 @@ class ControlPanelFinish extends React.Component {
         <div>
           {this.renderDetails(details)}
           {comment &&
-            <div className='tf--finish-comment'>
-              {comment}
-            </div>
+            <Alert variant="warning" isInline title={comment} />
           }
           {renderNotifications()}
         </div>

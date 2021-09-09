@@ -11,6 +11,13 @@ import cloneDeep from 'lodash/cloneDeep'
 
 class ControlPanelWizard extends React.Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      isProcessing: false
+    }
+  }
+
   render() {
     const { controlClasses, setWizardRef, renderControlSections, renderNotifications, isEditing } = this.props
     let { steps } = this.props
@@ -135,7 +142,9 @@ class ControlPanelWizard extends React.Component {
         if (validateControls.length>0){
           let hasErrors = false
           const promises = (validateControls.map(control=>control.validate()))
+          this.setState({isProcessing:true, processingLabel: 'Validating...'})
           Promise.allSettled(promises).then((results) => {
+            this.setState({isProcessing:false, processingLabel: undefined})
             results.some((result) => {
               hasErrors=!isEmpty(result.value)
               return hasErrors
@@ -154,7 +163,10 @@ class ControlPanelWizard extends React.Component {
         break
       case 'review':
         if (mutation) {
+          this.setState({isProcessing:true})
+          setTimeout(()=>{this.setState({isProcessing:false})}, 2000)
           mutation(this.props.controlData).then((status)=>{
+            this.setState({isProcessing:false})
             if (status!=='ERROR') {
               if (disableEditorOnSuccess) {
                 this.props.setEditorReadOnly(true)
@@ -183,14 +195,16 @@ class ControlPanelWizard extends React.Component {
       }
     }
 
+    const {isProcessing, processingLabel} = this.state
     const CustomFooter = (
       <WizardFooter>
         <WizardContextConsumer>
           {({ activeStep, onNext, onBack, onClose }) => {
             return (
               <React.Fragment>
-                <Button variant='primary' onClick={validateNextStep.bind(null, activeStep, onNext)}>
-                  {activeStep.control.nextButtonLabel || 'Next'}
+                <Button isLoading={isProcessing} variant='primary' spinnerAriaValueText={isProcessing ? 'Processing' : undefined}
+                  onClick={validateNextStep.bind(null, activeStep, onNext)}>
+                  {processingLabel || activeStep.control.nextButtonLabel || 'Next'}
                 </Button>
                 <Button variant='secondary' onClick={onBack} isAriaDisabled={activeStep.index===0}>
                   Back
