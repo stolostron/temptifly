@@ -18,6 +18,7 @@ describe('EditorHeader component', () => {
           handleTabChange={handleTabChange}
           type={type}
           i18n={fn}
+          title=""
         />
       )
     }

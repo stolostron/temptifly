@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 export default function TemplateEditor(props: {
     type?: string;
     title?: string;
-    monacoEditor?: React.ReactNode;
+    monacoEditor?: ReactNode;
     controlData: any[];
     wizardClassName?: string;
     template: any;
@@ -25,10 +25,12 @@ export default function TemplateEditor(props: {
         resetStatus?: () => void;
     };
     i18n?: (key: string, arg: any) => string;
-    onControlInitialize?: (control: any) => void
-    onControlChange?: (control: any) => void
-    editorReadOnly?: boolean
+    onControlInitialize?: (control: any) => void;
+    onControlChange?: (control: any) => void;
+    editorReadOnly?: boolean;
     onStepChange?: (step: any, prevStep: any) => void;
     ref?: any;
     controlProps?: any;
 }): JSX.Element;
+
+export declare const getValue = (templateObject: any, path: string, def?: any) => any;
