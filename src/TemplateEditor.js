@@ -188,10 +188,6 @@ export default class TemplateEditor extends React.Component {
         controlData
       ))
 
-      const hasStep = controlData.find(
-        ({ type }) => type === 'step'
-      )
-
       newState = {
         ...newState,
         templateYAML,
@@ -202,7 +198,6 @@ export default class TemplateEditor extends React.Component {
         resetStatus: typeof resetStatus === 'function' ? resetStatus : ()=>{},
         isEditing: !!customResources,
         editorReadOnly: state.editorReadOnly || editorReadOnly,
-        showWizard: !!hasStep
       }
     }
 
@@ -263,6 +258,11 @@ export default class TemplateEditor extends React.Component {
         }).bind(this)
       }
     }
+
+    const hasStep = props.controlData.find(
+      ({ type }) => type === 'step'
+    )
+    this.state.showWizard = !!hasStep
 
     this.selectedTab = 0
     this.isDirty = false
