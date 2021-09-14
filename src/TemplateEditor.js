@@ -490,7 +490,7 @@ export default class TemplateEditor extends React.Component {
     // custom action when control is selected
     const { onSelect } = control
     if (typeof onSelect === 'function') {
-      onSelect()
+      onSelect(control)
     }
 
     const {
@@ -618,6 +618,12 @@ export default class TemplateEditor extends React.Component {
       otherYAMLTabs
     } = this.changeEditorMode(control, controlData)
     controlData = newControlData
+
+    // custom action when control is selected
+    const { onSelect } = control
+    if (typeof onSelect === 'function') {
+      onSelect(control)
+    }
 
     delete control.exception
     if (notifications.length > 0) {
