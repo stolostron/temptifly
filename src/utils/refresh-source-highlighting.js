@@ -221,7 +221,7 @@ export const highlightAllChanges = (
       if (editorOnTab) {
         const r =  editorOnTab.getVisibleRanges()[0]
         const scrollTo = editorOnTab.errorLine || editorOnTab.changed || 1
-        if (scrollTo<r.startLineNumber || scrollTo>r.endLineNumber) {
+        if (r && (scrollTo<r.startLineNumber || scrollTo>r.endLineNumber)) {
           setTimeout(() => {
             editorOnTab.revealLineInCenter(scrollTo)
           })

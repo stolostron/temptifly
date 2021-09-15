@@ -90,7 +90,7 @@ class ControlPanelWizard extends React.Component {
         name:<div className="tf--finish-step-button">
           <div>{title}</div>
           {hasErrors &&
-          <span style={{paddingLeft: "8px"}}>
+          <span style={{paddingLeft: '8px'}}>
             <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
           </span>}
         </div>,
