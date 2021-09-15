@@ -52,18 +52,6 @@
 
   .tf--finish-step-button {
     display: flex;
-    &-error {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      margin: 0 9px;
-      background: red;
-      border: 2px solid red;
-      color: white;
-      font-size: 12px;
-    }
+    justify-content: space-between;
   }
 }

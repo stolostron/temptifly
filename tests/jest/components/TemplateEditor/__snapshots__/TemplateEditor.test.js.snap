@@ -58,7 +58,9 @@ exports[`TemplateEditor component renders as expected 1`] = `
                      
                     <div
                       class="tf--finish-step-button"
-                    />
+                    >
+                      <div />
+                    </div>
                   </li>
                 </ol>
                 <span
@@ -101,7 +103,9 @@ exports[`TemplateEditor component renders as expected 1`] = `
                         >
                           <div
                             class="tf--finish-step-button"
-                          />
+                          >
+                            <div />
+                          </div>
                         </button>
                       </li>
                       <li
@@ -114,7 +118,9 @@ exports[`TemplateEditor component renders as expected 1`] = `
                           <div
                             class="tf--finish-step-button"
                           >
-                            template.clusterCreate.title
+                            <div>
+                              template.clusterCreate.title
+                            </div>
                           </div>
                         </button>
                       </li>
