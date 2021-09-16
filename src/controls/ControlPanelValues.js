@@ -22,7 +22,7 @@ class ControlPanelValues extends React.Component {
 
   render() {
     const { controlId, control } = this.props
-    const { active = [], exception } = control
+    const { active = [], exception, placeholder, disabled } = control
     const formatted = active
     const { value } = this.state
     const validated = exception ? 'error' : undefined
@@ -45,9 +45,10 @@ class ControlPanelValues extends React.Component {
               <div className="creation-view-controls-labels-edit-container">
                 <TextInput
                   id={controlId}
-                  placeholder={'Enter value'}
+                  placeholder={placeholder || 'Enter value'}
                   validated={validated}
                   value={value}
+                  isDisabled={disabled}
                   onBlur={this.handleBlur.bind(this)}
                   onKeyDown={this.handleKeyDown.bind(this)}
                   onChange={this.handleChange.bind(this)}
@@ -74,12 +75,15 @@ class ControlPanelValues extends React.Component {
     if (value.endsWith(',')) {
       this.createValue()
     } else {
-      const invalid = !validation.tester.test(value)
-      let invalidText = ''
-      if (invalid) {
-        invalidText = i18n(validation.notification)
+      let invalid = false
+      if (validation) {
+        invalid = !validation.tester.test(value)
+        let invalidText = ''
+        if (invalid) {
+          invalidText = i18n(validation.notification)
+        }
+        control.exception = invalidText
       }
-      control.exception = invalidText
       this.setState({ value, invalid })
     }
   }

@@ -90,14 +90,14 @@ class ControlPanelFinish extends React.Component {
       <React.Fragment>
         {divider && '---'}
         {controlData.map(control => {
-          const { type } = control
+          const { type, disabled } = control
           switch (type) {
           case 'group':
             return this.renderGroup(control)
           case 'table':
             return this.renderTable(control)
           default:
-            return this.renderControl(control)
+            return disabled?null:this.renderControl(control)
           }
         })}
       </React.Fragment>
@@ -201,7 +201,7 @@ class ControlPanelFinish extends React.Component {
       break
     case 'values':
       term = name
-      desc = active.join(', ')
+      desc = (active||[]).join(', ')
       break
     case 'custom':
       if (typeof summary === 'function') {
