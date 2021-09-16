@@ -55,7 +55,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                     >
                       1
                     </span>
-
+                     
                     <div
                       class="tf--finish-step-button"
                     >
@@ -223,7 +223,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                      *
                                   </span>
                                 </label>
-
+                                 
                                 <button
                                   aria-label="More info"
                                   class="pf-c-form__group-label-help"
@@ -418,7 +418,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                      *
                                   </span>
                                 </label>
-
+                                 
                                 <button
                                   aria-label="More info"
                                   class="pf-c-form__group-label-help"
@@ -546,7 +546,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                     creation.ocp.addition.labels
                                   </span>
                                 </label>
-
+                                 
                                 <button
                                   aria-label="More info"
                                   class="pf-c-form__group-label-help"
@@ -609,7 +609,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                     creation.ocp.instance.type
                                   </span>
                                 </label>
-
+                                 
                                 <button
                                   aria-label="More info"
                                   class="pf-c-form__group-label-help"
@@ -1454,11 +1454,11 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                           <b>
                                             1 - 1
                                           </b>
-                                           of
+                                           of 
                                           <b>
                                             1
                                           </b>
-
+                                           
                                         </span>
                                         <button
                                           aria-expanded="false"
@@ -1667,7 +1667,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                     creation.ocp.host.disable.certificate.verification
                                   </span>
                                 </label>
-
+                                 
                                 <button
                                   aria-label="More info"
                                   class="pf-c-form__group-label-help"
@@ -1769,7 +1769,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                      *
                                   </span>
                                 </label>
-
+                                 
                                 <button
                                   aria-label="More info"
                                   class="pf-c-form__group-label-help"
