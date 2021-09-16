@@ -206,6 +206,7 @@ export const generateTemplateData = (
         type !== 'table' &&
         type !== 'labels' &&
         type !== 'values' &&
+        type !== 'textarea' &&
         Array.isArray(active)
       ) {
         ret = active[0]

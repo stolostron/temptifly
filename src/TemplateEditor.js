@@ -1148,7 +1148,7 @@ export default class TemplateEditor extends React.Component {
         templateObject,
         templateResources: tr
       } = generateSource(template, editStack, controlData, otherYAMLTabs)
-      highlightChanges(this.editors[0], oldYAML, newYAML)
+      highlightChanges(this.editors[0], oldYAML, newYAML, true)
       this.setState({
         controlData,
         notifications,

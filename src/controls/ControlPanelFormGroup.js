@@ -19,6 +19,7 @@ class ControlPanelFormGroup extends React.Component {
       name,
       exception,
       tooltip,
+      tip,
       validation = {},
       icon
     } = control
@@ -58,6 +59,7 @@ class ControlPanelFormGroup extends React.Component {
           }
         >
           {children}
+          {tip&&<div style={{fontSize: '14px'}}>{tip}</div>}
         </FormGroup>
       </React.Fragment>
     )

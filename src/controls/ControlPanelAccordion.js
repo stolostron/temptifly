@@ -212,14 +212,18 @@ class ControlPanelAccordion extends React.Component {
             }
             break
           case 'labels':
-            active.forEach(({ key: k, value }) => {
-              summary.push(`${k}=${value}`)
-            })
+            if (active) {
+              active.forEach(({ key: k, value }) => {
+                summary.push(`${k}=${value}`)
+              })
+            }
             break
           case 'values':
-            active.forEach(value => {
-              summary.push(value)
-            })
+            if (active) {
+              active.forEach(value => {
+                summary.push(value)
+              })
+            }
             break
           default:
             if (hasValueDescription && availableMap) {

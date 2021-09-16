@@ -73,6 +73,21 @@ export const VALIDATE_URL = {
   required: true
 }
 
+export const VALIDATE_URL_OPTIONAL = {
+  tester: {
+    test: value => {
+      try {
+        new URL(value)
+      } catch (e) {
+        return false
+      }
+      return true
+    }
+  },
+  notification: 'creation.invalid.url',
+  required: false
+}
+
 export const VALIDATE_IP_AGAINST_MACHINE_CIDR = {
   contextTester: MACHINE_CIDR_CONTEXT_TESTER,
   notification: 'creation.ocp.cluster.valid.ip',
