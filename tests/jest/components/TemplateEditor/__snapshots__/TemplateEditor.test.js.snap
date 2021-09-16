@@ -652,7 +652,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                       type="button"
                                     >
                                       <input
-                                        aria-controls="workerType-creation.ocp.instance.type-General Purpose-E2 machine types-E2 high-memory machine types-e2-highmem-16 - 16 vCPU, 128 GiB RAM - General Purpose"
+                                        aria-controls="workerType-creation.ocp.instance.type-General Purpose-E2 machine types-E2 high-memory machine types-e2-highmem-16 - 16 vCPU, 128 GB RAM - General Purpose"
                                         aria-expanded="true"
                                         aria-label="ListBox input field"
                                         autocomplete="new-password"
@@ -710,7 +710,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                     </div>
                                     <div
                                       class="tf--list-box__menu"
-                                      id="workerType-creation.ocp.instance.type-General Purpose-E2 machine types-E2 high-memory machine types-e2-highmem-16 - 16 vCPU, 128 GiB RAM - General Purpose"
+                                      id="workerType-creation.ocp.instance.type-General Purpose-E2 machine types-E2 high-memory machine types-e2-highmem-16 - 16 vCPU, 128 GB RAM - General Purpose"
                                     >
                                       <div
                                         class="tf--list-box__menu-item tf--list-box__menu-branch searching"
@@ -750,7 +750,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                         <b>
                                           highmem-16
                                         </b>
-                                         - 16 vCPU, 128 GiB RAM - General Purpose
+                                         - 16 vCPU, 128 GB RAM - General Purpose
                                       </div>
                                     </div>
                                   </div>
