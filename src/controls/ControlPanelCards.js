@@ -134,7 +134,7 @@ const ControlPanelCard = ({
   selected,
   i18n
 }) => {
-  const { disabled, logo, title, tooltip, learnMore } = choice
+  const { disabled, logo, title, tooltip, learnMore, text } = choice
   const cardClasses = classNames({
     'tf--create-cluster-page__provider-card': true,
     'tf--create-cluster-page__provider-card-isSelected': selected,
@@ -173,6 +173,7 @@ const ControlPanelCard = ({
         <div className={cardClasses}>
           <div>{image}</div>
           <div>{title}</div>
+          {text && <div>{text}</div>}
         </div>
         {tooltip &&
           !selected && (
