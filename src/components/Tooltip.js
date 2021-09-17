@@ -7,16 +7,18 @@ import PropTypes from 'prop-types'
 
 class Tooltip extends React.PureComponent {
   static propTypes = {
+    className: PropTypes.string,
     control: PropTypes.object.isRequired,
+    i18n: PropTypes.func,
   };
 
   render() {
-    const { control } = this.props
+    const { control, i18n, className } = this.props
     const { controlId, tooltip } = control
     return tooltip ? (
       <Popover
         id={`${controlId}-label-help-popover`}
-        bodyContent={tooltip}
+        bodyContent={(typeof tooltip === 'string') ? i18n(tooltip) : tooltip /* A component */}
       >
         <button
           id={`${controlId}-label-help-button`}
@@ -25,7 +27,7 @@ class Tooltip extends React.PureComponent {
             e.preventDefault()
             e.stopPropagation()
           }}
-          className="pf-c-form__group-label-help"
+          className={`pf-c-form__group-label-help ${className || ''}`}
         >
           <HelpIcon noVerticalAlign />
         </button>
