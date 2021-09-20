@@ -6,7 +6,7 @@ import get from 'lodash/get'
 import keyBy from 'lodash/keyBy'
 import { Base64 } from 'js-base64'
 
-export const highlightChanges = (editor, oldYAML, newYAML) => {
+export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => {
   // mark any modified/added lines in editor
   const decorationList = []
 
@@ -143,7 +143,7 @@ export const highlightChanges = (editor, oldYAML, newYAML) => {
   } else {
     editor.decorations = editor.deltaDecorations(editor.decorations, [])
   }
-  editor.changed = firstNewRow || firstModRow || encodedRow
+  editor.changed = firstNewRow || firstModRow || (highlightEncoded && encodedRow)
 }
 
 // if there are arrays make sure equal array entries line up
@@ -178,11 +178,11 @@ export const highlightAllChanges = (
   selectedTab
 ) => {
   if (editors.length > 0) {
-    highlightChanges(editors[0], oldYAML, newYAML)
+    highlightChanges(editors[0], oldYAML, newYAML, editors.length===1)
     if (otherYAMLTabs.length > 0) {
       otherYAMLTabs.forEach(({ editor, oldTemplateYAML, templateYAML }) => {
         if (editor && oldTemplateYAML) {
-          highlightChanges(editor, oldTemplateYAML, templateYAML)
+          highlightChanges(editor, oldTemplateYAML, templateYAML, true)
         }
       })
     }
@@ -221,7 +221,7 @@ export const highlightAllChanges = (
       if (editorOnTab) {
         const r =  editorOnTab.getVisibleRanges()[0]
         const scrollTo = editorOnTab.errorLine || editorOnTab.changed || 1
-        if (scrollTo<r.startLineNumber || scrollTo>r.endLineNumber) {
+        if (r && (scrollTo<r.startLineNumber || scrollTo>r.endLineNumber)) {
           setTimeout(() => {
             editorOnTab.revealLineInCenter(scrollTo)
           })

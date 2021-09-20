@@ -3,6 +3,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Wizard, WizardFooter, WizardContextConsumer } from '@patternfly/react-core'
+import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import ControlPanelFinish from './ControlPanelFinish'
 import get from 'lodash/get'
 import set from 'lodash/set'
@@ -87,8 +88,11 @@ class ControlPanelWizard extends React.Component {
         id,
         index: inx,
         name:<div className="tf--finish-step-button">
-          {title}
-          {hasErrors&&<div className="tf--finish-step-button-error">!</div>}
+          <div>{title}</div>
+          {hasErrors &&
+          <span style={{paddingLeft: '8px'}}>
+            <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
+          </span>}
         </div>,
         control,
         controls,

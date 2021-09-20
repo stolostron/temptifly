@@ -216,8 +216,8 @@ $acm_background_color: #f0f0f0 !default;
 
       &-normal {
         color: #151515;
-        font-weight: bold;
-        font-size: 16px;
+        font-weight: normal;
+        font-size: 14px;
         padding: 0 0 8px;
       }
 
@@ -318,7 +318,6 @@ $acm_background_color: #f0f0f0 !default;
           width: 100%;
           overflow-y: auto;
           background-color: #fff;
-          max-height: 8rem;
           z-index: 500;
           cursor: pointer;
 
@@ -582,6 +581,10 @@ $acm_background_color: #f0f0f0 !default;
           margin-left: 0;
         }
       }
+    }
+
+    textarea.pf-c-form-control {
+      min-height: 100px;
     }
 
     &-treeselect {

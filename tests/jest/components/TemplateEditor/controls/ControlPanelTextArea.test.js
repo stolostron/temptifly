@@ -34,7 +34,7 @@ describe('ControlPanelTextArea component', () => {
     expect(asFragment()).toMatchSnapshot()
 
     userEvent.type(getByTestId('area-controlId'), 'n')
-    expect(control.active).toBe('n')
+    expect(control.active[0]).toBe('n')
 
     control.name = ''
     control.exception = 'error'
