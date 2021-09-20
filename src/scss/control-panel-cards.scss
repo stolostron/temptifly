@@ -132,3 +132,11 @@ $color__white: #ffffff !default;
     }
   }
 }
+
+.control-panel-cards__extra-text {
+  padding-bottom: var(--pf-global--spacer--sm);
+}
+
+.control-panel-cards__group-tooltip {
+  margin-left: var(--pf-global--spacer--xs);
+}

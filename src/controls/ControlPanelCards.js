@@ -22,7 +22,7 @@ class ControlPanelCards extends React.Component {
     if (!initialized) {
       const { control } = props
       const { active, collapseCardsControlOnSelect } = control
-      return { collapsed: collapseCardsControlOnSelect && !isEmpty(active), initialized: true}
+      return { collapsed: collapseCardsControlOnSelect && !isEmpty(active), initialized: true }
     }
     return null
   }
@@ -56,10 +56,10 @@ class ControlPanelCards extends React.Component {
 
   render() {
     const { i18n, control, showEditor } = this.props
-    const { available=[], availableMap } = control
+    const { available = [], availableMap } = control
     const { collapsed } = this.state
     let { active } = control
-    active = active||[]
+    active = active || []
     const gridClasses = classNames({
       'tf--grid-container': true,
       small: showEditor
@@ -81,32 +81,40 @@ class ControlPanelCards extends React.Component {
           <div className={gridClasses}>
             <div className={'tf--grid'}>
 
-              {Object.keys(cardGroups).map((group) => (
-                <React.Fragment key={group}>
-                  {group !== 'undefined' && <Title headingLevel="h1" size={TitleSizes.xl}>{group}</Title>}
-                  <div className={'tf--providers-container tf--row'}>
-                    {cardGroups[group]
-                      .filter(choice => {
-                        return (
-                          active.length === 0 || !collapsed || active.includes(choice.id)
-                        )
-                      })
-                      .map((choice) => {
-                        const { id, hidden } = choice
-                        return !hidden && (
-                          <ControlPanelCard
-                            key={id}
-                            type={id}
-                            selected={active.includes && active.includes(id)}
-                            choice={choice}
-                            handleOnClick={this.handleChange.bind(this, id)}
-                            i18n={i18n}
-                          />
-                        )
-                      })}
-                  </div>
-                </React.Fragment>
-              ))}
+              {Object.keys(cardGroups).map((group) => {
+                const groupTooltip = group && control.sectionTooltips?.[group]
+                return (
+                  <React.Fragment key={group}>
+                    {group !== 'undefined' && <Title headingLevel="h1" size={TitleSizes.xl}>
+                      {group}
+                      {groupTooltip &&
+                        <Tooltip control={{ controlId: `group-${group}`, tooltip: groupTooltip }} i18n={i18n} className="control-panel-cards__group-tooltip" />
+                      }
+                    </Title>}
+                    <div className={'tf--providers-container tf--row'}>
+                      {cardGroups[group]
+                        .filter(choice => {
+                          return (
+                            active.length === 0 || !collapsed || active.includes(choice.id)
+                          )
+                        })
+                        .map((choice) => {
+                          const { id, hidden } = choice
+                          return !hidden && (
+                            <ControlPanelCard
+                              key={id}
+                              type={id}
+                              selected={active.includes && active.includes(id)}
+                              choice={choice}
+                              handleOnClick={this.handleChange.bind(this, id)}
+                              i18n={i18n}
+                            />
+                          )
+                        })}
+                    </div>
+                  </React.Fragment>
+                )
+              })}
             </div>
           </div>
         </div>
@@ -134,7 +142,7 @@ const ControlPanelCard = ({
   selected,
   i18n
 }) => {
-  const { disabled, logo, title, tooltip, learnMore } = choice
+  const { disabled, logo, title, tooltip, learnMore, text } = choice
   const cardClasses = classNames({
     'tf--create-cluster-page__provider-card': true,
     'tf--create-cluster-page__provider-card-isSelected': selected,
@@ -147,14 +155,14 @@ const ControlPanelCard = ({
       handleOnClick(evt, type)
     }
   }
-  let image=null
+  let image = null
   switch (typeof logo) {
-  case 'string':
-    image=<img src={logo} alt={title} />
-    break
-  case 'object':
-    image=logo
-    break
+    case 'string':
+      image = <img src={logo} alt={title} />
+      break
+    case 'object':
+      image = logo
+      break
   }
 
   const id = title.replace(/\s+/g, '-').toLowerCase()
@@ -173,13 +181,14 @@ const ControlPanelCard = ({
         <div className={cardClasses}>
           <div>{image}</div>
           <div>{title}</div>
+          {text && <div className="control-panel-cards__extra-text">{text}</div>}
         </div>
         {tooltip &&
           !selected && (
-          <div className="card-tooltip-container">
-            <Tooltip control={{ tooltip, learnMore }} i18n={i18n} />
-          </div>
-        )}
+            <div className="card-tooltip-container">
+              <Tooltip control={{ tooltip, learnMore }} i18n={i18n} />
+            </div>
+          )}
       </div>
     </div>
   )
