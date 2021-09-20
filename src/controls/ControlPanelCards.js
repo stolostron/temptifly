@@ -157,12 +157,12 @@ const ControlPanelCard = ({
   }
   let image = null
   switch (typeof logo) {
-    case 'string':
-      image = <img src={logo} alt={title} />
-      break
-    case 'object':
-      image = logo
-      break
+  case 'string':
+    image = <img src={logo} alt={title} />
+    break
+  case 'object':
+    image = logo
+    break
   }
 
   const id = title.replace(/\s+/g, '-').toLowerCase()
@@ -185,10 +185,10 @@ const ControlPanelCard = ({
         </div>
         {tooltip &&
           !selected && (
-            <div className="card-tooltip-container">
-              <Tooltip control={{ tooltip, learnMore }} i18n={i18n} />
-            </div>
-          )}
+          <div className="card-tooltip-container">
+            <Tooltip control={{ tooltip, learnMore }} i18n={i18n} />
+          </div>
+        )}
       </div>
     </div>
   )

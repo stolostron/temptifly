@@ -116,7 +116,7 @@ export default class TemplateEditor extends React.Component {
           {
             id: 'success',
             variant: 'success',
-            exception: Array.isArray(creationMsg)
+            exception: Array.isArray(creationMsg) && creationMsg.length
               ? creationMsg[0]
               : i18n(
                 isEditing
