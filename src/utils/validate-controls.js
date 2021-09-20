@@ -263,7 +263,8 @@ const validateControl = (
   if (
     hidden === true ||
     hidden === 'true' ||
-    (typeof hidden === 'function' && hidden())
+    (typeof hidden === 'function' && hidden()) ||
+    (disabled && !editing)
   ) {
     return
   }
