@@ -303,7 +303,7 @@ const addCodeSnippetsTemplateData = (
         const choices = Array.isArray(active) ? active : [active]
         choices.forEach((key, idx) => {
           const { replacements: _replacements } = availableMap[key]
-          Object.entries(_replacements).forEach(([_id, partial]) => {
+          Object.entries(_replacements).forEach(([_id, partial={}]) => {
             const { template: _template, encode, newTab } = partial
             partial = _template || partial
             const typeOf = typeof partial
@@ -332,9 +332,10 @@ const addCodeSnippetsTemplateData = (
                   })
                 }
                 snippetMap[snippetKey] = snippet
-                if (Array.isArray(arr)) {
-                  arr.push(snippetKey)
+                if (!Array.isArray(arr)) {
+                  arr = templateData[_id] = []
                 }
+                arr.push(snippetKey)
               } else if (
                 Array.isArray(arr) &&
                 !arr.includes(snippet) &&
@@ -355,7 +356,9 @@ const addCodeSnippetsTemplateData = (
                 if (!Array.isArray(arr)) {
                   arr = []
                 }
-                arr.push(snippet)
+                if (arr.indexOf(snippet)===-1) {
+                  arr.push(snippet)
+                }
               }
             } else if (Array.isArray(partial)) {
               templateData[_id] = partial

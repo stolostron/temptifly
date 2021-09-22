@@ -123,10 +123,12 @@ class ControlPanelValues extends React.Component {
 
   createValue() {
     const { control, handleChange } = this.props
-    const { active = [] } = control
     const { value, invalid } = this.state
     if (value && !invalid) {
-      active.push(value)
+      if (!Array.isArray(control.active)) {
+        control.active=[]
+      }
+      control.active.push(value)
       handleChange(control)
     }
     this.cancelValue()

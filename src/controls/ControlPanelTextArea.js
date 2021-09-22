@@ -27,7 +27,6 @@ class ControlPanelTextArea extends React.Component {
     const {
       name,
       type,
-      active: value,
       exception,
       disabled
     } = control
@@ -39,6 +38,11 @@ class ControlPanelTextArea extends React.Component {
         'creation.ocp.cluster.enter.value',
         [name ? name.toLowerCase() : '']
       )
+    }
+
+    let {active:value} = control
+    if (Array.isArray(value)) {
+      value = value.join('\n')
     }
 
     const validated = exception ? 'error' : undefined

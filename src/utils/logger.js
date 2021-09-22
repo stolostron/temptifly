@@ -71,7 +71,7 @@ export const logSourceErrors = (logging, templateYAML, controlData, otherYAMLTab
       controlMap
     )
     try {
-      const input = jsYaml.safeDump(templateData, {
+      const input = jsYaml.dump(templateData, {
         noRefs: true,
         lineWidth: 200
       })
@@ -98,7 +98,7 @@ export const logCreateErrors = (logging, creationMsg, resourceJSON) => {
     //////////////////////////////// INPUT //////////////////////////////////////
     console.groupCollapsed('==================RESOURCE JSON======================')
     try {
-      const input = jsYaml.safeDump(resourceJSON.createResources, {
+      const input = jsYaml.dump(resourceJSON.createResources, {
         noRefs: true,
         lineWidth: 200
       })

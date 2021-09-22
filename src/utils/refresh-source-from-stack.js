@@ -365,7 +365,7 @@ const generateSourceFromResources = resources => {
   resources.forEach(resource => {
     if (!isEmpty(resource)) {
       const key = get(resource, 'kind', 'unknown')
-      yaml = jsYaml.safeDump(resource, {
+      yaml = jsYaml.dump(resource, {
         sortKeys,
         noRefs: true,
         lineWidth: 2000

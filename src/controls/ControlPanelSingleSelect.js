@@ -59,8 +59,10 @@ class ControlPanelSingleSelect extends React.Component {
       this.setState({open})
     }
     const onChange = (value) => {
-      control.active = value
-      handleChange()
+      if (control.active !== value) {
+        control.active = value
+        handleChange()
+      }
     }
     const validated = exception ? 'error' : undefined
     const key = `${controlId}-${name}-${available.join('-')}`

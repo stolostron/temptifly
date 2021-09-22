@@ -129,10 +129,11 @@ const initializeMsgs = (control, i18n) => {
     'section',
     'prompt',
     'info',
-    'tooltip'
+    'tooltip',
+    'tip'
   ]
   keys.forEach(key => {
-    if (typeof control[key] === 'string') {
+    if (typeof control[key] === 'string' && control[key].indexOf('<')===-1) {
       control[key] = i18n(control[key])
     }
   })
