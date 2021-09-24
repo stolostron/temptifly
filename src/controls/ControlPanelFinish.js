@@ -172,11 +172,14 @@ class ControlPanelFinish extends React.Component {
     switch(type) {
     case 'text':
     case 'singleselect':
-    case 'multiselect':
     case 'combobox':
     case 'treeselect':
       term = name
       desc = active
+      break
+    case 'multiselect':
+      term = name
+      desc = (active||[]).join(', ')
       break
     case 'number':
       term = name

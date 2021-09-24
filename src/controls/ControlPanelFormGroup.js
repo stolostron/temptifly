@@ -10,11 +10,12 @@ class ControlPanelFormGroup extends React.Component {
   static propTypes = {
     children: PropTypes.node,
     control: PropTypes.object,
-    controlId: PropTypes.string
+    controlId: PropTypes.string,
+    showTip: PropTypes.bool
   };
 
   render() {
-    const { controlId, control, children } = this.props
+    const { controlId, control, showTip, children } = this.props
     const {
       name,
       exception,
@@ -59,7 +60,7 @@ class ControlPanelFormGroup extends React.Component {
           }
         >
           {children}
-          {tip&&<div style={{fontSize: '14px'}}>{tip}</div>}
+          {(showTip===undefined||showTip===true)&&tip&&<div style={{fontSize: '14px'}}>{tip}</div>}
         </FormGroup>
       </React.Fragment>
     )
