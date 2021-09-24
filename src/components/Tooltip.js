@@ -18,7 +18,7 @@ class Tooltip extends React.PureComponent {
     return tooltip ? (
       <Popover
         id={`${controlId}-label-help-popover`}
-        bodyContent={(typeof tooltip === 'string') ? i18n(tooltip) : tooltip /* A component */}
+        bodyContent={(typeof tooltip === 'string' && typeof i18n === 'function') ? i18n(tooltip) : tooltip /* A component */}
       >
         <button
           id={`${controlId}-label-help-button`}
