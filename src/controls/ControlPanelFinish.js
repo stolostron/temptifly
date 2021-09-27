@@ -86,8 +86,9 @@ class ControlPanelFinish extends React.Component {
   }
 
   renderContent(controlData, divider) {
+    const key = controlData.map(elem=>elem.id).join(',')
     return (
-      <React.Fragment>
+      <React.Fragment key={key}>
         {divider && '---'}
         {controlData.map(control => {
           const { type, disabled } = control
@@ -107,7 +108,7 @@ class ControlPanelFinish extends React.Component {
   renderGroup(control) {
     const { active = [] } = control
     return (
-      <React.Fragment>
+      <React.Fragment key={control.id}>
         {active.map((controlData) => {
           return this.renderContent(controlData, active.length>1)
         })}
@@ -143,7 +144,7 @@ class ControlPanelFinish extends React.Component {
 
   renderTables(tables) {
     return (
-      <div>
+      <div key={tables.id}>
         {tables.map(table=>{
           const { active = [], controlData } = table
           const columns = controlData.filter(({mode})=>!mode)
@@ -165,7 +166,7 @@ class ControlPanelFinish extends React.Component {
   }
 
   renderControl(control) {
-    const {type, active, availableMap, name, id, exception, validation, summary, hidden} = control
+    const {id, type, active, availableMap, name, exception, validation, summary, hidden} = control
     let term
     let desc
     let summaries
@@ -224,7 +225,7 @@ class ControlPanelFinish extends React.Component {
         }]
       }
       return (
-        <React.Fragment>
+        <React.Fragment key={id}>
           {summaries.map(({term, desc, exception, validation})=>{
             let styles = {}
             if (exception) {
@@ -237,7 +238,7 @@ class ControlPanelFinish extends React.Component {
               styles = {color: 'red'}
             }
             return (
-              <React.Fragment key={desc}>
+              <React.Fragment key={`${term}${desc}`}>
                 <dt className="pf-c-description-list__term"><span className="pf-c-description-list__text">{term}</span></dt>
                 <dd className="pf-c-description-list__description"><div className="pf-c-description-list__text" style={styles}>{desc||'-none-'}</div></dd>
               </React.Fragment>

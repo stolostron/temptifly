@@ -249,7 +249,7 @@ class ControlPanelWizard extends React.Component {
 }
 
 ControlPanelWizard.propTypes = {
-  controlClasses: PropTypes.array,
+  controlClasses: PropTypes.string,
   controlData: PropTypes.array,
   handleCancelCreate: PropTypes.func,
   handleCreateResource: PropTypes.func,
