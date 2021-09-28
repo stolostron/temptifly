@@ -40,6 +40,7 @@ class ControlPanel extends React.Component {
     i18n: PropTypes.func,
     isCustomName: PropTypes.bool,
     isEditing:  PropTypes.bool,
+    isInProgress:  PropTypes.bool,
     isLoaded: PropTypes.bool,
     notifications: PropTypes.array,
     onChange: PropTypes.func,
@@ -195,7 +196,7 @@ class ControlPanel extends React.Component {
   }
 
   renderControlWizard(steps, controlClasses, controlData) {
-    const {onStepChange, handleCreateResource, handleCancelCreate, setEditorReadOnly, resetStatus, isEditing } = this.props
+    const {onStepChange, handleCreateResource, handleCancelCreate, setEditorReadOnly, resetStatus, isEditing, isInProgress } = this.props
     return (
       <ControlPanelWizard
         steps={steps}
@@ -210,6 +211,7 @@ class ControlPanel extends React.Component {
         setEditorReadOnly={setEditorReadOnly}
         resetStatus={resetStatus}
         isEditing={isEditing}
+        isInProgress={isInProgress}
       />
     )
   }
@@ -254,36 +256,36 @@ class ControlPanel extends React.Component {
   }
 
   renderGroup(control, grpId = '') {
-    const { id, active = [], prompts } = control
+    const { id, active = [], hidden, prompts } = control
     active.forEach(controlData => {
       controlData.forEach(ctrl => {
         ctrl.group = control
       })
     })
-    return (
-      <React.Fragment key={id}>
-        {active.map((controlData, inx) => {
-          const groupId = inx > 0 ? `${grpId}grp${inx}` : ''
+    const isHidden = typeof hidden === 'function' ? hidden() : hidden
+    return (!isHidden && <React.Fragment key={id}>
+      {active.map((controlData, inx) => {
+        const groupId = inx > 0 ? `${grpId}grp${inx}` : ''
 
-          const card = controlData.find(({type})=>type==='cards' )
-          const groupType = card && Array.isArray(card.active) ? card.active.join() : 'general'
+        const card = controlData.find(({type})=>type==='cards' )
+        const groupType = card && Array.isArray(card.active) ? card.active.join() : 'general'
 
-          return (
-            /* eslint-disable-next-line react/no-array-index-key */
-            <React.Fragment key={`${controlData[0].id}Group${inx}`}>
-              <div className="creation-view-group-container" key={groupType}>
-                {prompts &&
+        return (
+        /* eslint-disable-next-line react/no-array-index-key */
+          <React.Fragment key={`${controlData[0].id}Group${inx}`}>
+            <div className="creation-view-group-container" key={groupType}>
+              {prompts &&
                   active.length > 1 &&
                   this.renderDeleteGroupButton(control, inx)}
-                {this.renderGroupControlSections(controlData, inx, groupId)}
-              </div>
-              {prompts &&
+              {this.renderGroupControlSections(controlData, inx, groupId)}
+            </div>
+            {prompts &&
                 active.length - 1 === inx &&
                 this.renderAddGroupButton(control)}
-            </React.Fragment>
-          )
-        })}
-      </React.Fragment>
+          </React.Fragment>
+        )
+      })}
+    </React.Fragment>
     )
   }
 
