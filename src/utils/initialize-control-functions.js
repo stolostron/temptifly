@@ -9,16 +9,12 @@ import set from 'lodash/set'
 ///////////////////////////////////////////////////////////////////////////////
 export const initializeControlFunctions = (controlData, editor) => {
   controlData.forEach(control => {
+    initialControl(control, editor)
     const { type, active = [] } = control
-    switch (type) {
-    case 'group': {
+    if (type==='group') {
       active.forEach(cd => {
         initializeControlFunctions(cd, editor)
       })
-      break
-    }
-    default:
-      initialControl(control, editor)
     }
   })
 }

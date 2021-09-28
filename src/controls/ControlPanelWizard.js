@@ -7,6 +7,7 @@ import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import ControlPanelFinish from './ControlPanelFinish'
 import get from 'lodash/get'
 import set from 'lodash/set'
+import noop from 'lodash/noop'
 import isEmpty from 'lodash/isEmpty'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -20,7 +21,7 @@ class ControlPanelWizard extends React.Component {
   }
 
   render() {
-    const { controlClasses, setWizardRef, renderControlSections, renderNotifications, isEditing } = this.props
+    const { controlClasses, setWizardRef, renderControlSections, renderNotifications, isEditing, isInProgress } = this.props
     let { steps } = this.props
     const details = cloneDeep(steps)
     steps.forEach(step=>{
@@ -200,14 +201,15 @@ class ControlPanelWizard extends React.Component {
     }
 
     const {isProcessing, processingLabel} = this.state
+    const isWorking = isInProgress || isProcessing
     const CustomFooter = (
       <WizardFooter>
         <WizardContextConsumer>
           {({ activeStep, onNext, onBack, onClose }) => {
             return (
               <React.Fragment>
-                <Button isLoading={isProcessing} variant='primary' spinnerAriaValueText={isProcessing ? 'Processing' : undefined}
-                  onClick={validateNextStep.bind(null, activeStep, onNext)}>
+                <Button isLoading={isWorking} isDisabled={isWorking} variant='primary' spinnerAriaValueText={isWorking ? 'Processing' : undefined}
+                  onClick={!isWorking ? validateNextStep.bind(null, activeStep, onNext) : noop }>
                   {processingLabel || activeStep.control.nextButtonLabel || 'Next'}
                 </Button>
                 <Button variant='secondary' onClick={onBack} isAriaDisabled={activeStep.index===0}>
@@ -254,6 +256,7 @@ ControlPanelWizard.propTypes = {
   handleCancelCreate: PropTypes.func,
   handleCreateResource: PropTypes.func,
   isEditing:  PropTypes.bool,
+  isInProgress:  PropTypes.bool,
   onStepChange: PropTypes.func,
   renderControlSections: PropTypes.func,
   renderNotifications: PropTypes.func,
