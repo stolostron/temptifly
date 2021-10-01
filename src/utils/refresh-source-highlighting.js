@@ -108,8 +108,10 @@ export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => 
                 isEncoded = false
               }
             }
-            if (!isEncoded && (!firstModRow || firstModRow > obj.$r)) {
-              firstModRow = obj.$r
+            if (!isEncoded) {
+              if (!firstModRow || firstModRow > obj.$r) {
+                firstModRow = obj.$r
+              }
             } else {
               encodedRow = obj.$r
             }

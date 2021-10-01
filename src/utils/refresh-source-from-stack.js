@@ -6,7 +6,7 @@ import {
   discoverControls,
   setEditingMode,
   reverseTemplate,
-  getResourceID
+  findBestMatch
 } from './source-utils'
 import { generateSourceFromTemplate } from './refresh-source-from-templates'
 import YamlParser from './YamlParser'
@@ -21,6 +21,7 @@ import isEmpty from 'lodash/isEmpty'
 import isEqual from 'lodash/isEqual'
 import pick from 'lodash/pick'
 import keyBy from 'lodash/keyBy'
+import { c_select__toggle_wrapper_c_chip_group_MarginTop } from '@patternfly/react-tokens'
 
 export const generateSourceFromStack = (
   template,
@@ -43,7 +44,6 @@ export const updateEditStack = (
 ) => {
   const { initialized } = editStack
   if (!initialized) {
-    editStack.customIdMap = {}
     editStack.deletedLinks = []
     editStack.initialized = true
   }
@@ -54,52 +54,7 @@ export const updateEditStack = (
   // last content of editor becomes the custom resource
   editStack.customResources = parsedResources
 
-  // update map of custom id's to template id's
-  updateCustomIdMap(editStack)
-
   return editStack
-}
-
-const updateCustomIdMap = editStack => {
-  const { customResources, baseTemplateResources, customIdMap } = editStack
-  const clonedTemplateResources = cloneDeep(baseTemplateResources)
-  const customIdSet = new Set()
-  customResources.forEach(resource => {
-    const resourceID = getResourceID(resource)
-    if (resourceID) {
-      customIdSet.add(resourceID)
-    }
-  })
-  customResources.forEach(resource => {
-    let resourceID = getResourceID(resource)
-    if (resourceID) {
-      if (customIdMap[resourceID]) {
-        resourceID = customIdMap[resourceID]
-      }
-      let inx = clonedTemplateResources.findIndex(res => {
-        return resourceID === getResourceID(res)
-      })
-      if (inx !== -1) {
-        const res = clonedTemplateResources.splice(inx, 1)[0]
-        customIdMap[resourceID] = getResourceID(res)
-      } else {
-        clonedTemplateResources
-          .filter(res => res.kind === resource.kind)
-          .forEach(res => {
-            const templateID = getResourceID(res)
-            if (!customIdSet.has(templateID)) {
-              customIdMap[resourceID] = templateID
-            }
-          })
-        inx = clonedTemplateResources.findIndex(res => {
-          return customIdMap[resourceID] === getResourceID(res)
-        })
-        if (inx !== -1) {
-          clonedTemplateResources.splice(inx, 1)
-        }
-      }
-    }
-  })
 }
 
 const intializeControls = (editStack, controlData) => {
@@ -118,12 +73,11 @@ const intializeControls = (editStack, controlData) => {
   // keep track of template changes
   editStack.baseTemplateResources = null
   editStack.deletedLinks = []
-  editStack.customIdMap = {}
   editStack.initialized = true
 }
 
 const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
-  const { customResources, deletedLinks, customIdMap } = editStack
+  const { customResources, deletedLinks } = editStack
 
   // get the next iteration of template changes
   const { templateResources, templateObject } = generateSourceFromTemplate(
@@ -154,7 +108,6 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
     customResources,
     baseTemplateResources,
     currentTemplateResources,
-    customIdMap,
     deletedLinks
   )
 
@@ -185,7 +138,6 @@ const mergeSource = (
   resources,
   baseTemplateResources,
   currentTemplateResources,
-  customIdMap,
   deletedLinks
 ) => {
   let customResources = cloneDeep(resources)
@@ -195,6 +147,10 @@ const mergeSource = (
   ////////////////////////////////////////////////
   ///////////  DELETE ////////////////////////////
   ////////////////////////////////////////////////
+  const weakBase = new WeakMap()
+  const weakCurrent = new WeakMap()
+  clonedCurrentTemplateResources.forEach((res,inx)=>res.__inx__ = inx)
+
   // filter out the custom resources that don't exist in the current template using selfLinks
   customResources = customResources.filter(resource => {
     // filter out custom resource that isn't in next version of template
@@ -203,27 +159,17 @@ const mergeSource = (
       pick(resource, ['apiVersion', 'kind']),
       pick(get(resource, 'metadata', {}), ['selfLink', 'name', 'namespace'])
     )
-    let resourceID = getResourceID(resource)
-    if (!resourceID) {
-      return false
-    }
-    if (customIdMap[resourceID]) {
-      resourceID = customIdMap[resourceID]
-    }
     // if base template doesn't have this resource, the template never liked it
     // (ex: predefined app channel)
-    let inx = baseTemplateResources.findIndex(res => {
-      return resourceID === getResourceID(res)
-    })
+    let inx = findBestMatch(resource, baseTemplateResources)
     if (inx === -1) {
       return false
     }
+    weakBase.set(resource, baseTemplateResources[inx])
 
     // if user has added something with the forms
     if (currentTemplateResources) {
-      inx = clonedCurrentTemplateResources.findIndex(res => {
-        return resourceID === getResourceID(res)
-      })
+      inx = findBestMatch(resource, clonedCurrentTemplateResources)
       if (inx === -1) {
         // if editor got rid of it, add to the selfLinks we will be deleting
         // when updating editor to server
@@ -232,6 +178,8 @@ const mergeSource = (
       } else {
         // else remove from currentTemplateResources such that
         // anything left is considered new and should be added to custom resources
+        resource.__inx__ = clonedCurrentTemplateResources[inx].__inx__
+        weakCurrent.set(resource, clonedCurrentTemplateResources[inx])
         clonedCurrentTemplateResources.splice(inx, 1)
       }
     }
@@ -254,109 +202,87 @@ const mergeSource = (
       // compare the difference, and add them to edit the custom resource
       let val, idx
 
-      let resourceID = getResourceID(resource)
-      if (resourceID) {
-        if (customIdMap[resourceID]) {
-          resourceID = customIdMap[resourceID]
-        }
-        const baseInx = baseTemplateResources.findIndex(res => {
-          return resourceID === getResourceID(res)
-        })
-        const currentInx = currentTemplateResources.findIndex(res => {
-          return resourceID === getResourceID(res)
-        })
-
-        if (baseInx !== -1 && currentInx !== -1) {
-          const oldResource = baseTemplateResources[baseInx]
-          const newResource = currentTemplateResources[currentInx]
-          const diffs = diff(oldResource, newResource)
-          if (diffs) {
-            diffs.forEach(({ kind, path, rhs, item }) => {
-              if (!isProtectedNameNamespace(path)) {
-                switch (kind) {
-                // array modification
-                case 'A': {
-                  switch (item.kind) {
-                  case 'N':
-                    val = get(newResource, path, [])
-                    if (Array.isArray(val)) {
-                      set(resource, path, val)
-                    } else {
-                      val[Object.keys(val).length] = item.rhs
-                      set(resource, path, Object.values(val))
-                    }
-                    break
-                  case 'D':
-                    val = get(newResource, path, [])
-                    if (Array.isArray(val)) {
-                      set(resource, path, val)
-                    } else {
-                      val = omitBy(val, e => e === item.lhs)
-                      set(resource, path, Object.values(val))
-                    }
-                    break
-                  }
-                  break
-                }
-                case 'E': {
-                  idx = path.pop()
-                  val = get(resource, path)
+      const oldResource = weakBase.get(resource)
+      const newResource = weakCurrent.get(resource)
+      if (oldResource && newResource) {
+        const diffs = diff(oldResource, newResource)
+        if (diffs) {
+          diffs.forEach(({ kind, path, rhs, lhs, item }) => {
+            if (!isProtectedNameNamespace(path, rhs, lhs)) {
+              switch (kind) {
+              // array modification
+              case 'A': {
+                switch (item.kind) {
+                case 'N':
+                  val = get(newResource, path, [])
                   if (Array.isArray(val)) {
-                    val.splice(idx, 1, rhs)
+                    set(resource, path, val)
                   } else {
-                    path.push(idx)
-                    set(resource, path, rhs)
+                    val[Object.keys(val).length] = item.rhs
+                    set(resource, path, Object.values(val))
+                  }
+                  break
+                case 'D':
+                  val = get(newResource, path, [])
+                  if (Array.isArray(val)) {
+                    set(resource, path, val)
+                  } else {
+                    val = omitBy(val, e => e === item.lhs)
+                    set(resource, path, Object.values(val))
                   }
                   break
                 }
-                case 'N': {
-                  set(resource, path, rhs)
-                  break
-                }
-                case 'D': {
-                  unset(resource, path)
-                  break
-                }
-                }
+                break
               }
-            })
-          }
+              case 'E': {
+                idx = path.pop()
+                val = get(resource, path)
+                if (Array.isArray(val)) {
+                  val.splice(idx, 1, rhs)
+                } else {
+                  path.push(idx)
+                  set(resource, path, rhs)
+                }
+                break
+              }
+              case 'N': {
+                set(resource, path, rhs)
+                break
+              }
+              case 'D': {
+                unset(resource, path)
+                break
+              }
+              }
+            }
+          })
         }
       }
     })
   }
+  customResources.sort((a,b)=>{
+    return a.__inx__ - b.__inx__
+  })
+  customResources.forEach(res=>delete res.__inx__)
 
   return customResources
 }
 
-const isProtectedNameNamespace = path => {
+const isProtectedNameNamespace = (path, rhs, lhs) => {
   if (path.length >= 2) {
     const [key, value] = path.slice(Math.max(path.length - 2, 0))
-    return (
+    if (
       typeof key === 'string' &&
       (key === 'metadata' /*|| key.endsWith('Ref')*/) &&
       ['name', 'namespace'].indexOf(value) !== -1
-    )
+    ) {
+      return !!rhs && !!lhs
+    }
   }
   return false
 }
 
 const generateSourceFromResources = resources => {
-  // use this to sort the keys generated by safeDump
-  const order = ['name', 'namespace', 'start', 'end']
-  const sortKeys = (a, b) => {
-    const ai = order.indexOf(a)
-    const bi = order.indexOf(b)
-    if (ai < 0 && bi >= 0) {
-      return 1
-    } else if (ai >= 0 && bi < 0) {
-      return -1
-    } else if (ai < 0 && bi < 0) {
-      return a.localeCompare(b)
-    } else {
-      return ai < bi
-    }
-  }
 
   let yaml,
       row = 0
@@ -366,7 +292,6 @@ const generateSourceFromResources = resources => {
     if (!isEmpty(resource)) {
       const key = get(resource, 'kind', 'unknown')
       yaml = jsYaml.dump(resource, {
-        sortKeys,
         noRefs: true,
         lineWidth: 2000
       })

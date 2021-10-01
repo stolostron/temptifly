@@ -31,6 +31,7 @@ class ControlPanel extends React.Component {
   static propTypes = {
     controlData: PropTypes.array,
     controlProps: PropTypes.object,
+    creationStatus: PropTypes.string,
     fetchData: PropTypes.object,
     handleCancelCreate: PropTypes.func,
     handleControlChange: PropTypes.func,
@@ -40,7 +41,6 @@ class ControlPanel extends React.Component {
     i18n: PropTypes.func,
     isCustomName: PropTypes.bool,
     isEditing:  PropTypes.bool,
-    isInProgress:  PropTypes.bool,
     isLoaded: PropTypes.bool,
     notifications: PropTypes.array,
     onChange: PropTypes.func,
@@ -196,7 +196,7 @@ class ControlPanel extends React.Component {
   }
 
   renderControlWizard(steps, controlClasses, controlData) {
-    const {onStepChange, handleCreateResource, handleCancelCreate, setEditorReadOnly, resetStatus, isEditing, isInProgress } = this.props
+    const {onStepChange, handleCreateResource, handleCancelCreate, setEditorReadOnly, resetStatus, isEditing, creationStatus } = this.props
     return (
       <ControlPanelWizard
         steps={steps}
@@ -211,7 +211,7 @@ class ControlPanel extends React.Component {
         setEditorReadOnly={setEditorReadOnly}
         resetStatus={resetStatus}
         isEditing={isEditing}
-        isInProgress={isInProgress}
+        creationStatus={creationStatus}
       />
     )
   }

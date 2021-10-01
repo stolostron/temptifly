@@ -200,6 +200,60 @@ export const cacheUserData = controlData => {
   })
 }
 
+export const findBestMatch = (resource, resources) => {
+  const getKeys = res => {
+    const kind = res.kind
+    return {
+      selfLink: get(res, 'metadata.selfLink'),
+      kind: kind,
+    }
+  }
+  const kinds = []
+  const keys = getKeys(resource)
+  let bestInx=-1
+  resources.forEach((res, inx)=>{
+      const ks = getKeys(res)
+      if (keys.selfLink && keys.selfLink == ks.selfLink) {
+        bestInx=inx
+      }
+      if (keys.kind == ks.kind) {
+        kinds.push({res, inx})
+      }
+  })
+  if (bestInx!==-1) {
+    return bestInx
+  }
+  if (kinds.length>0) {
+    if (kinds.length===1) {
+      return kinds[0].inx
+    } else {
+      let bestScore=0
+      const resKeys = Object.keys(resource)
+      const compareKey = resKeys.sort().join(',')
+      kinds.forEach(kind=>{
+        const {inx, res} = kind
+        const ks = Object.keys(res)
+        if (compareKey=== ks.sort().join(',')) {
+          bestScore = 100
+          bestInx = inx
+        }
+        let score = 0
+        resKeys.forEach(k=>{
+          if (ks.includes(k)) {
+            score++
+          }
+        })
+        if (score>bestScore) {
+          bestScore = score
+          bestInx = inx
+        }
+      })
+      return bestInx
+    }
+  }
+  return -1
+}
+
 export const getResourceID = resource => {
   return (
     get(resource, 'metadata.selfLink') ||
