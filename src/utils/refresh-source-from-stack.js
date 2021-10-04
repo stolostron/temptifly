@@ -6,7 +6,7 @@ import {
   discoverControls,
   setEditingMode,
   reverseTemplate,
-  findBestMatch
+  getResourceID
 } from './source-utils'
 import { generateSourceFromTemplate } from './refresh-source-from-templates'
 import YamlParser from './YamlParser'
@@ -21,7 +21,7 @@ import isEmpty from 'lodash/isEmpty'
 import isEqual from 'lodash/isEqual'
 import pick from 'lodash/pick'
 import keyBy from 'lodash/keyBy'
-import { c_select__toggle_wrapper_c_chip_group_MarginTop } from '@patternfly/react-tokens'
+import groupBy from 'lodash/groupBy'
 
 export const generateSourceFromStack = (
   template,
@@ -44,6 +44,7 @@ export const updateEditStack = (
 ) => {
   const { initialized } = editStack
   if (!initialized) {
+    editStack.customIdMap = {}
     editStack.deletedLinks = []
     editStack.initialized = true
   }
@@ -54,7 +55,52 @@ export const updateEditStack = (
   // last content of editor becomes the custom resource
   editStack.customResources = parsedResources
 
+  // update map of custom id's to template id's
+  updateCustomIdMap(editStack)
+
   return editStack
+}
+
+const updateCustomIdMap = editStack => {
+  const { customResources, baseTemplateResources, customIdMap } = editStack
+  const clonedTemplateResources = cloneDeep(baseTemplateResources)
+  const customIdSet = new Set()
+  customResources.forEach(resource => {
+    const resourceID = getResourceID(resource)
+    if (resourceID) {
+      customIdSet.add(resourceID)
+    }
+  })
+  customResources.forEach(resource => {
+    let resourceID = getResourceID(resource)
+    if (resourceID) {
+      if (customIdMap[resourceID]) {
+        resourceID = customIdMap[resourceID]
+      }
+      let inx = clonedTemplateResources.findIndex(res => {
+        return resourceID === getResourceID(res)
+      })
+      if (inx !== -1) {
+        const res = clonedTemplateResources.splice(inx, 1)[0]
+        customIdMap[resourceID] = getResourceID(res)
+      } else {
+        clonedTemplateResources
+          .filter(res => res.kind === resource.kind)
+          .forEach(res => {
+            const templateID = getResourceID(res)
+            if (!customIdSet.has(templateID)) {
+              customIdMap[resourceID] = templateID
+            }
+          })
+        inx = clonedTemplateResources.findIndex(res => {
+          return customIdMap[resourceID] === getResourceID(res)
+        })
+        if (inx !== -1) {
+          clonedTemplateResources.splice(inx, 1)
+        }
+      }
+    }
+  })
 }
 
 const intializeControls = (editStack, controlData) => {
@@ -73,11 +119,12 @@ const intializeControls = (editStack, controlData) => {
   // keep track of template changes
   editStack.baseTemplateResources = null
   editStack.deletedLinks = []
+  editStack.customIdMap = {}
   editStack.initialized = true
 }
 
 const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
-  const { customResources, deletedLinks } = editStack
+  const { customResources, deletedLinks, customIdMap } = editStack
 
   // get the next iteration of template changes
   const { templateResources, templateObject } = generateSourceFromTemplate(
@@ -108,6 +155,7 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
     customResources,
     baseTemplateResources,
     currentTemplateResources,
+    customIdMap,
     deletedLinks
   )
 
@@ -138,11 +186,14 @@ const mergeSource = (
   resources,
   baseTemplateResources,
   currentTemplateResources,
+  customIdMap,
   deletedLinks
 ) => {
   let customResources = cloneDeep(resources)
   const clonedCurrentTemplateResources =
     currentTemplateResources && cloneDeep(currentTemplateResources)
+  const groupByBase = groupBy(baseTemplateResources, 'kind')
+  const groupByTemplate = groupBy(currentTemplateResources, 'kind')
 
   ////////////////////////////////////////////////
   ///////////  DELETE ////////////////////////////
@@ -159,9 +210,19 @@ const mergeSource = (
       pick(resource, ['apiVersion', 'kind']),
       pick(get(resource, 'metadata', {}), ['selfLink', 'name', 'namespace'])
     )
+    let resourceID = getResourceID(resource)
+    if (!resourceID) {
+      return false
+    }
+    if (customIdMap[resourceID]) {
+      resourceID = customIdMap[resourceID]
+    }
     // if base template doesn't have this resource, the template never liked it
     // (ex: predefined app channel)
-    let inx = findBestMatch(resource, baseTemplateResources)
+    let inx = baseTemplateResources.findIndex(res => {
+      return resourceID === getResourceID(res)
+        || (res.kind===resource.kind && groupByBase[resource.kind].length===1)
+    })
     if (inx === -1) {
       return false
     }
@@ -169,7 +230,10 @@ const mergeSource = (
 
     // if user has added something with the forms
     if (currentTemplateResources) {
-      inx = findBestMatch(resource, clonedCurrentTemplateResources)
+      inx = clonedCurrentTemplateResources.findIndex(res => {
+        return resourceID === getResourceID(res)
+        || (res.kind===resource.kind && groupByTemplate[resource.kind].length===1)
+      })
       if (inx === -1) {
         // if editor got rid of it, add to the selfLinks we will be deleting
         // when updating editor to server
@@ -283,7 +347,6 @@ const isProtectedNameNamespace = (path, rhs, lhs) => {
 }
 
 const generateSourceFromResources = resources => {
-
   let yaml,
       row = 0
   const parsed = {}
