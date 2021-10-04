@@ -460,7 +460,7 @@ export default class TemplateEditor extends React.Component {
         isCustomName={isCustomName}
         isEditing={isEditing}
         isLoaded={isLoaded}
-        isInProgress={this.props.createControl.creationStatus==='IN_PROGRESS'}
+        creationStatus={this.props.createControl.creationStatus}
         i18n={i18n}
         onChange={this.props.onControlChange}
         onStepChange={this.props.onStepChange}

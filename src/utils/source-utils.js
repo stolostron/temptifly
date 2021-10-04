@@ -200,6 +200,7 @@ export const cacheUserData = controlData => {
   })
 }
 
+
 export const getResourceID = resource => {
   return (
     get(resource, 'metadata.selfLink') ||

@@ -21,6 +21,7 @@ import isEmpty from 'lodash/isEmpty'
 import isEqual from 'lodash/isEqual'
 import pick from 'lodash/pick'
 import keyBy from 'lodash/keyBy'
+import groupBy from 'lodash/groupBy'
 
 export const generateSourceFromStack = (
   template,
@@ -191,10 +192,16 @@ const mergeSource = (
   let customResources = cloneDeep(resources)
   const clonedCurrentTemplateResources =
     currentTemplateResources && cloneDeep(currentTemplateResources)
+  const groupByBase = groupBy(baseTemplateResources, 'kind')
+  const groupByTemplate = groupBy(currentTemplateResources, 'kind')
 
   ////////////////////////////////////////////////
   ///////////  DELETE ////////////////////////////
   ////////////////////////////////////////////////
+  const weakBase = new WeakMap()
+  const weakCurrent = new WeakMap()
+  clonedCurrentTemplateResources.forEach((res,inx)=>res.__inx__ = inx)
+
   // filter out the custom resources that don't exist in the current template using selfLinks
   customResources = customResources.filter(resource => {
     // filter out custom resource that isn't in next version of template
@@ -214,15 +221,18 @@ const mergeSource = (
     // (ex: predefined app channel)
     let inx = baseTemplateResources.findIndex(res => {
       return resourceID === getResourceID(res)
+        || (res.kind===resource.kind && groupByBase[resource.kind].length===1)
     })
     if (inx === -1) {
       return false
     }
+    weakBase.set(resource, baseTemplateResources[inx])
 
     // if user has added something with the forms
     if (currentTemplateResources) {
       inx = clonedCurrentTemplateResources.findIndex(res => {
         return resourceID === getResourceID(res)
+        || (res.kind===resource.kind && groupByTemplate[resource.kind].length===1)
       })
       if (inx === -1) {
         // if editor got rid of it, add to the selfLinks we will be deleting
@@ -232,6 +242,8 @@ const mergeSource = (
       } else {
         // else remove from currentTemplateResources such that
         // anything left is considered new and should be added to custom resources
+        resource.__inx__ = clonedCurrentTemplateResources[inx].__inx__
+        weakCurrent.set(resource, clonedCurrentTemplateResources[inx])
         clonedCurrentTemplateResources.splice(inx, 1)
       }
     }
@@ -254,110 +266,87 @@ const mergeSource = (
       // compare the difference, and add them to edit the custom resource
       let val, idx
 
-      let resourceID = getResourceID(resource)
-      if (resourceID) {
-        if (customIdMap[resourceID]) {
-          resourceID = customIdMap[resourceID]
-        }
-        const baseInx = baseTemplateResources.findIndex(res => {
-          return resourceID === getResourceID(res)
-        })
-        const currentInx = currentTemplateResources.findIndex(res => {
-          return resourceID === getResourceID(res)
-        })
-
-        if (baseInx !== -1 && currentInx !== -1) {
-          const oldResource = baseTemplateResources[baseInx]
-          const newResource = currentTemplateResources[currentInx]
-          const diffs = diff(oldResource, newResource)
-          if (diffs) {
-            diffs.forEach(({ kind, path, rhs, item }) => {
-              if (!isProtectedNameNamespace(path)) {
-                switch (kind) {
-                // array modification
-                case 'A': {
-                  switch (item.kind) {
-                  case 'N':
-                    val = get(newResource, path, [])
-                    if (Array.isArray(val)) {
-                      set(resource, path, val)
-                    } else {
-                      val[Object.keys(val).length] = item.rhs
-                      set(resource, path, Object.values(val))
-                    }
-                    break
-                  case 'D':
-                    val = get(newResource, path, [])
-                    if (Array.isArray(val)) {
-                      set(resource, path, val)
-                    } else {
-                      val = omitBy(val, e => e === item.lhs)
-                      set(resource, path, Object.values(val))
-                    }
-                    break
-                  }
-                  break
-                }
-                case 'E': {
-                  idx = path.pop()
-                  val = get(resource, path)
+      const oldResource = weakBase.get(resource)
+      const newResource = weakCurrent.get(resource)
+      if (oldResource && newResource) {
+        const diffs = diff(oldResource, newResource)
+        if (diffs) {
+          diffs.forEach(({ kind, path, rhs, lhs, item }) => {
+            if (!isProtectedNameNamespace(path, rhs, lhs)) {
+              switch (kind) {
+              // array modification
+              case 'A': {
+                switch (item.kind) {
+                case 'N':
+                  val = get(newResource, path, [])
                   if (Array.isArray(val)) {
-                    val.splice(idx, 1, rhs)
+                    set(resource, path, val)
                   } else {
-                    path.push(idx)
-                    set(resource, path, rhs)
+                    val[Object.keys(val).length] = item.rhs
+                    set(resource, path, Object.values(val))
+                  }
+                  break
+                case 'D':
+                  val = get(newResource, path, [])
+                  if (Array.isArray(val)) {
+                    set(resource, path, val)
+                  } else {
+                    val = omitBy(val, e => e === item.lhs)
+                    set(resource, path, Object.values(val))
                   }
                   break
                 }
-                case 'N': {
-                  set(resource, path, rhs)
-                  break
-                }
-                case 'D': {
-                  unset(resource, path)
-                  break
-                }
-                }
+                break
               }
-            })
-          }
+              case 'E': {
+                idx = path.pop()
+                val = get(resource, path)
+                if (Array.isArray(val)) {
+                  val.splice(idx, 1, rhs)
+                } else {
+                  path.push(idx)
+                  set(resource, path, rhs)
+                }
+                break
+              }
+              case 'N': {
+                set(resource, path, rhs)
+                break
+              }
+              case 'D': {
+                unset(resource, path)
+                break
+              }
+              }
+            }
+          })
         }
       }
     })
   }
+  customResources.sort((a,b)=>{
+    return a.__inx__ - b.__inx__
+  })
+  customResources.forEach(res=>delete res.__inx__)
 
   return customResources
 }
 
-const isProtectedNameNamespace = path => {
+const isProtectedNameNamespace = (path, rhs, lhs) => {
   if (path.length >= 2) {
     const [key, value] = path.slice(Math.max(path.length - 2, 0))
-    return (
+    if (
       typeof key === 'string' &&
       (key === 'metadata' /*|| key.endsWith('Ref')*/) &&
       ['name', 'namespace'].indexOf(value) !== -1
-    )
+    ) {
+      return !!rhs && !!lhs
+    }
   }
   return false
 }
 
 const generateSourceFromResources = resources => {
-  // use this to sort the keys generated by safeDump
-  const order = ['name', 'namespace', 'start', 'end']
-  const sortKeys = (a, b) => {
-    const ai = order.indexOf(a)
-    const bi = order.indexOf(b)
-    if (ai < 0 && bi >= 0) {
-      return 1
-    } else if (ai >= 0 && bi < 0) {
-      return -1
-    } else if (ai < 0 && bi < 0) {
-      return a.localeCompare(b)
-    } else {
-      return ai < bi
-    }
-  }
-
   let yaml,
       row = 0
   const parsed = {}
@@ -366,7 +355,6 @@ const generateSourceFromResources = resources => {
     if (!isEmpty(resource)) {
       const key = get(resource, 'kind', 'unknown')
       yaml = jsYaml.dump(resource, {
-        sortKeys,
         noRefs: true,
         lineWidth: 2000
       })

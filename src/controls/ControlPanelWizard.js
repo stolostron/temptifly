@@ -21,7 +21,7 @@ class ControlPanelWizard extends React.Component {
   }
 
   render() {
-    const { controlClasses, setWizardRef, renderControlSections, renderNotifications, isEditing, isInProgress } = this.props
+    const { controlClasses, setWizardRef, renderControlSections, renderNotifications, isEditing, creationStatus } = this.props
     let { steps } = this.props
     const details = cloneDeep(steps)
     steps.forEach(step=>{
@@ -201,14 +201,15 @@ class ControlPanelWizard extends React.Component {
     }
 
     const {isProcessing, processingLabel} = this.state
-    const isWorking = isInProgress || isProcessing
+    const isWorking = creationStatus==='IN_PROGRESS' || isProcessing
+    const isDisabled = creationStatus==='DONE' || isWorking
     const CustomFooter = (
       <WizardFooter>
         <WizardContextConsumer>
           {({ activeStep, onNext, onBack, onClose }) => {
             return (
               <React.Fragment>
-                <Button isLoading={isWorking} isDisabled={isWorking} variant='primary' spinnerAriaValueText={isWorking ? 'Processing' : undefined}
+                <Button isLoading={isWorking} isDisabled={isDisabled} variant='primary' spinnerAriaValueText={isWorking ? 'Processing' : undefined}
                   onClick={!isWorking ? validateNextStep.bind(null, activeStep, onNext) : noop }>
                   {processingLabel || activeStep.control.nextButtonLabel || 'Next'}
                 </Button>
@@ -253,10 +254,10 @@ class ControlPanelWizard extends React.Component {
 ControlPanelWizard.propTypes = {
   controlClasses: PropTypes.string,
   controlData: PropTypes.array,
+  creationStatus: PropTypes.string,
   handleCancelCreate: PropTypes.func,
   handleCreateResource: PropTypes.func,
   isEditing:  PropTypes.bool,
-  isInProgress:  PropTypes.bool,
   onStepChange: PropTypes.func,
   renderControlSections: PropTypes.func,
   renderNotifications: PropTypes.func,
