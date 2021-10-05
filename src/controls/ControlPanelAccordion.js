@@ -220,9 +220,13 @@ class ControlPanelAccordion extends React.Component {
             break
           case 'values':
             if (active) {
-              active.forEach(value => {
-                summary.push(value)
-              })
+              if (!Array.isArray(active)) {
+                summary.push(active)
+              } else {
+                active.forEach(value => {
+                  summary.push(value)
+                })
+              }
             }
             break
           default:

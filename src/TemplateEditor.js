@@ -147,7 +147,7 @@ export default class TemplateEditor extends React.Component {
     const { isLoaded, isFailed } = fetchControl || { isLoaded: true }
     const showEditor =
       (monacoEditor||initialOpen) && isLoaded && !!localStorage.getItem(TEMPLATE_EDITOR_OPEN_COOKIE)
-    let newState = { isLoaded, isFailed, showEditor, notifications: [] }
+    let newState = { isLoaded, isFailed, showEditor }
 
     // has control data been initialized?
     const { controlData: initialControlData, onControlInitialize } = props
