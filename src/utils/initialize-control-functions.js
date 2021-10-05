@@ -90,8 +90,9 @@ const initialControl = (control, editor) => {
       }
       if (sourcePath) {
 
-        const getCheckActive = (active) => {
-          if (ctrl.type === 'checkbox') {
+        const getTrueActive = (active) => {
+          switch (ctrl.type) {
+          case 'checkbox':
             if (!active) {
               active = { $v: false }
             } else if (active.$v === undefined) {
@@ -99,6 +100,14 @@ const initialControl = (control, editor) => {
             } else {
               active.$v = !!active.$v
             }
+            break
+          case 'values':
+            if (active) {
+              if (!Array.isArray(active.$v)) {
+                active.$v = active.$v.split(',')
+              }
+            }
+            break
           }
           return active
         }
@@ -107,12 +116,12 @@ const initialControl = (control, editor) => {
           sourcePath.forEach((path, inx)=>{
             Object.entries(path).forEach(([key, value]) =>{
               if (ctrl.active[inx]) {
-                ctrl.active[inx][key] = getCheckActive(get(templateObject, value))
+                ctrl.active[inx][key] = getTrueActive(get(templateObject, value))
               }
             })
           })
         } else {
-          const active = getCheckActive(get(templateObject, sourcePath))
+          const active = getTrueActive(get(templateObject, sourcePath))
           if (active) {
             ctrl.active = removeVs(active.$v)
             ctrl.sourcePath = active

@@ -200,7 +200,9 @@ const mergeSource = (
   ////////////////////////////////////////////////
   const weakBase = new WeakMap()
   const weakCurrent = new WeakMap()
-  clonedCurrentTemplateResources.forEach((res,inx)=>res.__inx__ = inx)
+  if (currentTemplateResources) {
+    clonedCurrentTemplateResources.forEach((res,inx)=>res.__inx__ = inx)
+  }
 
   // filter out the custom resources that don't exist in the current template using selfLinks
   customResources = customResources.filter(resource => {
@@ -324,10 +326,12 @@ const mergeSource = (
       }
     })
   }
-  customResources.sort((a,b)=>{
-    return a.__inx__ - b.__inx__
-  })
-  customResources.forEach(res=>delete res.__inx__)
+  if (currentTemplateResources) {
+    customResources.sort((a,b)=>{
+      return a.__inx__ - b.__inx__
+    })
+    customResources.forEach(res=>delete res.__inx__)
+  }
 
   return customResources
 }
