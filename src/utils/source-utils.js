@@ -140,24 +140,28 @@ export const parseYAML = yaml => {
   // check for syntax errors
   try {
     yamls.forEach(snip => {
-      const obj = jsYaml.load(snip)
-      const key = get(obj, 'kind', 'unknown')
-      let values = parsed[key]
-      if (!values) {
-        values = parsed[key] = []
-      }
-      const post = new RegExp(/[\r\n]+$/).test(snip)
-      snip = snip.trim()
-      const $synced = new YamlParser().parse(snip, absLine)
-      if ($synced) {
-        $synced.$r = absLine
-        $synced.$l = snip.split(/[\r\n]+/g).length
-        values.push({ $raw: obj, $yml: snip, $synced })
-        resources.push(obj)
-        absLine += $synced.$l
-        if (post) {
-          absLine++
+      if (snip) {
+        const obj = jsYaml.load(snip)
+        const key = get(obj, 'kind', 'unknown')
+        let values = parsed[key]
+        if (!values) {
+          values = parsed[key] = []
         }
+        const post = new RegExp(/[\r\n]+$/).test(snip)
+        snip = snip.trim()
+        const $synced = new YamlParser().parse(snip, absLine)
+        if ($synced) {
+          $synced.$r = absLine
+          $synced.$l = snip.split(/[\r\n]+/g).length
+          values.push({ $raw: obj, $yml: snip, $synced })
+          resources.push(obj)
+          absLine += $synced.$l
+          if (post) {
+            absLine++
+          }
+        }
+      } else {
+        absLine++
       }
     })
   } catch (e) {

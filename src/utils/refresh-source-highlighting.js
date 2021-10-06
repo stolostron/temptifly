@@ -39,7 +39,7 @@ export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => 
           // convert A's and E's into 'N's
           switch (kind) {
           case 'E': {
-            if (obj.$l > 1) {
+            if (obj.$l > 1 && rhs) {
               // convert edit to new is multilines added
               kind = 'N'
               obj = { $r: obj.$r + 1, $l: obj.$l - 1 }
@@ -88,7 +88,7 @@ export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => 
         switch (kind) {
         case 'E': {
           // edited
-          if (obj.$v || obj.$v === false) {
+          if ((obj.$v || obj.$v === false) && rhs) {
             // if no value ignore--all values removed from a key
             decorationList.push({
               range: new editor.monaco.Range(obj.$r + 1, 0, obj.$r + 1, 0),
@@ -225,7 +225,12 @@ export const highlightAllChanges = (
         const scrollTo = editorOnTab.errorLine || editorOnTab.changed || 1
         if (r && (scrollTo<r.startLineNumber || scrollTo>r.endLineNumber)) {
           setTimeout(() => {
+            editorOnTab.setSelection(new editorOnTab.monaco.Selection(0, 0, 0, 0))
             editorOnTab.revealLineInCenter(scrollTo)
+          })
+        } else {
+          setTimeout(() => {
+            editorOnTab.setSelection(new editorOnTab.monaco.Selection(0, 0, 0, 0))
           })
         }
       }
