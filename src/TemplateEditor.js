@@ -413,24 +413,19 @@ export default class TemplateEditor extends React.Component {
     }
     return (
       <div className={editorClasses}>
-        {showEditor ? (
-          <SplitPane
-            split="vertical"
-            minSize={500}
-            maxSize={maxSize}
-            ref={this.setSplitPaneRef}
-            defaultSize={this.handleSplitterDefault()}
-            onChange={this.handleSplitterChange}
-          >
-            {this.renderControls(isLoaded)}
-            {this.renderEditor()}
-          </SplitPane>
-        ) : (
-          <div style={{height:'100%'}}>
-            {this.renderControls(isLoaded)}
-          </div>
-
-        )}
+        <SplitPane
+          split="vertical"
+          minSize={500}
+          maxSize={maxSize}
+          ref={this.setSplitPaneRef}
+          defaultSize={this.handleSplitterDefault()}
+          onChange={this.handleSplitterChange}
+          pane1Style={showEditor ? undefined : {width: '100%'}}
+          style={{ overflow: showEditor ? 'auto hidden' : 'hidden auto' }}
+        >
+          {this.renderControls(isLoaded)}
+          {showEditor && this.renderEditor()}
+        </SplitPane>
       </div>
     )
   }
