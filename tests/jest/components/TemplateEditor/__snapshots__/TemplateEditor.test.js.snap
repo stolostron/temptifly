@@ -26,7 +26,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
     >
       <div
         class="SplitPane  vertical "
-        style="display: flex; flex: 1; height: 100%; position: absolute; outline: none; overflow: hidden; user-select: text; flex-direction: row; left: 0px; right: 0px;"
+        style="display: flex; flex: 1; height: 100%; position: absolute; outline: none; overflow: auto hidden; user-select: text; flex-direction: row; left: 0px; right: 0px;"
       >
         <div
           class="Pane vertical Pane1  "

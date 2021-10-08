@@ -1,5 +1,6 @@
 .temptifly,
 .creation-view {
+  height: 100%;
   display: flex;
   position: relative;
   margin-top: -10px;
@@ -11,8 +12,6 @@
   .creation-view-split-container {
     width: 100%;
     &.showEditor {
-      height: calc(100vh - 200px);
-
       .creation-view-controls-container {
         height: calc(100vh - 200px);
         position: relative;
@@ -48,7 +47,6 @@
       }
 
       .creation-view-yaml {
-        height: calc(100% - 10px);
         position: relative;
 
         &.hasTabs {
