@@ -193,7 +193,6 @@ const mergeSource = (
   const clonedCurrentTemplateResources =
     currentTemplateResources && cloneDeep(currentTemplateResources)
   const groupByBase = groupBy(baseTemplateResources, 'kind')
-  const groupByTemplate = groupBy(currentTemplateResources, 'kind')
 
   ////////////////////////////////////////////////
   ///////////  DELETE ////////////////////////////
@@ -234,7 +233,6 @@ const mergeSource = (
     if (currentTemplateResources) {
       inx = clonedCurrentTemplateResources.findIndex(res => {
         return resourceID === getResourceID(res)
-        || (res.kind===resource.kind && groupByTemplate[resource.kind].length===1)
       })
       if (inx === -1) {
         // if editor got rid of it, add to the selfLinks we will be deleting

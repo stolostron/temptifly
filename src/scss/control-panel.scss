@@ -33,6 +33,7 @@ $acm_background_color: #f0f0f0 !default;
   .creation-view-controls {
     display: flex;
     flex-direction: column;
+    row-gap: 0;
 
     div:focus {
       outline: none;
