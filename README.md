@@ -1,6 +1,6 @@
 [comment]: # ( Copyright Contributors to the Open Cluster Management project )
 
-# Open Cluster Management UI Components
+# temptifly
 
 YAML template editor for open cluster management.
 
