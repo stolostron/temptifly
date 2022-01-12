@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/open-cluster-management/temptifly.git"
+    "url": "git+https://github.com/stolostron/temptifly.git"
   },
   "keywords": [
     "template",
@@ -23,9 +23,9 @@
   "author": "",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/open-cluster-management/temptifly/issues"
+    "url": "https://github.com/stolostron/temptifly/issues"
   },
-  "homepage": "https://github.com/open-cluster-management/temptifly#readme",
+  "homepage": "https://github.com/stolostron/temptifly#readme",
   "dependencies": {
     "@loadable/component": "^5.14.1",
     "apollo-client": "^2.2.8",
