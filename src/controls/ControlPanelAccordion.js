@@ -267,7 +267,7 @@ class ControlPanelAccordion extends React.Component {
             break
           }
         } else {
-          summarize(summary)
+          summarize(summary, this.props.i18n)
         }
       }
     )
