@@ -30,7 +30,6 @@ exports[`EditorHeader component renders as expected 1`] = `
             <a
               aria-selected="true"
               class="tf--tabs__nav-link"
-              href="#"
               role="tab"
               tabindex="0"
             >
