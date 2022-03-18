@@ -2217,6 +2217,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                       <a
                         aria-selected="true"
                         class="tf--tabs__nav-link"
+                        href="#"
                         role="tab"
                         tabindex="0"
                       >
@@ -2232,6 +2233,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                       <a
                         aria-selected="false"
                         class="tf--tabs__nav-link"
+                        href="#"
                         role="tab"
                         tabindex="0"
                       >
