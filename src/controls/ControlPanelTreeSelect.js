@@ -454,7 +454,10 @@ class ControlPanelTreeSelect extends React.Component {
   }
 
   clickClear() {
-    this.setState({ searchText: '' })
+    this.setState({ searchText: ''})
+    const { control, handleChange } = this.props
+    control.active = ''
+    handleChange()
   }
 }
 
