@@ -6,6 +6,7 @@ import { Prompt } from 'react-router-dom'
 import SplitPane from 'react-split-pane'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
+import isEmpty from 'lodash/isEmpty'
 import {
   Button,
   Switch,
@@ -1313,7 +1314,7 @@ export default class TemplateEditor extends React.Component {
   }
 
   renderCreateButton(isLoaded) {
-    const { showWizard, isEditing } = this.state
+    const { showWizard, isEditing, controlData, showEditor } = this.state
     const { portals, createControl={}, i18n } = this.props
     const { createBtn } = portals || Portals
     if (createBtn && !showWizard && isLoaded) {
@@ -1329,10 +1330,47 @@ export default class TemplateEditor extends React.Component {
       const label = isEditing
         ? (i18n ? i18n('button.update') : 'Update')
         : (i18n ? i18n('button.create') : 'Create')
+
+      const onClick = () => {
+        this.setState((state) => ({
+          ...state,
+          notifications: [],
+        }))
+
+        const validations = controlData.map((cd) => cd.validate).filter(Boolean)
+        if (validations.length) {
+          Promise.all(validations.map((v) => v())).then((results) => {
+            const hasErrors = results.some((result) => !isEmpty(result))
+            if (hasErrors) {
+              this.setState((state) => ({
+                ...state,
+                notifications: [
+                  {exception: 'Please fix the form errors'}
+                ]
+              }))
+              this.forceUpdate()
+
+              setTimeout(() => {
+                const viewClassname = showEditor ? 'creation-view-controls' : 'SplitPane  vertical '
+                document.getElementsByClassName(viewClassname)[0].scrollTo({
+                  top: 0,
+                  left: 0,
+                  behavior: 'smooth'
+                })
+              }, 100)
+              return
+            } else {
+              this.handleCreateResource()
+            }
+          })
+        } else {
+          this.handleCreateResource()
+        }
+      }
       const button = (
         <Button
           id={`${createBtn}-btn`}
-          onClick={this.handleCreateResource.bind(this)}
+          onClick={onClick.bind(this)}
           variant={'primary'}
           isDisabled={disableButton}
           data-testid={createBtn}
