@@ -540,7 +540,7 @@ export default class TemplateEditor extends React.Component {
       isFinalValidate,
       i18n
     } = this.state
-    const { active, controlData: cd } = control
+    const { active, controlData: cd, onChange } = control
     const { onControlInitialize } = this.props
     if (inx === undefined) {
       // add new group
@@ -558,6 +558,9 @@ export default class TemplateEditor extends React.Component {
       const nameControl = keyBy(newGroup, 'id')[nameId]
       if (nameControl) {
         nameControl.active = `${baseName}-${active.length - 1}`
+      }
+      if (onChange) {
+        onChange(control, controlData)
       }
 
       // scroll down
