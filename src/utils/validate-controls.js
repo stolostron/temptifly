@@ -454,11 +454,11 @@ const validateSingleSelectControl = (
   if (!active) {
     addException(sourcePath, exceptions, i18n)
   } else if (
-    available.findIndex(avail => active.indexOf(avail) !== -1) === -1
+    available.indexOf(active) === -1
   ) {
     control.exception = i18n(
       'validation.bad.value',
-      [active, get(control, 'available')])
+      [active, get(control, 'available').join(', ')])
     exceptions.push({
       row: getRow(sourcePath),
       column: 0,
