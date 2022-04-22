@@ -12,7 +12,7 @@ export const initializeControlData = (
   uniqueGroupID,
   inGroup
 ) => {
-  const parentControlData = initialControlData.map(control => {
+  const parentControlData = initialControlData.map((control) => {
     const { type, controlData, groupCnt = 1 } = control
     switch (type) {
     case 'group': {
@@ -44,7 +44,7 @@ export const initializeControlData = (
 
   // if any card controls, set this as parent control data
   if (inGroup) {
-    parentControlData.forEach(c => {
+    parentControlData.forEach((c) => {
       if (c.type === 'cards') {
         c.uniqueGroupID = uniqueGroupID
         c.groupControlData = parentControlData
@@ -53,7 +53,7 @@ export const initializeControlData = (
     parentControlData.unshift({
       id: 'uniqueGroupID',
       type: 'hidden',
-      active: uniqueGroupID
+      active: uniqueGroupID,
     })
   }
   return parentControlData
@@ -80,7 +80,7 @@ const initialControl = (control, onControlInitialize, i18n) => {
     initializeAvailableChoices(type, control)
 
     // initialize validation methods
-    initializeValidation(type, control)
+    initializeValidation(control)
 
     control.isInitialized = true
   }
@@ -106,7 +106,7 @@ const initializeControlActive = (type, control) => {
   }
 }
 
-const initializeControlUserData = control => {
+const initializeControlUserData = (control) => {
   //if user data was cached, apply now
   //save custom user input for session??
   if (control.cacheUserValueKey) {
@@ -130,19 +130,19 @@ const initializeMsgs = (control, i18n) => {
     'prompt',
     'info',
     'tooltip',
-    'tip'
+    'tip',
   ]
-  keys.forEach(key => {
-    if (typeof control[key] === 'string' && control[key].indexOf('<')===-1) {
+  keys.forEach((key) => {
+    if (typeof control[key] === 'string' && control[key].indexOf('<') === -1) {
       control[key] = i18n(control[key])
     }
   })
   const properties = ['available', 'active']
-  properties.forEach(prop => {
+  properties.forEach((prop) => {
     const values = get(control, prop)
     if (Array.isArray(values)) {
-      values.forEach(item => {
-        keys.forEach(key => {
+      values.forEach((item) => {
+        keys.forEach((key) => {
           if (item[key] && item[key].split('.').length > 2) {
             if (typeof item[key] === 'string') {
               item[key] = i18n(item[key])
@@ -155,9 +155,10 @@ const initializeMsgs = (control, i18n) => {
 
   // if table convert the controlData in that
   if (type === 'table' && controlData) {
-    controlData.forEach(ctrl => {
+    controlData.forEach((ctrl) => {
       if (!ctrl.isInitialized) {
         initializeMsgs(ctrl, i18n)
+        initializeValidation(ctrl)
         ctrl.isInitialized = true
       }
     })
@@ -167,10 +168,11 @@ const initializeMsgs = (control, i18n) => {
   if (type === 'cards' && available) {
     available.forEach(({ change = {} }) => {
       if (change.insertControlData) {
-        change.insertControlData.forEach(ctrl => {
+        change.insertControlData.forEach((ctrl) => {
           if (!ctrl.isInitialized) {
             initializeControlActive(ctrl.type, ctrl)
             initializeMsgs(ctrl, i18n)
+            initializeValidation(ctrl)
             ctrl.isInitialized = true
           }
         })
@@ -195,7 +197,7 @@ const initializeAvailableChoices = (type, control) => {
     const { sort = true } = control
     availableMap = control.availableMap = {}
     sortAvailableChoices = sort
-    control.available = control.available.map(choice => {
+    control.available = control.available.map((choice) => {
       let availableKey
       const {
         id,
@@ -204,7 +206,7 @@ const initializeAvailableChoices = (type, control) => {
         name,
         description,
         replacements,
-        change = {}
+        change = {},
       } = choice
       // label choices
       if (key && value) {
@@ -254,7 +256,7 @@ const initializeAvailableChoices = (type, control) => {
   }
 }
 
-const initializeValidation = (type, control) => {
+const initializeValidation = (control) => {
   //connect controls to source for updates/validation
   const { validation, multiline } = control
   if (validation) {
@@ -273,14 +275,14 @@ const initializeValidation = (type, control) => {
       }
     } else if (validation.json) {
       validation.tester = {
-        test: function(value) {
+        test: function (value) {
           try {
             JSON.parse(value)
             return true
           } catch (e) {
             return false
           }
-        }
+        },
       }
     }
   }
