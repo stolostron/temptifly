@@ -11,7 +11,7 @@ import {
   if_gtFn,
   if_neFn,
   if_orFn,
-  switchFn
+  switchFn,
 } from '../helpers'
 import get from 'lodash/get'
 import capitalize from 'lodash/capitalize'
@@ -25,8 +25,8 @@ const helpers = {
     if_gt: if_gtFn,
     if_ne: if_neFn,
     if_or: if_orFn,
-    switch: switchFn
-  }
+    switch: switchFn,
+  },
 }
 
 export const generateSourceFromTemplate = (
@@ -63,33 +63,35 @@ export const generateSourceFromTemplate = (
   /////////////////////////////////////////////////////////
   // if tab(s) were created to show encoded YAML, update that tab's info
   if (otherYAMLTabs) {
-    if (encodeInfo.length>0) {
-      encodeInfo.forEach(({ id, control, templateYAML, encode, newTab, snippetKey }) => {
-        templateYAML = replaceSnippetMap(templateYAML, snippetMap)
-        if (encode) {
-          snippetMap[snippetKey] = Base64.encode(
-            templateYAML.replace(/\s*##.+$/gm, '')
-          )
-        }
-        if (newTab) {
-          const existingInx = otherYAMLTabs.findIndex(
-            ({ id: existingId }) => existingId === id
-          )
-          if (existingInx !== -1) {
-            const existingTab = otherYAMLTabs[existingInx]
-            existingTab.oldTemplateYAML = existingTab.templateYAML
-            existingTab.templateYAML = templateYAML
-          } else {
-            otherYAMLTabs.push({
-              id,
-              control,
-              templateYAML
-            })
+    if (encodeInfo.length > 0) {
+      encodeInfo.forEach(
+        ({ id, control, templateYAML, encode, newTab, snippetKey }) => {
+          templateYAML = replaceSnippetMap(templateYAML, snippetMap)
+          if (encode) {
+            snippetMap[snippetKey] = Base64.encode(
+              templateYAML.replace(/\s*##.+$/gm, '')
+            )
+          }
+          if (newTab) {
+            const existingInx = otherYAMLTabs.findIndex(
+              ({ id: existingId }) => existingId === id
+            )
+            if (existingInx !== -1) {
+              const existingTab = otherYAMLTabs[existingInx]
+              existingTab.oldTemplateYAML = existingTab.templateYAML
+              existingTab.templateYAML = templateYAML
+            } else {
+              otherYAMLTabs.push({
+                id,
+                control,
+                templateYAML,
+              })
+            }
           }
         }
-      })
+      )
     } else {
-      otherYAMLTabs.length=0
+      otherYAMLTabs.length = 0
     }
   }
 
@@ -118,20 +120,15 @@ export const generateSourceFromTemplate = (
   return {
     templateYAML: yaml,
     templateObject,
-    templateResources: parsed.resources
+    templateResources: parsed.resources,
   }
-
 }
 
-export const generateTemplateData = (
-  controlData,
-  replacements,
-  controlMap
-) => {
+export const generateTemplateData = (controlData, replacements, controlMap) => {
   //convert controlData active into templateData
   //do replacements second in case it depends on previous templateData
   let templateData = {}
-  const getTemplateData = control => {
+  const getTemplateData = (control) => {
     const {
       getActive,
       userMap,
@@ -144,7 +141,7 @@ export const generateTemplateData = (
       hasValueDescription,
       hasReplacements,
       encode,
-      template: _template
+      template: _template,
     } = control
     let { availableMap } = control
     availableMap = { ...userMap, ...availableMap }
@@ -160,7 +157,7 @@ export const generateTemplateData = (
     if (active !== undefined) {
       if (hasKeyLabels) {
         const map = {}
-        active.forEach(pair => {
+        active.forEach((pair) => {
           const { key, value } = availableMap[pair]
           let arr = map[key]
           if (!arr) {
@@ -172,9 +169,9 @@ export const generateTemplateData = (
       } else if (hasValueDescription) {
         ret = availableMap[active] || active
       } else if (type === 'group') {
-        ret = active.map(group => {
+        ret = active.map((group) => {
           const map = {}
-          group.forEach(gcontrol => {
+          group.forEach((gcontrol) => {
             const gvalue = getTemplateData(gcontrol)
             if (gvalue) {
               map[gcontrol.id] = gvalue
@@ -222,7 +219,7 @@ export const generateTemplateData = (
     }
     return ret
   }
-  controlData.forEach(control => {
+  controlData.forEach((control) => {
     let value = getTemplateData(control)
     if (value !== undefined) {
       const { type, onlyOne, encodeValues } = control
@@ -230,8 +227,8 @@ export const generateTemplateData = (
         templateData = { ...templateData, ...value[0] }
       }
       if (encodeValues) {
-        value = {...value}
-        encodeValues.forEach(key=>{
+        value = { ...value }
+        encodeValues.forEach((key) => {
           value[key] = Base64.encode(value[key])
         })
       }
@@ -248,14 +245,14 @@ const addCodeSnippetsTemplateData = (
 ) => {
   // if replacement updates a hidden control that user can't change
   // reset that control's active state and let replacement fill from scratch
-  replacements.forEach(control => {
+  replacements.forEach((control) => {
     const { availableMap } = control
     const controlReplacements = get(
       Object.values(availableMap),
       '[0].replacements'
     )
     if (controlReplacements) {
-      Object.keys(controlReplacements).forEach(id => {
+      Object.keys(controlReplacements).forEach((id) => {
         const ctrl = controlMap[id]
         if (ctrl && ctrl.type === 'hidden') {
           delete controlMap[id].wasSet
@@ -281,7 +278,7 @@ const addCodeSnippetsTemplateData = (
   //add replacements
   const snippetMap = {}
   const encodeInfo = []
-  replacements.forEach(control => {
+  replacements.forEach((control) => {
     const {
       id,
       active,
@@ -290,7 +287,7 @@ const addCodeSnippetsTemplateData = (
       customYAML,
       encode: encodeData = [],
       groupTemplateData,
-      userData
+      userData,
     } = control
     const templateData = groupTemplateData || mainTemplateData
     templateData[`has${capitalize(id)}`] = active.length > 0
@@ -303,9 +300,11 @@ const addCodeSnippetsTemplateData = (
         const choices = Array.isArray(active) ? active : [active]
         choices.forEach((key, idx) => {
           const { replacements: _replacements } = availableMap[key]
-          Object.entries(_replacements).forEach(([_id, partial={}]) => {
+
+          Object.entries(_replacements).forEach(([_id, partial = {}]) => {
             const { template: _template, encode, newTab } = partial
-            partial = _template || partial
+            partial =
+              _template || (templateData[_id] ? templateData[_id] : partial)
             const typeOf = typeof partial
             if (typeOf === 'string' || typeOf === 'function') {
               let snippet =
@@ -328,7 +327,7 @@ const addCodeSnippetsTemplateData = (
                     snippetKey,
                     encode: true,
                     newTab,
-                    id: _id
+                    id: _id,
                   })
                 }
                 snippetMap[snippetKey] = snippet
@@ -356,7 +355,7 @@ const addCodeSnippetsTemplateData = (
                 if (!Array.isArray(arr)) {
                   arr = []
                 }
-                if (arr.indexOf(snippet)===-1) {
+                if (arr.indexOf(snippet) === -1) {
                   arr.push(snippet)
                 }
               }
@@ -370,7 +369,7 @@ const addCodeSnippetsTemplateData = (
       // user reset selection, remove its keys from wasSet
       Object.values(controlMap).forEach(({ wasSet }) => {
         if (wasSet) {
-          Object.keys(availableMap).forEach(key => {
+          Object.keys(availableMap).forEach((key) => {
             wasSet.delete(key)
           })
         }
@@ -388,7 +387,7 @@ const replaceSnippetMap = (yaml, snippetMap) => {
   Object.entries(snippetMap).forEach(([key, replace]) => {
     let replaced = false
     const regex = new RegExp(`^\\s*${key}`, 'gm')
-    yaml = yaml.replace(regex, str => {
+    yaml = yaml.replace(regex, (str) => {
       replaced = true
       const inx = str.indexOf(key)
       const indent = inx !== -1 ? str.substring(0, inx) : '    '
