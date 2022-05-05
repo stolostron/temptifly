@@ -10,8 +10,8 @@ class ControlPanelTextInput extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    i18n: PropTypes.func
-  };
+    i18n: PropTypes.func,
+  }
 
   constructor(props) {
     super(props)
@@ -20,25 +20,18 @@ class ControlPanelTextInput extends React.Component {
 
   setControlRef = (control, ref) => {
     control.ref = ref
-  };
+  }
 
   render() {
     const { controlId, i18n, control } = this.props
-    const {
-      name,
-      type,
-      active: value,
-      exception,
-      disabled
-    } = control
+    const { name, type, active: value, exception, disabled } = control
 
     // if placeholder missing, create one
     let { placeholder } = control
     if (!placeholder) {
-      placeholder = i18n(
-        'creation.ocp.cluster.enter.value',
-        [name ? name.toLowerCase() : '']
-      )
+      placeholder = i18n('creation.ocp.cluster.enter.value', [
+        name ? name.toLowerCase() : '',
+      ])
     }
 
     const validated = exception ? 'error' : undefined
@@ -49,9 +42,7 @@ class ControlPanelTextInput extends React.Component {
           style={{ display: '' }}
           ref={this.setControlRef.bind(this, control)}
         >
-          <ControlPanelFormGroup
-            controlId={controlId}
-            control={control}>
+          <ControlPanelFormGroup controlId={controlId} control={control}>
             <TextInput
               id={controlId}
               isDisabled={disabled}
@@ -71,7 +62,7 @@ class ControlPanelTextInput extends React.Component {
 
   handleChange(id, evt) {
     const { control, handleChange } = this.props
-    control.active = (evt||'').trim()
+    control.active = evt || ''
     handleChange(evt)
   }
 }
