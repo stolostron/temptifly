@@ -279,6 +279,10 @@ $acm_background_color: #f0f0f0 !default;
           svg {
             height: 100%;
           }
+
+          &:focus {
+            outline: #06c auto 1px;
+          }
         }
 
         .tf--list-box__menu-icon {
@@ -291,6 +295,10 @@ $acm_background_color: #f0f0f0 !default;
 
           svg {
             height: 100%;
+          }
+
+          &:focus {
+            outline: #06c auto 1px;
           }
         }
         .tf--list-box__menu-icon--open {
@@ -342,6 +350,10 @@ $acm_background_color: #f0f0f0 !default;
             cursor: pointer;
             position: relative;
             white-space: nowrap;
+
+            &:focus {
+              outline: #06c auto 1px;
+            }
 
             &:hover {
               background-color: rgba(85, 150, 230, 0.1);
