@@ -161,6 +161,7 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
 
   // make sure there's no duplicates
   resources = uniqWith(resources, isEqual)
+  editStack.deletedLinks= uniqWith(editStack.deletedLinks, isEqual)
 
   // then generate the source from those resources
   const { templateYAML, templateObject:mergedObjects } = generateSourceFromResources(resources)
