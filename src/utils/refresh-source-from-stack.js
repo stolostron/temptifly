@@ -6,7 +6,8 @@ import {
   discoverControls,
   setEditingMode,
   reverseTemplate,
-  getResourceID
+  discoverImmutables,
+  getResourceID,
 } from './source-utils'
 import { generateSourceFromTemplate } from './refresh-source-from-templates'
 import YamlParser from './YamlParser'
@@ -61,23 +62,23 @@ export const updateEditStack = (
   return editStack
 }
 
-const updateCustomIdMap = editStack => {
+const updateCustomIdMap = (editStack) => {
   const { customResources, baseTemplateResources, customIdMap } = editStack
   const clonedTemplateResources = cloneDeep(baseTemplateResources)
   const customIdSet = new Set()
-  customResources.forEach(resource => {
+  customResources.forEach((resource) => {
     const resourceID = getResourceID(resource)
     if (resourceID) {
       customIdSet.add(resourceID)
     }
   })
-  customResources.forEach(resource => {
+  customResources.forEach((resource) => {
     let resourceID = getResourceID(resource)
     if (resourceID) {
       if (customIdMap[resourceID]) {
         resourceID = customIdMap[resourceID]
       }
-      let inx = clonedTemplateResources.findIndex(res => {
+      let inx = clonedTemplateResources.findIndex((res) => {
         return resourceID === getResourceID(res)
       })
       if (inx !== -1) {
@@ -85,14 +86,14 @@ const updateCustomIdMap = editStack => {
         customIdMap[resourceID] = getResourceID(res)
       } else {
         clonedTemplateResources
-          .filter(res => res.kind === resource.kind)
-          .forEach(res => {
+          .filter((res) => res.kind === resource.kind)
+          .forEach((res) => {
             const templateID = getResourceID(res)
             if (!customIdSet.has(templateID)) {
               customIdMap[resourceID] = templateID
             }
           })
-        inx = clonedTemplateResources.findIndex(res => {
+        inx = clonedTemplateResources.findIndex((res) => {
           return customIdMap[resourceID] === getResourceID(res)
         })
         if (inx !== -1) {
@@ -134,11 +135,17 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
   )
 
   // save any secrets
-  const secretsMap = templateObject.Secret && keyBy(templateObject.Secret
-    .filter(({$raw: {metadata}})=>metadata), ({ $raw }) => {
-    const { metadata: { name, namespace } } = $raw
-    return `${namespace}/${name}`
-  })
+  const secretsMap =
+    templateObject.Secret &&
+    keyBy(
+      templateObject.Secret.filter(({ $raw: { metadata } }) => metadata),
+      ({ $raw }) => {
+        const {
+          metadata: { name, namespace },
+        } = $raw
+        return `${namespace}/${name}`
+      }
+    )
 
   // first time thru, we just have the base template to compare against
   let currentTemplateResources
@@ -163,14 +170,17 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
   resources = uniqWith(resources, isEqual)
 
   // then generate the source from those resources
-  const { templateYAML, templateObject:mergedObjects } = generateSourceFromResources(resources)
+  const { templateYAML, templateObject: mergedObjects } =
+    generateSourceFromResources(resources)
 
   // restore any secrets
   if (secretsMap && mergedObjects.Secret) {
-    mergedObjects.Secret.forEach(resource => {
+    mergedObjects.Secret.forEach((resource) => {
       resource = resource.$raw
       if (resource.metadata) {
-        const { metadata: { name, namespace } } = resource
+        const {
+          metadata: { name, namespace },
+        } = resource
         const secret = secretsMap[`${namespace}/${name}`]
         if (secret) {
           merge(resource, secret.$raw)
@@ -179,7 +189,15 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
     })
   }
 
-  return { templateYAML, templateObject:mergedObjects, templateResources }
+  // what lines should be readonly in editor
+  const immutableRows = discoverImmutables(controlData, mergedObjects)
+
+  return {
+    templateYAML,
+    templateObject: mergedObjects,
+    templateResources,
+    immutableRows,
+  }
 }
 
 const mergeSource = (
@@ -200,11 +218,11 @@ const mergeSource = (
   const weakBase = new WeakMap()
   const weakCurrent = new WeakMap()
   if (currentTemplateResources) {
-    clonedCurrentTemplateResources.forEach((res,inx)=>res.__inx__ = inx)
+    clonedCurrentTemplateResources.forEach((res, inx) => (res.__inx__ = inx))
   }
 
   // filter out the custom resources that don't exist in the current template using selfLinks
-  customResources = customResources.filter(resource => {
+  customResources = customResources.filter((resource) => {
     // filter out custom resource that isn't in next version of template
 
     const deleteLink = merge(
@@ -220,9 +238,11 @@ const mergeSource = (
     }
     // if base template doesn't have this resource, the template never liked it
     // (ex: predefined app channel)
-    let inx = baseTemplateResources.findIndex(res => {
-      return resourceID === getResourceID(res)
-        || (res.kind===resource.kind && groupByBase[resource.kind].length===1)
+    let inx = baseTemplateResources.findIndex((res) => {
+      return (
+        resourceID === getResourceID(res) ||
+        (res.kind === resource.kind && groupByBase[resource.kind].length === 1)
+      )
     })
     if (inx === -1) {
       return false
@@ -231,7 +251,7 @@ const mergeSource = (
 
     // if user has added something with the forms
     if (currentTemplateResources) {
-      inx = clonedCurrentTemplateResources.findIndex(res => {
+      inx = clonedCurrentTemplateResources.findIndex((res) => {
         return resourceID === getResourceID(res)
       })
       if (inx === -1) {
@@ -262,7 +282,7 @@ const mergeSource = (
     ///////////  MODIFY ////////////////////////////
     ////////////////////////////////////////////////
 
-    customResources.forEach(resource => {
+    customResources.forEach((resource) => {
       // compare the difference, and add them to edit the custom resource
       let val, idx
 
@@ -274,49 +294,49 @@ const mergeSource = (
           diffs.forEach(({ kind, path, rhs, lhs, item }) => {
             if (!isProtectedNameNamespace(path, rhs, lhs)) {
               switch (kind) {
-              // array modification
-              case 'A': {
-                switch (item.kind) {
-                case 'N':
-                  val = get(newResource, path, [])
-                  if (Array.isArray(val)) {
-                    set(resource, path, val)
-                  } else {
-                    val[Object.keys(val).length] = item.rhs
-                    set(resource, path, Object.values(val))
-                  }
-                  break
-                case 'D':
-                  val = get(newResource, path, [])
-                  if (Array.isArray(val)) {
-                    set(resource, path, val)
-                  } else {
-                    val = omitBy(val, e => e === item.lhs)
-                    set(resource, path, Object.values(val))
+                // array modification
+                case 'A': {
+                  switch (item.kind) {
+                    case 'N':
+                      val = get(newResource, path, [])
+                      if (Array.isArray(val)) {
+                        set(resource, path, val)
+                      } else {
+                        val[Object.keys(val).length] = item.rhs
+                        set(resource, path, Object.values(val))
+                      }
+                      break
+                    case 'D':
+                      val = get(newResource, path, [])
+                      if (Array.isArray(val)) {
+                        set(resource, path, val)
+                      } else {
+                        val = omitBy(val, (e) => e === item.lhs)
+                        set(resource, path, Object.values(val))
+                      }
+                      break
                   }
                   break
                 }
-                break
-              }
-              case 'E': {
-                idx = path.pop()
-                val = get(resource, path)
-                if (Array.isArray(val)) {
-                  val.splice(idx, 1, rhs)
-                } else {
-                  path.push(idx)
+                case 'E': {
+                  idx = path.pop()
+                  val = get(resource, path)
+                  if (Array.isArray(val)) {
+                    val.splice(idx, 1, rhs)
+                  } else {
+                    path.push(idx)
+                    set(resource, path, rhs)
+                  }
+                  break
+                }
+                case 'N': {
                   set(resource, path, rhs)
+                  break
                 }
-                break
-              }
-              case 'N': {
-                set(resource, path, rhs)
-                break
-              }
-              case 'D': {
-                unset(resource, path)
-                break
-              }
+                case 'D': {
+                  unset(resource, path)
+                  break
+                }
               }
             }
           })
@@ -325,10 +345,10 @@ const mergeSource = (
     })
   }
   if (currentTemplateResources) {
-    customResources.sort((a,b)=>{
+    customResources.sort((a, b) => {
       return a.__inx__ - b.__inx__
     })
-    customResources.forEach(res=>delete res.__inx__)
+    customResources.forEach((res) => delete res.__inx__)
   }
 
   return customResources
@@ -339,7 +359,7 @@ const isProtectedNameNamespace = (path, rhs, lhs) => {
     const [key, value] = path.slice(Math.max(path.length - 2, 0))
     if (
       typeof key === 'string' &&
-      (key === 'metadata' /*|| key.endsWith('Ref')*/) &&
+      key === 'metadata' /*|| key.endsWith('Ref')*/ &&
       ['name', 'namespace'].indexOf(value) !== -1
     ) {
       return !!rhs && !!lhs
@@ -348,17 +368,26 @@ const isProtectedNameNamespace = (path, rhs, lhs) => {
   return false
 }
 
-const generateSourceFromResources = resources => {
+const generateSourceFromResources = (resources) => {
   let yaml,
-      row = 0
+    row = 0
   const parsed = {}
   const yamls = []
-  resources.forEach(resource => {
+  const sort = ['name', 'namespace']
+  const sortKeys = (a, b) => {
+    let ai = sort.indexOf(a)
+    if (ai < 0) ai = 5
+    let bi = sort.indexOf(b)
+    if (bi < 0) bi = 5
+    return ai - bi
+  }
+  resources.forEach((resource) => {
     if (!isEmpty(resource)) {
       const key = get(resource, 'kind', 'unknown')
       yaml = jsYaml.dump(resource, {
         noRefs: true,
-        lineWidth: 2000
+        lineWidth: 2000,
+        sortKeys,
       })
       yaml = yaml.replace(/'\d+':(\s|$)\s*/gm, '- ')
       yaml = yaml.replace(/:\s*null$/gm, ':')
@@ -377,6 +406,6 @@ const generateSourceFromResources = resources => {
 
   return {
     templateYAML: yamls.join('---\n'),
-    templateObject: parsed
+    templateObject: parsed,
   }
 }
