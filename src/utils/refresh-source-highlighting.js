@@ -6,7 +6,12 @@ import get from 'lodash/get'
 import keyBy from 'lodash/keyBy'
 import { Base64 } from 'js-base64'
 
-export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => {
+export const highlightChanges = (
+  editor,
+  oldYAML,
+  newYAML,
+  highlightEncoded
+) => {
   // mark any modified/added lines in editor
   const decorationList = []
 
@@ -76,7 +81,7 @@ export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => 
         if (ignorePaths.length > 0) {
           const tp = path.join('/')
           if (
-            ignorePaths.some(p => {
+            ignorePaths.some((p) => {
               return tp.startsWith(p)
             })
           ) {
@@ -95,8 +100,8 @@ export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => 
               options: {
                 isWholeLine: true,
                 linesDecorationsClassName: 'insertedLineDecoration',
-                minimap: { color: '#c0c0ff', position: 2 }
-              }
+                minimap: { color: '#c0c0ff', position: 2 },
+              },
             })
 
             // if long encoded string, don't scroll to it
@@ -124,8 +129,8 @@ export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => 
             options: {
               isWholeLine: true,
               linesDecorationsClassName: 'insertedLineDecoration',
-              minimap: { color: '#c0c0ff', position: 2 }
-            }
+              minimap: { color: '#c0c0ff', position: 2 },
+            },
           })
           if (!firstNewRow || firstNewRow > obj.$r) {
             firstNewRow = obj.$r
@@ -139,18 +144,20 @@ export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => 
       editor.changeList = decorationList
       editor.decorations = editor.deltaDecorations(editor.decorations, [
         ...(editor.errorList || []),
-        ...editor.changeList
+        ...(editor.immutableList || []),
+        ...editor.changeList,
       ])
     }, 0)
   } else {
     editor.decorations = editor.deltaDecorations(editor.decorations, [])
   }
-  editor.changed = firstNewRow || firstModRow || (highlightEncoded && encodedRow)
+  editor.changed =
+    firstNewRow || firstModRow || (highlightEncoded && encodedRow)
 }
 
 // if there are arrays make sure equal array entries line up
 const normalize = (oldRaw, newRaw) => {
-  Object.keys(oldRaw).forEach(key => {
+  Object.keys(oldRaw).forEach((key) => {
     if (newRaw[key] && oldRaw[key].length !== newRaw[key].length) {
       const oldKeys = keyBy(oldRaw[key], getResourceID)
       const newKeys = keyBy(newRaw[key], getResourceID)
@@ -180,7 +187,7 @@ export const highlightAllChanges = (
   selectedTab
 ) => {
   if (editors.length > 0) {
-    highlightChanges(editors[0], oldYAML, newYAML, editors.length===1)
+    highlightChanges(editors[0], oldYAML, newYAML, editors.length === 1)
     if (otherYAMLTabs.length > 0) {
       otherYAMLTabs.forEach(({ editor, oldTemplateYAML, templateYAML }) => {
         if (editor && oldTemplateYAML) {
@@ -221,19 +228,46 @@ export const highlightAllChanges = (
         }
       }
       if (editorOnTab) {
-        const r =  editorOnTab.getVisibleRanges()[0]
+        const r = editorOnTab.getVisibleRanges()[0]
         const scrollTo = editorOnTab.errorLine || editorOnTab.changed || 1
-        if (r && (scrollTo<r.startLineNumber || scrollTo>r.endLineNumber)) {
+        if (r && (scrollTo < r.startLineNumber || scrollTo > r.endLineNumber)) {
           setTimeout(() => {
-            editorOnTab.setSelection(new editorOnTab.monaco.Selection(0, 0, 0, 0))
+            editorOnTab.setSelection(
+              new editorOnTab.monaco.Selection(0, 0, 0, 0)
+            )
             editorOnTab.revealLineInCenter(scrollTo)
           })
         } else {
           setTimeout(() => {
-            editorOnTab.setSelection(new editorOnTab.monaco.Selection(0, 0, 0, 0))
+            editorOnTab.setSelection(
+              new editorOnTab.monaco.Selection(0, 0, 0, 0)
+            )
           })
         }
       }
+    })
+  }
+}
+
+export const highlightImmutables = (editors, immutableRows) => {
+  if (editors.length > 0 && immutableRows.length > 0) {
+    const editor = editors[0]
+    const decorationList = []
+    immutableRows.forEach((obj) => {
+      decorationList.push({
+        range: new editor.monaco.Range(obj.$r + 1, 0, obj.$r + 1, 132),
+        options: {
+          inlineClassName: 'protectedDecoration',
+        },
+      })
+      setTimeout(() => {
+        editor.immutableList = decorationList
+        editor.decorations = editor.deltaDecorations(editor.decorations, [
+          ...(editor.errorList || []),
+          ...(editor.changeList || []),
+          ...editor.immutableList,
+        ])
+      }, 0)
     })
   }
 }
