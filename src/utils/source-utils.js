@@ -14,7 +14,7 @@ import get from 'lodash/get'
 
 export const ControlMode = Object.freeze({
   TABLE_ONLY: 'TABLE_ONLY',
-  PROMPT_ONLY: 'PROMPT_ONLY'
+  PROMPT_ONLY: 'PROMPT_ONLY',
 })
 
 export const initializeControls = (
@@ -39,13 +39,13 @@ export const initializeControls = (
 // from an edit resource, discover # of groups, card selections
 export function discoverControls(controlData, templateObject, editor, i18n) {
   templateObject = cloneDeep(templateObject)
-  const discoverControl = control => {
+  const discoverControl = (control) => {
     const { discover } = control
     if (discover) {
       discover(control, controlData, templateObject, editor, i18n)
     }
   }
-  controlData.forEach(control => {
+  controlData.forEach((control) => {
     discoverControl(control)
   })
 }
@@ -53,11 +53,11 @@ export function discoverControls(controlData, templateObject, editor, i18n) {
 //reverse control active valuess from template
 export function reverseTemplate(controlData, templateObject, activeTabId) {
   templateObject = cloneDeep(templateObject)
-  const reverseControl = control => {
+  const reverseControl = (control) => {
     const { type, active = [], reverse, shift } = control
     if (type === 'group') {
-      active.forEach(group => {
-        group.forEach(gcontrol => {
+      active.forEach((group) => {
+        group.forEach((gcontrol) => {
           reverseControl(gcontrol)
         })
         if (typeof shift === 'function') {
@@ -68,18 +68,43 @@ export function reverseTemplate(controlData, templateObject, activeTabId) {
       reverse(control, templateObject, activeTabId)
     }
   }
-  controlData.forEach(control => {
+  controlData.forEach((control) => {
     reverseControl(control)
   })
 }
 
+//get readonly lines in yaml
+export function discoverImmutables(controlData, templateObject, immutableObjs) {
+  immutableObjs = immutableObjs || []
+  const findImmutables = (control) => {
+    const { type, active = [], immutable } = control
+    if (type === 'group') {
+      active.forEach((group) => {
+        group.forEach((gcontrol) => {
+          findImmutables(gcontrol)
+        })
+      })
+    } else if (immutable) {
+      const path = getSourcePath(immutable)
+      const row = get(templateObject, path)
+      if (row) {
+        immutableObjs.push(row)
+      }
+    }
+  }
+  controlData.forEach((control) => {
+    findImmutables(control)
+  })
+  return immutableObjs
+}
+
 // reverse control active valuess from template
 export function setEditingMode(controlData) {
-  const setEditMode = control => {
-    const { type, active, hidden:isHidden, editing } = control
+  const setEditMode = (control) => {
+    const { type, active, hidden: isHidden, editing } = control
     if (type === 'group') {
-      active.forEach(group => {
-        group.forEach(gcontrol => {
+      active.forEach((group) => {
+        group.forEach((gcontrol) => {
           setEditMode(gcontrol)
         })
       })
@@ -96,7 +121,7 @@ export function setEditingMode(controlData) {
       // if editing existing app, disable this field
       if (disabled) {
         control.disabled = true
-        control.editing.immutable = active
+        control.immutable = control.path
       }
       // if editing existing app, disable this field
       if (collapsed) {
@@ -108,7 +133,7 @@ export function setEditingMode(controlData) {
       }
     }
   }
-  controlData.forEach(control => {
+  controlData.forEach((control) => {
     setEditMode(control)
   })
 }
@@ -131,7 +156,7 @@ export const generateSource = (
   }
 }
 
-export const parseYAML = yaml => {
+export const parseYAML = (yaml) => {
   let absLine = 0
   const parsed = {}
   const resources = []
@@ -139,7 +164,7 @@ export const parseYAML = yaml => {
   const yamls = yaml.split(/^---$/gm)
   // check for syntax errors
   try {
-    yamls.forEach(snip => {
+    yamls.forEach((snip) => {
       if (snip) {
         const obj = jsYaml.load(snip)
         const key = get(obj, 'kind', 'unknown')
@@ -171,7 +196,7 @@ export const parseYAML = yaml => {
       row: line + absLine,
       column,
       text: capitalize(reason || message),
-      type: 'error'
+      type: 'error',
     })
   }
   return { parsed, resources, exceptions }
@@ -179,9 +204,9 @@ export const parseYAML = yaml => {
 
 export const getInsideObject = (ikey, parsed) => {
   const ret = {}
-  Object.keys(parsed).forEach(key => {
+  Object.keys(parsed).forEach((key) => {
     ret[key] = []
-    get(parsed, `${key}`, []).forEach(obj => {
+    get(parsed, `${key}`, []).forEach((obj) => {
       ret[key].push(get(obj, `${ikey}`))
     })
   })
@@ -189,23 +214,20 @@ export const getInsideObject = (ikey, parsed) => {
 }
 
 //don't save user data until they create
-export const cacheUserData = controlData => {
-  controlData.forEach(control => {
+export const cacheUserData = (controlData) => {
+  controlData.forEach((control) => {
     if (
       control.cacheUserValueKey &&
       control.userData &&
       control.userData.length > 0
     ) {
-      const storageKey = `${control.cacheUserValueKey}--${
-        window.location.href
-      }`
+      const storageKey = `${control.cacheUserValueKey}--${window.location.href}`
       sessionStorage.setItem(storageKey, JSON.stringify(control.userData))
     }
   })
 }
 
-
-export const getResourceID = resource => {
+export const getResourceID = (resource) => {
   return (
     get(resource, 'metadata.selfLink') ||
     (
@@ -229,10 +251,10 @@ export const getUniqueName = (name, nameSet) => {
 
 // convert this: PlacementRule[0].spec.clusterConditions[0].type
 // to this:      PlacementRule[0].$synced.spec.$v.clusterConditions.$v[0].$v.type.$v
-export const getSourcePath = path => {
+export const getSourcePath = (path) => {
   let sourcePath = path.split(/\.(?=(?:[^"]*"[^"]*")*[^"]*$)/)
   const pathBase = sourcePath.shift() + '.$synced'
-  sourcePath = sourcePath.map(seg => {
+  sourcePath = sourcePath.map((seg) => {
     return seg.replace('[', '.$v[')
   })
   sourcePath =
@@ -240,7 +262,7 @@ export const getSourcePath = path => {
   return sourcePath
 }
 
-export const escapeYAML = object => {
+export const escapeYAML = (object) => {
   if (object) {
     if (typeof object === 'string') {
       object = object.replace(/'/g, '')
@@ -258,8 +280,7 @@ export const escapeYAML = object => {
   return object
 }
 
-
-export const removeVs = object => {
+export const removeVs = (object) => {
   if (object) {
     let o
     object = object.$v !== undefined ? object.$v : object
@@ -278,5 +299,5 @@ export const removeVs = object => {
 }
 
 export const getValue = (templateObject, path, def) => {
-  return removeVs(get(templateObject,getSourcePath(path), def))
+  return removeVs(get(templateObject, getSourcePath(path), def))
 }

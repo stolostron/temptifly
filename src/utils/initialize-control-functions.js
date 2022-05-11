@@ -8,11 +8,11 @@ import set from 'lodash/set'
 //intialize controls and groups
 ///////////////////////////////////////////////////////////////////////////////
 export const initializeControlFunctions = (controlData, editor) => {
-  controlData.forEach(control => {
+  controlData.forEach((control) => {
     initialControl(control, editor)
     const { type, active = [] } = control
-    if (type==='group') {
-      active.forEach(cd => {
+    if (type === 'group') {
+      active.forEach((cd) => {
         initializeControlFunctions(cd, editor)
       })
     }
@@ -34,7 +34,7 @@ const initialControl = (control, editor) => {
         ret = ret.bind(target)
       }
       return ret
-    }
+    },
   }
   const lastestData = new Proxy({}, handler)
 
@@ -70,7 +70,7 @@ const initialControl = (control, editor) => {
       editor.forceUpdate()
     }
 
-    control.setActive = value => {
+    control.setActive = (value) => {
       control.active = value
       if (typeof control.onSelect === 'function') {
         control.onSelect()
@@ -78,18 +78,22 @@ const initialControl = (control, editor) => {
       editor.forceUpdate()
     }
 
-    const setActiveVal = (ctrl, path, templateObject, activeTabId='<<main>>') => {
+    const setActiveVal = (
+      ctrl,
+      path,
+      templateObject,
+      activeTabId = '<<main>>'
+    ) => {
       let sourcePath
       if (ctrl.sourcePathMap) {
         sourcePath = ctrl.sourcePathMap[activeTabId]
         if (typeof sourcePath === 'string' && sourcePath.endsWith('.$v')) {
-          sourcePath = sourcePath.substring(0, sourcePath.length-3)
+          sourcePath = sourcePath.substring(0, sourcePath.length - 3)
         }
       } else if (path) {
         sourcePath = getSourcePath(path)
       }
       if (sourcePath) {
-
         const getTrueActive = (active) => {
           switch (ctrl.type) {
           case 'checkbox':
@@ -113,10 +117,12 @@ const initialControl = (control, editor) => {
         }
 
         if (Array.isArray(sourcePath)) {
-          sourcePath.forEach((path, inx)=>{
-            Object.entries(path).forEach(([key, value]) =>{
+          sourcePath.forEach((path, inx) => {
+            Object.entries(path).forEach(([key, value]) => {
               if (ctrl.active[inx]) {
-                ctrl.active[inx][key] = getTrueActive(get(templateObject, value))
+                ctrl.active[inx][key] = getTrueActive(
+                  get(templateObject, value)
+                )
               }
             })
           })
@@ -130,10 +136,12 @@ const initialControl = (control, editor) => {
       }
     }
 
-
     if (reverse) {
-      switch (true) { // match any case that is true
+      switch (
+        true // match any case that is true
+      ) {
       case typeof reverse === 'string':
+        control.path = reverse
         control.reverse = (ctrl, templateObject, activeTabId) => {
           setActiveVal(ctrl, reverse, templateObject, activeTabId)
         }
@@ -141,7 +149,7 @@ const initialControl = (control, editor) => {
 
       case Array.isArray(reverse):
         control.reverse = (ctrl, templateObject, activeTabId) => {
-          reverse.forEach(path => {
+          reverse.forEach((path) => {
             setActiveVal(ctrl, path, templateObject, activeTabId)
           })
         }
@@ -159,7 +167,7 @@ const initialControl = (control, editor) => {
 export function setSourcePaths(yaml, otherYAMLTabs = [], controlData) {
   const { parsed } = parseYAML(yaml)
   const controlMap = {}
-  controlData.forEach(control => {
+  controlData.forEach((control) => {
     const { id, type, active = [] } = control
     controlMap[id] = control
 
@@ -167,10 +175,10 @@ export function setSourcePaths(yaml, otherYAMLTabs = [], controlData) {
     case 'group':
       // each group gets an array of control data maps, one per group
       control.controlMapArr = []
-      active.forEach(cd => {
+      active.forEach((cd) => {
         const cdm = {}
         control.controlMapArr.push(cdm)
-        cd.forEach(c => {
+        cd.forEach((c) => {
           cdm[c.id] = c
         })
       })
@@ -183,7 +191,7 @@ export function setSourcePaths(yaml, otherYAMLTabs = [], controlData) {
     }
   })
 
-  otherYAMLTabs.forEach(tab => {
+  otherYAMLTabs.forEach((tab) => {
     const { id: tabId, templateYAML } = tab
     const { parsed: tabParsed } = parseYAML(templateYAML)
     syncControlData(tabParsed, controlData, controlMap, tabId)
@@ -238,7 +246,7 @@ const syncControls = (object, path, controlMap, tabId) => {
         }
       }
     } else if (object && typeof object === 'object') {
-      Object.keys(object).forEach(key => {
+      Object.keys(object).forEach((key) => {
         o = object[key]
         if (o.$v !== undefined) {
           if (key.includes('.')) {

@@ -121,6 +121,36 @@ class YamlEditor extends React.Component {
         domNode: domNode,
       })
     })
+
+    editor.onKeyDown(
+      ((e) => {
+        // determine readonly ranges
+        const prohibited = []
+        const { immutableRows = [] } = this.props
+        immutableRows.forEach((obj) => {
+          prohibited.push(
+            new this.editor.monaco.Range(obj.$r + 1, 0, obj.$r + 1, 132)
+          )
+        })
+
+        // prevent typing on same
+        if (!(e.code === 'KeyC' && (e.ctrlKey || e.metaKey))) {
+          const selections = this.editor.getSelections()
+          if (
+            !prohibited.every((prohibit) => {
+              return (
+                selections.findIndex((range) =>
+                  prohibit.intersectRanges(range)
+                ) === -1
+              )
+            })
+          ) {
+            e.stopPropagation()
+            e.preventDefault()
+          }
+        }
+      }).bind(this)
+    )
   }
 
   shouldComponentUpdate(nextProps) {
