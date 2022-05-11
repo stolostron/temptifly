@@ -87,7 +87,9 @@ export function discoverImmutables(controlData, templateObject, immutableObjs) {
     } else if (immutable) {
       const path = getSourcePath(immutable)
       const row = get(templateObject, path)
-      immutableObjs.push(row)
+      if (row) {
+        immutableObjs.push(row)
+      }
     }
   }
   controlData.forEach((control) => {
