@@ -1,6 +1,6 @@
-@import "./control-panel-cards.scss";
-@import "./control-panel-controls.scss";
-@import "./control-panel-finish.scss";
+@import './control-panel-cards.scss';
+@import './control-panel-controls.scss';
+@import './control-panel-finish.scss';
 
 $color__blue-51: #3d70b2 !default;
 $color__navy-gray-6: #5a6872 !default;
@@ -608,11 +608,11 @@ $acm_background_color: #f0f0f0 !default;
         &:before {
           padding-right: 2px;
           font-family: codicon;
-          content: "\eab4";
+          content: '\eab4';
         }
 
         &.open:before {
-          content: "\eab7";
+          content: '\eab7';
         }
 
         &.searching {
@@ -765,7 +765,7 @@ $acm_background_color: #f0f0f0 !default;
             bottom: 0;
             left: 0;
             pointer-events: none;
-            content: "";
+            content: '';
             border: 2px solid #06c;
             border-radius: 4px;
           }

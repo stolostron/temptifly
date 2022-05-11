@@ -8,11 +8,11 @@ class YamlEditor extends React.Component {
   static propTypes = {
     editor: PropTypes.element,
     hide: PropTypes.bool,
+    immutableRows: PropTypes.array,
     onYamlChange: PropTypes.func,
     readOnly: PropTypes.bool,
     setEditor: PropTypes.func,
     theme: PropTypes.string,
-    immutableRows: PropTypes.array,
     yaml: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   }
 
@@ -86,7 +86,10 @@ class YamlEditor extends React.Component {
     let stylesheet = document.querySelector('link[href*=main]')
     if (stylesheet) {
       stylesheet = stylesheet.sheet
-      stylesheet.insertRule('span { font-family: monospace }', stylesheet.cssRules.length)
+      stylesheet.insertRule(
+        'span { font-family: monospace }',
+        stylesheet.cssRules.length
+      )
     }
   }
 
@@ -121,12 +124,25 @@ class YamlEditor extends React.Component {
 
     editor.onKeyDown(
       ((e) => {
-        const { prohibited } = this.state
-        if (prohibited && !(e.code === 'KeyC' && (e.ctrlKey || e.metaKey))) {
+        // determine readonly ranges
+        const prohibited = []
+        const { immutableRows = [] } = this.props
+        immutableRows.forEach((obj) => {
+          prohibited.push(
+            new this.editor.monaco.Range(obj.$r + 1, 0, obj.$r + 1, 132)
+          )
+        })
+
+        // prevent typing on same
+        if (!(e.code === 'KeyC' && (e.ctrlKey || e.metaKey))) {
           const selections = this.editor.getSelections()
           if (
             !prohibited.every((prohibit) => {
-              return selections.findIndex((range) => prohibit.intersectRanges(range)) === -1
+              return (
+                selections.findIndex((range) =>
+                  prohibit.intersectRanges(range)
+                ) === -1
+              )
             })
           ) {
             e.stopPropagation()
@@ -150,14 +166,6 @@ class YamlEditor extends React.Component {
     if (this.editor && this.editor.getModel()) {
       const model = this.editor.getModel()
       model.forceTokenization(model.getLineCount())
-
-      // determine readonly ranges
-      const prohibited = []
-      const { immutableRows = [] } = this.props
-      immutableRows.forEach((obj) => {
-        prohibited.push(new this.editor.monaco.Range(obj.$r + 1, 0, obj.$r + 1, 132))
-      })
-      this.setState({ prohibited })
     }
   }
 

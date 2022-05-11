@@ -95,52 +95,52 @@ export default class TemplateEditor extends React.Component {
     const { creationStatus, creationMsg, resetStatus } = createControl
     if (creationStatus && !hasFormExceptions) {
       switch (creationStatus) {
-        case 'IN_PROGRESS':
-          notifications = [
-            {
-              id: 'creating',
-              variant: 'info',
-              exception:
+      case 'IN_PROGRESS':
+        notifications = [
+          {
+            id: 'creating',
+            variant: 'info',
+            exception:
                 Array.isArray(creationMsg) && creationMsg.length
                   ? creationMsg[0]
                   : i18n(
-                      isEditing
-                        ? 'success.create.updating'
-                        : 'success.create.creating',
-                      [type]
-                    ),
-            },
-          ]
-          break
+                    isEditing
+                      ? 'success.create.updating'
+                      : 'success.create.creating',
+                    [type]
+                  ),
+          },
+        ]
+        break
 
-        case 'DONE':
-          notifications = [
-            {
-              id: 'success',
-              variant: 'success',
-              exception:
+      case 'DONE':
+        notifications = [
+          {
+            id: 'success',
+            variant: 'success',
+            exception:
                 Array.isArray(creationMsg) && creationMsg.length
                   ? creationMsg[0]
                   : i18n(
-                      isEditing
-                        ? 'success.create.updated'
-                        : 'success.create.created',
-                      [type]
-                    ),
-            },
-          ]
-          break
+                    isEditing
+                      ? 'success.create.updated'
+                      : 'success.create.created',
+                    [type]
+                  ),
+          },
+        ]
+        break
 
-        case 'ERROR':
-          logCreateErrors(props.logging, creationMsg, resourceJSON)
-          notifications = creationMsg.map((message) => {
-            return {
-              id: 'create',
-              variant: 'danger',
-              exception: message.message || message,
-            }
-          })
-          break
+      case 'ERROR':
+        logCreateErrors(props.logging, creationMsg, resourceJSON)
+        notifications = creationMsg.map((message) => {
+          return {
+            id: 'create',
+            variant: 'danger',
+            exception: message.message || message,
+          }
+        })
+        break
       }
       return { notifications }
     }
@@ -161,6 +161,7 @@ export default class TemplateEditor extends React.Component {
       templateYAML,
       templateObject,
       templateResources,
+      immutableRows,
       editStack,
     } = state
     const { editor, template, showSecrets } = state
@@ -187,7 +188,7 @@ export default class TemplateEditor extends React.Component {
       }
 
       // generate source from template or stack of resources
-      ;({ templateYAML, templateObject, templateResources, immutableRows } =
+      ({ templateYAML, templateObject, templateResources, immutableRows } =
         generateSource(template, editStack, controlData))
 
       newState = {
@@ -322,7 +323,6 @@ export default class TemplateEditor extends React.Component {
         this.layoutEditors()
       }).bind(this)
     )
-    highlightImmutables(this.editors, this.state.immutableRows)
   }
 
   componentWillUnmount() {
@@ -581,7 +581,7 @@ export default class TemplateEditor extends React.Component {
       // scroll down
       if (creationView) {
         setTimeout(() => {
-          ;(showEditor ? creationView : window).scrollBy({
+          (showEditor ? creationView : window).scrollBy({
             top: 260,
             left: 0,
             behavior: 'smooth',
@@ -799,42 +799,42 @@ export default class TemplateEditor extends React.Component {
               : 200
             setTimeout(() => {
               switch (true) {
-                // collapse section above when this control is selected
-                case collapseAboveAfterSelection === true:
-                  controlData.some(
-                    ({ id: tid, sectionRef, sectionTitleRef }) => {
-                      if (sectionRef && sectionTitleRef) {
-                        sectionRef.classList.toggle('collapsed', true)
-                        sectionTitleRef.classList.toggle('collapsed', true)
-                      }
-                      return id === tid
+              // collapse section above when this control is selected
+              case collapseAboveAfterSelection === true:
+                controlData.some(
+                  ({ id: tid, sectionRef, sectionTitleRef }) => {
+                    if (sectionRef && sectionTitleRef) {
+                      sectionRef.classList.toggle('collapsed', true)
+                      sectionTitleRef.classList.toggle('collapsed', true)
                     }
-                  )
-                  setTimeout(() => {
-                    scrollView.scrollTo({
-                      top: 0,
-                      left: 0,
-                    })
-                  }, 100)
-                  break
+                    return id === tid
+                  }
+                )
+                setTimeout(() => {
+                  scrollView.scrollTo({
+                    top: 0,
+                    left: 0,
+                  })
+                }, 100)
+                break
 
                 // scroll view down after control is selected by 'scrollViewAfterSelection' pixels
-                case scrollViewAfterSelection !== undefined:
-                  scrollView.scrollBy({
-                    top: scrollViewAfterSelection,
-                    left: 0,
-                    behavior: 'smooth',
-                  })
-                  break
+              case scrollViewAfterSelection !== undefined:
+                scrollView.scrollBy({
+                  top: scrollViewAfterSelection,
+                  left: 0,
+                  behavior: 'smooth',
+                })
+                break
 
                 // scroll control to top when cards have been collapsed (only one card shown)
-                case scrollViewToTopOnSelect !== undefined:
-                  scrollView.scrollBy({
-                    top: controlTop - panelTop,
-                    left: 0,
-                    behavior: 'smooth',
-                  })
-                  break
+              case scrollViewToTopOnSelect !== undefined:
+                scrollView.scrollBy({
+                  top: controlTop - panelTop,
+                  left: 0,
+                  behavior: 'smooth',
+                })
+                break
               }
             }, 100)
             previouslySelectedCards.push(id + uniqueGroupID)
@@ -938,6 +938,8 @@ export default class TemplateEditor extends React.Component {
     this.editors.push(editor)
     if (this.editors.length > 1) {
       otherYAMLTabs[this.editors.length - 2].editor = editor
+    } else {
+      highlightImmutables(this.editors, this.state.immutableRows)
     }
     this.layoutEditors()
 
@@ -974,57 +976,57 @@ export default class TemplateEditor extends React.Component {
     const { activeYAMLEditor } = this.state
     const editor = this.editors[activeYAMLEditor]
     switch (command) {
-      case 'next':
-      case 'previous':
-        if (this.selectionIndex !== -1) {
-          if (this.selections && this.selections.length > 1) {
-            switch (command) {
-              case 'next':
-                this.selectionIndex++
-                if (this.selectionIndex >= this.selections.length) {
-                  this.selectionIndex = 0
-                }
-                break
-              case 'previous':
-                this.selectionIndex--
-                if (this.selectionIndex < 0) {
-                  this.selectionIndex = this.selections.length - 1
-                }
-                break
+    case 'next':
+    case 'previous':
+      if (this.selectionIndex !== -1) {
+        if (this.selections && this.selections.length > 1) {
+          switch (command) {
+          case 'next':
+            this.selectionIndex++
+            if (this.selectionIndex >= this.selections.length) {
+              this.selectionIndex = 0
             }
-            editor.revealLineInCenter(
-              this.selections[this.selectionIndex].selectionStartLineNumber,
-              0
-            )
+            break
+          case 'previous':
+            this.selectionIndex--
+            if (this.selectionIndex < 0) {
+              this.selectionIndex = this.selections.length - 1
+            }
+            break
           }
+          editor.revealLineInCenter(
+            this.selections[this.selectionIndex].selectionStartLineNumber,
+            0
+          )
         }
-        break
-      case 'copyAll':
-        if (editor) {
-          const save = editor.getSelection()
-          const range = editor.getModel().getFullModelRange()
-          editor.setSelection(range)
-          editor.focus()
-          document.execCommand('copy')
-          editor.setSelection(save)
-        }
-        break
-      case 'undo':
-        if (editor) {
-          editor.trigger('api', 'undo')
-        }
-        break
-      case 'redo':
-        if (editor) {
-          editor.trigger('api', 'redo')
-        }
-        break
-      case 'restore':
-        this.resetEditor()
-        break
-      case 'close':
-        this.closeEdit()
-        break
+      }
+      break
+    case 'copyAll':
+      if (editor) {
+        const save = editor.getSelection()
+        const range = editor.getModel().getFullModelRange()
+        editor.setSelection(range)
+        editor.focus()
+        document.execCommand('copy')
+        editor.setSelection(save)
+      }
+      break
+    case 'undo':
+      if (editor) {
+        editor.trigger('api', 'undo')
+      }
+      break
+    case 'redo':
+      if (editor) {
+        editor.trigger('api', 'redo')
+      }
+      break
+    case 'restore':
+      this.resetEditor()
+      break
+    case 'close':
+      this.closeEdit()
+      break
     }
     return command
   }
@@ -1388,8 +1390,8 @@ export default class TemplateEditor extends React.Component {
           ? i18n('button.update')
           : 'Update'
         : i18n
-        ? i18n('button.create')
-        : 'Create'
+          ? i18n('button.create')
+          : 'Create'
 
       const onClick = () => {
         this.setState((state) => ({
@@ -1441,11 +1443,11 @@ export default class TemplateEditor extends React.Component {
       if (portal) {
         return !hasPermissions
           ? ReactDOM.createPortal(
-              <div title={titleText} isDisabled={!hasPermissions}>
-                {button}
-              </div>,
-              portal
-            )
+            <div title={titleText} isDisabled={!hasPermissions}>
+              {button}
+            </div>,
+            portal
+          )
           : ReactDOM.createPortal(button, portal)
       }
     }

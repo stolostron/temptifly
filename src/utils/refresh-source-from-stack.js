@@ -294,49 +294,49 @@ const mergeSource = (
           diffs.forEach(({ kind, path, rhs, lhs, item }) => {
             if (!isProtectedNameNamespace(path, rhs, lhs)) {
               switch (kind) {
-                // array modification
-                case 'A': {
-                  switch (item.kind) {
-                    case 'N':
-                      val = get(newResource, path, [])
-                      if (Array.isArray(val)) {
-                        set(resource, path, val)
-                      } else {
-                        val[Object.keys(val).length] = item.rhs
-                        set(resource, path, Object.values(val))
-                      }
-                      break
-                    case 'D':
-                      val = get(newResource, path, [])
-                      if (Array.isArray(val)) {
-                        set(resource, path, val)
-                      } else {
-                        val = omitBy(val, (e) => e === item.lhs)
-                        set(resource, path, Object.values(val))
-                      }
-                      break
-                  }
-                  break
-                }
-                case 'E': {
-                  idx = path.pop()
-                  val = get(resource, path)
+              // array modification
+              case 'A': {
+                switch (item.kind) {
+                case 'N':
+                  val = get(newResource, path, [])
                   if (Array.isArray(val)) {
-                    val.splice(idx, 1, rhs)
+                    set(resource, path, val)
                   } else {
-                    path.push(idx)
-                    set(resource, path, rhs)
+                    val[Object.keys(val).length] = item.rhs
+                    set(resource, path, Object.values(val))
+                  }
+                  break
+                case 'D':
+                  val = get(newResource, path, [])
+                  if (Array.isArray(val)) {
+                    set(resource, path, val)
+                  } else {
+                    val = omitBy(val, (e) => e === item.lhs)
+                    set(resource, path, Object.values(val))
                   }
                   break
                 }
-                case 'N': {
+                break
+              }
+              case 'E': {
+                idx = path.pop()
+                val = get(resource, path)
+                if (Array.isArray(val)) {
+                  val.splice(idx, 1, rhs)
+                } else {
+                  path.push(idx)
                   set(resource, path, rhs)
-                  break
                 }
-                case 'D': {
-                  unset(resource, path)
-                  break
-                }
+                break
+              }
+              case 'N': {
+                set(resource, path, rhs)
+                break
+              }
+              case 'D': {
+                unset(resource, path)
+                break
+              }
               }
             }
           })
@@ -370,7 +370,7 @@ const isProtectedNameNamespace = (path, rhs, lhs) => {
 
 const generateSourceFromResources = (resources) => {
   let yaml,
-    row = 0
+      row = 0
   const parsed = {}
   const yamls = []
   const sort = ['name', 'namespace']

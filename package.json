@@ -1,6 +1,6 @@
 {
   "name": "temptifly",
-  "version": "0.5.11",
+  "version": "0.5.12",
   "description": "Side-by-side YAML resource editor",
   "main": "dist/index.js",
   "scripts": {
@@ -114,7 +114,7 @@
     "webpack-cli": "^4.4.0"
   },
   "prettier": {
-    "printWidth": 100,
+    "printWidth": 80,
     "tabWidth": 2,
     "semi": false,
     "singleQuote": true,

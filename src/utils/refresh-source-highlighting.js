@@ -43,29 +43,29 @@ export const highlightChanges = (
         if (obj.$v || obj.$v === false) {
           // convert A's and E's into 'N's
           switch (kind) {
-            case 'E': {
-              if (obj.$l > 1 && rhs) {
-                // convert edit to new is multilines added
-                kind = 'N'
-                obj = { $r: obj.$r + 1, $l: obj.$l - 1 }
-              }
+          case 'E': {
+            if (obj.$l > 1 && rhs) {
+              // convert edit to new is multilines added
+              kind = 'N'
+              obj = { $r: obj.$r + 1, $l: obj.$l - 1 }
+            }
+            break
+          }
+          case 'A': {
+            switch (item.kind) {
+            case 'N':
+              // convert new array item to new range
+              kind = 'N'
+              obj = obj.$v[index].$r ? obj.$v[index] : obj
+              break
+            case 'D':
+              // if array delete, ignore any other edits within array
+              // edits are just the comparison of other array items
+              ignorePaths.push(path.join('/'))
               break
             }
-            case 'A': {
-              switch (item.kind) {
-                case 'N':
-                  // convert new array item to new range
-                  kind = 'N'
-                  obj = obj.$v[index].$r ? obj.$v[index] : obj
-                  break
-                case 'D':
-                  // if array delete, ignore any other edits within array
-                  // edits are just the comparison of other array items
-                  ignorePaths.push(path.join('/'))
-                  break
-              }
-              break
-            }
+            break
+          }
           }
         } else if (obj.$l > 1 && path.length > 0 && kind !== 'D') {
           kind = 'N'
@@ -91,51 +91,51 @@ export const highlightChanges = (
         }
 
         switch (kind) {
-          case 'E': {
-            // edited
-            if ((obj.$v || obj.$v === false) && rhs) {
-              // if no value ignore--all values removed from a key
-              decorationList.push({
-                range: new editor.monaco.Range(obj.$r + 1, 0, obj.$r + 1, 0),
-                options: {
-                  isWholeLine: true,
-                  linesDecorationsClassName: 'insertedLineDecoration',
-                  minimap: { color: '#c0c0ff', position: 2 },
-                },
-              })
-
-              // if long encoded string, don't scroll to it
-              let isEncoded = typeof obj.$v === 'string' && obj.$v.length > 200
-              if (isEncoded) {
-                try {
-                  Base64.decode(obj.$v)
-                } catch (e) {
-                  isEncoded = false
-                }
-              }
-              if (!isEncoded) {
-                if (!firstModRow || firstModRow > obj.$r) {
-                  firstModRow = obj.$r
-                }
-              } else {
-                encodedRow = obj.$r
-              }
-            }
-            break
-          }
-          case 'N': // new
+        case 'E': {
+          // edited
+          if ((obj.$v || obj.$v === false) && rhs) {
+            // if no value ignore--all values removed from a key
             decorationList.push({
-              range: new editor.monaco.Range(obj.$r + 1, 0, obj.$r + obj.$l, 0),
+              range: new editor.monaco.Range(obj.$r + 1, 0, obj.$r + 1, 0),
               options: {
                 isWholeLine: true,
                 linesDecorationsClassName: 'insertedLineDecoration',
                 minimap: { color: '#c0c0ff', position: 2 },
               },
             })
-            if (!firstNewRow || firstNewRow > obj.$r) {
-              firstNewRow = obj.$r
+
+            // if long encoded string, don't scroll to it
+            let isEncoded = typeof obj.$v === 'string' && obj.$v.length > 200
+            if (isEncoded) {
+              try {
+                Base64.decode(obj.$v)
+              } catch (e) {
+                isEncoded = false
+              }
             }
-            break
+            if (!isEncoded) {
+              if (!firstModRow || firstModRow > obj.$r) {
+                firstModRow = obj.$r
+              }
+            } else {
+              encodedRow = obj.$r
+            }
+          }
+          break
+        }
+        case 'N': // new
+          decorationList.push({
+            range: new editor.monaco.Range(obj.$r + 1, 0, obj.$r + obj.$l, 0),
+            options: {
+              isWholeLine: true,
+              linesDecorationsClassName: 'insertedLineDecoration',
+              minimap: { color: '#c0c0ff', position: 2 },
+            },
+          })
+          if (!firstNewRow || firstNewRow > obj.$r) {
+            firstNewRow = obj.$r
+          }
+          break
         }
       }
     })
