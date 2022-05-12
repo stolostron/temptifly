@@ -1165,9 +1165,8 @@ export default class TemplateEditor extends React.Component {
     // it doesn't wipe out what they just typed
     editStack = updateEditStack(editStack, templateResources, parsedResources)
 
-    // if typing on another tab that represents encoded yaml in the main tab,
-    // update the main yaml--for now
-    if (activeYAMLEditor !== 0) {
+    // if there's more then one tab, update them both
+    if (this.editors.length > 1) {
       const { template, templateYAML: oldYAML } = this.state
       const {
         templateYAML: newYAML,
