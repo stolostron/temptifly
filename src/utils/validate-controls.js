@@ -460,7 +460,7 @@ const validateSingleSelectControl = (
   templateExceptionMap,
   i18n
 ) => {
-  const { active, available = [], controlId } = control
+  const { active, available = [], controlId, sourcePathMap, ref } = control
   if (!active) {
     addExceptions(
       undefined,
@@ -509,7 +509,7 @@ const validateCheckboxControl = (
   templateExceptionMap,
   i18n
 ) => {
-  const { active, available, controlId } = control
+  const { active, available, controlId, sourcePathMap, ref } = control
   if (!active) {
     addExceptions(
       undefined,
@@ -527,7 +527,7 @@ const validateCheckboxControl = (
       available.join(', '),
     ])
     addExceptions(
-      exception,
+      control.exception,
       sourcePathMap,
       templateExceptionMap,
       templateObjectMap,
@@ -633,24 +633,26 @@ const addExceptions = (
   ref,
   i18n
 ) => {
-  Object.entries(sourcePathMap).forEach(([k, v]) => {
-    const { exceptions } = templateExceptionMap[k]
-    const templateObject = templateObjectMap[k]
-    if (typeof v === 'string' && v.endsWith('.$v')) {
-      v = v.substring(0, v.length - 3)
-    }
-    const row = get(templateObject, v)
-    if (row) {
-      exceptions.push({
-        row: row.$r + 1,
-        column: 0,
-        text: message || i18n('validation.missing.resource'),
-        type: 'error',
-        controlId,
-        ref,
-      })
-    }
-  })
+  if (sourcePathMap) {
+    Object.entries(sourcePathMap).forEach(([k, v]) => {
+      const { exceptions } = templateExceptionMap[k]
+      const templateObject = templateObjectMap[k]
+      if (typeof v === 'string' && v.endsWith('.$v')) {
+        v = v.substring(0, v.length - 3)
+      }
+      const row = get(templateObject, v)
+      if (row) {
+        exceptions.push({
+          row: row.$r + 1,
+          column: 0,
+          text: message || i18n('validation.missing.resource'),
+          type: 'error',
+          controlId,
+          ref,
+        })
+      }
+    })
+  }
 }
 
 const addException = (sourcePath, exceptions, i18n) => {
