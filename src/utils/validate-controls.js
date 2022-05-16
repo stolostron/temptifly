@@ -32,7 +32,7 @@ export function validateControls(
     },
   }
   otherYAMLTabs.forEach(({ id, templateYAML: yaml }, inx) => {
-    ({ parsed, exceptions } = parseYAML(yaml))
+    ;({ parsed, exceptions } = parseYAML(yaml))
     templateObjectMap[id] = parsed
     templateExceptionMap[id] = {
       editor: editors[inx + 1],
@@ -69,39 +69,39 @@ export function validateControls(
       delete control.exception
       if (!stopValidating) {
         switch (type) {
-        case 'group':
-          validateGroupControl(
-            active,
-            controlData,
-            templateObjectMap,
-            templateExceptionMap,
-            isFinalValidate,
-            i18n
-          )
-          break
+          case 'group':
+            validateGroupControl(
+              active,
+              controlData,
+              templateObjectMap,
+              templateExceptionMap,
+              isFinalValidate,
+              i18n
+            )
+            break
 
-        case 'table':
-          control.exceptions = []
-          validateTableControl(
-            control,
-            controlData,
-            templateObjectMap,
-            templateExceptionMap,
-            isFinalValidate,
-            i18n
-          )
-          break
+          case 'table':
+            control.exceptions = []
+            validateTableControl(
+              control,
+              controlData,
+              templateObjectMap,
+              templateExceptionMap,
+              isFinalValidate,
+              i18n
+            )
+            break
 
-        default:
-          validateControl(
-            control,
-            controlData,
-            templateObjectMap,
-            templateExceptionMap,
-            isFinalValidate,
-            i18n
-          )
-          break
+          default:
+            validateControl(
+              control,
+              controlData,
+              templateObjectMap,
+              templateExceptionMap,
+              isFinalValidate,
+              i18n
+            )
+            break
         }
       }
       if (pauseControlCreationHereUntilSelected) {
@@ -303,61 +303,61 @@ const validateControl = (
 
   if (shouldValidateControl(control)) {
     switch (control.type) {
-    case 'text':
-    case 'textarea':
-    case 'number':
-    case 'combobox':
-    case 'toggle':
-    case 'hidden':
-      validateTextControl(
-        control,
-        templateObjectMap,
-        templateExceptionMap,
-        isFinalValidate,
-        i18n
-      )
-      break
-    case 'checkbox':
-      validateCheckboxControl(
-        control,
-        templateObjectMap,
-        templateExceptionMap,
-        i18n
-      )
-      break
-    case 'cards':
-      validateCardsControl(
-        control,
-        templateObjectMap,
-        templateExceptionMap,
-        i18n
-      )
-      break
-    case 'singleselect':
-      validateSingleSelectControl(
-        control,
-        templateObjectMap,
-        templateExceptionMap,
-        i18n
-      )
-      break
-    case 'multiselect':
-      validateMultiSelectControl(
-        control,
-        templateObjectMap,
-        templateExceptionMap,
-        i18n
-      )
-      break
-    case 'table':
-      validateTableControl(
-        control,
-        controlData,
-        templateObjectMap,
-        templateExceptionMap,
-        i18n
-      )
-      break
+      case 'text':
+      case 'textarea':
+      case 'number':
+      case 'combobox':
+      case 'toggle':
+      case 'hidden':
+        validateTextControl(
+          control,
+          templateObjectMap,
+          templateExceptionMap,
+          isFinalValidate,
+          i18n
+        )
+        break
+      case 'checkbox':
+        validateCheckboxControl(
+          control,
+          templateObjectMap,
+          templateExceptionMap,
+          i18n
+        )
+        break
+      case 'cards':
+        validateCardsControl(
+          control,
+          templateObjectMap,
+          templateExceptionMap,
+          i18n
+        )
+        break
+      case 'singleselect':
+        validateSingleSelectControl(
+          control,
+          templateObjectMap,
+          templateExceptionMap,
+          i18n
+        )
+        break
+      case 'multiselect':
+        validateMultiSelectControl(
+          control,
+          templateObjectMap,
+          templateExceptionMap,
+          i18n
+        )
+        break
+      case 'table':
+        validateTableControl(
+          control,
+          controlData,
+          templateObjectMap,
+          templateExceptionMap,
+          i18n
+        )
+        break
     }
   }
 }
@@ -372,9 +372,9 @@ const attachEditorToExceptions = (exceptions, editors, inx) => {
 
 const shouldValidateControl = (control) => {
   let required = false
-  const { sourcePath, validation, active } = control
-  if (sourcePath && validation) {
-    ({ required } = validation)
+  const { validation, active } = control
+  if (validation) {
+    ;({ required } = validation)
     if (!required) {
       // if not required, only validate if that yaml path exists
       return !!active
