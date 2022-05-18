@@ -1,6 +1,6 @@
 'use strict'
 
-import { parseYAML, escapeYAML } from './source-utils'
+import { parseYAML, escapeYAML, discoverImmutables } from './source-utils'
 import { setSourcePaths } from './initialize-control-functions'
 import { Base64 } from 'js-base64'
 import {
@@ -117,10 +117,14 @@ export const generateSourceFromTemplate = (
     templateObject = parseYAML(yamlWithSecrets).parsed
   }
 
+  // what lines should be readonly in editor
+  const immutableRows = discoverImmutables(controlData, templateObject)
+
   return {
     templateYAML: yaml,
     templateObject,
     templateResources: parsed.resources,
+    immutableRows,
   }
 }
 

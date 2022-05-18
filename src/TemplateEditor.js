@@ -20,6 +20,7 @@ import { updateEditStack } from './utils/refresh-source-from-stack'
 import {
   highlightChanges,
   highlightAllChanges,
+  highlightImmutables,
 } from './utils/refresh-source-highlighting'
 import ControlPanel from './controls/ControlPanel'
 import EditorHeader from './components/EditorHeader'
@@ -160,6 +161,7 @@ export default class TemplateEditor extends React.Component {
       templateYAML,
       templateObject,
       templateResources,
+      immutableRows,
       editStack,
     } = state
     const { editor, template, showSecrets } = state
@@ -186,11 +188,8 @@ export default class TemplateEditor extends React.Component {
       }
 
       // generate source from template or stack of resources
-      ({ templateYAML, templateObject, templateResources } = generateSource(
-        template,
-        editStack,
-        controlData
-      ))
+      ({ templateYAML, templateObject, templateResources, immutableRows } =
+        generateSource(template, editStack, controlData))
 
       newState = {
         ...newState,
@@ -202,6 +201,7 @@ export default class TemplateEditor extends React.Component {
         resetStatus: typeof resetStatus === 'function' ? resetStatus : () => {},
         isEditing: !!customResources,
         editorReadOnly: state.editorReadOnly || editorReadOnly,
+        immutableRows,
       }
     }
 
@@ -214,7 +214,7 @@ export default class TemplateEditor extends React.Component {
         const uniqueName = getUniqueName(active, new Set(existing))
         if (uniqueName !== active) {
           name.active = uniqueName
-          ;({ templateYAML, templateObject, templateResources } =
+          ;({ templateYAML, templateObject, templateResources, immutableRows } =
             generateSource(template, editStack, controlData))
           newState = {
             ...newState,
@@ -222,6 +222,7 @@ export default class TemplateEditor extends React.Component {
             templateYAML,
             templateObject,
             templateResources,
+            immutableRows,
           }
         }
       }
@@ -503,6 +504,7 @@ export default class TemplateEditor extends React.Component {
       templateYAML: newYAML,
       templateObject,
       templateResources,
+      immutableRows,
     } = generateSource(template, editStack, controlData, otherYAMLTabs)
     validateControls(
       this.editors,
@@ -521,6 +523,7 @@ export default class TemplateEditor extends React.Component {
       otherYAMLTabs,
       this.selectedTab
     )
+    highlightImmutables(this.editors, immutableRows)
     const notifications = controlData.filter((c) => {
       return !!c.exception && isFinalValidate
     })
@@ -532,6 +535,7 @@ export default class TemplateEditor extends React.Component {
       templateResources,
       exceptions: [],
       notifications,
+      immutableRows,
     })
     this.isDirty = firstTemplateYAML !== newYAML
     this.handleScrollAndCollapse(control, controlData, creationView)
@@ -591,6 +595,7 @@ export default class TemplateEditor extends React.Component {
       templateYAML: newYAML,
       templateObject,
       templateResources,
+      immutableRows,
     } = generateSource(template, editStack, controlData, otherYAMLTabs)
     validateControls(
       this.editors,
@@ -609,11 +614,13 @@ export default class TemplateEditor extends React.Component {
       otherYAMLTabs,
       this.selectedTab
     )
+    highlightImmutables(this.editors, immutableRows)
     this.setState({
       controlData,
       templateYAML: newYAML,
       templateObject,
       templateResources,
+      immutableRows,
     })
     this.isDirty = firstTemplateYAML !== newYAML
   }
@@ -664,7 +671,8 @@ export default class TemplateEditor extends React.Component {
     let { template } = this.props
     const { onControlInitialize } = this.props
     const { editStack, otherYAMLTabs, editor, i18n } = this.state
-    let { templateYAML, templateObject, templateResources } = this.state
+    let { templateYAML, templateObject, templateResources, immutableRows } =
+      this.state
     let newYAML = templateYAML
     let newYAMLTabs = otherYAMLTabs
 
@@ -714,6 +722,7 @@ export default class TemplateEditor extends React.Component {
           templateYAML: newYAML,
           templateObject,
           templateResources,
+          immutableRows,
         } = generateSource(template, editStack, controlData, newYAMLTabs))
         if (newYAMLTabs.length === 0 && this.editors.length > 1) {
           this.editors.length = 1
@@ -725,6 +734,7 @@ export default class TemplateEditor extends React.Component {
           otherYAMLTabs,
           this.selectedTab
         )
+        highlightImmutables(this.editors, immutableRows)
         templateYAML = newYAML
       }
     }
@@ -735,6 +745,7 @@ export default class TemplateEditor extends React.Component {
       templateObject,
       templateResources,
       otherYAMLTabs,
+      immutableRows,
     }
   }
 
@@ -871,8 +882,13 @@ export default class TemplateEditor extends React.Component {
 
   renderEditors = () => {
     const { monacoEditor, theme } = this.props
-    const { activeYAMLEditor, otherYAMLTabs, editorReadOnly, templateYAML } =
-      this.state
+    const {
+      activeYAMLEditor,
+      otherYAMLTabs,
+      editorReadOnly,
+      templateYAML,
+      immutableRows,
+    } = this.state
     return (
       <React.Fragment>
         <YamlEditor
@@ -887,6 +903,7 @@ export default class TemplateEditor extends React.Component {
           theme={theme}
           yaml={templateYAML}
           readOnly={editorReadOnly}
+          immutableRows={immutableRows}
         />
         {otherYAMLTabs.map(({ id, templateYAML: yaml }, inx) => {
           return (
@@ -921,6 +938,8 @@ export default class TemplateEditor extends React.Component {
     this.editors.push(editor)
     if (this.editors.length > 1) {
       otherYAMLTabs[this.editors.length - 2].editor = editor
+    } else {
+      highlightImmutables(this.editors, this.state.immutableRows)
     }
     this.layoutEditors()
 
@@ -1146,14 +1165,14 @@ export default class TemplateEditor extends React.Component {
     // it doesn't wipe out what they just typed
     editStack = updateEditStack(editStack, templateResources, parsedResources)
 
-    // if typing on another tab that represents encoded yaml in the main tab,
-    // update the main yaml--for now
-    if (activeYAMLEditor !== 0) {
+    // if there's more then one tab, update them both
+    if (this.editors.length > 1) {
       const { template, templateYAML: oldYAML } = this.state
       const {
         templateYAML: newYAML,
         templateObject,
         templateResources: tr,
+        immutableRows,
       } = generateSource(template, editStack, controlData, otherYAMLTabs)
       highlightChanges(this.editors[0], oldYAML, newYAML, true)
       this.setState({
@@ -1163,6 +1182,7 @@ export default class TemplateEditor extends React.Component {
         templateObject,
         templateResources: tr,
         editStack,
+        immutableRows,
       })
     } else {
       this.setState({ controlData, notifications, templateYAML, editStack })
@@ -1486,12 +1506,8 @@ export default class TemplateEditor extends React.Component {
     if (editStack.initialized) {
       delete editStack.initialized
     }
-    const { templateYAML, templateObject, templateResources } = generateSource(
-      template,
-      editStack,
-      controlData,
-      otherYAMLTabs
-    )
+    const { templateYAML, templateObject, templateResources, immutableRows } =
+      generateSource(template, editStack, controlData, otherYAMLTabs)
     this.setState({
       isCustomName: false,
       template,
@@ -1509,6 +1525,7 @@ export default class TemplateEditor extends React.Component {
       templateResources,
       editStack,
       resetInx: resetInx + 1,
+      immutableRows,
     })
     this.isDirty = false
     this.selectedTab = 0
