@@ -2,13 +2,7 @@
 
 import { diff } from 'deep-diff'
 import jsYaml from 'js-yaml'
-import {
-  discoverControls,
-  setEditingMode,
-  reverseTemplate,
-  discoverImmutables,
-  getResourceID,
-} from './source-utils'
+import { discoverControls, setEditingMode, reverseTemplate, discoverImmutables, getResourceID } from './source-utils'
 import { generateSourceFromTemplate } from './refresh-source-from-templates'
 import YamlParser from './YamlParser'
 import cloneDeep from 'lodash/cloneDeep'
@@ -24,12 +18,7 @@ import pick from 'lodash/pick'
 import keyBy from 'lodash/keyBy'
 import groupBy from 'lodash/groupBy'
 
-export const generateSourceFromStack = (
-  template,
-  editStack,
-  controlData,
-  otherYAMLTabs
-) => {
+export const generateSourceFromStack = (template, editStack, controlData, otherYAMLTabs) => {
   if (!editStack.initialized) {
     intializeControls(editStack, controlData)
   }
@@ -38,11 +27,7 @@ export const generateSourceFromStack = (
 
 // update edit stack after the user types something into the editor
 // and then uses the form it doesn't wipe out what they just typed
-export const updateEditStack = (
-  editStack = {},
-  templateResources,
-  parsedResources
-) => {
+export const updateEditStack = (editStack = {}, templateResources, parsedResources) => {
   const { initialized } = editStack
   if (!initialized) {
     editStack.customIdMap = {}
@@ -128,11 +113,7 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
   const { customResources, deletedLinks, customIdMap } = editStack
 
   // get the next iteration of template changes
-  const { templateResources, templateObject } = generateSourceFromTemplate(
-    template,
-    controlData,
-    otherYAMLTabs
-  )
+  const { templateResources, templateObject } = generateSourceFromTemplate(template, controlData, otherYAMLTabs)
 
   // save any secrets
   const secretsMap =
@@ -170,8 +151,7 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
   resources = uniqWith(resources, isEqual)
 
   // then generate the source from those resources
-  const { templateYAML, templateObject: mergedObjects } =
-    generateSourceFromResources(resources)
+  const { templateYAML, templateObject: mergedObjects } = generateSourceFromResources(resources)
 
   // restore any secrets
   if (secretsMap && mergedObjects.Secret) {
@@ -200,16 +180,9 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
   }
 }
 
-const mergeSource = (
-  resources,
-  baseTemplateResources,
-  currentTemplateResources,
-  customIdMap,
-  deletedLinks
-) => {
+const mergeSource = (resources, baseTemplateResources, currentTemplateResources, customIdMap, deletedLinks) => {
   let customResources = cloneDeep(resources)
-  const clonedCurrentTemplateResources =
-    currentTemplateResources && cloneDeep(currentTemplateResources)
+  const clonedCurrentTemplateResources = currentTemplateResources && cloneDeep(currentTemplateResources)
   const groupByBase = groupBy(baseTemplateResources, 'kind')
 
   ////////////////////////////////////////////////
@@ -240,8 +213,7 @@ const mergeSource = (
     // (ex: predefined app channel)
     let inx = baseTemplateResources.findIndex((res) => {
       return (
-        resourceID === getResourceID(res) ||
-        (res.kind === resource.kind && groupByBase[resource.kind].length === 1)
+        resourceID === getResourceID(res) || (res.kind === resource.kind && groupByBase[resource.kind].length === 1)
       )
     })
     if (inx === -1) {
@@ -294,49 +266,49 @@ const mergeSource = (
           diffs.forEach(({ kind, path, rhs, lhs, item }) => {
             if (!isProtectedNameNamespace(path, rhs, lhs)) {
               switch (kind) {
-              // array modification
-              case 'A': {
-                switch (item.kind) {
-                case 'N':
-                  val = get(newResource, path, [])
-                  if (Array.isArray(val)) {
-                    set(resource, path, val)
-                  } else {
-                    val[Object.keys(val).length] = item.rhs
-                    set(resource, path, Object.values(val))
-                  }
-                  break
-                case 'D':
-                  val = get(newResource, path, [])
-                  if (Array.isArray(val)) {
-                    set(resource, path, val)
-                  } else {
-                    val = omitBy(val, (e) => e === item.lhs)
-                    set(resource, path, Object.values(val))
+                // array modification
+                case 'A': {
+                  switch (item.kind) {
+                    case 'N':
+                      val = get(newResource, path, [])
+                      if (Array.isArray(val)) {
+                        set(resource, path, val)
+                      } else {
+                        val[Object.keys(val).length] = item.rhs
+                        set(resource, path, Object.values(val))
+                      }
+                      break
+                    case 'D':
+                      val = get(newResource, path, [])
+                      if (Array.isArray(val)) {
+                        set(resource, path, val)
+                      } else {
+                        val = omitBy(val, (e) => e === item.lhs)
+                        set(resource, path, Object.values(val))
+                      }
+                      break
                   }
                   break
                 }
-                break
-              }
-              case 'E': {
-                idx = path.pop()
-                val = get(resource, path)
-                if (Array.isArray(val)) {
-                  val.splice(idx, 1, rhs)
-                } else {
-                  path.push(idx)
+                case 'E': {
+                  idx = path.pop()
+                  val = get(resource, path)
+                  if (Array.isArray(val)) {
+                    val.splice(idx, 1, rhs)
+                  } else {
+                    path.push(idx)
+                    set(resource, path, rhs)
+                  }
+                  break
+                }
+                case 'N': {
                   set(resource, path, rhs)
+                  break
                 }
-                break
-              }
-              case 'N': {
-                set(resource, path, rhs)
-                break
-              }
-              case 'D': {
-                unset(resource, path)
-                break
-              }
+                case 'D': {
+                  unset(resource, path)
+                  break
+                }
               }
             }
           })
@@ -370,7 +342,7 @@ const isProtectedNameNamespace = (path, rhs, lhs) => {
 
 const generateSourceFromResources = (resources) => {
   let yaml,
-      row = 0
+    row = 0
   const parsed = {}
   const yamls = []
   const sort = ['name', 'namespace']

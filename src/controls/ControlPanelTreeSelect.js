@@ -15,11 +15,11 @@ class ControlPanelTreeSelect extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-  };
+  }
 
   static getDerivedStateFromProps(props, state) {
     const { control, handleChange } = props
-    const handleTreeChange = evt => {
+    const handleTreeChange = (evt) => {
       control.active = evt.selectedItem
       handleChange(evt)
     }
@@ -27,13 +27,7 @@ class ControlPanelTreeSelect extends React.Component {
     const { available = [] } = control
     const { branches = 0 } = state
     let { active } = control
-    let {
-      currentSelection,
-      searchList,
-      indexes = [],
-      isOpen,
-      searchText
-    } = state
+    let { currentSelection, searchList, indexes = [], isOpen, searchText } = state
     const branchLabels = []
     let currentAvailable = []
 
@@ -57,17 +51,13 @@ class ControlPanelTreeSelect extends React.Component {
           arry.forEach(({ label, children, value, description }) => {
             if (value) {
               const instance = `${value} - ${description}`
-              if (
-                branchMatch ||
-                instance.toLowerCase().indexOf(findText) !== -1
-              ) {
+              if (branchMatch || instance.toLowerCase().indexOf(findText) !== -1) {
                 currentAvailable.push({ instance, indent })
                 searchList.push({ value, description })
               }
             } else if (children) {
               const beg = currentAvailable.length
-              const bm =
-                branchMatch || label.toLowerCase().indexOf(findText) !== -1
+              const bm = branchMatch || label.toLowerCase().indexOf(findText) !== -1
               fillArray(children, bm, indent + 20)
               if (currentAvailable.length > beg) {
                 currentAvailable.splice(beg, 0, { branch: label, indent })
@@ -103,13 +93,13 @@ class ControlPanelTreeSelect extends React.Component {
         }
       }
 
-      let path = indexes.map(index => `[${index}]`).join('.children')
+      let path = indexes.map((index) => `[${index}]`).join('.children')
       currentAvailable = path ? get(available, path) : available
       currentAvailable = currentAvailable.children || currentAvailable
       let indent = 0
       if (Array.isArray(currentAvailable)) {
         path = ''
-        indexes.forEach(index => {
+        indexes.forEach((index) => {
           path += `[${index}]`
           let label = get(available, `${path}.label`)
           if (label) {
@@ -121,16 +111,16 @@ class ControlPanelTreeSelect extends React.Component {
         })
         currentAvailable = [
           ...branchLabels,
-          ...currentAvailable.map(item => {
+          ...currentAvailable.map((item) => {
             if (item.label) {
               return { branch: item.label, indent }
             } else {
               return {
                 instance: `${item.value} - ${item.description}`,
-                indent
+                indent,
               }
             }
-          })
+          }),
         ]
       } else {
         // handle change
@@ -150,7 +140,7 @@ class ControlPanelTreeSelect extends React.Component {
       branches: branchLabels.length,
       isOpen,
       searchText,
-      searchList
+      searchList,
     }
   }
 
@@ -158,7 +148,7 @@ class ControlPanelTreeSelect extends React.Component {
     super(props)
     this.state = {
       isOpen: false,
-      searchText: null
+      searchText: null,
     }
     // create active map
     this.addAvailableMap(props)
@@ -168,7 +158,7 @@ class ControlPanelTreeSelect extends React.Component {
       const clickedWithinClear = this.clearRef && this.clearRef.contains && this.clearRef.contains(event.target)
       const clickedWithinToggle = this.toggleRef && this.toggleRef.contains && this.toggleRef.contains(event.target)
       if (this.state.isOpen && !(clickedOnToggle || clickedWithinMenu || clickedWithinClear || clickedWithinToggle)) {
-        this.setState({isOpen: false})
+        this.setState({ isOpen: false })
       }
     }
   }
@@ -183,19 +173,19 @@ class ControlPanelTreeSelect extends React.Component {
 
   setParentRef = (ref) => {
     this.parentRef = ref
-  };
+  }
 
   setMenuRef = (ref) => {
     this.menuRef = ref
-  };
+  }
 
   setClearRef = (ref) => {
     this.clearRef = ref
-  };
+  }
 
   setToggleRef = (ref) => {
     this.toggleRef = ref
-  };
+  }
 
   addAvailableMap(props) {
     const { control } = props
@@ -204,7 +194,7 @@ class ControlPanelTreeSelect extends React.Component {
     this.addAvailableMapHelper(available, availableMap)
   }
 
-  addAvailableMapHelper(available=[], availableMap) {
+  addAvailableMapHelper(available = [], availableMap) {
     available.forEach(({ children, value, description }) => {
       if (children) {
         this.addAvailableMapHelper(children, availableMap)
@@ -217,20 +207,12 @@ class ControlPanelTreeSelect extends React.Component {
   render() {
     const { controlId, control } = this.props
     const { name, availableMap = {}, exception, disabled } = control
-    const {
-      isOpen,
-      active,
-      currentAvailable,
-      indexes,
-      searchText
-    } = this.state
-    const currentActive = availableMap[active]
-      ? `${active} - ${availableMap[active]}`
-      : active
+    const { isOpen, active, currentAvailable, indexes, searchText } = this.state
+    const currentActive = availableMap[active] ? `${active} - ${availableMap[active]}` : active
 
     const toggleClasses = classNames({
       'tf--list-box__menu-icon': true,
-      'tf--list-box__menu-icon--open': isOpen
+      'tf--list-box__menu-icon--open': isOpen,
     })
 
     const aria = isOpen ? 'Close menu' : 'Open menu'
@@ -242,22 +224,15 @@ class ControlPanelTreeSelect extends React.Component {
     const validated = exception ? 'error' : undefined
     const inputClasses = classNames({
       'pf-c-form-control': true,
-      'input': true,
-      'disabled': disabled
+      input: true,
+      disabled: disabled,
     })
     return (
       <React.Fragment>
         <div className="creation-view-controls-treeselect">
-          <ControlPanelFormGroup
-            controlId={controlId}
-            control={control}>
+          <ControlPanelFormGroup controlId={controlId} control={control}>
             <div id={controlId}>
-              <div
-                role="listbox"
-                aria-label="Choose an item"
-                tabIndex="0"
-                className="tf--list-box"
-              >
+              <div role="listbox" aria-label="Choose an item" tabIndex="0" className="tf--list-box">
                 <div
                   role="button"
                   className={inputClasses}
@@ -282,81 +257,81 @@ class ControlPanelTreeSelect extends React.Component {
                     autoComplete="new-password"
                     id={`${controlId}-input`}
                     placeholder=""
-                    style={validated === 'error' ? {borderBottomColor: 'red'} : undefined}
+                    style={validated === 'error' ? { borderBottomColor: 'red' } : undefined}
                     value={searchText !== null ? searchText : currentActive}
-                    onFocus={e => {
+                    onFocus={(e) => {
                       e.target.select()
                     }}
                     onKeyDown={this.pressPress.bind(this)}
-                    onChange={evt =>
-                      this.setState({ searchText: evt.currentTarget.value })
-                    }
+                    onChange={(evt) => this.setState({ searchText: evt.currentTarget.value })}
                     data-testid={`tree-${controlId}`}
                   />
-                  {!disabled && <div
-                    role="button"
-                    className="tf--list-box__selection"
-                    tabIndex="0"
-                    style={{color: '#6a6e73'}}
-                    title="Clear selected item"
-                    ref={this.setClearRef}
-                    onClick={this.clickClear.bind(this)}
-                    onKeyPress={this.pressClear.bind(this)}
-                  >
-                    <TimesCircleIcon aria-hidden />
-                  </div>}
-                  {!disabled &&<div
-                    role="button"
-                    tabIndex="0"
-                    className={toggleClasses}
-                    ref={this.setToggleRef}
-                    onClick={this.clickToggle.bind(this)}
-                    onKeyPress={this.pressToggle.bind(this)}
-                  >
-                    <svg
-                      fillRule="evenodd"
-                      height="5"
-                      role="img"
-                      viewBox="0 0 10 5"
-                      width="10"
-                      alt={aria}
-                      aria-label={aria}
+                  {!disabled && (
+                    <div
+                      role="button"
+                      className="tf--list-box__selection"
+                      tabIndex="0"
+                      style={{ color: '#6a6e73' }}
+                      title="Clear selected item"
+                      ref={this.setClearRef}
+                      onClick={this.clickClear.bind(this)}
+                      onKeyPress={this.pressClear.bind(this)}
                     >
-                      <title>Close menu</title>
-                      <path d="M0 0l5 4.998L10 0z" />
-                    </svg>
-                  </div>}
+                      <TimesCircleIcon aria-hidden />
+                    </div>
+                  )}
+                  {!disabled && (
+                    <div
+                      role="button"
+                      tabIndex="0"
+                      className={toggleClasses}
+                      ref={this.setToggleRef}
+                      onClick={this.clickToggle.bind(this)}
+                      onKeyPress={this.pressToggle.bind(this)}
+                    >
+                      <svg
+                        fillRule="evenodd"
+                        height="5"
+                        role="img"
+                        viewBox="0 0 10 5"
+                        width="10"
+                        alt={aria}
+                        aria-label={aria}
+                      >
+                        <title>Close menu</title>
+                        <path d="M0 0l5 4.998L10 0z" />
+                      </svg>
+                    </div>
+                  )}
                 </div>
                 {!disabled && isOpen && (
-                  <div className="tf--list-box__menu" key={key} id={key}  ref={this.setMenuRef}>
-                    {currentAvailable.map(
-                      ({ branch, instance, indent = 0 }, inx) => {
-                        const itemClasses = classNames({
-                          'tf--list-box__menu-item': true,
-                          'tf--list-box__menu-branch': branch,
-                          searching: searchText,
-                          open: inx < indexes.length
-                        })
-                        const label = branch || instance
-                        return (
-                          <div
-                            role="button"
-                            key={label}
-                            className={itemClasses}
-                            id={`${controlId}-item-${inx}`}
-                            tabIndex="0"
-                            style={{
-                              textIndent: `${indent}px`,
-                              whiteSpace: 'pre'
-                            }}
-                            onClick={this.clickSelect.bind(this, inx)}
-                            onKeyPress={this.pressSelect.bind(this, inx)}
-                          >
-                            {this.renderLabel(label, searchText)}
-                          </div>
-                        )
-                      }
-                    )}
+                  <div className="tf--list-box__menu" key={key} id={key} ref={this.setMenuRef}>
+                    {currentAvailable.map(({ branch, instance, indent = 0 }, inx) => {
+                      const itemClasses = classNames({
+                        'tf--list-box__menu-item': true,
+                        'tf--list-box__menu-branch': branch,
+                        searching: searchText,
+                        open: inx < indexes.length,
+                      })
+                      const label = branch || instance
+                      return (
+                        <div
+                          role="button"
+                          key={label}
+                          className={itemClasses}
+                          id={`${controlId}-item-${inx}`}
+                          tabIndex="0"
+                          style={{
+                            textIndent: `${indent}px`,
+                            whiteSpace: 'pre',
+                          }}
+                          onClick={this.clickSelect.bind(this, inx)}
+                          onKeyPress={this.pressSelect.bind(this, inx)}
+                        >
+                          {this.renderLabel(label, searchText)}
+                        </div>
+                      )
+                    })}
                   </div>
                 )}
               </div>
@@ -368,16 +343,9 @@ class ControlPanelTreeSelect extends React.Component {
   }
 
   renderLabel(label, searchText) {
-    const inx =
-      searchText &&
-      searchText.length &&
-      label.toLowerCase().indexOf(searchText.toLowerCase())
+    const inx = searchText && searchText.length && label.toLowerCase().indexOf(searchText.toLowerCase())
     if (inx !== null && inx >= 0) {
-      label = [
-        label.substr(0, inx),
-        label.substr(inx, searchText.length),
-        label.substr(inx + searchText.length)
-      ]
+      label = [label.substr(0, inx), label.substr(inx, searchText.length), label.substr(inx + searchText.length)]
       return (
         <React.Fragment>
           {label[0]}
@@ -411,14 +379,8 @@ class ControlPanelTreeSelect extends React.Component {
     const clickedWithinClear = e && this.clearRef && this.clearRef.contains && this.clearRef.contains(e.target)
     const clickedWithinToggle = e && this.toggleRef && this.toggleRef.contains && this.toggleRef.contains(e.target)
     if (!(this.state.searchText || clickedWithinClear) || clickedWithinToggle) {
-      this.setState(preState => {
-        let {
-          currentAvailable,
-          currentSelection,
-          searchText,
-          indexes,
-          isOpen
-        } = preState
+      this.setState((preState) => {
+        let { currentAvailable, currentSelection, searchText, indexes, isOpen } = preState
         isOpen = !isOpen
         if (!isOpen) {
           currentAvailable = []
@@ -431,7 +393,7 @@ class ControlPanelTreeSelect extends React.Component {
           currentSelection,
           searchText,
           indexes,
-          isOpen
+          isOpen,
         }
       })
     }
@@ -454,7 +416,7 @@ class ControlPanelTreeSelect extends React.Component {
   }
 
   clickClear() {
-    this.setState({ searchText: ''})
+    this.setState({ searchText: '' })
     const { control, handleChange } = this.props
     control.active = ''
     handleChange()

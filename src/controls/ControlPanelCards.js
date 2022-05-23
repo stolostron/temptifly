@@ -14,15 +14,18 @@ class ControlPanelCards extends React.Component {
     fetchData: PropTypes.object,
     handleChange: PropTypes.func,
     i18n: PropTypes.func,
-    showEditor: PropTypes.bool
-  };
+    showEditor: PropTypes.bool,
+  }
 
   static getDerivedStateFromProps(props, state) {
     const { initialized } = state
     if (!initialized) {
       const { control } = props
       const { active, collapseCardsControlOnSelect } = control
-      return { collapsed: collapseCardsControlOnSelect && !isEmpty(active), initialized: true }
+      return {
+        collapsed: collapseCardsControlOnSelect && !isEmpty(active),
+        initialized: true,
+      }
     }
     return null
   }
@@ -35,7 +38,7 @@ class ControlPanelCards extends React.Component {
     // if active was preset by loading an existing resource
     // collapse cards on that selection
     this.state = {
-      collapsed: collapsed || (collapseCardsControlOnSelect && !!active)
+      collapsed: collapsed || (collapseCardsControlOnSelect && !!active),
     }
   }
 
@@ -62,7 +65,7 @@ class ControlPanelCards extends React.Component {
     active = active || []
     const gridClasses = classNames({
       'tf--grid-container': true,
-      small: showEditor
+      small: showEditor,
     })
 
     const availableCards = Object.keys(availableMap).reduce((acc, curr) => {
@@ -74,41 +77,46 @@ class ControlPanelCards extends React.Component {
     const cardGroups = groupBy(availableCards, (c) => c.section)
     return (
       <React.Fragment>
-        <div
-          className="creation-view-controls-card-container"
-          ref={this.setControlRef.bind(this, control)}
-        >
+        <div className="creation-view-controls-card-container" ref={this.setControlRef.bind(this, control)}>
           <div className={gridClasses}>
             <div className={'tf--grid'}>
-
               {Object.keys(cardGroups).map((group) => {
                 const groupTooltip = group && control.sectionTooltips?.[group]
                 return (
                   <React.Fragment key={group}>
-                    {group !== 'undefined' && <Title headingLevel="h1" size={TitleSizes.xl}>
-                      {group}
-                      {groupTooltip &&
-                        <Tooltip control={{ controlId: `group-${group}`, tooltip: groupTooltip }} i18n={i18n} className="control-panel-cards__group-tooltip" />
-                      }
-                    </Title>}
+                    {group !== 'undefined' && (
+                      <Title headingLevel="h1" size={TitleSizes.xl}>
+                        {group}
+                        {groupTooltip && (
+                          <Tooltip
+                            control={{
+                              controlId: `group-${group}`,
+                              tooltip: groupTooltip,
+                            }}
+                            i18n={i18n}
+                            className="control-panel-cards__group-tooltip"
+                          />
+                        )}
+                      </Title>
+                    )}
                     <div className={'tf--providers-container tf--row'}>
                       {cardGroups[group]
-                        .filter(choice => {
-                          return (
-                            active.length === 0 || !collapsed || active.includes(choice.id)
-                          )
+                        .filter((choice) => {
+                          return active.length === 0 || !collapsed || active.includes(choice.id)
                         })
                         .map((choice) => {
                           const { id, hidden } = choice
-                          return !hidden && (
-                            <ControlPanelCard
-                              key={id}
-                              type={id}
-                              selected={active.includes && active.includes(id)}
-                              choice={choice}
-                              handleOnClick={this.handleChange.bind(this, id)}
-                              i18n={i18n}
-                            />
+                          return (
+                            !hidden && (
+                              <ControlPanelCard
+                                key={id}
+                                type={id}
+                                selected={active.includes && active.includes(id)}
+                                choice={choice}
+                                handleOnClick={this.handleChange.bind(this, id)}
+                                i18n={i18n}
+                              />
+                            )
                           )
                         })}
                     </div>
@@ -127,7 +135,7 @@ class ControlPanelCards extends React.Component {
     const { control } = this.props
     const { collapseCardsControlOnSelect } = control
     if (collapseCardsControlOnSelect) {
-      this.setState(prevState => {
+      this.setState((prevState) => {
         return { collapsed: !prevState.collapsed }
       })
     }
@@ -135,34 +143,28 @@ class ControlPanelCards extends React.Component {
   }
 }
 
-const ControlPanelCard = ({
-  choice,
-  handleOnClick,
-  type,
-  selected,
-  i18n
-}) => {
+const ControlPanelCard = ({ choice, handleOnClick, type, selected, i18n }) => {
   const { disabled, logo, title, tooltip, learnMore, text } = choice
   const cardClasses = classNames({
     'tf--create-cluster-page__provider-card': true,
     'tf--create-cluster-page__provider-card-isSelected': selected,
   })
   const wrapperClasses = classNames('tf--provider-card', {
-    'tf--provider-card-isDisabled': disabled
+    'tf--provider-card-isDisabled': disabled,
   })
-  const handleClick = evt => {
+  const handleClick = (evt) => {
     if (!disabled) {
       handleOnClick(evt, type)
     }
   }
   let image = null
   switch (typeof logo) {
-  case 'string':
-    image = <img src={logo} alt={title} />
-    break
-  case 'object':
-    image = logo
-    break
+    case 'string':
+      image = <img src={logo} alt={title} />
+      break
+    case 'object':
+      image = logo
+      break
   }
 
   const id = title.replace(/\s+/g, '-').toLowerCase()
@@ -183,8 +185,7 @@ const ControlPanelCard = ({
           <div>{title}</div>
           {text && <div className="control-panel-cards__extra-text">{text}</div>}
         </div>
-        {tooltip &&
-          !selected && (
+        {tooltip && !selected && (
           <div className="card-tooltip-container">
             <Tooltip control={{ tooltip, learnMore }} i18n={i18n} />
           </div>
@@ -199,7 +200,7 @@ ControlPanelCard.propTypes = {
   handleOnClick: PropTypes.func,
   i18n: PropTypes.func,
   selected: PropTypes.bool,
-  type: PropTypes.string
+  type: PropTypes.string,
 }
 
 export default ControlPanelCards

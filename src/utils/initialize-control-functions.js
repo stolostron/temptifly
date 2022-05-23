@@ -40,22 +40,17 @@ const initialControl = (control, editor) => {
 
   if (type !== 'title' && type !== 'section' && !setActive) {
     if (typeof control.onSelect === 'function') {
-      control.onSelect = control.onSelect.bind(
-        null,
-        control,
-        lastestData,
-        (ctrl, isLoading) => {
-          if (isLoading) {
+      control.onSelect = control.onSelect.bind(null, control, lastestData, (ctrl, isLoading) => {
+        if (isLoading) {
+          ctrl.isLoading = isLoading
+          editor.forceUpdate()
+        } else {
+          setTimeout(() => {
             ctrl.isLoading = isLoading
             editor.forceUpdate()
-          } else {
-            setTimeout(() => {
-              ctrl.isLoading = isLoading
-              editor.forceUpdate()
-            })
-          }
+          })
         }
-      )
+      })
     }
 
     if (typeof control.hidden === 'function') {
@@ -78,12 +73,7 @@ const initialControl = (control, editor) => {
       editor.forceUpdate()
     }
 
-    const setActiveVal = (
-      ctrl,
-      path,
-      templateObject,
-      activeTabId = '<<main>>'
-    ) => {
+    const setActiveVal = (ctrl, path, templateObject, activeTabId = '<<main>>') => {
       let sourcePath
       if (ctrl.sourcePathMap) {
         sourcePath = ctrl.sourcePathMap[activeTabId]
@@ -96,22 +86,22 @@ const initialControl = (control, editor) => {
       if (sourcePath) {
         const getTrueActive = (active) => {
           switch (ctrl.type) {
-          case 'checkbox':
-            if (!active) {
-              active = { $v: false }
-            } else if (active.$v === undefined) {
-              active = { $v: !!active }
-            } else {
-              active.$v = !!active.$v
-            }
-            break
-          case 'values':
-            if (active) {
-              if (!Array.isArray(active.$v)) {
-                active.$v = active.$v.split(',')
+            case 'checkbox':
+              if (!active) {
+                active = { $v: false }
+              } else if (active.$v === undefined) {
+                active = { $v: !!active }
+              } else {
+                active.$v = !!active.$v
               }
-            }
-            break
+              break
+            case 'values':
+              if (active) {
+                if (!Array.isArray(active.$v)) {
+                  active.$v = active.$v.split(',')
+                }
+              }
+              break
           }
           return active
         }
@@ -120,9 +110,7 @@ const initialControl = (control, editor) => {
           sourcePath.forEach((path, inx) => {
             Object.entries(path).forEach(([key, value]) => {
               if (ctrl.active[inx]) {
-                ctrl.active[inx][key] = getTrueActive(
-                  get(templateObject, value)
-                )
+                ctrl.active[inx][key] = getTrueActive(get(templateObject, value))
               }
             })
           })
@@ -140,20 +128,20 @@ const initialControl = (control, editor) => {
       switch (
         true // match any case that is true
       ) {
-      case typeof reverse === 'string':
-        control.path = reverse
-        control.reverse = (ctrl, templateObject, activeTabId) => {
-          setActiveVal(ctrl, reverse, templateObject, activeTabId)
-        }
-        break
+        case typeof reverse === 'string':
+          control.path = reverse
+          control.reverse = (ctrl, templateObject, activeTabId) => {
+            setActiveVal(ctrl, reverse, templateObject, activeTabId)
+          }
+          break
 
-      case Array.isArray(reverse):
-        control.reverse = (ctrl, templateObject, activeTabId) => {
-          reverse.forEach((path) => {
-            setActiveVal(ctrl, path, templateObject, activeTabId)
-          })
-        }
-        break
+        case Array.isArray(reverse):
+          control.reverse = (ctrl, templateObject, activeTabId) => {
+            reverse.forEach((path) => {
+              setActiveVal(ctrl, path, templateObject, activeTabId)
+            })
+          }
+          break
       }
     } else {
       control.reverse = (ctrl, templateObject, activeTabId) => {
@@ -172,22 +160,22 @@ export function setSourcePaths(yaml, otherYAMLTabs = [], controlData) {
     controlMap[id] = control
 
     switch (type) {
-    case 'group':
-      // each group gets an array of control data maps, one per group
-      control.controlMapArr = []
-      active.forEach((cd) => {
-        const cdm = {}
-        control.controlMapArr.push(cdm)
-        cd.forEach((c) => {
-          cdm[c.id] = c
+      case 'group':
+        // each group gets an array of control data maps, one per group
+        control.controlMapArr = []
+        active.forEach((cd) => {
+          const cdm = {}
+          control.controlMapArr.push(cdm)
+          cd.forEach((c) => {
+            cdm[c.id] = c
+          })
         })
-      })
-      break
+        break
 
-    case 'table':
-      // each table cell has its own source path
-      delete control.sourcePathMap
-      break
+      case 'table':
+        // each table cell has its own source path
+        delete control.sourcePathMap
+        break
     }
   })
 

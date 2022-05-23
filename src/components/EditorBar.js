@@ -5,60 +5,58 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { SearchInput } from '@patternfly/react-core'
 import '../scss/editor-bar.scss'
-import {
-  CloseIcon,
-  UndoIcon,
-  RedoIcon,
-  NextIcon,
-  PreviousIcon,
-} from '../icons/Icons'
-
+import { CloseIcon, UndoIcon, RedoIcon, NextIcon, PreviousIcon } from '../icons/Icons'
 
 class EditorButton extends React.Component {
   static propTypes = {
     button: PropTypes.object,
     command: PropTypes.string,
-    handleClick: PropTypes.func
-  };
+    handleClick: PropTypes.func,
+  }
 
   handleClick = () => {
-    const { command, button: { disabled } } = this.props
+    const {
+      command,
+      button: { disabled },
+    } = this.props
     if (!disabled) {
       document.activeElement.blur()
       this.props.handleClick(command)
     }
-  };
+  }
 
-  handleKeyPress = e => {
+  handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       this.props.handleClick(this.props.command)
     }
-  };
+  }
 
-  renderIcon = icon => {
-    switch(icon) {
-    case 'close':
-      return <CloseIcon />
-    case 'undo':
-      return <UndoIcon />
-    case 'redo':
-      return <RedoIcon />
-    case 'next':
-      return <NextIcon />
-    case 'previous':
-      return <PreviousIcon />
+  renderIcon = (icon) => {
+    switch (icon) {
+      case 'close':
+        return <CloseIcon />
+      case 'undo':
+        return <UndoIcon />
+      case 'redo':
+        return <RedoIcon />
+      case 'next':
+        return <NextIcon />
+      case 'previous':
+        return <PreviousIcon />
     }
-  };
+  }
 
   render() {
-    const { button: { disabled, tooltip, icon, spacer, command } } = this.props
+    const {
+      button: { disabled, tooltip, icon, spacer, command },
+    } = this.props
     if (spacer) {
       return <div className="editor-bar-spacer" />
     } else {
       const classes = classNames({
         'editor-bar-button': true,
         [`${command}`]: true,
-        disabled
+        disabled,
       })
       return (
         <div
@@ -70,11 +68,7 @@ class EditorButton extends React.Component {
           onClick={this.handleClick}
           onKeyPress={this.handleKeyPress}
         >
-          {icon ?
-            this.renderIcon(icon)
-            : (
-              <div>{tooltip}</div>
-            )}
+          {icon ? this.renderIcon(icon) : <div>{tooltip}</div>}
         </div>
       )
     }
@@ -89,29 +83,29 @@ class EditorBar extends React.Component {
     hasUndo: PropTypes.bool,
     i18n: PropTypes.func,
     title: PropTypes.string,
-    type: PropTypes.string
-  };
+    type: PropTypes.string,
+  }
 
   constructor(props) {
     super(props)
     this.state = {
-      searchName: ''
+      searchName: '',
     }
   }
 
-  handleClick = command => {
+  handleClick = (command) => {
     this.props.handleEditorCommand(command)
-  };
+  }
 
   handleSearch = (searchName) => {
     this.props.handleSearchChange(searchName)
     this.setState({ searchName })
-  };
+  }
 
   handleClear = () => {
     this.props.handleSearchChange('')
     this.setState({ searchName: '' })
-  };
+  }
 
   render() {
     const { hasUndo, hasRedo, type, title, i18n } = this.props
@@ -122,14 +116,14 @@ class EditorBar extends React.Component {
         command: 'undo',
         tooltip: i18n ? i18n('editor.bar.undo') : 'Undo',
         icon: 'undo',
-        disabled: !hasUndo
+        disabled: !hasUndo,
       },
       {
         command: 'redo',
         tooltip: i18n ? i18n('editor.bar.redo') : 'Redo',
         icon: 'redo',
-        disabled: !hasRedo
-      }
+        disabled: !hasRedo,
+      },
     ]
 
     const nextButtons = [
@@ -137,30 +131,30 @@ class EditorBar extends React.Component {
         command: 'previous',
         tooltip: i18n ? i18n('editor.bar.previous') : 'Previous',
         icon: 'previous',
-        disabled: !searchName
+        disabled: !searchName,
       },
       {
         command: 'next',
         tooltip: i18n ? i18n('editor.bar.next') : 'Next',
         icon: 'next',
-        disabled: !searchName
-      }
+        disabled: !searchName,
+      },
     ]
 
     const resetButtons = [
       {
         command: 'restore',
         tooltip: i18n ? i18n('editor.bar.reset') : 'Reset',
-        disabled: !hasUndo && !hasRedo
-      }
+        disabled: !hasUndo && !hasRedo,
+      },
     ]
 
     const closeButtons = [
       {
         command: 'close',
         tooltip: i18n ? i18n('editor.bar.close') : 'Close',
-        icon: 'close'
-      }
+        icon: 'close',
+      },
     ]
 
     const searchTitle = i18n ? i18n('find.label') : 'Find'
@@ -172,38 +166,19 @@ class EditorBar extends React.Component {
         <div className="editor-bar-group">
           <div className="editor-bar-toolbar">
             <div className="editor-bar-section">
-              {resetButtons.map(button => {
+              {resetButtons.map((button) => {
                 const { command } = button
-                return (
-                  <EditorButton
-                    key={command}
-                    command={command}
-                    button={button}
-                    handleClick={this.handleClick}
-                  />
-                )
+                return <EditorButton key={command} command={command} button={button} handleClick={this.handleClick} />
               })}
             </div>
             <div className="editor-bar-section">
-              {undoButtons.map(button => {
+              {undoButtons.map((button) => {
                 const { command } = button
-                return (
-                  <EditorButton
-                    key={command}
-                    command={command}
-                    button={button}
-                    handleClick={this.handleClick}
-                  />
-                )
+                return <EditorButton key={command} command={command} button={button} handleClick={this.handleClick} />
               })}
             </div>
             <div className="editor-bar-section">
-              <div
-                className="editor-bar-search"
-                role="region"
-                aria-label={searchTitle}
-                id={searchTitle}
-              >
+              <div className="editor-bar-search" role="region" aria-label={searchTitle} id={searchTitle}>
                 <SearchInput
                   id={`template-editor-search-${type}`}
                   value={searchName}
@@ -212,16 +187,9 @@ class EditorBar extends React.Component {
                   onChange={this.handleSearch}
                   onClear={this.handleClear}
                 />
-                {nextButtons.map(button => {
+                {nextButtons.map((button) => {
                   const { command } = button
-                  return (
-                    <EditorButton
-                      key={command}
-                      command={command}
-                      button={button}
-                      handleClick={this.handleClick}
-                    />
-                  )
+                  return <EditorButton key={command} command={command} button={button} handleClick={this.handleClick} />
                 })}
               </div>
             </div>
@@ -229,16 +197,9 @@ class EditorBar extends React.Component {
         </div>
         <div className="editor-bar-close">
           <div className="editor-bar-section">
-            {closeButtons.map(button => {
+            {closeButtons.map((button) => {
               const { command } = button
-              return (
-                <EditorButton
-                  key={command}
-                  command={command}
-                  button={button}
-                  handleClick={this.handleClick}
-                />
-              )
+              return <EditorButton key={command} command={command} button={button} handleClick={this.handleClick} />
             })}
           </div>
         </div>

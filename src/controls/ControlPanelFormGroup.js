@@ -5,25 +5,17 @@ import PropTypes from 'prop-types'
 import { FormGroup, Popover } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 
-
 class ControlPanelFormGroup extends React.Component {
   static propTypes = {
     children: PropTypes.node,
     control: PropTypes.object,
     controlId: PropTypes.string,
-    showTip: PropTypes.bool
-  };
+    showTip: PropTypes.bool,
+  }
 
   render() {
     const { controlId, control, showTip, children } = this.props
-    const {
-      name,
-      exception,
-      tooltip,
-      tip,
-      validation = {},
-      icon
-    } = control
+    const { name, exception, tooltip, tip, validation = {}, icon } = control
 
     const validated = exception ? 'error' : undefined
     return (
@@ -38,10 +30,7 @@ class ControlPanelFormGroup extends React.Component {
           labelIcon={
             /* istanbul ignore next */
             tooltip ? (
-              <Popover
-                id={`${controlId}-label-help-popover`}
-                bodyContent={tooltip}
-              >
+              <Popover id={`${controlId}-label-help-popover`} bodyContent={tooltip}>
                 <button
                   id={`${controlId}-label-help-button`}
                   aria-label="More info"
@@ -50,9 +39,7 @@ class ControlPanelFormGroup extends React.Component {
                 >
                   <HelpIcon noVerticalAlign />
                 </button>
-                {icon? <div style = {{display: 'inline-block', marginLeft: '20px'}}>
-                  {icon}
-                </div> : null}
+                {icon ? <div style={{ display: 'inline-block', marginLeft: '20px' }}>{icon}</div> : null}
               </Popover>
             ) : (
               <React.Fragment />
@@ -60,7 +47,7 @@ class ControlPanelFormGroup extends React.Component {
           }
         >
           {children}
-          {(showTip===undefined||showTip===true)&&tip&&<div style={{fontSize: '14px'}}>{tip}</div>}
+          {(showTip === undefined || showTip === true) && tip && <div style={{ fontSize: '14px' }}>{tip}</div>}
         </FormGroup>
       </React.Fragment>
     )

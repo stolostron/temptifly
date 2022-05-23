@@ -17,21 +17,8 @@ export const ControlMode = Object.freeze({
   PROMPT_ONLY: 'PROMPT_ONLY',
 })
 
-export const initializeControls = (
-  initialControlData,
-  editor,
-  onControlInitialize,
-  i18n,
-  uniqueGroupID,
-  inGroup
-) => {
-  const controlData = initializeControlData(
-    initialControlData,
-    onControlInitialize,
-    i18n,
-    uniqueGroupID,
-    inGroup
-  )
+export const initializeControls = (initialControlData, editor, onControlInitialize, i18n, uniqueGroupID, inGroup) => {
+  const controlData = initializeControlData(initialControlData, onControlInitialize, i18n, uniqueGroupID, inGroup)
   initializeControlFunctions(controlData, editor)
   return controlData
 }
@@ -138,19 +125,9 @@ export function setEditingMode(controlData) {
   })
 }
 
-export const generateSource = (
-  template,
-  editStack,
-  controlData,
-  otherYAMLTabs
-) => {
+export const generateSource = (template, editStack, controlData, otherYAMLTabs) => {
   if (!isEmpty(editStack)) {
-    return generateSourceFromStack(
-      template,
-      editStack,
-      controlData,
-      otherYAMLTabs
-    )
+    return generateSourceFromStack(template, editStack, controlData, otherYAMLTabs)
   } else {
     return generateSourceFromTemplate(template, controlData, otherYAMLTabs)
   }
@@ -216,11 +193,7 @@ export const getInsideObject = (ikey, parsed) => {
 //don't save user data until they create
 export const cacheUserData = (controlData) => {
   controlData.forEach((control) => {
-    if (
-      control.cacheUserValueKey &&
-      control.userData &&
-      control.userData.length > 0
-    ) {
+    if (control.cacheUserValueKey && control.userData && control.userData.length > 0) {
       const storageKey = `${control.cacheUserValueKey}--${window.location.href}`
       sessionStorage.setItem(storageKey, JSON.stringify(control.userData))
     }
@@ -257,8 +230,7 @@ export const getSourcePath = (path) => {
   sourcePath = sourcePath.map((seg) => {
     return seg.replace('[', '.$v[')
   })
-  sourcePath =
-    sourcePath.length > 0 ? pathBase + `.${sourcePath.join('.$v.')}` : pathBase
+  sourcePath = sourcePath.length > 0 ? pathBase + `.${sourcePath.join('.$v.')}` : pathBase
   return sourcePath
 }
 

@@ -10,38 +10,38 @@ class ControlPanelValues extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    i18n: PropTypes.func
-  };
+    i18n: PropTypes.func,
+  }
 
   constructor(props) {
     super(props)
     this.state = {
-      value: ''
+      value: '',
     }
   }
 
   render() {
     const { controlId, control } = this.props
     const { active = [], exception, placeholder, disabled } = control
-    const formatted = active.filter(value => value.length > 0)
+    const formatted = active.filter((value) => value.length > 0)
     const { value } = this.state
     const validated = exception ? 'error' : undefined
     return (
       <React.Fragment>
         <div className="creation-view-controls-labels">
-          <ControlPanelFormGroup
-            controlId={controlId}
-            control={control}>
+          <ControlPanelFormGroup controlId={controlId} control={control}>
             <div className="creation-view-controls-labels-container">
-              {formatted.length!==0 && <div className="creation-view-controls-labels-tag-container">
-                {formatted.map((label, inx) => {
-                  return (
-                    <Label key={label} onClose={this.handleDelete.bind(this, inx)} >
-                      {label}
-                    </Label>
-                  )
-                })}
-              </div>}
+              {formatted.length !== 0 && (
+                <div className="creation-view-controls-labels-tag-container">
+                  {formatted.map((label, inx) => {
+                    return (
+                      <Label key={label} onClose={this.handleDelete.bind(this, inx)}>
+                        {label}
+                      </Label>
+                    )
+                  })}
+                </div>
+              )}
               <div className="creation-view-controls-labels-edit-container">
                 <TextInput
                   id={controlId}
@@ -69,7 +69,7 @@ class ControlPanelValues extends React.Component {
     handleChange(control)
   }
 
-  handleChange(value='') {
+  handleChange(value = '') {
     const { control, i18n } = this.props
     const { validation } = control
     if (value.endsWith(',')) {
@@ -90,17 +90,17 @@ class ControlPanelValues extends React.Component {
 
   handleKeyDown(event) {
     switch (event.key) {
-    case 'Enter':
-      this.createValue()
-      break
+      case 'Enter':
+        this.createValue()
+        break
 
-    case 'Backspace':
-      this.deleteLastValue()
-      break
+      case 'Backspace':
+        this.deleteLastValue()
+        break
 
-    case 'Escape':
-      this.cancelValue()
-      break
+      case 'Escape':
+        this.cancelValue()
+        break
     }
   }
 
@@ -126,7 +126,7 @@ class ControlPanelValues extends React.Component {
     const { value, invalid } = this.state
     if (value && !invalid) {
       if (!Array.isArray(control.active)) {
-        control.active=[]
+        control.active = []
       }
       control.active.push(value)
       handleChange(control)

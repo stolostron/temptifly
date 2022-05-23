@@ -2,11 +2,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  Select,
-  SelectOption,
-  SelectVariant,
-  Spinner } from '@patternfly/react-core'
+import { Select, SelectOption, SelectVariant, Spinner } from '@patternfly/react-core'
 import ControlPanelFormGroup from './ControlPanelFormGroup'
 import get from 'lodash/get'
 
@@ -15,47 +11,38 @@ class ControlPanelMultiSelect extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    i18n: PropTypes.func
-  };
+    i18n: PropTypes.func,
+  }
 
   constructor(props) {
     super(props)
     this.state = {
-      open: false
+      open: false,
     }
   }
 
   setControlRef = (control, ref) => {
     this.multiSelect = control.ref = ref
-  };
+  }
 
   render() {
     const { open } = this.state
     const { controlId, i18n, control, handleChange } = this.props
-    const {
-      available = [],
-      availableMap,
-      exception,
-      disabled,
-      isLoading,
-      isFailed
-    } = control
+    const { available = [], availableMap, exception, disabled, isLoading, isFailed } = control
     let { active, placeholder = '' } = control
     if (!active) {
       if (isLoading) {
-        active = i18n(
-          get(control, 'fetchAvailable.loadingDesc', 'resource.loading'))
+        active = i18n(get(control, 'fetchAvailable.loadingDesc', 'resource.loading'))
       } else if (isFailed) {
         active = i18n('resource.error')
       } else if (available.length === 0) {
-        active = i18n(
-          get(control, 'fetchAvailable.emptyDesc', 'resource.none'))
+        active = i18n(get(control, 'fetchAvailable.emptyDesc', 'resource.none'))
       } else {
         active = []
       }
     } else if (Array.isArray(active) && active.length > 0) {
       const activeKeys = []
-      active.forEach(k => {
+      active.forEach((k) => {
         if (typeof availableMap === 'object' && availableMap[k]) {
           const { name: n } = availableMap[k]
           activeKeys.push(n || k)
@@ -67,13 +54,13 @@ class ControlPanelMultiSelect extends React.Component {
     }
 
     const setOpen = (open) => {
-      this.setState({open})
+      this.setState({ open })
     }
 
     const onChange = (value) => {
       if (value) {
         if (active.includes(value)) {
-          active = active.filter(item => item !== value)
+          active = active.filter((item) => item !== value)
         } else {
           active = [...active, value]
         }
@@ -84,17 +71,17 @@ class ControlPanelMultiSelect extends React.Component {
       handleChange()
     }
 
-    this.options = available.map((item, inx)=>{
+    this.options = available.map((item, inx) => {
       /* eslint-disable-next-line react/no-array-index-key */
       return <SelectOption key={inx} value={item} />
     })
 
-    const onFilter = evt => {
+    const onFilter = (evt) => {
       const textInput = get(evt, 'target.value', '')
       if (textInput === '') {
         return this.options
       } else {
-        return this.options.filter(item => {
+        return this.options.filter((item) => {
           return item.props.value.toLowerCase().includes(textInput.toLowerCase())
         })
       }
@@ -103,13 +90,8 @@ class ControlPanelMultiSelect extends React.Component {
     const validated = exception ? 'error' : undefined
     return (
       <React.Fragment>
-        <div
-          className="creation-view-controls-singleselect"
-          ref={this.setControlRef.bind(this, control)}
-        >
-          <ControlPanelFormGroup
-            controlId={controlId}
-            control={control}>
+        <div className="creation-view-controls-singleselect" ref={this.setControlRef.bind(this, control)}>
+          <ControlPanelFormGroup controlId={controlId} control={control}>
             {isLoading ? (
               <div className="creation-view-controls-singleselect-loading">
                 <Spinner size="md" />
@@ -120,11 +102,17 @@ class ControlPanelMultiSelect extends React.Component {
                 ariaLabelledBy={`${controlId}-label`}
                 spellCheck={false}
                 isOpen={open}
-                onToggle={() => {setOpen(!open)}}
+                onToggle={() => {
+                  setOpen(!open)
+                }}
                 variant={SelectVariant.checkbox}
-                onSelect={(_event, value) => {onChange(value)}}
+                onSelect={(_event, value) => {
+                  onChange(value)
+                }}
                 selections={active}
-                onClear={() => {onChange(undefined)}}
+                onClear={() => {
+                  onChange(undefined)
+                }}
                 placeholderText={placeholder}
                 isDisabled={disabled}
                 onFilter={onFilter}
@@ -135,7 +123,13 @@ class ControlPanelMultiSelect extends React.Component {
               </Select>
             )}
             {validated === 'error' ? (
-              <div style={{ borderTop: '1.75px solid red', paddingBottom: '6px', maxWidth: '600px' }}></div>
+              <div
+                style={{
+                  borderTop: '1.75px solid red',
+                  paddingBottom: '6px',
+                  maxWidth: '600px',
+                }}
+              ></div>
             ) : (
               <React.Fragment />
             )}

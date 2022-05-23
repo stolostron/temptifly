@@ -9,9 +9,7 @@ import keyBy from 'lodash/keyBy'
 export const DNS_LABEL = '[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?'
 export const PREFIX = `${DNS_LABEL}(?:\\.${DNS_LABEL})*/`
 export const NAME_OR_VALUE = '[a-z0-9A-Z](?:[a-z0-9A-Z_.-]{0,61}[a-z0-9A-Z])?'
-export const regex = new RegExp(
-  `^((?:${PREFIX})?${NAME_OR_VALUE})=(${NAME_OR_VALUE})?$`
-)
+export const regex = new RegExp(`^((?:${PREFIX})?${NAME_OR_VALUE})=(${NAME_OR_VALUE})?$`)
 export const KEY_CAPTURE_GROUP_INDEX = 1
 export const VALUE_CAPTURE_GROUP_INDEX = 2
 
@@ -20,13 +18,13 @@ class ControlPanelLabels extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    i18n: PropTypes.func
-  };
+    i18n: PropTypes.func,
+  }
 
   constructor(props) {
     super(props)
     this.state = {
-      value: ''
+      value: '',
     }
   }
 
@@ -39,19 +37,19 @@ class ControlPanelLabels extends React.Component {
     return (
       <React.Fragment>
         <div className="creation-view-controls-labels">
-          <ControlPanelFormGroup
-            controlId={controlId}
-            control={control}>
+          <ControlPanelFormGroup controlId={controlId} control={control}>
             <div className="creation-view-controls-labels-container">
-              {formatted.length!==0 && <div className="creation-view-controls-labels-tag-container">
-                {formatted.map((label, inx) => {
-                  return (
-                    <Label key={label} onClose={this.handleDelete.bind(this, inx)} >
-                      {label}
-                    </Label>
-                  )
-                })}
-              </div>}
+              {formatted.length !== 0 && (
+                <div className="creation-view-controls-labels-tag-container">
+                  {formatted.map((label, inx) => {
+                    return (
+                      <Label key={label} onClose={this.handleDelete.bind(this, inx)}>
+                        {label}
+                      </Label>
+                    )
+                  })}
+                </div>
+              )}
               <div className="creation-view-controls-labels-edit-container">
                 <TextInput
                   id={controlId}
@@ -78,7 +76,7 @@ class ControlPanelLabels extends React.Component {
     handleChange(control)
   }
 
-  handleChange(value='') {
+  handleChange(value = '') {
     const { control, i18n } = this.props
     const { active = [] } = control
     if (value.endsWith(',')) {
@@ -93,9 +91,7 @@ class ControlPanelLabels extends React.Component {
         const map = keyBy(active, 'key')
         if (map[match[KEY_CAPTURE_GROUP_INDEX]]) {
           invalid = true
-          invalidText = i18n(
-            'enter.duplicate.key',
-            [match[KEY_CAPTURE_GROUP_INDEX]])
+          invalidText = i18n('enter.duplicate.key', [match[KEY_CAPTURE_GROUP_INDEX]])
         }
       }
       control.exception = invalidText
@@ -105,17 +101,17 @@ class ControlPanelLabels extends React.Component {
 
   handleKeyDown(event) {
     switch (event.key) {
-    case 'Enter':
-      this.createLabel()
-      break
+      case 'Enter':
+        this.createLabel()
+        break
 
-    case 'Backspace':
-      this.deleteLastLabel()
-      break
+      case 'Backspace':
+        this.deleteLastLabel()
+        break
 
-    case 'Escape':
-      this.cancelLabel()
-      break
+      case 'Escape':
+        this.cancelLabel()
+        break
     }
   }
 
@@ -144,7 +140,7 @@ class ControlPanelLabels extends React.Component {
       const match = regex.exec(value)
       active.push({
         key: match[KEY_CAPTURE_GROUP_INDEX],
-        value: match[VALUE_CAPTURE_GROUP_INDEX] || ''
+        value: match[VALUE_CAPTURE_GROUP_INDEX] || '',
       })
       control.active = active
       handleChange(control)

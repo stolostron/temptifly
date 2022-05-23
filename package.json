@@ -6,9 +6,10 @@
   "scripts": {
     "build": "npm run clean && webpack --progress",
     "clean": "del-cli dist/*",
-    "lint": "eslint --ext .jsx,.js .",
-    "lint:fix": "npm run stylefmt && eslint --ext .jsx,.js --fix .",
-    "stylefmt": "prettier --write src/**/*.scss",
+    "lint": "eslint src --ext .js,.jsx --max-warnings=0",
+    "lint:fix": "eslint src --ext .js,.jsx --fix",
+    "prettier": "prettier --check src",
+    "prettier:fix": "prettier --write src",
     "test": "jest",
     "test:update-snapshot": "jest --updateSnapshot"
   },
@@ -114,10 +115,9 @@
     "webpack-cli": "^4.4.0"
   },
   "prettier": {
-    "printWidth": 80,
+    "printWidth": 120,
     "tabWidth": 2,
     "semi": false,
-    "singleQuote": true,
-    "trailingComma": "es5"
+    "singleQuote": true
   }
 }
