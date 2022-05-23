@@ -22,10 +22,7 @@ import ControlPanelWizard from './ControlPanelWizard'
 import ControlPanelPrompt from './ControlPanelPrompt'
 import ControlPanelSkeleton from './ControlPanelSkeleton'
 import '../scss/control-panel.scss'
-import {
-  TrashIcon,
-  AddIcon,
-} from '../icons/Icons'
+import { TrashIcon, AddIcon } from '../icons/Icons'
 
 class ControlPanel extends React.Component {
   static propTypes = {
@@ -40,18 +37,18 @@ class ControlPanel extends React.Component {
     handleNewEditorMode: PropTypes.func,
     i18n: PropTypes.func,
     isCustomName: PropTypes.bool,
-    isEditing:  PropTypes.bool,
+    isEditing: PropTypes.bool,
     isLoaded: PropTypes.bool,
     notifications: PropTypes.array,
     onChange: PropTypes.func,
     onStepChange: PropTypes.func,
     originalControlData: PropTypes.array,
-    resetStatus:  PropTypes.func,
+    resetStatus: PropTypes.func,
     setEditorReadOnly: PropTypes.func,
     showEditor: PropTypes.bool,
     showPortals: PropTypes.object,
     templateYAML: PropTypes.any,
-  };
+  }
 
   constructor(props) {
     super(props)
@@ -61,40 +58,37 @@ class ControlPanel extends React.Component {
     this.refreshFading()
   }
 
-  setCreationViewRef = ref => {
+  setCreationViewRef = (ref) => {
     this.creationView = ref
   }
 
-  setCreationViewBottomBlurrRef = ref => {
+  setCreationViewBottomBlurrRef = (ref) => {
     this.creationViewBottomBlurrRef = ref
-  };
+  }
 
   refreshFading = () => {
     if (this.creationViewBottomBlurrRef) {
-      const hasScrollbar =
-        this.creationView.scrollHeight > this.creationView.clientHeight
+      const hasScrollbar = this.creationView.scrollHeight > this.creationView.clientHeight
       const towardsBottom =
-        this.creationView.scrollTop + this.creationView.clientHeight >
-        this.creationView.scrollHeight - 20
-      this.creationViewBottomBlurrRef.style.display =
-        hasScrollbar && !towardsBottom ? 'block' : 'none'
+        this.creationView.scrollTop + this.creationView.clientHeight > this.creationView.scrollHeight - 20
+      this.creationViewBottomBlurrRef.style.display = hasScrollbar && !towardsBottom ? 'block' : 'none'
     }
-  };
+  }
 
   setWizardRef = (ref) => {
     this.wizardRef = ref
-  };
+  }
 
   setControlSectionRef = (title, ref) => {
     title.sectionRef = ref
-  };
+  }
 
   render() {
     const { controlData, showEditor } = this.props
     const controlClasses = classNames({
       'creation-view-controls': true,
       'pf-c-form': true,
-      showEditor
+      showEditor,
     })
     return (
       <div className="creation-view-controls-container">
@@ -122,52 +116,52 @@ class ControlPanel extends React.Component {
       const isHidden = this.isHidden(control, controlData)
       if (!stopRendering) {
         switch (type) {
-        case 'step':
-        case 'review':
-          if (!activeStep) {
+          case 'step':
+          case 'review':
+            if (!activeStep) {
+              if (content.length && !activeSection) {
+                section = { title: { id: `section${inx}`, type: 'section' }, content }
+                sections.push(section)
+              }
+              if (activeSection) {
+                step = { title: { id: `step${inx}`, type: 'step' }, sections }
+                steps.push(step)
+              }
+            }
+            sections = []
+            content = []
+            activeSection = null
+            activeStep = { title: control, sections }
+            if (!isHidden) {
+              steps.push(activeStep)
+            }
+            break
+          case 'section':
             if (content.length && !activeSection) {
-              section={title: {id: `section${inx}`, type: 'section'}, content}
+              section = { title: { id: `section${inx}`, type: 'section' }, content }
               sections.push(section)
             }
-            if (activeSection) {
-              step={title: {id: `step${inx}`, type: 'step'}, sections}
-              steps.push(step)
+            content = []
+            activeSection = { title: control, content }
+            if (!isHidden) {
+              sections.push(activeSection)
             }
-          }
-          sections = []
-          content = []
-          activeSection = null
-          activeStep = { title: control, sections }
-          if (!isHidden) {
-            steps.push(activeStep)
-          }
-          break
-        case 'section':
-          if (content.length && !activeSection) {
-            section={title: {id: `section${inx}`, type: 'section'}, content}
-            sections.push(section)
-          }
-          content = []
-          activeSection = { title: control, content }
-          if (!isHidden) {
-            sections.push(activeSection)
-          }
-          break
-        default:
-          if (!activeSection) {
-            activeSection={title: {id: `section${inx}`, type: 'section'}, content}
-            sections.push(activeSection)
-          }
-          content.push(control)
-          break
+            break
+          default:
+            if (!activeSection) {
+              activeSection = { title: { id: `section${inx}`, type: 'section' }, content }
+              sections.push(activeSection)
+            }
+            content.push(control)
+            break
         }
       }
     })
     // if no steps, just do a form
-    if (steps.length===0) {
+    if (steps.length === 0) {
       return this.renderControlForm(sections, controlClasses)
     } else {
-    // else do a wizard
+      // else do a wizard
       return this.renderControlWizard(steps, controlClasses, controlData)
     }
   }
@@ -175,28 +169,27 @@ class ControlPanel extends React.Component {
   renderControlForm(sections, controlClasses) {
     return (
       <React.Fragment>
-        <div
-          className={controlClasses}
-          ref={this.setCreationViewRef}
-          onScroll={this.refreshFading.bind(this)}
-        >
+        <div className={controlClasses} ref={this.setCreationViewRef} onScroll={this.refreshFading.bind(this)}>
           {this.renderPortals()}
           <div id="notifications" />
           {this.renderNotifications()}
-          <div className="content">
-            {this.renderControlSections(sections)}
-          </div>
+          <div className="content">{this.renderControlSections(sections)}</div>
         </div>
-        <div
-          className="creation-view-controls-container-blurr bottom"
-          ref={this.setCreationViewBottomBlurrRef}
-        />
+        <div className="creation-view-controls-container-blurr bottom" ref={this.setCreationViewBottomBlurrRef} />
       </React.Fragment>
     )
   }
 
   renderControlWizard(steps, controlClasses, controlData) {
-    const {onStepChange, handleCreateResource, handleCancelCreate, setEditorReadOnly, resetStatus, isEditing, creationStatus } = this.props
+    const {
+      onStepChange,
+      handleCreateResource,
+      handleCancelCreate,
+      setEditorReadOnly,
+      resetStatus,
+      isEditing,
+      creationStatus,
+    } = this.props
     return (
       <ControlPanelWizard
         steps={steps}
@@ -222,16 +215,13 @@ class ControlPanel extends React.Component {
       const sectionClasses = classNames({
         'creation-view-controls-section': true,
         shadowed,
-        collapsed
+        collapsed,
       })
       title.content = _content
       return (
         <React.Fragment key={id}>
           {this.renderControl(id, 'section', title, grpId)}
-          <div
-            className={sectionClasses}
-            ref={this.setControlSectionRef.bind(this, title)}
-          >
+          <div className={sectionClasses} ref={this.setControlSectionRef.bind(this, title)}>
             {this.renderControls(_content, grpId)}
           </div>
         </React.Fragment>
@@ -245,10 +235,10 @@ class ControlPanel extends React.Component {
         {controlData.map((control, i) => {
           const { id = `${control.type}-${i}`, type } = control
           switch (type) {
-          case 'group':
-            return this.renderGroup(control, grpId)
-          default:
-            return this.renderControlWithFetch(id, type, control, grpId)
+            case 'group':
+              return this.renderGroup(control, grpId)
+            default:
+              return this.renderControlWithFetch(id, type, control, grpId)
           }
         })}
       </React.Fragment>
@@ -257,35 +247,34 @@ class ControlPanel extends React.Component {
 
   renderGroup(control, grpId = '') {
     const { id, active = [], hidden, prompts } = control
-    active.forEach(controlData => {
-      controlData.forEach(ctrl => {
+    active.forEach((controlData) => {
+      controlData.forEach((ctrl) => {
         ctrl.group = control
       })
     })
     const isHidden = typeof hidden === 'function' ? hidden() : hidden
-    return (!isHidden && <React.Fragment key={id}>
-      {active.map((controlData, inx) => {
-        const groupId = inx > 0 ? `${grpId}grp${inx}` : ''
+    return (
+      !isHidden && (
+        <React.Fragment key={id}>
+          {active.map((controlData, inx) => {
+            const groupId = inx > 0 ? `${grpId}grp${inx}` : ''
 
-        const card = controlData.find(({type})=>type==='cards' )
-        const groupType = card && Array.isArray(card.active) ? card.active.join() : 'general'
+            const card = controlData.find(({ type }) => type === 'cards')
+            const groupType = card && Array.isArray(card.active) ? card.active.join() : 'general'
 
-        return (
-        /* eslint-disable-next-line react/no-array-index-key */
-          <React.Fragment key={`${controlData[0].id}Group${inx}`}>
-            <div className="creation-view-group-container" key={groupType}>
-              {prompts &&
-                  active.length > 1 &&
-                  this.renderDeleteGroupButton(control, inx)}
-              {this.renderGroupControlSections(controlData, inx, groupId)}
-            </div>
-            {prompts &&
-                active.length - 1 === inx &&
-                this.renderAddGroupButton(control)}
-          </React.Fragment>
-        )
-      })}
-    </React.Fragment>
+            return (
+              /* eslint-disable-next-line react/no-array-index-key */
+              <React.Fragment key={`${controlData[0].id}Group${inx}`}>
+                <div className="creation-view-group-container" key={groupType}>
+                  {prompts && active.length > 1 && this.renderDeleteGroupButton(control, inx)}
+                  {this.renderGroupControlSections(controlData, inx, groupId)}
+                </div>
+                {prompts && active.length - 1 === inx && this.renderAddGroupButton(control)}
+              </React.Fragment>
+            )
+          })}
+        </React.Fragment>
+      )
     )
   }
 
@@ -296,7 +285,7 @@ class ControlPanel extends React.Component {
     let stopRendering = false
     let stopRenderingOnNextControl = false
     const controlSections = []
-    controlData.forEach(control => {
+    controlData.forEach((control) => {
       const { type, pauseControlCreationHereUntilSelected } = control
       stopRendering = stopRenderingOnNextControl
       if (pauseControlCreationHereUntilSelected) {
@@ -329,35 +318,39 @@ class ControlPanel extends React.Component {
         delete control.isLoaded
         control.isRefetching = true
         control.forceUpdate()
-        func().then(data=>{
-          control.isRefetching = false
-          setAvailable(control, {data})
-          control.forceUpdate()
-        }).catch((err) => {
-          control.isRefetching = false
-          setAvailable(control, {error:err})
-          control.forceUpdate()
-        })
+        func()
+          .then((data) => {
+            control.isRefetching = false
+            setAvailable(control, { data })
+            control.forceUpdate()
+          })
+          .catch((err) => {
+            control.isRefetching = false
+            setAvailable(control, { error: err })
+            control.forceUpdate()
+          })
       }
 
       if (typeof query === 'function') {
         if (!control.isLoaded) {
           if (!control.isLoading) {
-            setAvailable(control, {loading:true})
-            query().then(data=>{
-              setAvailable(control, {loading:false, data})
-              control.forceUpdate()
-            }).catch((err) => {
-              setAvailable(control, {loading:false, error:err})
-              control.forceUpdate()
-            })
+            setAvailable(control, { loading: true })
+            query()
+              .then((data) => {
+                setAvailable(control, { loading: false, data })
+                control.forceUpdate()
+              })
+              .catch((err) => {
+                setAvailable(control, { loading: false, error: err })
+                control.forceUpdate()
+              })
           }
         }
         fetchAvailable.refetch = refetch.bind(this, query)
       } else {
         return (
           <Query query={query} key={id} variables={variables}>
-            {result => {
+            {(result) => {
               fetchAvailable.refetch = refetch.bind(this, result.refetch)
               setAvailable(control, result)
               return this.renderControlWithPrompt(id, type, control, grpId)
@@ -398,7 +391,7 @@ class ControlPanel extends React.Component {
     return (
       <ControlPanelPrompt
         control={control}
-        handleAddActive={items => this.handleAddActive(control, items)}
+        handleAddActive={(items) => this.handleAddActive(control, items)}
         i18n={i18n}
       />
     )
@@ -406,13 +399,8 @@ class ControlPanel extends React.Component {
 
   handleAddActive = (control, items) => {
     control.active = items
-    this.props.handleControlChange(
-      control,
-      this.props.controlData,
-      this.creationView,
-      this.props.isCustomName
-    )
-  };
+    this.props.handleControlChange(control, this.props.controlData, this.creationView, this.props.isCustomName)
+  }
 
   renderControl(id, type, control, grpId) {
     const { controlData, showEditor, isLoaded, i18n, templateYAML, handleCreateResource, controlProps } = this.props
@@ -422,166 +410,159 @@ class ControlPanel extends React.Component {
     const controlId = `${id}${grpId}`.replace('name', 'eman').replace('address', 'sserdda')
     control.controlId = controlId
     if (!isLoaded && !['title', 'section', 'hidden'].includes(type)) {
-      return (
-        <ControlPanelSkeleton
-          key={controlId}
-          controlId={controlId}
-          control={control}
-          i18n={i18n}
-        />
-      )
+      return <ControlPanelSkeleton key={controlId} controlId={controlId} control={control} i18n={i18n} />
     }
     switch (type) {
-    case 'title':
-    case 'section':
-      return (
-        <ControlPanelAccordion
-          key={controlId}
-          controlId={controlId}
-          control={control}
-          controlData={controlData}
-          handleChange={this.handleChange.bind(this, control)}
-          i18n={i18n}
-        />
-      )
-    case 'text':
-    case 'password':
-      return (
-        <ControlPanelTextInput
-          key={controlId}
-          controlId={controlId}
-          control={control}
-          handleChange={this.handleChange.bind(this, control)}
-          i18n={i18n}
-        />
-      )
-    case 'textarea':
-      return (
-        <ControlPanelTextArea
-          key={controlId}
-          controlId={controlId}
-          control={control}
-          handleChange={this.handleChange.bind(this, control)}
-          i18n={i18n}
-        />
-      )
-    case 'singleselect':
-      return (
-        <ControlPanelSingleSelect
-          key={controlId}
-          controlId={controlId}
-          control={control}
-          handleChange={this.handleChange.bind(this, control)}
-          i18n={i18n}
-        />
-      )
-    case 'number':
-      return (
-        <ControlPanelNumber
-          key={controlId}
-          controlId={controlId}
-          control={control}
-          handleChange={this.handleChange.bind(this, control)}
-          i18n={i18n}
-        />
-      )
-    case 'combobox':
-      return (
-        <ControlPanelComboBox
-          key={controlId}
-          controlId={controlId}
-          control={control}
-          controlData={controlData}
-          handleControlChange={this.handleControlChange.bind(this, control)}
-          i18n={i18n}
-        />
-      )
-    case 'multiselect':
-      return (
-        <ControlPanelMultiSelect
-          key={controlId}
-          controlId={controlId}
-          control={control}
-          handleChange={this.handleChange.bind(this, control)}
-          i18n={i18n}
-        />
-      )
-    case 'treeselect':
-      return (
-        <ControlPanelTreeSelect
-          key={controlId}
-          controlId={controlId}
-          control={control}
-          handleChange={this.handleChange.bind(this, control)}
-          i18n={i18n}
-        />
-      )
-    case 'cards':
-      return (
-        <ControlPanelCards
-          key={controlId}
-          controlId={controlId}
-          control={control}
-          showEditor={showEditor}
-          handleChange={this.handleCardChange.bind(this, control)}
-          i18n={i18n}
-          fetchData={this.props.fetchData}
-        />
-      )
-    case 'table':
-      return (
-        <ControlPanelTable
-          key={controlId}
-          controlId={controlId}
-          control={control}
-          handleChange={this.handleControlChange.bind(this, control)}
-          i18n={i18n}
-          fetchData={this.props.fetchData}
-        />
-      )
-    case 'labels':
-      return (
-        <ControlPanelLabels
-          key={controlId}
-          controlId={controlId}
-          control={control}
-          handleChange={this.handleControlChange.bind(this, control)}
-          i18n={i18n}
-        />
-      )
-    case 'values':
-      return (
-        <ControlPanelValues
-          key={controlId}
-          controlId={controlId}
-          control={control}
-          handleChange={this.handleControlChange.bind(this, control)}
-          i18n={i18n}
-        />
-      )
-    case 'checkbox':
-      return (
-        <ControlPanelCheckbox
-          key={controlId}
-          controlId={controlId}
-          control={control}
-          handleChange={this.handleChange.bind(this, control)}
-          i18n={i18n}
-        />
-      )
-    case 'custom':
-      return (
-        <React.Fragment key={controlId}>
-          {this.renderCustom(control, controlId, templateYAML, handleCreateResource, controlProps)}
-        </React.Fragment>
-      )
+      case 'title':
+      case 'section':
+        return (
+          <ControlPanelAccordion
+            key={controlId}
+            controlId={controlId}
+            control={control}
+            controlData={controlData}
+            handleChange={this.handleChange.bind(this, control)}
+            i18n={i18n}
+          />
+        )
+      case 'text':
+      case 'password':
+        return (
+          <ControlPanelTextInput
+            key={controlId}
+            controlId={controlId}
+            control={control}
+            handleChange={this.handleChange.bind(this, control)}
+            i18n={i18n}
+          />
+        )
+      case 'textarea':
+        return (
+          <ControlPanelTextArea
+            key={controlId}
+            controlId={controlId}
+            control={control}
+            handleChange={this.handleChange.bind(this, control)}
+            i18n={i18n}
+          />
+        )
+      case 'singleselect':
+        return (
+          <ControlPanelSingleSelect
+            key={controlId}
+            controlId={controlId}
+            control={control}
+            handleChange={this.handleChange.bind(this, control)}
+            i18n={i18n}
+          />
+        )
+      case 'number':
+        return (
+          <ControlPanelNumber
+            key={controlId}
+            controlId={controlId}
+            control={control}
+            handleChange={this.handleChange.bind(this, control)}
+            i18n={i18n}
+          />
+        )
+      case 'combobox':
+        return (
+          <ControlPanelComboBox
+            key={controlId}
+            controlId={controlId}
+            control={control}
+            controlData={controlData}
+            handleControlChange={this.handleControlChange.bind(this, control)}
+            i18n={i18n}
+          />
+        )
+      case 'multiselect':
+        return (
+          <ControlPanelMultiSelect
+            key={controlId}
+            controlId={controlId}
+            control={control}
+            handleChange={this.handleChange.bind(this, control)}
+            i18n={i18n}
+          />
+        )
+      case 'treeselect':
+        return (
+          <ControlPanelTreeSelect
+            key={controlId}
+            controlId={controlId}
+            control={control}
+            handleChange={this.handleChange.bind(this, control)}
+            i18n={i18n}
+          />
+        )
+      case 'cards':
+        return (
+          <ControlPanelCards
+            key={controlId}
+            controlId={controlId}
+            control={control}
+            showEditor={showEditor}
+            handleChange={this.handleCardChange.bind(this, control)}
+            i18n={i18n}
+            fetchData={this.props.fetchData}
+          />
+        )
+      case 'table':
+        return (
+          <ControlPanelTable
+            key={controlId}
+            controlId={controlId}
+            control={control}
+            handleChange={this.handleControlChange.bind(this, control)}
+            i18n={i18n}
+            fetchData={this.props.fetchData}
+          />
+        )
+      case 'labels':
+        return (
+          <ControlPanelLabels
+            key={controlId}
+            controlId={controlId}
+            control={control}
+            handleChange={this.handleControlChange.bind(this, control)}
+            i18n={i18n}
+          />
+        )
+      case 'values':
+        return (
+          <ControlPanelValues
+            key={controlId}
+            controlId={controlId}
+            control={control}
+            handleChange={this.handleControlChange.bind(this, control)}
+            i18n={i18n}
+          />
+        )
+      case 'checkbox':
+        return (
+          <ControlPanelCheckbox
+            key={controlId}
+            controlId={controlId}
+            control={control}
+            handleChange={this.handleChange.bind(this, control)}
+            i18n={i18n}
+          />
+        )
+      case 'custom':
+        return (
+          <React.Fragment key={controlId}>
+            {this.renderCustom(control, controlId, templateYAML, handleCreateResource, controlProps)}
+          </React.Fragment>
+        )
     }
     return null
   }
 
   setControlRef = (control, ref) => {
     control.ref = ref
-  };
+  }
 
   renderCustom(control, controlId, templateYAML, handleCreateResource, controlProps) {
     const { i18n } = this.props
@@ -597,10 +578,7 @@ class ControlPanel extends React.Component {
     })
     return (
       <React.Fragment>
-        <div
-          className="creation-view-controls-custom"
-          ref={this.setControlRef.bind(this, control)}
-        >
+        <div className="creation-view-controls-custom" ref={this.setControlRef.bind(this, control)}>
           {custom}
         </div>
       </React.Fragment>
@@ -613,20 +591,20 @@ class ControlPanel extends React.Component {
     const { controlData, originalControlData, onChange } = this.props
     const { id: field, type, syncWith, syncedWith } = control
 
-    if(onChange){
-      control.refresh = ()=>this.props.handleControlChange(control, controlData)
+    if (onChange) {
+      control.refresh = () => this.props.handleControlChange(control, controlData)
       onChange(control)
     }
 
     switch (type) {
-    case 'text':
-      isCustomName = field === 'name'
-      break
-    case 'multiselect':
-      // if user was able to select something that automatically
-      // generates the name, blow away the user name
-      updateName = !isCustomName && control.updateNamePrefix
-      break
+      case 'text':
+        isCustomName = field === 'name'
+        break
+      case 'multiselect':
+        // if user was able to select something that automatically
+        // generates the name, blow away the user name
+        updateName = !isCustomName && control.updateNamePrefix
+        break
     }
 
     // update name if spec changed
@@ -635,9 +613,7 @@ class ControlPanel extends React.Component {
       const nname = controlData.find(({ id }) => id === 'name')
       if (nname) {
         if (control.active.length > 0) {
-          cname =
-            control.updateNamePrefix +
-            control.availableMap[control.active[0]].name.replace(/\W/g, '-')
+          cname = control.updateNamePrefix + control.availableMap[control.active[0]].name.replace(/\W/g, '-')
         } else {
           cname = originalControlData.find(({ id }) => id === 'name').active
         }
@@ -648,17 +624,13 @@ class ControlPanel extends React.Component {
     // syncing values
     if (syncWith && control.groupControlData) {
       // whatever is typed into this control, also put in other control
-      const syncControl = control.groupControlData.find(
-        ({ id }) => id === syncWith
-      )
+      const syncControl = control.groupControlData.find(({ id }) => id === syncWith)
       syncControl.active = `${control.active}${syncControl.syncedSuffix || ''}`
     }
     if (syncedWith && control.groupControlData) {
       // if another control is synced with this control and
       // user is typing a value here directly, remove sync
-      const syncedControl = control.groupControlData.find(
-        ({ id }) => id === syncedWith
-      )
+      const syncedControl = control.groupControlData.find(({ id }) => id === syncedWith)
       delete control.syncedWith
       delete syncedControl.syncWith
     }
@@ -684,12 +656,7 @@ class ControlPanel extends React.Component {
           }
         }
       }
-      this.props.handleControlChange(
-        control,
-        controlData,
-        this.creationView,
-        isCustomName
-      )
+      this.props.handleControlChange(control, controlData, this.creationView, isCustomName)
     } else {
       control.active = []
       if (selection) {
@@ -701,8 +668,8 @@ class ControlPanel extends React.Component {
 
   handleControlChange(control) {
     const { controlData, onChange } = this.props
-    if(onChange){
-      control.refresh = ()=>this.props.handleControlChange(control, controlData)
+    if (onChange) {
+      control.refresh = () => this.props.handleControlChange(control, controlData)
       onChange(control)
     }
     this.props.handleControlChange(control, controlData)
@@ -712,9 +679,9 @@ class ControlPanel extends React.Component {
     const { showPortals } = this.props
     if (showPortals) {
       return (
-        <div className='creation-view-portals'>
-          {Object.values(showPortals).map(id => {
-            return (<div id={id} key={id} />)
+        <div className="creation-view-portals">
+          {Object.values(showPortals).map((id) => {
+            return <div id={id} key={id} />
           })}
         </div>
       )
@@ -727,25 +694,12 @@ class ControlPanel extends React.Component {
     if (notifications.length > 0) {
       return (
         <React.Fragment>
-          <div className='creation-view-controls-notifications' style={{margin: '20px 0'}}>
-            {notifications.map(
-              ({
-                exception,
-                variant = 'danger'
-              }) => {
-                return (
-                  <Alert
-                    key={exception}
-                    variant={variant}
-                    title={exception}
-                    isInline
-                  >
-                  </Alert>
-                )
-              }
-            )}
+          <div className="creation-view-controls-notifications" style={{ margin: '20px 0' }}>
+            {notifications.map(({ exception, variant = 'danger' }) => {
+              return <Alert key={exception} variant={variant} title={exception} isInline></Alert>
+            })}
           </div>
-          <div className='creation-view-controls-notifications-footer' />
+          <div className="creation-view-controls-notifications-footer" />
         </React.Fragment>
       )
     }
@@ -754,16 +708,13 @@ class ControlPanel extends React.Component {
 
   renderDeleteGroupButton(control, inx) {
     const { i18n, controlData } = this.props
-    const { prompts: { deletePrompt } } = control
+    const {
+      prompts: { deletePrompt },
+    } = control
     const handleGroupChange = () => {
-      this.props.handleGroupChange(
-        control,
-        controlData,
-        this.creationView,
-        inx
-      )
+      this.props.handleGroupChange(control, controlData, this.creationView, inx)
     }
-    const handleGroupChangeKey = e => {
+    const handleGroupChangeKey = (e) => {
       if (e.type === 'click' || e.key === 'Enter') {
         handleGroupChange()
       }
@@ -786,11 +737,13 @@ class ControlPanel extends React.Component {
 
   renderAddGroupButton(control) {
     const { i18n, controlData } = this.props
-    const { prompts: { addPrompt } } = control
+    const {
+      prompts: { addPrompt },
+    } = control
     const handleGroupChange = () => {
       this.props.handleGroupChange(control, controlData, this.creationView)
     }
-    const handleGroupChangeKey = e => {
+    const handleGroupChangeKey = (e) => {
       if (e.type === 'click' || e.key === 'Enter') {
         handleGroupChange()
       }
@@ -809,7 +762,7 @@ class ControlPanel extends React.Component {
           onKeyPress={handleGroupChangeKey}
         >
           {text}
-          <AddIcon className='icon' />
+          <AddIcon className="icon" />
         </div>
       </div>
     )
@@ -817,11 +770,7 @@ class ControlPanel extends React.Component {
 
   isHidden(control, controlData) {
     const { hidden } = control
-    return (
-      hidden === true ||
-      hidden === 'true' ||
-      (typeof hidden === 'function' && hidden(control, controlData))
-    )
+    return hidden === true || hidden === 'true' || (typeof hidden === 'function' && hidden(control, controlData))
   }
 }
 

@@ -10,8 +10,8 @@ class ControlPanelTextArea extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-    i18n: PropTypes.func
-  };
+    i18n: PropTypes.func,
+  }
 
   constructor(props) {
     super(props)
@@ -20,27 +20,19 @@ class ControlPanelTextArea extends React.Component {
 
   setControlRef = (control, ref) => {
     control.ref = ref
-  };
+  }
 
   render() {
     const { controlId, i18n, control } = this.props
-    const {
-      name,
-      type,
-      exception,
-      disabled
-    } = control
+    const { name, type, exception, disabled } = control
 
     // if placeholder missing, create one
     let { placeholder } = control
     if (!placeholder) {
-      placeholder = i18n(
-        'creation.ocp.cluster.enter.value',
-        [name ? name.toLowerCase() : '']
-      )
+      placeholder = i18n('creation.ocp.cluster.enter.value', [name ? name.toLowerCase() : ''])
     }
 
-    let {active:value} = control
+    let { active: value } = control
     if (Array.isArray(value)) {
       value = value.join('\n')
     }
@@ -53,9 +45,7 @@ class ControlPanelTextArea extends React.Component {
           style={{ display: '' }}
           ref={this.setControlRef.bind(this, control)}
         >
-          <ControlPanelFormGroup
-            controlId={controlId}
-            control={control}>
+          <ControlPanelFormGroup controlId={controlId} control={control}>
             <TextArea
               id={controlId}
               isDisabled={disabled}

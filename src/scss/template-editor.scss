@@ -27,21 +27,13 @@
 
           &.top {
             top: 0;
-            background-image: linear-gradient(
-              to top,
-              rgba(244, 247, 251, 0),
-              rgba(240, 240, 240, 1) 90%
-            );
+            background-image: linear-gradient(to top, rgba(244, 247, 251, 0), rgba(240, 240, 240, 1) 90%);
             display: none;
           }
 
           &.bottom {
             bottom: 0;
-            background-image: linear-gradient(
-              to bottom,
-              rgba(244, 247, 251, 0),
-              rgba(240, 240, 240, 1) 90%
-            );
+            background-image: linear-gradient(to bottom, rgba(244, 247, 251, 0), rgba(240, 240, 240, 1) 90%);
           }
         }
       }

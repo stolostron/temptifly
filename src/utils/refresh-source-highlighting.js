@@ -29,38 +29,36 @@ export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => 
     diffs.forEach(({ kind, path, index, item, lhs, rhs }) => {
       let pathBase = path.shift()
       pathBase = `${pathBase}[${path.length > 0 ? path.shift() : 0}]`
-      let newPath =
-        path.length > 0 ? pathBase + `.${path.join('.$v.')}` : pathBase
-      const synced =
-        (kind === 'D' || kind === 'E') && lhs && !rhs ? oldSynced : newSynced
+      let newPath = path.length > 0 ? pathBase + `.${path.join('.$v.')}` : pathBase
+      const synced = (kind === 'D' || kind === 'E') && lhs && !rhs ? oldSynced : newSynced
       let obj = get(synced, newPath)
       if (obj) {
         if (obj.$v || obj.$v === false) {
           // convert A's and E's into 'N's
           switch (kind) {
-          case 'E': {
-            if (obj.$l > 1 && rhs) {
-              // convert edit to new is multilines added
-              kind = 'N'
-              obj = { $r: obj.$r + 1, $l: obj.$l - 1 }
-            }
-            break
-          }
-          case 'A': {
-            switch (item.kind) {
-            case 'N':
-              // convert new array item to new range
-              kind = 'N'
-              obj = obj.$v[index].$r ? obj.$v[index] : obj
-              break
-            case 'D':
-              // if array delete, ignore any other edits within array
-              // edits are just the comparison of other array items
-              ignorePaths.push(path.join('/'))
+            case 'E': {
+              if (obj.$l > 1 && rhs) {
+                // convert edit to new is multilines added
+                kind = 'N'
+                obj = { $r: obj.$r + 1, $l: obj.$l - 1 }
+              }
               break
             }
-            break
-          }
+            case 'A': {
+              switch (item.kind) {
+                case 'N':
+                  // convert new array item to new range
+                  kind = 'N'
+                  obj = obj.$v[index].$r ? obj.$v[index] : obj
+                  break
+                case 'D':
+                  // if array delete, ignore any other edits within array
+                  // edits are just the comparison of other array items
+                  ignorePaths.push(path.join('/'))
+                  break
+              }
+              break
+            }
           }
         } else if (obj.$l > 1 && path.length > 0 && kind !== 'D') {
           kind = 'N'
@@ -76,7 +74,7 @@ export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => 
         if (ignorePaths.length > 0) {
           const tp = path.join('/')
           if (
-            ignorePaths.some(p => {
+            ignorePaths.some((p) => {
               return tp.startsWith(p)
             })
           ) {
@@ -86,51 +84,51 @@ export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => 
         }
 
         switch (kind) {
-        case 'E': {
-          // edited
-          if ((obj.$v || obj.$v === false) && rhs) {
-            // if no value ignore--all values removed from a key
+          case 'E': {
+            // edited
+            if ((obj.$v || obj.$v === false) && rhs) {
+              // if no value ignore--all values removed from a key
+              decorationList.push({
+                range: new editor.monaco.Range(obj.$r + 1, 0, obj.$r + 1, 0),
+                options: {
+                  isWholeLine: true,
+                  linesDecorationsClassName: 'insertedLineDecoration',
+                  minimap: { color: '#c0c0ff', position: 2 },
+                },
+              })
+
+              // if long encoded string, don't scroll to it
+              let isEncoded = typeof obj.$v === 'string' && obj.$v.length > 200
+              if (isEncoded) {
+                try {
+                  Base64.decode(obj.$v)
+                } catch (e) {
+                  isEncoded = false
+                }
+              }
+              if (!isEncoded) {
+                if (!firstModRow || firstModRow > obj.$r) {
+                  firstModRow = obj.$r
+                }
+              } else {
+                encodedRow = obj.$r
+              }
+            }
+            break
+          }
+          case 'N': // new
             decorationList.push({
-              range: new editor.monaco.Range(obj.$r + 1, 0, obj.$r + 1, 0),
+              range: new editor.monaco.Range(obj.$r + 1, 0, obj.$r + obj.$l, 0),
               options: {
                 isWholeLine: true,
                 linesDecorationsClassName: 'insertedLineDecoration',
-                minimap: { color: '#c0c0ff', position: 2 }
-              }
+                minimap: { color: '#c0c0ff', position: 2 },
+              },
             })
-
-            // if long encoded string, don't scroll to it
-            let isEncoded = typeof obj.$v === 'string' && obj.$v.length > 200
-            if (isEncoded) {
-              try {
-                Base64.decode(obj.$v)
-              } catch (e) {
-                isEncoded = false
-              }
+            if (!firstNewRow || firstNewRow > obj.$r) {
+              firstNewRow = obj.$r
             }
-            if (!isEncoded) {
-              if (!firstModRow || firstModRow > obj.$r) {
-                firstModRow = obj.$r
-              }
-            } else {
-              encodedRow = obj.$r
-            }
-          }
-          break
-        }
-        case 'N': // new
-          decorationList.push({
-            range: new editor.monaco.Range(obj.$r + 1, 0, obj.$r + obj.$l, 0),
-            options: {
-              isWholeLine: true,
-              linesDecorationsClassName: 'insertedLineDecoration',
-              minimap: { color: '#c0c0ff', position: 2 }
-            }
-          })
-          if (!firstNewRow || firstNewRow > obj.$r) {
-            firstNewRow = obj.$r
-          }
-          break
+            break
         }
       }
     })
@@ -139,7 +137,7 @@ export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => 
       editor.changeList = decorationList
       editor.decorations = editor.deltaDecorations(editor.decorations, [
         ...(editor.errorList || []),
-        ...editor.changeList
+        ...editor.changeList,
       ])
     }, 0)
   } else {
@@ -150,7 +148,7 @@ export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => 
 
 // if there are arrays make sure equal array entries line up
 const normalize = (oldRaw, newRaw) => {
-  Object.keys(oldRaw).forEach(key => {
+  Object.keys(oldRaw).forEach((key) => {
     if (newRaw[key] && oldRaw[key].length !== newRaw[key].length) {
       const oldKeys = keyBy(oldRaw[key], getResourceID)
       const newKeys = keyBy(newRaw[key], getResourceID)
@@ -172,15 +170,9 @@ const normalize = (oldRaw, newRaw) => {
   })
 }
 
-export const highlightAllChanges = (
-  editors,
-  oldYAML,
-  newYAML,
-  otherYAMLTabs,
-  selectedTab
-) => {
+export const highlightAllChanges = (editors, oldYAML, newYAML, otherYAMLTabs, selectedTab) => {
   if (editors.length > 0) {
-    highlightChanges(editors[0], oldYAML, newYAML, editors.length===1)
+    highlightChanges(editors[0], oldYAML, newYAML, editors.length === 1)
     if (otherYAMLTabs.length > 0) {
       otherYAMLTabs.forEach(({ editor, oldTemplateYAML, templateYAML }) => {
         if (editor && oldTemplateYAML) {
@@ -210,9 +202,7 @@ export const highlightAllChanges = (
         }
       })
       if (changeTab && changedTab !== undefined) {
-        const tabContainer = document.querySelector(
-          '.creation-view-yaml-header-tabs'
-        )
+        const tabContainer = document.querySelector('.creation-view-yaml-header-tabs')
         if (tabContainer) {
           const tabs = tabContainer.getElementsByClassName('tf--tabs__nav-link')
           if (tabs.length > 0) {
@@ -221,9 +211,9 @@ export const highlightAllChanges = (
         }
       }
       if (editorOnTab) {
-        const r =  editorOnTab.getVisibleRanges()[0]
+        const r = editorOnTab.getVisibleRanges()[0]
         const scrollTo = editorOnTab.errorLine || editorOnTab.changed || 1
-        if (r && (scrollTo<r.startLineNumber || scrollTo>r.endLineNumber)) {
+        if (r && (scrollTo < r.startLineNumber || scrollTo > r.endLineNumber)) {
           setTimeout(() => {
             editorOnTab.setSelection(new editorOnTab.monaco.Selection(0, 0, 0, 0))
             editorOnTab.revealLineInCenter(scrollTo)
