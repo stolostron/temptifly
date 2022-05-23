@@ -4,7 +4,6 @@ import { diff } from 'deep-diff'
 import { parseYAML, getInsideObject, getResourceID } from './source-utils'
 import get from 'lodash/get'
 import keyBy from 'lodash/keyBy'
-import { Base64 } from 'js-base64'
 
 export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => {
   // mark any modified/added lines in editor
@@ -101,7 +100,7 @@ export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => 
               let isEncoded = typeof obj.$v === 'string' && obj.$v.length > 200
               if (isEncoded) {
                 try {
-                  Base64.decode(obj.$v)
+                  Buffer.from(obj.$v, 'base64').toString('ascii')
                 } catch (e) {
                   isEncoded = false
                 }

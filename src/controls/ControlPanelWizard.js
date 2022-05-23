@@ -19,8 +19,14 @@ class ControlPanelWizard extends React.Component {
   }
 
   render() {
-    const { controlClasses, setWizardRef, renderControlSections, renderNotifications, isEditing, creationStatus } =
-      this.props
+    const {
+      controlClasses,
+      setWizardRef,
+      renderControlSections,
+      renderNotifications,
+      isEditing,
+      creationStatus,
+    } = this.props
     let { steps } = this.props
     steps.forEach((step) => {
       step.controls = []

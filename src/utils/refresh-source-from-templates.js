@@ -2,7 +2,6 @@
 
 import { parseYAML, escapeYAML, discoverImmutables } from './source-utils'
 import { setSourcePaths } from './initialize-control-functions'
-import { Base64 } from 'js-base64'
 import { caseFn, defaultFn, if_eqFn, if_existsFn, if_gtFn, if_neFn, if_orFn, switchFn } from '../helpers'
 import get from 'lodash/get'
 import capitalize from 'lodash/capitalize'
@@ -46,7 +45,7 @@ export const generateSourceFromTemplate = (template, controlData, otherYAMLTabs)
       encodeInfo.forEach(({ id, control, templateYAML, encode, newTab, snippetKey }) => {
         templateYAML = replaceSnippetMap(templateYAML, snippetMap)
         if (encode) {
-          snippetMap[snippetKey] = Base64.encode(templateYAML.replace(/\s*##.+$/gm, ''))
+          snippetMap[snippetKey] = Buffer.from(templateYAML.replace(/\s*##.+$/gm, ''), 'ascii').toString('base64')
         }
         if (newTab) {
           const existingInx = otherYAMLTabs.findIndex(({ id: existingId }) => existingId === id)
@@ -160,7 +159,7 @@ export const generateTemplateData = (controlData, replacements, controlMap) => {
           return map
         })
       } else if (encode) {
-        ret = Base64.encode(active)
+        ret = Buffer.from(active, 'ascii').toString('base64')
       } else if (singleline) {
         ret = active.replace(/\n/g, '')
       } else if (multiline) {
@@ -206,7 +205,7 @@ export const generateTemplateData = (controlData, replacements, controlMap) => {
       if (encodeValues) {
         value = { ...value }
         encodeValues.forEach((key) => {
-          value[key] = Base64.encode(value[key])
+          value[key] = Buffer.from(value[key], 'ascii').toString('base64')
         })
       }
     }

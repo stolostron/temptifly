@@ -21,7 +21,7 @@ import ControlPanelValues from './ControlPanelValues'
 import ControlPanelWizard from './ControlPanelWizard'
 import ControlPanelPrompt from './ControlPanelPrompt'
 import ControlPanelSkeleton from './ControlPanelSkeleton'
-import '../scss/control-panel.scss'
+import '../css/control-panel.css'
 import { TrashIcon, AddIcon } from '../icons/Icons'
 
 class ControlPanel extends React.Component {
