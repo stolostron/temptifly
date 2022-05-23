@@ -439,12 +439,12 @@ export default class TemplateEditor extends React.Component {
       onSelect(control)
     }
 
-    const {
-      templateYAML: newYAML,
-      templateObject,
-      templateResources,
-      immutableRows,
-    } = generateSource(template, editStack, controlData, otherYAMLTabs)
+    const { templateYAML: newYAML, templateObject, templateResources, immutableRows } = generateSource(
+      template,
+      editStack,
+      controlData,
+      otherYAMLTabs
+    )
     validateControls(
       this.editors,
       newYAML,
@@ -517,12 +517,12 @@ export default class TemplateEditor extends React.Component {
     } else {
       active.splice(inx, 1)
     }
-    const {
-      templateYAML: newYAML,
-      templateObject,
-      templateResources,
-      immutableRows,
-    } = generateSource(template, editStack, controlData, otherYAMLTabs)
+    const { templateYAML: newYAML, templateObject, templateResources, immutableRows } = generateSource(
+      template,
+      editStack,
+      controlData,
+      otherYAMLTabs
+    )
     validateControls(
       this.editors,
       newYAML,
@@ -628,12 +628,12 @@ export default class TemplateEditor extends React.Component {
       if (replaceTemplate) {
         template = replaceTemplate
         newYAMLTabs = newYAMLTabs || []
-        ;({
-          templateYAML: newYAML,
-          templateObject,
-          templateResources,
-          immutableRows,
-        } = generateSource(template, editStack, controlData, newYAMLTabs))
+        ;({ templateYAML: newYAML, templateObject, templateResources, immutableRows } = generateSource(
+          template,
+          editStack,
+          controlData,
+          newYAMLTabs
+        ))
         if (newYAMLTabs.length === 0 && this.editors.length > 1) {
           this.editors.length = 1
         }
@@ -1042,12 +1042,12 @@ export default class TemplateEditor extends React.Component {
     // if there's more then one tab, update them both
     if (this.editors.length > 1) {
       const { template, templateYAML: oldYAML } = this.state
-      const {
-        templateYAML: newYAML,
-        templateObject,
-        templateResources: tr,
-        immutableRows,
-      } = generateSource(template, editStack, controlData, otherYAMLTabs)
+      const { templateYAML: newYAML, templateObject, templateResources: tr, immutableRows } = generateSource(
+        template,
+        editStack,
+        controlData,
+        otherYAMLTabs
+      )
       highlightChanges(this.editors[0], oldYAML, newYAML, true)
       this.setState({
         controlData,
