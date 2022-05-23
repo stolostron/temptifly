@@ -28,7 +28,6 @@
   },
   "homepage": "https://github.com/stolostron/temptifly#readme",
   "dependencies": {
-    "@loadable/component": "^5.14.1",
     "apollo-client": "^2.2.8",
     "deep-diff": "^1.0.2",
     "graphql": "^0.13.2",
@@ -37,7 +36,6 @@
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.21",
     "react-apollo": "^2.3.1",
-    "react-router-dom": "^4.2.2",
     "react-split-pane": "^0.1.92"
   },
   "peerDependencies": {
