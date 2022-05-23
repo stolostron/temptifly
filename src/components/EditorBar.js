@@ -4,7 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { SearchInput } from '@patternfly/react-core'
-import '../scss/editor-bar.scss'
+import '../css/editor-bar.css'
 import { CloseIcon, UndoIcon, RedoIcon, NextIcon, PreviousIcon } from '../icons/Icons'
 
 class EditorButton extends React.Component {
