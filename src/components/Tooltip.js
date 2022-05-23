@@ -10,7 +10,7 @@ class Tooltip extends React.PureComponent {
     className: PropTypes.string,
     control: PropTypes.object.isRequired,
     i18n: PropTypes.func,
-  };
+  }
 
   render() {
     const { control, i18n, className } = this.props
@@ -18,12 +18,14 @@ class Tooltip extends React.PureComponent {
     return tooltip ? (
       <Popover
         id={`${controlId}-label-help-popover`}
-        bodyContent={(typeof tooltip === 'string' && typeof i18n === 'function') ? i18n(tooltip) : tooltip /* A component */}
+        bodyContent={
+          typeof tooltip === 'string' && typeof i18n === 'function' ? i18n(tooltip) : tooltip /* A component */
+        }
       >
         <button
           id={`${controlId}-label-help-button`}
           aria-label="More info"
-          onClick={e => {
+          onClick={(e) => {
             e.preventDefault()
             e.stopPropagation()
           }}

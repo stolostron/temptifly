@@ -17,8 +17,8 @@ class EditorHeader extends React.Component {
     readOnly: PropTypes.bool,
     showSecrets: PropTypes.bool,
     title: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired
-  };
+    type: PropTypes.string.isRequired,
+  }
 
   constructor(props) {
     super(props)
@@ -34,25 +34,20 @@ class EditorHeader extends React.Component {
             isInline
             title={i18n('editor.bar.readonly')}
             variant={'info'}
-            style={{background: '#E7F1FA', padding: '15px 20px'}}
+            style={{ background: '#E7F1FA', padding: '15px 20px' }}
             actionClose={<AlertActionCloseButton onClose={() => handleEditorCommand('close')} />}
           />
-          <div className='readonly-editor-bar'>
+          <div className="readonly-editor-bar">
             <div>{title}</div>
-            <ClipboardCopy
-              variant="inline-compact"
-              isBlock
-              onCopy={() => handleEditorCommand('copyAll')}
-            />
+            <ClipboardCopy variant="inline-compact" isBlock onCopy={() => handleEditorCommand('copyAll')} />
           </div>
         </div>
-
       )
     } else {
       const hasTabs = otherYAMLTabs.length > 0
       const classnames = classNames({
         'creation-view-yaml-header': true,
-        hasTabs: hasTabs
+        hasTabs: hasTabs,
       })
       return (
         <div className={classnames}>
@@ -67,47 +62,52 @@ class EditorHeader extends React.Component {
           <div className="creation-view-yaml-header-tabs">
             {this.renderEditorTabs(otherYAMLTabs)}
             {this.renderShowSecrets()}
-            <ClipboardCopy
-              variant="inline-compact"
-              isBlock
-              onCopy={() => handleEditorCommand('copyAll')}
-            />
+            <ClipboardCopy variant="inline-compact" isBlock onCopy={() => handleEditorCommand('copyAll')} />
           </div>
         </div>
       )
     }
   }
 
-  setTabsRef = ref => {
+  setTabsRef = (ref) => {
     this.tabsRef = ref
-  };
+  }
 
-  renderEditorTabs = otherYAMLTabs => {
+  renderEditorTabs = (otherYAMLTabs) => {
     const { type = 'unknown', handleTabChange } = this.props
 
     const onClick = (e, tab) => {
       e.preventDefault()
-      Array.from(this.tabsRef.children)
-        .forEach((child, inx)=>child.classList.toggle('tf--tabs__nav-item--selected', inx===tab))
+      Array.from(this.tabsRef.children).forEach((child, inx) =>
+        child.classList.toggle('tf--tabs__nav-item--selected', inx === tab)
+      )
       handleTabChange(tab)
     }
     return (
       <nav aria-label="Select template" className="tf--tabs" role="navigation">
         <ul role="tablist" className="tf--tabs__nav" ref={this.setTabsRef}>
-          <li id="main" role="presentation" tabIndex="-1"
+          <li
+            id="main"
+            role="presentation"
+            tabIndex="-1"
             className="tf--tabs__nav-item tf--tabs__nav-item--selected"
-            onClick={(e)=>onClick(e, 0)}>
-            <a className="tf--tabs__nav-link"
-              href="#" role="tab" tabIndex="0" aria-selected="true">
+            onClick={(e) => onClick(e, 0)}
+          >
+            <a className="tf--tabs__nav-link" href="#" role="tab" tabIndex="0" aria-selected="true">
               {type}
             </a>
           </li>
           {otherYAMLTabs.map(({ id }, inx) => {
             return (
-              <li id={id} key={id} role="presentation" tabIndex="-1" className="tf--tabs__nav-item"
-                onClick={(e)=>onClick(e, inx+1)}>
-                <a className="tf--tabs__nav-link"
-                  href="#" role="tab" tabIndex="0" aria-selected="false">
+              <li
+                id={id}
+                key={id}
+                role="presentation"
+                tabIndex="-1"
+                className="tf--tabs__nav-item"
+                onClick={(e) => onClick(e, inx + 1)}
+              >
+                <a className="tf--tabs__nav-link" href="#" role="tab" tabIndex="0" aria-selected="false">
                   {id}
                 </a>
               </li>
@@ -116,7 +116,7 @@ class EditorHeader extends React.Component {
         </ul>
       </nav>
     )
-  };
+  }
 
   renderShowSecrets = () => {
     const { showSecrets, handleShowSecretChange, i18n } = this.props
@@ -131,7 +131,7 @@ class EditorHeader extends React.Component {
         <div>{i18n('editor.show.secrets')}</div>
       </div>
     )
-  };
+  }
 }
 
 export default EditorHeader

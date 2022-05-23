@@ -2,19 +2,13 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  Button,
-  Wizard,
-  WizardFooter,
-  WizardContextConsumer,
-} from '@patternfly/react-core'
+import { Button, Wizard, WizardFooter, WizardContextConsumer } from '@patternfly/react-core'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import ControlPanelFinish from './ControlPanelFinish'
 import get from 'lodash/get'
 import set from 'lodash/set'
 import noop from 'lodash/noop'
 import isEmpty from 'lodash/isEmpty'
-import cloneDeep from 'lodash/cloneDeep'
 
 class ControlPanelWizard extends React.Component {
   constructor(props) {
@@ -25,14 +19,8 @@ class ControlPanelWizard extends React.Component {
   }
 
   render() {
-    const {
-      controlClasses,
-      setWizardRef,
-      renderControlSections,
-      renderNotifications,
-      isEditing,
-      creationStatus,
-    } = this.props
+    const { controlClasses, setWizardRef, renderControlSections, renderNotifications, isEditing, creationStatus } =
+      this.props
     let { steps } = this.props
     steps.forEach((step) => {
       step.controls = []
@@ -49,19 +37,19 @@ class ControlPanelWizard extends React.Component {
     steps.some(({ title: control, controls = [] }, index) => {
       const { isComplete, type = 'step' } = control
       switch (type) {
-      case 'step':
-        controls.some(({ mustValidate }) => {
-          if (mustValidate && !isComplete) {
+        case 'step':
+          controls.some(({ mustValidate }) => {
+            if (mustValidate && !isComplete) {
+              validStepIndex = index
+              return true
+            }
+          })
+          break
+        case 'review':
+          if (!isComplete) {
             validStepIndex = index
-            return true
           }
-        })
-        break
-      case 'review':
-        if (!isComplete) {
-          validStepIndex = index
-        }
-        break
+          break
       }
       return validStepIndex
     })
@@ -115,11 +103,7 @@ class ControlPanelWizard extends React.Component {
           <div key={id} className={controlClasses}>
             <h2>{title}</h2>
             {control.type === 'review'
-              ? renderReview(
-                this.props.steps.slice(lastReviewInx, inx),
-                lastReviewInx,
-                comment
-              )
+              ? renderReview(this.props.steps.slice(lastReviewInx, inx), lastReviewInx, comment)
               : renderControlSections(sections)}
           </div>
         ),
@@ -165,85 +149,76 @@ class ControlPanelWizard extends React.Component {
     }
 
     const validateNextStep = (activeStep, onNext) => {
-      const {
-        type,
-        mutation,
-        disableEditorOnSuccess,
-        disablePreviousControlsOnSuccess,
-      } = activeStep.control
+      const { type, mutation, disableEditorOnSuccess, disablePreviousControlsOnSuccess } = activeStep.control
       switch (type) {
-      case 'step':
-        {
-          this.props.resetStatus()
-          const validateControls = activeStep.controls.filter(
-            (control) => control.validate
-          )
-          if (validateControls.length > 0) {
-            let hasErrors = false
-            const promises = validateControls.map((control) =>
-              control.validate()
-            )
-            this.setState({
-              isProcessing: true,
-              processingLabel: 'Validating...',
-            })
-            Promise.allSettled(promises).then((results) => {
+        case 'step':
+          {
+            this.props.resetStatus()
+            const validateControls = activeStep.controls.filter((control) => control.validate)
+            if (validateControls.length > 0) {
+              let hasErrors = false
+              const promises = validateControls.map((control) => control.validate())
               this.setState({
-                isProcessing: false,
-                processingLabel: undefined,
+                isProcessing: true,
+                processingLabel: 'Validating...',
               })
-              results.some((result) => {
-                hasErrors = !isEmpty(result.value)
-                return hasErrors
+              Promise.allSettled(promises).then((results) => {
+                this.setState({
+                  isProcessing: false,
+                  processingLabel: undefined,
+                })
+                results.some((result) => {
+                  hasErrors = !isEmpty(result.value)
+                  return hasErrors
+                })
+                activeStep.control.exception = hasErrors
+                if (!hasErrors) {
+                  activeStep.control.isComplete = true
+                  onNext()
+                }
+                this.forceUpdate()
               })
-              activeStep.control.exception = hasErrors
-              if (!hasErrors) {
+            } else {
+              onNext()
+            }
+          }
+          break
+        case 'review':
+          if (mutation) {
+            this.setState({ isProcessing: true })
+            setTimeout(() => {
+              this.setState({ isProcessing: false })
+            }, 2000)
+            mutation(this.props.controlData).then((status) => {
+              this.setState({ isProcessing: false })
+              if (status !== 'ERROR') {
+                if (disableEditorOnSuccess) {
+                  this.props.setEditorReadOnly(true)
+                }
+                if (disablePreviousControlsOnSuccess) {
+                  steps
+                    .slice(0, activeStep.index)
+                    .reverse()
+                    .forEach((step) => {
+                      step.controls.forEach((control) => {
+                        control.disabled = true
+                      })
+                    })
+                }
                 activeStep.control.isComplete = true
+                delete activeStep.control.mutation
+                delete activeStep.control.nextButtonLabel
                 onNext()
+                this.forceUpdate()
               }
-              this.forceUpdate()
             })
           } else {
             onNext()
           }
-        }
-        break
-      case 'review':
-        if (mutation) {
-          this.setState({ isProcessing: true })
-          setTimeout(() => {
-            this.setState({ isProcessing: false })
-          }, 2000)
-          mutation(this.props.controlData).then((status) => {
-            this.setState({ isProcessing: false })
-            if (status !== 'ERROR') {
-              if (disableEditorOnSuccess) {
-                this.props.setEditorReadOnly(true)
-              }
-              if (disablePreviousControlsOnSuccess) {
-                steps
-                  .slice(0, activeStep.index)
-                  .reverse()
-                  .forEach((step) => {
-                    step.controls.forEach((control) => {
-                      control.disabled = true
-                    })
-                  })
-              }
-              activeStep.control.isComplete = true
-              delete activeStep.control.mutation
-              delete activeStep.control.nextButtonLabel
-              onNext()
-              this.forceUpdate()
-            }
-          })
-        } else {
+          break
+        default:
           onNext()
-        }
-        break
-      default:
-        onNext()
-        break
+          break
       }
     }
 
@@ -261,21 +236,11 @@ class ControlPanelWizard extends React.Component {
                   isDisabled={isDisabled}
                   variant="primary"
                   spinnerAriaValueText={isWorking ? 'Processing' : undefined}
-                  onClick={
-                    !isWorking
-                      ? validateNextStep.bind(null, activeStep, onNext)
-                      : noop
-                  }
+                  onClick={!isWorking ? validateNextStep.bind(null, activeStep, onNext) : noop}
                 >
-                  {processingLabel ||
-                    activeStep.control.nextButtonLabel ||
-                    'Next'}
+                  {processingLabel || activeStep.control.nextButtonLabel || 'Next'}
                 </Button>
-                <Button
-                  variant="secondary"
-                  onClick={onBack}
-                  isAriaDisabled={activeStep.index === 0}
-                >
+                <Button variant="secondary" onClick={onBack} isAriaDisabled={activeStep.index === 0}>
                   Back
                 </Button>
                 <Button variant="link" onClick={onClose}>

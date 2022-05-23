@@ -3,16 +3,7 @@
 import { parseYAML, escapeYAML, discoverImmutables } from './source-utils'
 import { setSourcePaths } from './initialize-control-functions'
 import { Base64 } from 'js-base64'
-import {
-  caseFn,
-  defaultFn,
-  if_eqFn,
-  if_existsFn,
-  if_gtFn,
-  if_neFn,
-  if_orFn,
-  switchFn,
-} from '../helpers'
+import { caseFn, defaultFn, if_eqFn, if_existsFn, if_gtFn, if_neFn, if_orFn, switchFn } from '../helpers'
 import get from 'lodash/get'
 import capitalize from 'lodash/capitalize'
 
@@ -29,21 +20,13 @@ const helpers = {
   },
 }
 
-export const generateSourceFromTemplate = (
-  template,
-  controlData,
-  otherYAMLTabs
-) => {
+export const generateSourceFromTemplate = (template, controlData, otherYAMLTabs) => {
   /////////////////////////////////////////////////////////
   // generate a map of id:values that can be passed to the handlerbars template
   /////////////////////////////////////////////////////////
   const replacements = []
   const controlMap = {}
-  const templateData = generateTemplateData(
-    controlData,
-    replacements,
-    controlMap
-  )
+  const templateData = generateTemplateData(controlData, replacements, controlMap)
   escapeYAML(templateData)
 
   /////////////////////////////////////////////////////////
@@ -52,11 +35,7 @@ export const generateSourceFromTemplate = (
   // replacements are snippets of code instead of single values
   // ex: when you select a card, it inserts a snippet of code into
   //     the template instead of a text value
-  const { snippetMap, encodeInfo } = addCodeSnippetsTemplateData(
-    templateData,
-    replacements,
-    controlMap
-  )
+  const { snippetMap, encodeInfo } = addCodeSnippetsTemplateData(templateData, replacements, controlMap)
 
   /////////////////////////////////////////////////////////
   // if there are multiple tabs, update the yaml that belongs on each
@@ -64,32 +43,26 @@ export const generateSourceFromTemplate = (
   // if tab(s) were created to show encoded YAML, update that tab's info
   if (otherYAMLTabs) {
     if (encodeInfo.length > 0) {
-      encodeInfo.forEach(
-        ({ id, control, templateYAML, encode, newTab, snippetKey }) => {
-          templateYAML = replaceSnippetMap(templateYAML, snippetMap)
-          if (encode) {
-            snippetMap[snippetKey] = Base64.encode(
-              templateYAML.replace(/\s*##.+$/gm, '')
-            )
-          }
-          if (newTab) {
-            const existingInx = otherYAMLTabs.findIndex(
-              ({ id: existingId }) => existingId === id
-            )
-            if (existingInx !== -1) {
-              const existingTab = otherYAMLTabs[existingInx]
-              existingTab.oldTemplateYAML = existingTab.templateYAML
-              existingTab.templateYAML = templateYAML
-            } else {
-              otherYAMLTabs.push({
-                id,
-                control,
-                templateYAML,
-              })
-            }
+      encodeInfo.forEach(({ id, control, templateYAML, encode, newTab, snippetKey }) => {
+        templateYAML = replaceSnippetMap(templateYAML, snippetMap)
+        if (encode) {
+          snippetMap[snippetKey] = Base64.encode(templateYAML.replace(/\s*##.+$/gm, ''))
+        }
+        if (newTab) {
+          const existingInx = otherYAMLTabs.findIndex(({ id: existingId }) => existingId === id)
+          if (existingInx !== -1) {
+            const existingTab = otherYAMLTabs[existingInx]
+            existingTab.oldTemplateYAML = existingTab.templateYAML
+            existingTab.templateYAML = templateYAML
+          } else {
+            otherYAMLTabs.push({
+              id,
+              control,
+              templateYAML,
+            })
           }
         }
-      )
+      })
     } else {
       otherYAMLTabs.length = 0
     }
@@ -242,19 +215,12 @@ export const generateTemplateData = (controlData, replacements, controlMap) => {
   return templateData
 }
 
-const addCodeSnippetsTemplateData = (
-  mainTemplateData,
-  replacements,
-  controlMap
-) => {
+const addCodeSnippetsTemplateData = (mainTemplateData, replacements, controlMap) => {
   // if replacement updates a hidden control that user can't change
   // reset that control's active state and let replacement fill from scratch
   replacements.forEach((control) => {
     const { availableMap } = control
-    const controlReplacements = get(
-      Object.values(availableMap),
-      '[0].replacements'
-    )
+    const controlReplacements = get(Object.values(availableMap), '[0].replacements')
     if (controlReplacements) {
       Object.keys(controlReplacements).forEach((id) => {
         const ctrl = controlMap[id]
@@ -307,12 +273,10 @@ const addCodeSnippetsTemplateData = (
 
           Object.entries(_replacements).forEach(([_id, partial = {}]) => {
             const { template: _template, encode, newTab } = partial
-            partial =
-              _template || (templateData[_id] ? templateData[_id] : partial)
+            partial = _template || (templateData[_id] ? templateData[_id] : partial)
             const typeOf = typeof partial
             if (typeOf === 'string' || typeOf === 'function') {
-              let snippet =
-                typeOf === 'string' ? partial : partial(templateData, helpers)
+              let snippet = typeOf === 'string' ? partial : partial(templateData, helpers)
               snippet = snippet.trim().replace(/^\s*$(?:\r\n?|\n)/gm, '')
               let arr = templateData[_id]
               if (!arr) {
@@ -339,11 +303,7 @@ const addCodeSnippetsTemplateData = (
                   arr = templateData[_id] = []
                 }
                 arr.push(snippetKey)
-              } else if (
-                Array.isArray(arr) &&
-                !arr.includes(snippet) &&
-                controlMap[_id]
-              ) {
+              } else if (Array.isArray(arr) && !arr.includes(snippet) && controlMap[_id]) {
                 let wasSet = controlMap[_id].wasSet
                 if (!wasSet) {
                   wasSet = controlMap[_id].wasSet = new Set()

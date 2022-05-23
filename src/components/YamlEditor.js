@@ -86,10 +86,7 @@ class YamlEditor extends React.Component {
     let stylesheet = document.querySelector('link[href*=main]')
     if (stylesheet) {
       stylesheet = stylesheet.sheet
-      stylesheet.insertRule(
-        'span { font-family: monospace }',
-        stylesheet.cssRules.length
-      )
+      stylesheet.insertRule('span { font-family: monospace }', stylesheet.cssRules.length)
     }
   }
 
@@ -128,9 +125,7 @@ class YamlEditor extends React.Component {
         const prohibited = []
         const { immutableRows = [] } = this.props
         immutableRows.forEach((obj) => {
-          prohibited.push(
-            new this.editor.monaco.Range(obj.$r + 1, 0, obj.$r + 1, 132)
-          )
+          prohibited.push(new this.editor.monaco.Range(obj.$r + 1, 0, obj.$r + 1, 132))
         })
 
         // prevent typing on same
@@ -138,11 +133,7 @@ class YamlEditor extends React.Component {
           const selections = this.editor.getSelections()
           if (
             !prohibited.every((prohibit) => {
-              return (
-                selections.findIndex((range) =>
-                  prohibit.intersectRanges(range)
-                ) === -1
-              )
+              return selections.findIndex((range) => prohibit.intersectRanges(range)) === -1
             })
           ) {
             e.stopPropagation()

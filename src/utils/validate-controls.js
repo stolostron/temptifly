@@ -32,7 +32,7 @@ export function validateControls(
     },
   }
   otherYAMLTabs.forEach(({ id, templateYAML: yaml }, inx) => {
-    ({ parsed, exceptions } = parseYAML(yaml))
+    ;({ parsed, exceptions } = parseYAML(yaml))
     templateObjectMap[id] = parsed
     templateExceptionMap[id] = {
       editor: editors[inx + 1],
@@ -42,11 +42,7 @@ export function validateControls(
 
   // update active values in controls
   if (exceptions.length === 0) {
-    reverseTemplate(
-      controlData,
-      templateObjectMap[activeTabId] || parsed,
-      activeTabId
-    )
+    reverseTemplate(controlData, templateObjectMap[activeTabId] || parsed, activeTabId)
   }
 
   // if any syntax errors, report them and leave
@@ -61,47 +57,22 @@ export function validateControls(
   if (!hasSyntaxExceptions) {
     let stopValidating = false
     controlData.forEach((control) => {
-      const {
-        type,
-        active = [],
-        pauseControlCreationHereUntilSelected,
-      } = control
+      const { type, active = [], pauseControlCreationHereUntilSelected } = control
       delete control.exception
       if (!stopValidating) {
         switch (type) {
-        case 'group':
-          validateGroupControl(
-            active,
-            controlData,
-            templateObjectMap,
-            templateExceptionMap,
-            isFinalValidate,
-            i18n
-          )
-          break
+          case 'group':
+            validateGroupControl(active, controlData, templateObjectMap, templateExceptionMap, isFinalValidate, i18n)
+            break
 
-        case 'table':
-          control.exceptions = []
-          validateTableControl(
-            control,
-            controlData,
-            templateObjectMap,
-            templateExceptionMap,
-            isFinalValidate,
-            i18n
-          )
-          break
+          case 'table':
+            control.exceptions = []
+            validateTableControl(control, controlData, templateObjectMap, templateExceptionMap, isFinalValidate, i18n)
+            break
 
-        default:
-          validateControl(
-            control,
-            controlData,
-            templateObjectMap,
-            templateExceptionMap,
-            isFinalValidate,
-            i18n
-          )
-          break
+          default:
+            validateControl(control, controlData, templateObjectMap, templateExceptionMap, isFinalValidate, i18n)
+            break
         }
       }
       if (pauseControlCreationHereUntilSelected) {
@@ -112,44 +83,42 @@ export function validateControls(
 
   // update editors with any format exceptions
   let hasValidationExceptions = false
-  Object.values(templateExceptionMap).forEach(
-    ({ editor, exceptions: _exceptions }, inx) => {
-      setTimeout(() => {
-        if (editor) {
-          const decorationList = []
-          _exceptions.forEach(({ row = 1, text }) => {
-            decorationList.push({
-              range: new editor.monaco.Range(row, 0, row, 132),
-              options: {
-                isWholeLine: true,
-                glyphMarginClassName: 'errorDecoration',
-                glyphMarginHoverMessage: { value: text },
-                minimap: { color: 'red', position: 1 },
-              },
-            })
+  Object.values(templateExceptionMap).forEach(({ editor, exceptions: _exceptions }, inx) => {
+    setTimeout(() => {
+      if (editor) {
+        const decorationList = []
+        _exceptions.forEach(({ row = 1, text }) => {
+          decorationList.push({
+            range: new editor.monaco.Range(row, 0, row, 132),
+            options: {
+              isWholeLine: true,
+              glyphMarginClassName: 'errorDecoration',
+              glyphMarginHoverMessage: { value: text },
+              minimap: { color: 'red', position: 1 },
+            },
           })
-          _exceptions.forEach(({ row = 1, column = 0 }) => {
-            decorationList.push({
-              range: new editor.monaco.Range(row, column - 6, row, column + 6),
-              options: {
-                className: 'squiggly-error',
-              },
-            })
+        })
+        _exceptions.forEach(({ row = 1, column = 0 }) => {
+          decorationList.push({
+            range: new editor.monaco.Range(row, column - 6, row, column + 6),
+            options: {
+              className: 'squiggly-error',
+            },
           })
-          editor.errorList = decorationList
-          editor.decorations = editor.deltaDecorations(editor.decorations, [
-            ...editor.errorList,
-            ...(editor.changeList || []),
-            ...(editor.immutableList || []),
-          ])
-        }
-      }, 0)
-      if (_exceptions.length > 0) {
-        hasValidationExceptions = true
-        attachEditorToExceptions(_exceptions, editors, inx)
+        })
+        editor.errorList = decorationList
+        editor.decorations = editor.deltaDecorations(editor.decorations, [
+          ...editor.errorList,
+          ...(editor.changeList || []),
+          ...(editor.immutableList || []),
+        ])
       }
+    }, 0)
+    if (_exceptions.length > 0) {
+      hasValidationExceptions = true
+      attachEditorToExceptions(_exceptions, editors, inx)
     }
-  )
+  })
   return {
     templateObjectMap,
     templateExceptionMap,
@@ -170,14 +139,7 @@ const validateGroupControl = (
   group.forEach((controlData) => {
     controlData.forEach((control) => {
       delete control.exception
-      validateControl(
-        control,
-        parentControlData,
-        templateObjectMap,
-        templateExceptionMap,
-        isFinalValidate,
-        i18n
-      )
+      validateControl(control, parentControlData, templateObjectMap, templateExceptionMap, isFinalValidate, i18n)
     })
   })
 }
@@ -203,30 +165,18 @@ const validateTableControl = (
     rows.forEach((row) => {
       //const pathMap = paths[inx]
       Object.entries(row).forEach(([key, active]) => {
-        if (
-          controlDataMap[key] &&
-          (typeof active !== 'string' || !active.trim().startsWith('#'))
-        ) {
+        if (controlDataMap[key] && (typeof active !== 'string' || !active.trim().startsWith('#'))) {
           const control = {
             ...controlDataMap[key],
             //sourcePath: { tabId, path: pathMap ? pathMap[key] : '' },
             active,
           }
-          validateControl(
-            control,
-            controlData,
-            templateObjectMap,
-            templateExceptionMap,
-            isFinalValidate,
-            i18n
-          )
+          validateControl(control, controlData, templateObjectMap, templateExceptionMap, isFinalValidate, i18n)
           row[key] = control.active
           const promptOnly = control.mode === ControlMode.PROMPT_ONLY
           if (control.exception) {
             // add exception to cell in table
-            let exception = exceptions.find(
-              ({ exception: _exception }) => _exception === control.exception
-            )
+            let exception = exceptions.find(({ exception: _exception }) => _exception === control.exception)
             if (!exception) {
               exception = {
                 exception: control.exception,
@@ -245,9 +195,7 @@ const validateTableControl = (
     })
   }
   if (exceptions.length > 0) {
-    table.exception = i18n(
-      `creation.ocp.validation.errors${hidden ? '.hidden' : ''}`
-    )
+    table.exception = i18n(`creation.ocp.validation.errors${hidden ? '.hidden' : ''}`)
   } else if (typeof tester === 'function') {
     const exception = tester(rows, table, globalControlData)
     if (exception) {
@@ -256,22 +204,10 @@ const validateTableControl = (
   }
 }
 
-const validateControl = (
-  control,
-  controlData,
-  templateObjectMap,
-  templateExceptionMap,
-  isFinalValidate,
-  i18n
-) => {
+const validateControl = (control, controlData, templateObjectMap, templateExceptionMap, isFinalValidate, i18n) => {
   // if final validation before creating template, if this value is required, throw error
   const { active, type, hidden, disabled, editing } = control
-  if (
-    hidden === true ||
-    hidden === 'true' ||
-    (typeof hidden === 'function' && hidden()) ||
-    (disabled && !editing)
-  ) {
+  if (hidden === true || hidden === 'true' || (typeof hidden === 'function' && hidden()) || (disabled && !editing)) {
     return
   }
   const { exceptions, controlValidation } = templateExceptionMap['<<main>>']
@@ -289,9 +225,7 @@ const validateControl = (
       } = control
       if (
         required &&
-        ((!active && active !== 0) ||
-          (type === 'cards' &&
-            (active.length === 0 || typeof active[0] !== 'string')))
+        ((!active && active !== 0) || (type === 'cards' && (active.length === 0 || typeof active[0] !== 'string')))
       ) {
         const msg = notification ? notification : 'creation.missing.input'
         control.exception = i18n(msg, [name])
@@ -303,61 +237,29 @@ const validateControl = (
 
   if (shouldValidateControl(control)) {
     switch (control.type) {
-    case 'text':
-    case 'textarea':
-    case 'number':
-    case 'combobox':
-    case 'toggle':
-    case 'hidden':
-      validateTextControl(
-        control,
-        templateObjectMap,
-        templateExceptionMap,
-        isFinalValidate,
-        i18n
-      )
-      break
-    case 'checkbox':
-      validateCheckboxControl(
-        control,
-        templateObjectMap,
-        templateExceptionMap,
-        i18n
-      )
-      break
-    case 'cards':
-      validateCardsControl(
-        control,
-        templateObjectMap,
-        templateExceptionMap,
-        i18n
-      )
-      break
-    case 'singleselect':
-      validateSingleSelectControl(
-        control,
-        templateObjectMap,
-        templateExceptionMap,
-        i18n
-      )
-      break
-    case 'multiselect':
-      validateMultiSelectControl(
-        control,
-        templateObjectMap,
-        templateExceptionMap,
-        i18n
-      )
-      break
-    case 'table':
-      validateTableControl(
-        control,
-        controlData,
-        templateObjectMap,
-        templateExceptionMap,
-        i18n
-      )
-      break
+      case 'text':
+      case 'textarea':
+      case 'number':
+      case 'combobox':
+      case 'toggle':
+      case 'hidden':
+        validateTextControl(control, templateObjectMap, templateExceptionMap, isFinalValidate, i18n)
+        break
+      case 'checkbox':
+        validateCheckboxControl(control, templateObjectMap, templateExceptionMap, i18n)
+        break
+      case 'cards':
+        validateCardsControl(control, templateObjectMap, templateExceptionMap, i18n)
+        break
+      case 'singleselect':
+        validateSingleSelectControl(control, templateObjectMap, templateExceptionMap, i18n)
+        break
+      case 'multiselect':
+        validateMultiSelectControl(control, templateObjectMap, templateExceptionMap, i18n)
+        break
+      case 'table':
+        validateTableControl(control, controlData, templateObjectMap, templateExceptionMap, i18n)
+        break
     }
   }
 }
@@ -374,7 +276,7 @@ const shouldValidateControl = (control) => {
   let required = false
   const { sourcePath, validation, active } = control
   if (sourcePath && validation) {
-    ({ required } = validation)
+    ;({ required } = validation)
     if (!required) {
       // if not required, only validate if that yaml path exists
       return !!active
@@ -383,13 +285,7 @@ const shouldValidateControl = (control) => {
   return required
 }
 
-const validateTextControl = (
-  control,
-  templateObjectMap,
-  templateExceptionMap,
-  isFinalValidate,
-  i18n
-) => {
+const validateTextControl = (control, templateObjectMap, templateExceptionMap, isFinalValidate, i18n) => {
   const {
     id,
     name,
@@ -413,15 +309,7 @@ const validateTextControl = (
   }
   control.active = active
   if (active === undefined) {
-    addExceptions(
-      undefined,
-      sourcePathMap,
-      templateExceptionMap,
-      templateObjectMap,
-      controlId,
-      ref,
-      i18n
-    )
+    addExceptions(undefined, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n)
   } else if (active || isFinalValidate) {
     let exception
     if (active) {
@@ -438,15 +326,7 @@ const validateTextControl = (
     }
     if (exception) {
       control.exception = exception
-      addExceptions(
-        exception,
-        sourcePathMap,
-        templateExceptionMap,
-        templateObjectMap,
-        controlId,
-        ref,
-        i18n
-      )
+      addExceptions(exception, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n)
     }
   }
   if (tester) {
@@ -454,46 +334,17 @@ const validateTextControl = (
   }
 }
 
-const validateSingleSelectControl = (
-  control,
-  templateObjectMap,
-  templateExceptionMap,
-  i18n
-) => {
+const validateSingleSelectControl = (control, templateObjectMap, templateExceptionMap, i18n) => {
   const { active, available = [], controlId, sourcePathMap, ref } = control
   if (!active) {
-    addExceptions(
-      undefined,
-      sourcePathMap,
-      templateExceptionMap,
-      templateObjectMap,
-      controlId,
-      ref,
-      i18n
-    )
+    addExceptions(undefined, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n)
   } else if (available.indexOf(active) === -1) {
-    control.exception = i18n('validation.bad.value', [
-      active,
-      get(control, 'available').join(', '),
-    ])
-    addExceptions(
-      control.exception,
-      sourcePathMap,
-      templateExceptionMap,
-      templateObjectMap,
-      controlId,
-      ref,
-      i18n
-    )
+    control.exception = i18n('validation.bad.value', [active, get(control, 'available').join(', ')])
+    addExceptions(control.exception, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n)
   }
 }
 
-const validateCardsControl = (
-  control,
-  templateObjectMap,
-  templateExceptionMap,
-  i18n
-) => {
+const validateCardsControl = (control, templateObjectMap, templateExceptionMap, i18n) => {
   const {
     active,
     validation: { required, notification },
@@ -503,78 +354,29 @@ const validateCardsControl = (
   }
 }
 
-const validateCheckboxControl = (
-  control,
-  templateObjectMap,
-  templateExceptionMap,
-  i18n
-) => {
+const validateCheckboxControl = (control, templateObjectMap, templateExceptionMap, i18n) => {
   const { active, available, controlId, sourcePathMap, ref } = control
   if (!active) {
-    addExceptions(
-      undefined,
-      sourcePathMap,
-      templateExceptionMap,
-      templateObjectMap,
-      controlId,
-      ref,
-      i18n
-    )
+    addExceptions(undefined, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n)
   }
   if (available.indexOf(active) === -1) {
-    control.exception = i18n('validation.bad.value', [
-      getKey(''),
-      available.join(', '),
-    ])
-    addExceptions(
-      control.exception,
-      sourcePathMap,
-      templateExceptionMap,
-      templateObjectMap,
-      controlId,
-      ref,
-      i18n
-    )
+    control.exception = i18n('validation.bad.value', [getKey(''), available.join(', ')])
+    addExceptions(control.exception, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n)
   }
 }
 
-const validateMultiSelectControl = (
-  control,
-  templateObjectMap,
-  templateExceptionMap,
-  i18n
-) => {
+const validateMultiSelectControl = (control, templateObjectMap, templateExceptionMap, i18n) => {
   const { hasKeyLabels, hasReplacements } = control
   if (hasKeyLabels) {
-    validateMultiSelectLabelControl(
-      control,
-      templateObjectMap,
-      templateExceptionMap,
-      i18n
-    )
+    validateMultiSelectLabelControl(control, templateObjectMap, templateExceptionMap, i18n)
   } else if (hasReplacements) {
-    validateMultiSelectReplacementControl(
-      control,
-      templateObjectMap,
-      templateExceptionMap,
-      i18n
-    )
+    validateMultiSelectReplacementControl(control, templateObjectMap, templateExceptionMap, i18n)
   } else {
-    validateMultiSelectStringControl(
-      control,
-      templateObjectMap,
-      templateExceptionMap,
-      i18n
-    )
+    validateMultiSelectStringControl(control, templateObjectMap, templateExceptionMap, i18n)
   }
 }
 
-const validateMultiSelectStringControl = (
-  control,
-  templateObjectMap,
-  templateExceptionMap,
-  i18n
-) => {
+const validateMultiSelectStringControl = (control, templateObjectMap, templateExceptionMap, i18n) => {
   const { active, sourcePath } = control
   const { exceptions } = templateExceptionMap['<<main>>']
   if (active === null) {
@@ -582,12 +384,7 @@ const validateMultiSelectStringControl = (
   }
 }
 
-const validateMultiSelectLabelControl = (
-  control,
-  templateObjectMap,
-  templateExceptionMap,
-  i18n
-) => {
+const validateMultiSelectLabelControl = (control, templateObjectMap, templateExceptionMap, i18n) => {
   const { active, sourcePath } = control
   const { exceptions } = templateExceptionMap['<<main>>']
   if (!active) {
@@ -595,12 +392,7 @@ const validateMultiSelectLabelControl = (
   }
 }
 
-const validateMultiSelectReplacementControl = (
-  control,
-  templateObjectMap,
-  templateExceptionMap,
-  i18n
-) => {
+const validateMultiSelectReplacementControl = (control, templateObjectMap, templateExceptionMap, i18n) => {
   const { active, sourcePath } = control
   const { exceptions } = templateExceptionMap['<<main>>']
   if (!active) {
@@ -624,15 +416,7 @@ const reportException = (control, exceptions) => {
   })
 }
 
-const addExceptions = (
-  message,
-  sourcePathMap,
-  templateExceptionMap,
-  templateObjectMap,
-  controlId,
-  ref,
-  i18n
-) => {
+const addExceptions = (message, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n) => {
   if (sourcePathMap) {
     Object.entries(sourcePathMap).forEach(([k, v]) => {
       const { exceptions } = templateExceptionMap[k]
@@ -665,11 +449,7 @@ const addException = (sourcePath, exceptions, i18n) => {
 }
 
 const getKey = (path) => {
-  return path
-    .join('.')
-    .replace('.$synced', '')
-    .replace('[0]', '')
-    .replace(/\.\$v/g, '')
+  return path.join('.').replace('.$synced', '').replace('[0]', '').replace(/\.\$v/g, '')
 }
 
 const getRow = (sourcePath) => {

@@ -6,18 +6,16 @@ import PropTypes from 'prop-types'
 class ControlPanelPrompt extends React.Component {
   static propTypes = {
     control: PropTypes.object,
-    i18n: PropTypes.func
-  };
+    i18n: PropTypes.func,
+  }
 
   render() {
     const { control } = this.props
-    const { id, prompts={} } = control
+    const { id, prompts = {} } = control
     const { type } = prompts
     switch (type) {
-    case 'link':
-      return (
-        <React.Fragment key={id}>{this.renderLink(control)}</React.Fragment>
-      )
+      case 'link':
+        return <React.Fragment key={id}>{this.renderLink(control)}</React.Fragment>
     }
     return null
   }
@@ -29,7 +27,7 @@ class ControlPanelPrompt extends React.Component {
     const text = i18n(prompt)
 
     const createPopupWindow = () => {
-      window.open(`${window.location.origin}${url}`, `${id}` )
+      window.open(`${window.location.origin}${url}`, `${id}`)
     }
 
     return (
@@ -50,7 +48,6 @@ class ControlPanelPrompt extends React.Component {
       </React.Fragment>
     )
   }
-
 }
 
 export default ControlPanelPrompt

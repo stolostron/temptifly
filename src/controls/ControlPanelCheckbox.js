@@ -10,7 +10,7 @@ class ControlPanelCheckbox extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-  };
+  }
 
   constructor(props) {
     super(props)
@@ -19,7 +19,7 @@ class ControlPanelCheckbox extends React.Component {
 
   setControlRef = (control, ref) => {
     control.ref = ref
-  };
+  }
 
   render() {
     const { controlId, control, handleChange } = this.props
@@ -33,27 +33,22 @@ class ControlPanelCheckbox extends React.Component {
     return (
       <React.Fragment>
         <div
-          style={{flexDirection: 'column', alignItems: 'flex-start'}}
+          style={{ flexDirection: 'column', alignItems: 'flex-start' }}
           className="creation-view-controls-checkbox"
           ref={this.setControlRef.bind(this, control)}
         >
-          <div style={{display: 'flex', alignItems: 'center'}}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <Checkbox
               aria-label={name}
               id={controlId}
-              isChecked={typeof active==='boolean'? active : active==='true'}
+              isChecked={typeof active === 'boolean' ? active : active === 'true'}
               isDisabled={disabled}
               onChange={onChange}
               data-testid={`checkbox-${controlId}`}
             />
-            <ControlPanelFormGroup
-              controlId={controlId}
-              showTip={false}
-              control={control} />
+            <ControlPanelFormGroup controlId={controlId} showTip={false} control={control} />
           </div>
-          <div style={{fontSize: '14px', fontWeight: 'normal'}}>
-            {tip}
-          </div>
+          <div style={{ fontSize: '14px', fontWeight: 'normal' }}>{tip}</div>
         </div>
       </React.Fragment>
     )
