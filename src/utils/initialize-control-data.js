@@ -5,46 +5,32 @@ import get from 'lodash/get'
 ///////////////////////////////////////////////////////////////////////////////
 // intialize controls and groups
 ///////////////////////////////////////////////////////////////////////////////
-export const initializeControlData = (
-  initialControlData,
-  onControlInitialize,
-  i18n,
-  uniqueGroupID,
-  inGroup
-) => {
-  const parentControlData = initialControlData.map(control => {
+export const initializeControlData = (initialControlData, onControlInitialize, i18n, uniqueGroupID, inGroup) => {
+  const parentControlData = initialControlData.map((control) => {
     const { type, controlData, groupCnt = 1 } = control
     switch (type) {
-    case 'group': {
-      let active = control.active
-      if (!active) {
-        active = control.active = []
+      case 'group': {
+        let active = control.active
+        if (!active) {
+          active = control.active = []
+        }
+        if (!control.nextUniqueGroupID) {
+          control.nextUniqueGroupID = 1
+        }
+        while (active.length < groupCnt) {
+          active.push(initializeControlData(controlData, onControlInitialize, i18n, control.nextUniqueGroupID, true))
+          control.nextUniqueGroupID++
+        }
+        return control
       }
-      if (!control.nextUniqueGroupID) {
-        control.nextUniqueGroupID = 1
-      }
-      while (active.length < groupCnt) {
-        active.push(
-          initializeControlData(
-            controlData,
-            onControlInitialize,
-            i18n,
-            control.nextUniqueGroupID,
-            true
-          )
-        )
-        control.nextUniqueGroupID++
-      }
-      return control
-    }
-    default:
-      return initialControl(control, onControlInitialize, i18n)
+      default:
+        return initialControl(control, onControlInitialize, i18n)
     }
   })
 
   // if any card controls, set this as parent control data
   if (inGroup) {
-    parentControlData.forEach(c => {
+    parentControlData.forEach((c) => {
       if (c.type === 'cards') {
         c.uniqueGroupID = uniqueGroupID
         c.groupControlData = parentControlData
@@ -53,7 +39,7 @@ export const initializeControlData = (
     parentControlData.unshift({
       id: 'uniqueGroupID',
       type: 'hidden',
-      active: uniqueGroupID
+      active: uniqueGroupID,
     })
   }
   return parentControlData
@@ -94,19 +80,19 @@ const initialControl = (control, onControlInitialize, i18n) => {
 const initializeControlActive = (type, control) => {
   const { active, available = [] } = control
   switch (type) {
-  case 'checkbox':
-    control.active = available.indexOf(active) > 0
-    break
-  case 'number':
-    control.active = control.initial
-    break
+    case 'checkbox':
+      control.active = available.indexOf(active) > 0
+      break
+    case 'number':
+      control.active = control.initial
+      break
 
-  default:
-    break
+    default:
+      break
   }
 }
 
-const initializeControlUserData = control => {
+const initializeControlUserData = (control) => {
   //if user data was cached, apply now
   //save custom user input for session??
   if (control.cacheUserValueKey) {
@@ -130,19 +116,19 @@ const initializeMsgs = (control, i18n) => {
     'prompt',
     'info',
     'tooltip',
-    'tip'
+    'tip',
   ]
-  keys.forEach(key => {
-    if (typeof control[key] === 'string' && control[key].indexOf('<')===-1) {
+  keys.forEach((key) => {
+    if (typeof control[key] === 'string' && control[key].indexOf('<') === -1) {
       control[key] = i18n(control[key])
     }
   })
   const properties = ['available', 'active']
-  properties.forEach(prop => {
+  properties.forEach((prop) => {
     const values = get(control, prop)
     if (Array.isArray(values)) {
-      values.forEach(item => {
-        keys.forEach(key => {
+      values.forEach((item) => {
+        keys.forEach((key) => {
           if (item[key] && item[key].split('.').length > 2) {
             if (typeof item[key] === 'string') {
               item[key] = i18n(item[key])
@@ -155,7 +141,7 @@ const initializeMsgs = (control, i18n) => {
 
   // if table convert the controlData in that
   if (type === 'table' && controlData) {
-    controlData.forEach(ctrl => {
+    controlData.forEach((ctrl) => {
       if (!ctrl.isInitialized) {
         initializeMsgs(ctrl, i18n)
         ctrl.isInitialized = true
@@ -167,7 +153,7 @@ const initializeMsgs = (control, i18n) => {
   if (type === 'cards' && available) {
     available.forEach(({ change = {} }) => {
       if (change.insertControlData) {
-        change.insertControlData.forEach(ctrl => {
+        change.insertControlData.forEach((ctrl) => {
           if (!ctrl.isInitialized) {
             initializeControlActive(ctrl.type, ctrl)
             initializeMsgs(ctrl, i18n)
@@ -187,25 +173,13 @@ const initializeAvailableChoices = (type, control) => {
   let sortLabelsByName = false
   let availableMap = {}
 
-  if (
-    type !== 'table' &&
-    type !== 'treeselect' &&
-    typeof get(control, 'available[0]') === 'object'
-  ) {
+  if (type !== 'table' && type !== 'treeselect' && typeof get(control, 'available[0]') === 'object') {
     const { sort = true } = control
     availableMap = control.availableMap = {}
     sortAvailableChoices = sort
-    control.available = control.available.map(choice => {
+    control.available = control.available.map((choice) => {
       let availableKey
-      const {
-        id,
-        key,
-        value,
-        name,
-        description,
-        replacements,
-        change = {}
-      } = choice
+      const { id, key, value, name, description, replacements, change = {} } = choice
       // label choices
       if (key && value) {
         availableKey = `${key}: "${value}"`
@@ -234,10 +208,10 @@ const initializeAvailableChoices = (type, control) => {
     if (sortAvailableChoices) {
       control.available = control.available.sort((a, b) => {
         switch (type) {
-        case 'cards':
-          a = availableMap[a].title || a
-          b = availableMap[b].title || b
-          break
+          case 'cards':
+            a = availableMap[a].title || a
+            b = availableMap[b].title || b
+            break
         }
         if (sortLabelsByName) {
           const aw = a.startsWith('name')
@@ -273,14 +247,14 @@ const initializeValidation = (type, control) => {
       }
     } else if (validation.json) {
       validation.tester = {
-        test: function(value) {
+        test: function (value) {
           try {
             JSON.parse(value)
             return true
           } catch (e) {
             return false
           }
-        }
+        },
       }
     }
   }

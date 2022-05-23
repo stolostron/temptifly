@@ -9,7 +9,7 @@ class ControlPanelNumber extends React.Component {
     control: PropTypes.object,
     controlId: PropTypes.string,
     handleChange: PropTypes.func,
-  };
+  }
 
   constructor(props) {
     super(props)
@@ -18,7 +18,7 @@ class ControlPanelNumber extends React.Component {
 
   setControlRef = (control, ref) => {
     control.ref = ref
-  };
+  }
 
   render() {
     const { controlId, control, handleChange } = this.props
@@ -31,7 +31,7 @@ class ControlPanelNumber extends React.Component {
 
     const onChange = (inc) => {
       const value = parseInt(control.active, 10) + inc
-      if (value>=0) {
+      if (value >= 0) {
         control.active = value.toString()
         handleChange()
       }
@@ -40,20 +40,20 @@ class ControlPanelNumber extends React.Component {
     const validated = exception ? 'error' : undefined
     return (
       <React.Fragment>
-        <div
-          className="creation-view-controls-number"
-          ref={this.setControlRef.bind(this, control)}
-        >
-          <ControlPanelFormGroup
-            controlId={controlId}
-            control={control}>
+        <div className="creation-view-controls-number" ref={this.setControlRef.bind(this, control)}>
+          <ControlPanelFormGroup controlId={controlId} control={control}>
             <div className="pf-c-number-input">
               <div className="pf-c-input-group">
-                <button className="pf-c-button pf-m-control" style={{lineHeight: '16px'}} type="button" aria-label="Minus"
+                <button
+                  className="pf-c-button pf-m-control"
+                  style={{ lineHeight: '16px' }}
+                  type="button"
+                  aria-label="Minus"
                   data-testid={`down-${controlId}`}
-                  onClick={()=>{
+                  onClick={() => {
                     onChange(-1)
-                  }}>
+                  }}
+                >
                   <span className="pf-c-number-input__icon">
                     <svg height="16" width="16" role="img" viewBox="0 0 24 24">
                       <path d="M0 10h24v4h-24z" />
@@ -63,23 +63,28 @@ class ControlPanelNumber extends React.Component {
                 <input
                   className="pf-c-form-control"
                   type="number"
-                  value={control.active||''}
+                  value={control.active || ''}
                   pattern="[0-9]*"
                   name="number-input-default-name"
-                  onFocus={e => {
+                  onFocus={(e) => {
                     e.target.select()
                   }}
-                  onChange={e => {
+                  onChange={(e) => {
                     onSet(e.target.value)
                   }}
                   aria-label="Number input"
                   data-testid={`number-${controlId}`}
                 />
-                <button className="pf-c-button pf-m-control" style={{lineHeight: '16px'}} type="button" aria-label="Plus"
+                <button
+                  className="pf-c-button pf-m-control"
+                  style={{ lineHeight: '16px' }}
+                  type="button"
+                  aria-label="Plus"
                   data-testid={`up-${controlId}`}
-                  onClick={()=>{
+                  onClick={() => {
                     onChange(1)
-                  }}>
+                  }}
+                >
                   <svg height="16" width="16" role="img" viewBox="0 0 24 24">
                     <path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z" />
                   </svg>
@@ -96,7 +101,6 @@ class ControlPanelNumber extends React.Component {
       </React.Fragment>
     )
   }
-
 }
 
 export default ControlPanelNumber

@@ -29,9 +29,7 @@ class ControlPanelTextInput extends React.Component {
     // if placeholder missing, create one
     let { placeholder } = control
     if (!placeholder) {
-      placeholder = i18n('creation.ocp.cluster.enter.value', [
-        name ? name.toLowerCase() : '',
-      ])
+      placeholder = i18n('creation.ocp.cluster.enter.value', [name ? name.toLowerCase() : ''])
     }
 
     const validated = exception ? 'error' : undefined

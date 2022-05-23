@@ -1,6 +1,6 @@
-@import "./control-panel-cards.scss";
-@import "./control-panel-controls.scss";
-@import "./control-panel-finish.scss";
+@import './control-panel-cards.scss';
+@import './control-panel-controls.scss';
+@import './control-panel-finish.scss';
 
 $color__blue-51: #3d70b2 !default;
 $color__navy-gray-6: #5a6872 !default;
@@ -310,8 +310,7 @@ $acm_background_color: #f0f0f0 !default;
         }
 
         .tf--list-box__menu {
-          box-shadow: rgba(3, 3, 3, 0.12) 0px 4px 8px 0px,
-            rgba(3, 3, 3, 0.06) 0px 0px 4px 0px;
+          box-shadow: rgba(3, 3, 3, 0.12) 0px 4px 8px 0px, rgba(3, 3, 3, 0.06) 0px 0px 4px 0px;
           position: absolute;
           left: 0;
           right: 0;
@@ -596,11 +595,11 @@ $acm_background_color: #f0f0f0 !default;
         &:before {
           padding-right: 2px;
           font-family: codicon;
-          content: "\eab4";
+          content: '\eab4';
         }
 
         &.open:before {
-          content: "\eab7";
+          content: '\eab7';
         }
 
         &.searching {
@@ -753,7 +752,7 @@ $acm_background_color: #f0f0f0 !default;
             bottom: 0;
             left: 0;
             pointer-events: none;
-            content: "";
+            content: '';
             border: 2px solid #06c;
             border-radius: 4px;
           }

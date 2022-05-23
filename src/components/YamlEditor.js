@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 import { global_BackgroundColor_dark_100 as editorBackground } from '@patternfly/react-tokens'
 
 class YamlEditor extends React.Component {
-
   static propTypes = {
     editor: PropTypes.element,
     hide: PropTypes.bool,
@@ -13,35 +12,37 @@ class YamlEditor extends React.Component {
     readOnly: PropTypes.bool,
     setEditor: PropTypes.func,
     theme: PropTypes.string,
-    yaml: PropTypes.oneOfType([PropTypes.object, PropTypes.string])
-  };
+    yaml: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  }
 
   constructor(props) {
     super(props)
 
     const { editor, onYamlChange } = this.props
     this.state = {
-      editor: editor && React.cloneElement(editor, {
-        language: 'yaml',
-        height: '100%',
-        width: '100%',
-        options: {
-          wordWrap: 'wordWrapColumn',
-          wordWrapColumn: 132,
-          wordWrapMinified: false,
-          scrollBeyondLastLine: true,
-          smoothScrolling: true,
-          glyphMargin: true,
-          tabSize: 2,
-          scrollbar: {
-            verticalScrollbarSize: 17,
-            horizontalScrollbarSize: 17
-          }
-        },
-        editorDidMount: this.editorDidMount.bind(this),
-        editorWillMount: this.editorWillMount.bind(this),
-        onChange: onYamlChange
-      })
+      editor:
+        editor &&
+        React.cloneElement(editor, {
+          language: 'yaml',
+          height: '100%',
+          width: '100%',
+          options: {
+            wordWrap: 'wordWrapColumn',
+            wordWrapColumn: 132,
+            wordWrapMinified: false,
+            scrollBeyondLastLine: true,
+            smoothScrolling: true,
+            glyphMargin: true,
+            tabSize: 2,
+            scrollbar: {
+              verticalScrollbarSize: 17,
+              horizontalScrollbarSize: 17,
+            },
+          },
+          editorDidMount: this.editorDidMount.bind(this),
+          editorWillMount: this.editorWillMount.bind(this),
+          onChange: onYamlChange,
+        }),
     }
   }
 
@@ -84,10 +85,7 @@ class YamlEditor extends React.Component {
     let stylesheet = document.querySelector('link[href*=main]')
     if (stylesheet) {
       stylesheet = stylesheet.sheet
-      stylesheet.insertRule(
-        'span { font-family: monospace }',
-        stylesheet.cssRules.length
-      )
+      stylesheet.insertRule('span { font-family: monospace }', stylesheet.cssRules.length)
     }
   }
 
@@ -111,19 +109,21 @@ class YamlEditor extends React.Component {
 
     monaco.editor.setModelLanguage(editor.getModel(), 'yaml')
 
-    editor.changeViewZones(changeAccessor => {
+    editor.changeViewZones((changeAccessor) => {
       const domNode = document.createElement('div')
       changeAccessor.addZone({
         afterLineNumber: 0,
         heightInPx: 10,
-        domNode: domNode
+        domNode: domNode,
       })
     })
   }
 
   shouldComponentUpdate(nextProps) {
     return (
-      this.props.yaml !== nextProps.yaml || this.props.hide !== nextProps.hide || this.props.readOnly !== nextProps.readOnly
+      this.props.yaml !== nextProps.yaml ||
+      this.props.hide !== nextProps.hide ||
+      this.props.readOnly !== nextProps.readOnly
     )
   }
 
@@ -137,7 +137,7 @@ class YamlEditor extends React.Component {
 
   render() {
     const { yaml, readOnly, hide = false } = this.props
-    let {theme='resource-editor' } = this.props
+    let { theme = 'resource-editor' } = this.props
     const { editor } = this.state
     const style = {
       display: hide ? 'none' : 'block',
@@ -148,11 +148,9 @@ class YamlEditor extends React.Component {
       theme = 'readonly-resource-editor'
     }
     return (
-      <div
-        className="yamlEditorContainer"
-        style={style}
-      >
-        {editor && React.cloneElement(editor, {value: yaml, theme, options: {...this.state.editor.props.options, readOnly}})}
+      <div className="yamlEditorContainer" style={style}>
+        {editor &&
+          React.cloneElement(editor, { value: yaml, theme, options: { ...this.state.editor.props.options, readOnly } })}
       </div>
     )
   }
