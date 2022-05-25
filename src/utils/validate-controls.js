@@ -274,7 +274,7 @@ const attachEditorToExceptions = (exceptions, editors, inx) => {
 
 const shouldValidateControl = (control) => {
   let required = false
-  const { sourcePath, validation, active } = control
+  const { validation, active } = control
   if (validation) {
     ;({ required } = validation)
     if (!required) {
