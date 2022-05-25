@@ -3,21 +3,14 @@
   height: 100%;
   display: flex;
   position: relative;
-  margin-top: -10px;
-}
-.temptifly.showEditor,
-.creation-view.showEditor {
-  margin: -50px 0 -3.125rem 0;
 }
 .temptifly .creation-view-split-container,
 .creation-view .creation-view-split-container {
   width: 100%;
 }
-.temptifly .creation-view-split-container.showEditor .creation-view-controls-container,
-.creation-view .creation-view-split-container.showEditor .creation-view-controls-container {
-  height: calc(100vh - 200px);
-  position: relative;
-  padding-top: 40px;
+.temptifly .creation-view-split-container .creation-view-controls-container {
+  height: 100%;
+  overflow-y: auto;
 }
 .temptifly .creation-view-split-container.showEditor .creation-view-controls-container-blurr,
 .creation-view .creation-view-split-container.showEditor .creation-view-controls-container-blurr {

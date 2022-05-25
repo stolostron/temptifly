@@ -3,7 +3,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import capitalize from 'lodash/capitalize'
-import { Alert } from '@patternfly/react-core'
+import {
+  Alert,
+  DescriptionList,
+  DescriptionListDescription,
+  DescriptionListGroup,
+  DescriptionListTerm,
+} from '@patternfly/react-core'
 
 class ControlPanelFinish extends React.Component {
   static propTypes = {
@@ -43,7 +49,7 @@ class ControlPanelFinish extends React.Component {
                   <div className="tf--finish-step-circle">{step++}</div>
                   <div>{title.title}</div>
                 </div>
-                <div className="tf--finish-step-sections">{this.renderSections(sections)}</div>
+                {this.renderSections(sections)}
               </div>
             )
           } else {
@@ -71,13 +77,15 @@ class ControlPanelFinish extends React.Component {
     return (
       <React.Fragment>
         {this.renderTables(tables)}
-        {sections.map(({ content }) => {
-          return (
-            <div key={id} className="pf-c-description-list__group tf--finish-step-section">
-              {this.renderContent(content)}
-            </div>
-          )
-        })}
+        <DescriptionList isHorizontal>
+          {sections.map(({ content }) => {
+            return (
+              <div key={id} className="tf--finish-step-section">
+                {this.renderContent(content)}
+              </div>
+            )
+          })}
+        </DescriptionList>
       </React.Fragment>
     )
   }
@@ -233,7 +241,7 @@ class ControlPanelFinish extends React.Component {
       }
       return (
         <React.Fragment key={id}>
-          {summaries.map(({ term, desc, exception, validation }) => {
+          {summaries.map(({ term, desc, exception, validation, valueComponent }) => {
             let styles = {}
             if (exception) {
               desc = '*Fix exceptions'
@@ -245,16 +253,12 @@ class ControlPanelFinish extends React.Component {
               styles = { color: 'red' }
             }
             return (
-              <React.Fragment key={`${term}${desc}`}>
-                <dt className="pf-c-description-list__term">
-                  <span className="pf-c-description-list__text">{term}</span>
-                </dt>
-                <dd className="pf-c-description-list__description">
-                  <div className="pf-c-description-list__text" style={styles}>
-                    {desc || '-none-'}
-                  </div>
-                </dd>
-              </React.Fragment>
+              <DescriptionListGroup key={`${term}${desc}`} className="tf--finish-step-group">
+                <DescriptionListTerm>{term}</DescriptionListTerm>
+                <DescriptionListDescription>
+                  <div style={styles}>{valueComponent || desc || '-none-'}</div>
+                </DescriptionListDescription>
+              </DescriptionListGroup>
             )
           })}
         </React.Fragment>
