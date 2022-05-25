@@ -68,6 +68,9 @@ class ControlPanelComboBox extends React.Component {
       isOpen = false
       preselect = false
     } else if (isBlurred && !preselect) {
+      if (active) {
+        handleComboChange(currentSelection)
+      }
       isOpen = false
     }
     return {
@@ -388,7 +391,7 @@ class ControlPanelComboBox extends React.Component {
       )
     }
     const isCustom = control.userData && control.userData.includes(label)
-    if (isCustom || !simplified || searchText) {
+    if (isCustom || searchText) {
       if (!searchText) {
         return <React.Fragment>{label}</React.Fragment>
       } else {
@@ -406,8 +409,14 @@ class ControlPanelComboBox extends React.Component {
       const title = simplified && simplified(label, control)
       return (
         <div className="tf--list-box__menu-item-container">
-          {title && <div style={{ lineHeight: '14px', fontSize: '16px' }}>{title}</div>}
-          <div style={{ fontSize: '12px' }}>{label}</div>
+          {title ? (
+            <div>
+              <div style={{ lineHeight: '14px', fontSize: '16px' }}>{title}</div>
+              <div style={{ fontSize: '12px' }}>{label}</div>
+            </div>
+          ) : (
+            <div style={{ lineHeight: '14px', fontSize: '16px' }}>{label}</div>
+          )}
           {label === active && (
             <span className="tf-select__menu-item-icon">
               <CheckIcon aria-hidden />
@@ -464,7 +473,7 @@ class ControlPanelComboBox extends React.Component {
 
   pressToggle(e) {
     if (e.key === 'Enter') {
-      this.clickToggle()
+      this.clickToggle(e)
     } else if (e.key === 'Escape') {
       this.clickClear()
     }
@@ -510,7 +519,7 @@ class ControlPanelComboBox extends React.Component {
     this.setState({ currentSelection: label, isOpen: false })
   }
 
-  pressClear(inx, e) {
+  pressClear(e) {
     if (e && e.key === 'Enter') {
       this.clickClear()
     }

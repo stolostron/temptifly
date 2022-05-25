@@ -8,6 +8,7 @@ class YamlEditor extends React.Component {
   static propTypes = {
     editor: PropTypes.element,
     hide: PropTypes.bool,
+    immutableRows: PropTypes.array,
     onYamlChange: PropTypes.func,
     readOnly: PropTypes.bool,
     setEditor: PropTypes.func,
@@ -117,6 +118,30 @@ class YamlEditor extends React.Component {
         domNode: domNode,
       })
     })
+
+    editor.onKeyDown(
+      ((e) => {
+        // determine readonly ranges
+        const prohibited = []
+        const { immutableRows = [] } = this.props
+        immutableRows.forEach((obj) => {
+          prohibited.push(new this.editor.monaco.Range(obj.$r + 1, 0, obj.$r + 1, 132))
+        })
+
+        // prevent typing on same
+        if (!(e.code === 'KeyC' && (e.ctrlKey || e.metaKey))) {
+          const selections = this.editor.getSelections()
+          if (
+            !prohibited.every((prohibit) => {
+              return selections.findIndex((range) => prohibit.intersectRanges(range)) === -1
+            })
+          ) {
+            e.stopPropagation()
+            e.preventDefault()
+          }
+        }
+      }).bind(this)
+    )
   }
 
   shouldComponentUpdate(nextProps) {
@@ -150,7 +175,11 @@ class YamlEditor extends React.Component {
     return (
       <div className="yamlEditorContainer" style={style}>
         {editor &&
-          React.cloneElement(editor, { value: yaml, theme, options: { ...this.state.editor.props.options, readOnly } })}
+          React.cloneElement(editor, {
+            value: yaml,
+            theme,
+            options: { ...this.state.editor.props.options, readOnly },
+          })}
       </div>
     )
   }

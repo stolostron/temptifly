@@ -137,6 +137,7 @@ export const highlightChanges = (editor, oldYAML, newYAML, highlightEncoded) => 
       editor.changeList = decorationList
       editor.decorations = editor.deltaDecorations(editor.decorations, [
         ...(editor.errorList || []),
+        ...(editor.immutableList || []),
         ...editor.changeList,
       ])
     }, 0)
@@ -225,5 +226,28 @@ export const highlightAllChanges = (editors, oldYAML, newYAML, otherYAMLTabs, se
         }
       }
     })
+  }
+}
+
+export const highlightImmutables = (editors, immutableRows) => {
+  if (editors.length > 0) {
+    const editor = editors[0]
+    const decorationList = []
+    immutableRows.forEach((obj) => {
+      decorationList.push({
+        range: new editor.monaco.Range(obj.$r + 1, 0, obj.$r + 1, 132),
+        options: {
+          inlineClassName: 'protectedDecoration',
+        },
+      })
+    })
+    setTimeout(() => {
+      editor.immutableList = decorationList
+      editor.decorations = editor.deltaDecorations(editor.decorations, [
+        ...(editor.errorList || []),
+        ...(editor.changeList || []),
+        ...editor.immutableList,
+      ])
+    }, 0)
   }
 }

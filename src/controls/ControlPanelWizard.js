@@ -9,7 +9,6 @@ import get from 'lodash/get'
 import set from 'lodash/set'
 import noop from 'lodash/noop'
 import isEmpty from 'lodash/isEmpty'
-import cloneDeep from 'lodash/cloneDeep'
 
 class ControlPanelWizard extends React.Component {
   constructor(props) {
@@ -20,10 +19,15 @@ class ControlPanelWizard extends React.Component {
   }
 
   render() {
-    const { controlClasses, setWizardRef, renderControlSections, renderNotifications, isEditing, creationStatus } =
-      this.props
+    const {
+      controlClasses,
+      setWizardRef,
+      renderControlSections,
+      renderNotifications,
+      isEditing,
+      creationStatus,
+    } = this.props
     let { steps } = this.props
-    const details = cloneDeep(steps)
     steps.forEach((step) => {
       step.controls = []
       step.sections.forEach(({ content }) => {
@@ -105,7 +109,7 @@ class ControlPanelWizard extends React.Component {
           <div key={id} className={controlClasses}>
             <h2>{title}</h2>
             {control.type === 'review'
-              ? renderReview(details.slice(lastReviewInx, inx), lastReviewInx, comment)
+              ? renderReview(this.props.steps.slice(lastReviewInx, inx), lastReviewInx, comment)
               : renderControlSections(sections)}
           </div>
         ),
@@ -119,7 +123,7 @@ class ControlPanelWizard extends React.Component {
         component: (
           <div className={controlClasses}>
             <h2>Review</h2>
-            {renderReview(details.slice(lastReviewInx), lastReviewInx)}
+            {renderReview(this.props.steps.slice(lastReviewInx), lastReviewInx)}
           </div>
         ),
         canJumpTo: steps.length + 1 <= validStepIndex,
@@ -160,9 +164,15 @@ class ControlPanelWizard extends React.Component {
             if (validateControls.length > 0) {
               let hasErrors = false
               const promises = validateControls.map((control) => control.validate())
-              this.setState({ isProcessing: true, processingLabel: 'Validating...' })
+              this.setState({
+                isProcessing: true,
+                processingLabel: 'Validating...',
+              })
               Promise.allSettled(promises).then((results) => {
-                this.setState({ isProcessing: false, processingLabel: undefined })
+                this.setState({
+                  isProcessing: false,
+                  processingLabel: undefined,
+                })
                 results.some((result) => {
                   hasErrors = !isEmpty(result.value)
                   return hasErrors

@@ -2,7 +2,15 @@
 
 import { diff } from 'deep-diff'
 import jsYaml from 'js-yaml'
-import { discoverControls, setEditingMode, reverseTemplate, getResourceID } from './source-utils'
+import {
+  discoverControls,
+  setEditingMode,
+  reverseTemplate,
+  getImmutablePaths,
+  getImmutableRows,
+  setImmutableValues,
+  getResourceID,
+} from './source-utils'
 import { generateSourceFromTemplate } from './refresh-source-from-templates'
 import YamlParser from './YamlParser'
 import cloneDeep from 'lodash/cloneDeep'
@@ -112,6 +120,10 @@ const intializeControls = (editStack, controlData) => {
 const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
   const { customResources, deletedLinks, customIdMap } = editStack
 
+  // set immutable values
+  const immutablePaths = getImmutablePaths(controlData)
+  setImmutableValues(immutablePaths, customResources)
+
   // get the next iteration of template changes
   const { templateResources, templateObject } = generateSourceFromTemplate(template, controlData, otherYAMLTabs)
 
@@ -149,7 +161,6 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
 
   // make sure there's no duplicates
   resources = uniqWith(resources, isEqual)
-  editStack.deletedLinks = uniqWith(editStack.deletedLinks, isEqual)
 
   // then generate the source from those resources
   const { templateYAML, templateObject: mergedObjects } = generateSourceFromResources(resources)
@@ -170,7 +181,15 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
     })
   }
 
-  return { templateYAML, templateObject: mergedObjects, templateResources }
+  // what lines should be readonly in editor
+  const immutableRows = getImmutableRows(immutablePaths, mergedObjects)
+
+  return {
+    templateYAML,
+    templateObject: mergedObjects,
+    templateResources,
+    immutableRows,
+  }
 }
 
 const mergeSource = (resources, baseTemplateResources, currentTemplateResources, customIdMap, deletedLinks) => {
@@ -338,12 +357,21 @@ const generateSourceFromResources = (resources) => {
     row = 0
   const parsed = {}
   const yamls = []
+  const sort = ['name', 'namespace']
+  const sortKeys = (a, b) => {
+    let ai = sort.indexOf(a)
+    if (ai < 0) ai = 5
+    let bi = sort.indexOf(b)
+    if (bi < 0) bi = 5
+    return ai - bi
+  }
   resources.forEach((resource) => {
     if (!isEmpty(resource)) {
       const key = get(resource, 'kind', 'unknown')
       yaml = jsYaml.dump(resource, {
         noRefs: true,
         lineWidth: 2000,
+        sortKeys,
       })
       yaml = yaml.replace(/'\d+':(\s|$)\s*/gm, '- ')
       yaml = yaml.replace(/:\s*null$/gm, ':')

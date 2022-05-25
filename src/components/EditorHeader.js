@@ -77,6 +77,7 @@ class EditorHeader extends React.Component {
     const { type = 'unknown', handleTabChange } = this.props
 
     const onClick = (e, tab) => {
+      e.preventDefault()
       Array.from(this.tabsRef.children).forEach((child, inx) =>
         child.classList.toggle('tf--tabs__nav-item--selected', inx === tab)
       )
