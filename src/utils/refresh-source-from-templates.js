@@ -205,7 +205,9 @@ export const generateTemplateData = (controlData, replacements, controlMap) => {
       if (encodeValues) {
         value = { ...value }
         encodeValues.forEach((key) => {
-          value[key] = Buffer.from(value[key], 'ascii').toString('base64')
+          if (value[key] !== undefined) {
+            value[key] = Buffer.from(value[key], 'ascii').toString('base64')
+          }
         })
       }
     }
