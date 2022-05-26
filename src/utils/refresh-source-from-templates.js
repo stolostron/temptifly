@@ -1,6 +1,6 @@
 'use strict'
 
-import { parseYAML, escapeYAML, discoverImmutables } from './source-utils'
+import { parseYAML, escapeYAML, getImmutablePaths, getImmutableRows } from './source-utils'
 import { setSourcePaths } from './initialize-control-functions'
 import { caseFn, defaultFn, if_eqFn, if_existsFn, if_gtFn, if_neFn, if_orFn, switchFn } from '../helpers'
 import get from 'lodash/get'
@@ -90,7 +90,8 @@ export const generateSourceFromTemplate = (template, controlData, otherYAMLTabs)
   }
 
   // what lines should be readonly in editor
-  const immutableRows = discoverImmutables(controlData, templateObject)
+  const immutablePaths = getImmutablePaths(controlData)
+  const immutableRows = getImmutableRows(immutablePaths, templateObject)
 
   return {
     templateYAML: yaml,
@@ -159,7 +160,9 @@ export const generateTemplateData = (controlData, replacements, controlMap) => {
           return map
         })
       } else if (encode) {
-        ret = Buffer.from(active, 'ascii').toString('base64')
+        if (active !== undefined) {
+          ret = Buffer.from(active, 'ascii').toString('base64')
+        }
       } else if (singleline) {
         ret = active.replace(/\n/g, '')
       } else if (multiline) {

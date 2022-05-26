@@ -274,8 +274,8 @@ const attachEditorToExceptions = (exceptions, editors, inx) => {
 
 const shouldValidateControl = (control) => {
   let required = false
-  const { sourcePath, validation, active } = control
-  if (sourcePath && validation) {
+  const { validation, active } = control
+  if (validation) {
     ;({ required } = validation)
     if (!required) {
       // if not required, only validate if that yaml path exists
