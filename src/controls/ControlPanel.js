@@ -181,7 +181,7 @@ class ControlPanel extends React.Component {
         <div className={controlClasses} ref={this.setCreationViewRef} onScroll={this.refreshFading.bind(this)}>
           {this.renderPortals()}
           <div id="notifications" />
-          {this.renderNotifications()}
+          {this.renderNotifications(true)}
           <div className="content">{this.renderControlSections(sections)}</div>
         </div>
         <div className="creation-view-controls-container-blurr bottom" ref={this.setCreationViewBottomBlurrRef} />
@@ -698,12 +698,13 @@ class ControlPanel extends React.Component {
     return null
   }
 
-  renderNotifications() {
+  renderNotifications(isForm) {
     const { notifications = [] } = this.props
+    const margin = isForm ? '20px' : '20px 0'
     if (notifications.length > 0) {
       return (
         <React.Fragment>
-          <div className="creation-view-controls-notifications" style={{ margin: '20px 0' }}>
+          <div className="creation-view-controls-notifications" style={{ margin }}>
             {notifications.map(({ exception, variant = 'danger' }) => {
               return <Alert key={exception} variant={variant} title={exception} isInline></Alert>
             })}

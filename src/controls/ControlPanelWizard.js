@@ -2,7 +2,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Wizard, WizardFooter, WizardContextConsumer } from '@patternfly/react-core'
+import { Button, Wizard, WizardFooter, WizardContextConsumer, Title, Stack, StackItem } from '@patternfly/react-core'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import ControlPanelFinish from './ControlPanelFinish'
 import get from 'lodash/get'
@@ -107,10 +107,18 @@ class ControlPanelWizard extends React.Component {
         canJumpTo: inx <= validStepIndex,
         component: (
           <div key={id} className={controlClasses}>
-            <h2>{title}</h2>
-            {control.type === 'review'
-              ? renderReview(this.props.steps.slice(lastReviewInx, inx), lastReviewInx, comment)
-              : renderControlSections(sections)}
+            <Stack hasGutter>
+              <StackItem>
+                <Title headingLevel="h2" size="2xl">
+                  {title}
+                </Title>
+              </StackItem>
+              <StackItem>
+                {control.type === 'review'
+                  ? renderReview(this.props.steps.slice(lastReviewInx, inx), lastReviewInx, comment)
+                  : renderControlSections(sections)}
+              </StackItem>
+            </Stack>
           </div>
         ),
       }
@@ -122,8 +130,14 @@ class ControlPanelWizard extends React.Component {
         control: { nextButtonLabel: isEditing ? 'Save' : 'Create' },
         component: (
           <div className={controlClasses}>
-            <h2>Review</h2>
-            {renderReview(this.props.steps.slice(lastReviewInx), lastReviewInx)}
+            <Stack hasGutter>
+              <StackItem>
+                <Title headingLevel="h2" size="2xl">
+                  Review
+                </Title>
+              </StackItem>
+              <StackItem>{renderReview(this.props.steps.slice(lastReviewInx), lastReviewInx)}</StackItem>
+            </Stack>
           </div>
         ),
         canJumpTo: steps.length + 1 <= validStepIndex,
