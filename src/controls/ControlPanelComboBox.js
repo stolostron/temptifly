@@ -68,6 +68,9 @@ class ControlPanelComboBox extends React.Component {
       isOpen = false
       preselect = false
     } else if (isBlurred && !preselect) {
+      if (active) {
+        handleComboChange(currentSelection)
+      }
       isOpen = false
     }
     return {

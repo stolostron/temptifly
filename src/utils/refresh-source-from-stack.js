@@ -2,7 +2,15 @@
 
 import { diff } from 'deep-diff'
 import jsYaml from 'js-yaml'
-import { discoverControls, setEditingMode, reverseTemplate, discoverImmutables, getResourceID } from './source-utils'
+import {
+  discoverControls,
+  setEditingMode,
+  reverseTemplate,
+  getImmutablePaths,
+  getImmutableRows,
+  setImmutableValues,
+  getResourceID,
+} from './source-utils'
 import { generateSourceFromTemplate } from './refresh-source-from-templates'
 import YamlParser from './YamlParser'
 import cloneDeep from 'lodash/cloneDeep'
@@ -112,6 +120,10 @@ const intializeControls = (editStack, controlData) => {
 const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
   const { customResources, deletedLinks, customIdMap } = editStack
 
+  // set immutable values
+  const immutablePaths = getImmutablePaths(controlData)
+  setImmutableValues(immutablePaths, customResources)
+
   // get the next iteration of template changes
   const { templateResources, templateObject } = generateSourceFromTemplate(template, controlData, otherYAMLTabs)
 
@@ -170,7 +182,7 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
   }
 
   // what lines should be readonly in editor
-  const immutableRows = discoverImmutables(controlData, mergedObjects)
+  const immutableRows = getImmutableRows(immutablePaths, mergedObjects)
 
   return {
     templateYAML,
