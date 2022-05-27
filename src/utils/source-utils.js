@@ -158,9 +158,9 @@ export function setEditingMode(controlData) {
   })
 }
 
-export const generateSource = (template, editStack, controlData, otherYAMLTabs) => {
+export const generateSource = (template, editStack, controlData, otherYAMLTabs, yaml) => {
   if (!isEmpty(editStack)) {
-    return generateSourceFromStack(template, editStack, controlData, otherYAMLTabs)
+    return generateSourceFromStack(template, editStack, controlData, otherYAMLTabs, yaml)
   } else {
     return generateSourceFromTemplate(template, controlData, otherYAMLTabs)
   }

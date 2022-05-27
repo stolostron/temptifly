@@ -10,6 +10,7 @@ import {
   getImmutableRows,
   setImmutableValues,
   getResourceID,
+  parseYAML,
 } from './source-utils'
 import { generateSourceFromTemplate } from './refresh-source-from-templates'
 import YamlParser from './YamlParser'
@@ -26,11 +27,11 @@ import pick from 'lodash/pick'
 import keyBy from 'lodash/keyBy'
 import groupBy from 'lodash/groupBy'
 
-export const generateSourceFromStack = (template, editStack, controlData, otherYAMLTabs) => {
+export const generateSourceFromStack = (template, editStack, controlData, otherYAMLTabs, editorYaml) => {
   if (!editStack.initialized) {
     intializeControls(editStack, controlData)
   }
-  return generateSource(editStack, controlData, template, otherYAMLTabs)
+  return generateSource(editStack, controlData, template, otherYAMLTabs, editorYaml)
 }
 
 // update edit stack after the user types something into the editor
@@ -117,7 +118,7 @@ const intializeControls = (editStack, controlData) => {
   editStack.initialized = true
 }
 
-const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
+const generateSource = (editStack, controlData, template, otherYAMLTabs, editorYaml) => {
   const { customResources, deletedLinks, customIdMap } = editStack
 
   // set immutable values
@@ -182,7 +183,11 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
   }
 
   // what lines should be readonly in editor
-  const immutableRows = getImmutableRows(immutablePaths, mergedObjects)
+  let immutableRows = []
+  if (editorYaml) {
+    const results = parseYAML(editorYaml)
+    immutableRows = getImmutableRows(immutablePaths, results.parsed)
+  }
 
   return {
     templateYAML,
