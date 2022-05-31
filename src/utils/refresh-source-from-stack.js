@@ -6,7 +6,7 @@ import {
   discoverControls,
   setEditingMode,
   reverseTemplate,
-  getImmutablePaths,
+  getImmutables,
   getImmutableRows,
   setImmutableValues,
   getResourceID,
@@ -121,8 +121,8 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
   const { customResources, deletedLinks, customIdMap } = editStack
 
   // set immutable values
-  const immutablePaths = getImmutablePaths(controlData)
-  setImmutableValues(immutablePaths, customResources)
+  const immutables = getImmutables(controlData)
+  setImmutableValues(immutables, customResources)
 
   // get the next iteration of template changes
   const { templateResources, templateObject } = generateSourceFromTemplate(template, controlData, otherYAMLTabs)
@@ -181,8 +181,7 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
     })
   }
 
-  // what lines should be readonly in editor
-  const immutableRows = getImmutableRows(immutablePaths, mergedObjects)
+  const immutableRows = getImmutableRows(immutables, mergedObjects)
 
   return {
     templateYAML,

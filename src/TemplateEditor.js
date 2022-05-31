@@ -7,7 +7,15 @@ import SplitPane from 'react-split-pane'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import { Button, Switch, Alert } from '@patternfly/react-core'
-import { initializeControls, generateSource, getUniqueName, cacheUserData } from './utils/source-utils'
+import {
+  initializeControls,
+  parseYAML,
+  getImmutables,
+  getImmutableRows,
+  generateSource,
+  getUniqueName,
+  cacheUserData,
+} from './utils/source-utils'
 import { logCreateErrors, logSourceErrors } from './utils/logger'
 import { validateControls } from './utils/validate-controls'
 import { updateEditStack } from './utils/refresh-source-from-stack'
@@ -438,12 +446,12 @@ export default class TemplateEditor extends React.Component {
       onSelect(control)
     }
 
-    const { templateYAML: newYAML, templateObject, templateResources, immutableRows } = generateSource(
-      template,
-      editStack,
-      controlData,
-      otherYAMLTabs
-    )
+    const {
+      templateYAML: newYAML,
+      templateObject,
+      templateResources,
+      immutableRows,
+    } = generateSource(template, editStack, controlData, otherYAMLTabs)
     validateControls(
       this.editors,
       newYAML,
@@ -516,12 +524,12 @@ export default class TemplateEditor extends React.Component {
     } else {
       active.splice(inx, 1)
     }
-    const { templateYAML: newYAML, templateObject, templateResources, immutableRows } = generateSource(
-      template,
-      editStack,
-      controlData,
-      otherYAMLTabs
-    )
+    const {
+      templateYAML: newYAML,
+      templateObject,
+      templateResources,
+      immutableRows,
+    } = generateSource(template, editStack, controlData, otherYAMLTabs)
     validateControls(
       this.editors,
       newYAML,
@@ -627,12 +635,12 @@ export default class TemplateEditor extends React.Component {
       if (replaceTemplate) {
         template = replaceTemplate
         newYAMLTabs = newYAMLTabs || []
-        ;({ templateYAML: newYAML, templateObject, templateResources, immutableRows } = generateSource(
-          template,
-          editStack,
-          controlData,
-          newYAMLTabs
-        ))
+        ;({
+          templateYAML: newYAML,
+          templateObject,
+          templateResources,
+          immutableRows,
+        } = generateSource(template, editStack, controlData, newYAMLTabs))
         if (newYAMLTabs.length === 0 && this.editors.length > 1) {
           this.editors.length = 1
         }
@@ -1038,28 +1046,37 @@ export default class TemplateEditor extends React.Component {
     // it doesn't wipe out what they just typed
     editStack = updateEditStack(editStack, templateResources, parsedResources)
 
-    // if there's more then one tab, update them both
-    if (this.editors.length > 1) {
+    let newState
+    if (activeYAMLEditor !== 0) {
       const { template, templateYAML: oldYAML } = this.state
-      const { templateYAML: newYAML, templateObject, templateResources: tr, immutableRows } = generateSource(
-        template,
-        editStack,
-        controlData,
-        otherYAMLTabs
-      )
+      const {
+        templateYAML: newYAML,
+        templateObject,
+        templateResources: tr,
+      } = generateSource(template, editStack, controlData, otherYAMLTabs)
       highlightChanges(this.editors[0], oldYAML, newYAML, true)
-      this.setState({
+      newState = {
         controlData,
         notifications,
         templateYAML: newYAML,
         templateObject,
         templateResources: tr,
         editStack,
-        immutableRows,
-      })
+      }
     } else {
-      this.setState({ controlData, notifications, templateYAML, editStack })
+      newState = { controlData, notifications, templateYAML, editStack }
     }
+
+    // what lines should be readonly in editor
+    newState.immutableRows = []
+    const immutables = getImmutables(controlData)
+    if (immutables.length) {
+      const parsed = parseYAML(newState.templateYAML)
+      newState.immutableRows = getImmutableRows(immutables, parsed.parsed)
+      highlightImmutables(this.editors, newState.immutableRows)
+    }
+
+    this.setState(newState)
 
     return templateYAML // for jest test
   }

@@ -1,6 +1,6 @@
 'use strict'
 
-import { parseYAML, escapeYAML, getImmutablePaths, getImmutableRows } from './source-utils'
+import { parseYAML, escapeYAML, getImmutables, getImmutableRows } from './source-utils'
 import { setSourcePaths } from './initialize-control-functions'
 import { Base64 } from 'js-base64'
 import { caseFn, defaultFn, if_eqFn, if_existsFn, if_gtFn, if_neFn, if_orFn, switchFn } from '../helpers'
@@ -91,8 +91,8 @@ export const generateSourceFromTemplate = (template, controlData, otherYAMLTabs)
   }
 
   // what lines should be readonly in editor
-  const immutablePaths = getImmutablePaths(controlData)
-  const immutableRows = getImmutableRows(immutablePaths, templateObject)
+  const immutables = getImmutables(controlData)
+  const immutableRows = getImmutableRows(immutables, templateObject)
 
   return {
     templateYAML: yaml,
@@ -270,7 +270,8 @@ const addCodeSnippetsTemplateData = (mainTemplateData, replacements, controlMap)
         // add predefined snippets
         const choices = Array.isArray(active) ? active : [active]
         choices.forEach((key, idx) => {
-          const { replacements: _replacements } = availableMap[key]
+          const { replacements: _replacements } = availableMap[key] || {}
+
           Object.entries(_replacements).forEach(([_id, partial = {}]) => {
             const { template: _template, encode, newTab } = partial
             partial = _template || (templateData[_id] ? templateData[_id] : partial)
