@@ -110,6 +110,7 @@ export function validateControls(
         editor.decorations = editor.deltaDecorations(editor.decorations, [
           ...editor.errorList,
           ...(editor.changeList || []),
+          ...(editor.immutableList || []),
         ])
       }
     }, 0)
@@ -210,14 +211,6 @@ const validateControl = (control, controlData, templateObjectMap, templateExcept
     return
   }
   const { exceptions, controlValidation } = templateExceptionMap['<<main>>']
-  if (disabled && editing) {
-    const { disabled, immutable } = editing
-    if (immutable && disabled && active !== immutable) {
-      control.exception = i18n('creation.input.must.not.change', [immutable])
-      reportException(control, exceptions)
-      return
-    }
-  }
   if (controlValidation) {
     controlValidation(control)
   }
@@ -281,8 +274,8 @@ const attachEditorToExceptions = (exceptions, editors, inx) => {
 
 const shouldValidateControl = (control) => {
   let required = false
-  const { sourcePath, validation, active } = control
-  if (sourcePath && validation) {
+  const { validation, active } = control
+  if (validation) {
     ;({ required } = validation)
     if (!required) {
       // if not required, only validate if that yaml path exists
@@ -296,7 +289,7 @@ const validateTextControl = (control, templateObjectMap, templateExceptionMap, i
   const {
     id,
     name,
-    sourcePath,
+    sourcePathMap,
     validation: { contextTester, tester, notification },
     template,
     controlId,
@@ -315,9 +308,8 @@ const validateTextControl = (control, templateObjectMap, templateExceptionMap, i
     }
   }
   control.active = active
-  const { exceptions } = templateExceptionMap['<<main>>']
   if (active === undefined) {
-    addException(sourcePath, exceptions, i18n)
+    addExceptions(undefined, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n)
   } else if (active || isFinalValidate) {
     let exception
     if (active) {
@@ -334,14 +326,7 @@ const validateTextControl = (control, templateObjectMap, templateExceptionMap, i
     }
     if (exception) {
       control.exception = exception
-      exceptions.push({
-        row: getRow(sourcePath),
-        column: 0,
-        text: exception,
-        type: 'error',
-        controlId,
-        ref,
-      })
+      addExceptions(exception, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n)
     }
   }
   if (tester) {
@@ -350,18 +335,12 @@ const validateTextControl = (control, templateObjectMap, templateExceptionMap, i
 }
 
 const validateSingleSelectControl = (control, templateObjectMap, templateExceptionMap, i18n) => {
-  const { active, available = [], sourcePath = {} } = control
-  const { exceptions } = templateExceptionMap['<<main>>']
+  const { active, available = [], controlId, sourcePathMap, ref } = control
   if (!active) {
-    addException(sourcePath, exceptions, i18n)
+    addExceptions(undefined, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n)
   } else if (available.indexOf(active) === -1) {
     control.exception = i18n('validation.bad.value', [active, get(control, 'available').join(', ')])
-    exceptions.push({
-      row: getRow(sourcePath),
-      column: 0,
-      text: control.exception,
-      type: 'error',
-    })
+    addExceptions(control.exception, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n)
   }
 }
 
@@ -376,19 +355,13 @@ const validateCardsControl = (control, templateObjectMap, templateExceptionMap, 
 }
 
 const validateCheckboxControl = (control, templateObjectMap, templateExceptionMap, i18n) => {
-  const { active, available, sourcePath } = control
-  const { exceptions } = templateExceptionMap['<<main>>']
+  const { active, available, controlId, sourcePathMap, ref } = control
   if (!active) {
-    addException(sourcePath, exceptions, i18n)
+    addExceptions(undefined, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n)
   }
   if (available.indexOf(active) === -1) {
     control.exception = i18n('validation.bad.value', [getKey(''), available.join(', ')])
-    exceptions.push({
-      row: getRow(sourcePath),
-      column: 0,
-      text: control.exception,
-      type: 'error',
-    })
+    addExceptions(control.exception, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n)
   }
 }
 
@@ -441,6 +414,29 @@ const reportException = (control, exceptions) => {
     controlId,
     ref,
   })
+}
+
+const addExceptions = (message, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n) => {
+  if (sourcePathMap) {
+    Object.entries(sourcePathMap).forEach(([k, v]) => {
+      const { exceptions } = templateExceptionMap[k]
+      const templateObject = templateObjectMap[k]
+      if (typeof v === 'string' && v.endsWith('.$v')) {
+        v = v.substring(0, v.length - 3)
+      }
+      const row = get(templateObject, v)
+      if (row) {
+        exceptions.push({
+          row: row.$r + 1,
+          column: 0,
+          text: message || i18n('validation.missing.resource'),
+          type: 'error',
+          controlId,
+          ref,
+        })
+      }
+    })
+  }
 }
 
 const addException = (sourcePath, exceptions, i18n) => {

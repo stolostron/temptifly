@@ -129,6 +129,7 @@ const initialControl = (control, editor) => {
         true // match any case that is true
       ) {
         case typeof reverse === 'string':
+          control.path = reverse
           control.reverse = (ctrl, templateObject, activeTabId) => {
             setActiveVal(ctrl, reverse, templateObject, activeTabId)
           }

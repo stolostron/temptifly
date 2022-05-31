@@ -23,7 +23,7 @@ class ControlPanelValues extends React.Component {
   render() {
     const { controlId, control } = this.props
     const { active = [], exception, placeholder, disabled } = control
-    const formatted = active
+    const formatted = active.filter((value) => value.length > 0)
     const { value } = this.state
     const validated = exception ? 'error' : undefined
     return (

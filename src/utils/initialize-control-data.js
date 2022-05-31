@@ -66,7 +66,7 @@ const initialControl = (control, onControlInitialize, i18n) => {
     initializeAvailableChoices(type, control)
 
     // initialize validation methods
-    initializeValidation(type, control)
+    initializeValidation(control)
 
     control.isInitialized = true
   }
@@ -144,6 +144,7 @@ const initializeMsgs = (control, i18n) => {
     controlData.forEach((ctrl) => {
       if (!ctrl.isInitialized) {
         initializeMsgs(ctrl, i18n)
+        initializeValidation(ctrl)
         ctrl.isInitialized = true
       }
     })
@@ -157,6 +158,7 @@ const initializeMsgs = (control, i18n) => {
           if (!ctrl.isInitialized) {
             initializeControlActive(ctrl.type, ctrl)
             initializeMsgs(ctrl, i18n)
+            initializeValidation(ctrl)
             ctrl.isInitialized = true
           }
         })
@@ -228,7 +230,7 @@ const initializeAvailableChoices = (type, control) => {
   }
 }
 
-const initializeValidation = (type, control) => {
+const initializeValidation = (control) => {
   //connect controls to source for updates/validation
   const { validation, multiline } = control
   if (validation) {
