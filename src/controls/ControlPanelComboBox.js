@@ -29,7 +29,7 @@ class ControlPanelComboBox extends React.Component {
     const { active } = control
     const { currentSelection } = state
     let { isOpen, preselect, searchText } = state
-    const { isBlurred, typedText } = state
+    const { isBlurred } = state
 
     /////////////////////////////////////////////////////////////
     // search mode
@@ -68,7 +68,7 @@ class ControlPanelComboBox extends React.Component {
       isOpen = false
       preselect = false
     } else if (isBlurred && !preselect) {
-      handleComboChange(typedText)
+      //handleComboChange(typedText)
       isOpen = false
     }
     return {
