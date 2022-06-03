@@ -144,6 +144,7 @@ class ControlPanelCards extends React.Component {
   }
 }
 
+// that
 const ControlPanelCard = ({ choice, handleOnClick, type, selected, i18n }) => {
   const { disabled, logo, title, tooltip, learnMore, text } = choice
   const cardClasses = classNames({
