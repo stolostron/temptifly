@@ -33,7 +33,7 @@ class ControlPanelCards extends React.Component {
     const { active, collapsed, collapseCardsControlOnSelect } = control
 
     // if active was preset by loading an existing resource
-    // collapse cards on that selection
+    // collapse cards on that selection that
     this.state = {
       collapsed: collapsed || (collapseCardsControlOnSelect && !!active),
     }
