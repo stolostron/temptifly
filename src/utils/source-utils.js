@@ -118,7 +118,7 @@ export function getImmutableRows(immutables, templateObjects) {
   return immutableRows
 }
 
-// reverse control active valuess from template
+// reverse control active valuess from template then there
 export function setEditingMode(controlData) {
   const setEditMode = (control) => {
     const { type, active, hidden: isHidden, editing } = control
