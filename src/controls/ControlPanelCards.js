@@ -130,7 +130,7 @@ class ControlPanelCards extends React.Component {
     )
   }
 
-  // this
+  // that
   handleChange(id) {
     const { collapsed } = this.state
     const { control } = this.props
