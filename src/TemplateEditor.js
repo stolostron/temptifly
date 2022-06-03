@@ -8,7 +8,15 @@ import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import isEmpty from 'lodash/isEmpty'
 import { Button, Switch, Alert } from '@patternfly/react-core'
-import { initializeControls, generateSource, getUniqueName, cacheUserData } from './utils/source-utils'
+import {
+  initializeControls,
+  parseYAML,
+  getImmutables,
+  getImmutableRows,
+  generateSource,
+  getUniqueName,
+  cacheUserData,
+} from './utils/source-utils'
 import { logCreateErrors, logSourceErrors } from './utils/logger'
 import { validateControls } from './utils/validate-controls'
 import { updateEditStack } from './utils/refresh-source-from-stack'
@@ -1039,34 +1047,37 @@ export default class TemplateEditor extends React.Component {
     // it doesn't wipe out what they just typed
     editStack = updateEditStack(editStack, templateResources, parsedResources)
 
-    // if there's more then one tab, update them both
-    if (this.editors.length > 1) {
+    let newState
+    if (activeYAMLEditor !== 0) {
       const { template, templateYAML: oldYAML } = this.state
       const {
         templateYAML: newYAML,
         templateObject,
         templateResources: tr,
-        immutableRows,
-      } = generateSource(template, editStack, controlData, otherYAMLTabs, yaml)
+      } = generateSource(template, editStack, controlData, otherYAMLTabs)
       highlightChanges(this.editors[0], oldYAML, newYAML, true)
-      highlightImmutables(this.editors, immutableRows)
-
-      const newState = {
+      newState = {
         controlData,
         notifications,
+        templateYAML: newYAML,
         templateObject,
         templateResources: tr,
         editStack,
-        immutableRows,
       }
-      // if we're typing on main tab, don't change it
-      if (activeYAMLEditor !== 0) {
-        newState.templateYAML = newYAML
-      }
-      this.setState(newState)
     } else {
-      this.setState({ controlData, notifications, templateYAML, editStack })
+      newState = { controlData, notifications, templateYAML, editStack }
     }
+
+    // what lines should be readonly in editor
+    newState.immutableRows = []
+    const immutables = getImmutables(controlData)
+    if (immutables.length) {
+      const parsed = parseYAML(newState.templateYAML)
+      newState.immutableRows = getImmutableRows(immutables, parsed.parsed)
+      highlightImmutables(this.editors, newState.immutableRows)
+    }
+
+    this.setState(newState)
 
     return templateYAML // for jest test
   }

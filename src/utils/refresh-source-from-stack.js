@@ -6,11 +6,10 @@ import {
   discoverControls,
   setEditingMode,
   reverseTemplate,
-  getImmutablePaths,
+  getImmutables,
   getImmutableRows,
   setImmutableValues,
   getResourceID,
-  parseYAML,
 } from './source-utils'
 import { generateSourceFromTemplate } from './refresh-source-from-templates'
 import YamlParser from './YamlParser'
@@ -27,11 +26,11 @@ import pick from 'lodash/pick'
 import keyBy from 'lodash/keyBy'
 import groupBy from 'lodash/groupBy'
 
-export const generateSourceFromStack = (template, editStack, controlData, otherYAMLTabs, editorYaml) => {
+export const generateSourceFromStack = (template, editStack, controlData, otherYAMLTabs) => {
   if (!editStack.initialized) {
     intializeControls(editStack, controlData)
   }
-  return generateSource(editStack, controlData, template, otherYAMLTabs, editorYaml)
+  return generateSource(editStack, controlData, template, otherYAMLTabs)
 }
 
 // update edit stack after the user types something into the editor
@@ -118,12 +117,12 @@ const intializeControls = (editStack, controlData) => {
   editStack.initialized = true
 }
 
-const generateSource = (editStack, controlData, template, otherYAMLTabs, editorYaml) => {
+const generateSource = (editStack, controlData, template, otherYAMLTabs) => {
   const { customResources, deletedLinks, customIdMap } = editStack
 
   // set immutable values
-  const immutablePaths = getImmutablePaths(controlData)
-  setImmutableValues(immutablePaths, customResources)
+  const immutables = getImmutables(controlData)
+  setImmutableValues(immutables, customResources)
 
   // get the next iteration of template changes
   const { templateResources, templateObject } = generateSourceFromTemplate(template, controlData, otherYAMLTabs)
@@ -182,12 +181,7 @@ const generateSource = (editStack, controlData, template, otherYAMLTabs, editorY
     })
   }
 
-  // what lines should be readonly in editor
-  let immutableRows = []
-  if (editorYaml) {
-    const results = parseYAML(editorYaml)
-    immutableRows = getImmutableRows(immutablePaths, results.parsed)
-  }
+  const immutableRows = getImmutableRows(immutables, mergedObjects)
 
   return {
     templateYAML,

@@ -62,29 +62,29 @@ export function reverseTemplate(controlData, templateObject, activeTabId) {
 }
 
 // find immutable paths
-export function getImmutablePaths(controlData, immutablePaths) {
-  immutablePaths = immutablePaths || []
-  const findImmutables = (control, immutablePaths) => {
+export function getImmutables(controlData, immutables) {
+  immutables = immutables || []
+  const findImmutables = (control, immutables) => {
     const { type, active = [], immutable } = control
     if (type === 'group') {
       active.forEach((group) => {
         group.forEach((gcontrol) => {
-          findImmutables(gcontrol, immutablePaths)
+          findImmutables(gcontrol, immutables)
         })
       })
     } else if (immutable) {
-      immutablePaths.push({ value: control.active, immutable })
+      immutables.push(immutable)
     }
   }
   controlData.forEach((control) => {
-    findImmutables(control, immutablePaths)
+    findImmutables(control, immutables)
   })
-  return immutablePaths
+  return immutables
 }
 
-// get readonly lines in yaml
-export function setImmutableValues(immutablePaths, resources) {
-  if (immutablePaths.length) {
+// set immutable values
+export function setImmutableValues(immutables, resources) {
+  if (immutables.length) {
     // create an array map
     const parsed = {}
     resources.forEach((resource) => {
@@ -99,17 +99,17 @@ export function setImmutableValues(immutablePaths, resources) {
     })
 
     // set the values
-    immutablePaths.forEach(({ value, immutable }) => {
-      set(parsed, immutable, value)
+    immutables.forEach(({ value, path }) => {
+      set(parsed, path, value)
     })
   }
 }
 
 // get readonly lines in yaml
-export function getImmutableRows(immutablePaths, templateObjects) {
+export function getImmutableRows(immutables, templateObjects) {
   const immutableRows = []
-  immutablePaths.forEach(({ immutable }) => {
-    const path = getSourcePath(immutable)
+  immutables.forEach(({ path: _path }) => {
+    const path = getSourcePath(_path)
     const row = get(templateObjects, path)
     if (row) {
       immutableRows.push(row)
@@ -141,7 +141,7 @@ export function setEditingMode(controlData) {
       // if editing existing app, disable this field
       if (disabled) {
         control.disabled = true
-        control.immutable = control.path
+        control.immutable = { value: control.active, path: control.path }
       }
       // if editing existing app, disable this field
       if (collapsed) {
@@ -158,9 +158,9 @@ export function setEditingMode(controlData) {
   })
 }
 
-export const generateSource = (template, editStack, controlData, otherYAMLTabs, yaml) => {
+export const generateSource = (template, editStack, controlData, otherYAMLTabs) => {
   if (!isEmpty(editStack)) {
-    return generateSourceFromStack(template, editStack, controlData, otherYAMLTabs, yaml)
+    return generateSourceFromStack(template, editStack, controlData, otherYAMLTabs)
   } else {
     return generateSourceFromTemplate(template, controlData, otherYAMLTabs)
   }
