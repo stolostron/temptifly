@@ -5,6 +5,9 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import groupBy from 'lodash/groupBy'
 import { Title, TitleSizes } from '@patternfly/react-core'
+
+import { Gallery, Tile, Stack } from '@patternfly/react-core'
+
 import Tooltip from '../components/Tooltip'
 import isEmpty from 'lodash/isEmpty'
 
@@ -84,22 +87,72 @@ class ControlPanelCards extends React.Component {
                 const groupTooltip = group && control.sectionTooltips?.[group]
                 return (
                   <React.Fragment key={group}>
-                    {group !== 'undefined' && (
-                      <Title headingLevel="h1" size={TitleSizes.xl}>
-                        {group}
-                        {groupTooltip && (
-                          <Tooltip
-                            control={{
-                              controlId: `group-${group}`,
-                              tooltip: groupTooltip,
-                            }}
-                            i18n={i18n}
-                            className="control-panel-cards__group-tooltip"
-                          />
-                        )}
-                      </Title>
-                    )}
-                    <div className={'tf--providers-container tf--row'}>
+                    <Stack>
+                      {group !== 'undefined' && (
+                        <Title headingLevel="h1" size={TitleSizes.xl}>
+                          {group}
+                          {groupTooltip && (
+                            <Tooltip
+                              control={{
+                                controlId: `group-${group}`,
+                                tooltip: groupTooltip,
+                              }}
+                              i18n={i18n}
+                              className="control-panel-cards__group-tooltip"
+                            />
+                          )}
+                        </Title>
+                      )}
+
+                      {/* <Gallery hasGutter>
+                      {options.map((option, index) => (
+                        <Tile
+                          {...option}
+                          key={index}
+                          title={option.text ?? option.value}
+                          isStacked
+                          isSelected={input.value === option.value}
+                          onClick={() => input.onChange(option.value)}
+                          isDisabled={option.value !== input.value && input.isDisabled}
+                          isDisplayLarge
+                          onKeyPress={(event) => {
+                            if (event.key === 'Enter') input.onChange(option.value)
+                          }}
+                        >
+                          {option.description}
+                        </Tile>
+                      ))}
+                    </Gallery> */}
+
+                      <Stack hasGutter style={{ width: '100%' }}>
+                        <Gallery hasGutter>
+                          {cardGroups[group]
+                            .filter((choice) => {
+                              return active.length === 0 || !collapsed || active.includes(choice.id)
+                            })
+                            .map((choice) => {
+                              const { id, hidden, title, logo } = choice
+                              return (
+                                !hidden && (
+                                  <Tile
+                                    key={id}
+                                    title={title}
+                                    icon={logo}
+                                    isSelected={active.includes && active.includes(id)}
+                                    isStacked
+                                    isDisplayLarge
+                                    onClick={this.handleChange.bind(this, id)}
+                                    // i18n={i18n}
+                                  >
+                                    {/* {choice} */}
+                                  </Tile>
+                                )
+                              )
+                            })}
+                        </Gallery>
+                      </Stack>
+
+                      {/* <div className={'tf--providers-container tf--row'}>
                       {cardGroups[group]
                         .filter((choice) => {
                           return active.length === 0 || !collapsed || active.includes(choice.id)
@@ -119,7 +172,8 @@ class ControlPanelCards extends React.Component {
                             )
                           )
                         })}
-                    </div>
+                    </div> */}
+                    </Stack>
                   </React.Fragment>
                 )
               })}
