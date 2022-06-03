@@ -105,7 +105,7 @@ export function setImmutableValues(immutables, resources) {
   }
 }
 
-// get readonly lines in yaml
+// get readonly lines in yaml this
 export function getImmutableRows(immutables, templateObjects) {
   const immutableRows = []
   immutables.forEach(({ path: _path }) => {
