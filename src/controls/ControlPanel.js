@@ -166,7 +166,7 @@ class ControlPanel extends React.Component {
         }
       }
     })
-    // if no steps, just do a form test testing
+    // if no steps, just do a form
     if (steps.length === 0) {
       return this.renderControlForm(sections, controlClasses)
     } else {
