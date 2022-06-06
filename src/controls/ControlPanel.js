@@ -170,7 +170,7 @@ class ControlPanel extends React.Component {
     if (steps.length === 0) {
       return this.renderControlForm(sections, controlClasses)
     } else {
-      // else do a wizard
+      // else do a wizard testing
       return this.renderControlWizard(steps, controlClasses, controlData)
     }
   }
