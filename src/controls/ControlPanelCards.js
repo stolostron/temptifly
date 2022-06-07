@@ -4,8 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import groupBy from 'lodash/groupBy'
-import { Title, TitleSizes } from '@patternfly/react-core'
-import { Gallery, Tile, Stack } from '@patternfly/react-core'
+import { Title, TitleSizes, Gallery, Tile, Stack } from '@patternfly/react-core'
 import Tooltip from '../components/Tooltip'
 import isEmpty from 'lodash/isEmpty'
 
@@ -112,12 +111,14 @@ class ControlPanelCards extends React.Component {
                               return (
                                 !hidden && (
                                   <Tile
+                                    id={id}
                                     key={id}
                                     title={title}
                                     icon={logo}
                                     isSelected={active.includes && active.includes(id)}
                                     isStacked
                                     isDisplayLarge
+                                    data-testid={`card-${id}`}
                                     onClick={this.handleChange.bind(this, id)}
                                   >
                                     {tooltip && (
