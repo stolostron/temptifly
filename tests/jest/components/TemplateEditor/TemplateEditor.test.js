@@ -12,7 +12,7 @@ import controlData from '../../../../example/controlData/ControlData'
 export const portals = Object.freeze({
   cancelBtn: 'cancel-button-portal-id',
   createBtn: 'create-button-portal-id',
-  editBtn: 'edit-button-portal-id'
+  editBtn: 'edit-button-portal-id',
 })
 
 const i18n = (key) => {
@@ -28,9 +28,8 @@ class ResizeObserver {
   }
 }
 
-describe('TemplateEditor component',() => {
-  it('renders as expected',  async () => {
-
+describe('TemplateEditor component', () => {
+  it('renders as expected', async () => {
     jest.setTimeout(30000)
 
     window.ResizeObserver = ResizeObserver
@@ -39,7 +38,7 @@ describe('TemplateEditor component',() => {
     const createResource = (json) => {
       expect(json).toMatchSnapshot()
     }
-    const createControl={
+    const createControl = {
       createResource,
     }
     const Component = () => {
@@ -66,7 +65,7 @@ describe('TemplateEditor component',() => {
     // text
     userEvent.type(getByTestId('text-eman'), 'test')
     // card
-    userEvent.click(getByTestId('card-cluster.create.baremetal.subtitle'))
+    userEvent.click(getByTestId('card-BMC'))
 
     // combobox
     await waitFor(() => expect(screen.getByTestId('combo-imageSet')).toBeInTheDocument())
