@@ -66,7 +66,7 @@
   border-right: 3px solid rgba(255, 255, 255, 0);
   cursor: col-resize;
   margin: 0 0 0 5px;
-  background: white;
+  background: var(--pf-c-drawer--m-inline--m-expanded__panel--after--BackgroundColor);
 }
 .pf-c-content .temptifly .pf-c-wizard__toggle-list {
   margin-bottom: 0;

@@ -357,7 +357,7 @@
   top: 2.5rem;
   width: 100%;
   overflow-y: auto;
-  background-color: var(--pf-global--BackgroundColor--300);
+  background-color: var(--pf-global--BackgroundColor--100);
   z-index: 500;
   cursor: pointer;
 }
@@ -614,7 +614,6 @@
 .temptifly-controls-labels-container,
 .creation-view-controls-labels-container {
   min-height: 40px;
-  background-color: white;
   box-shadow: 0 1px 0 0 #5a6872;
   display: flex;
   flex-wrap: wrap;
