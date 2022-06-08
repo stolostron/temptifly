@@ -361,7 +361,7 @@ exports[`TemplateEditor component renders as expected 1`] = `
                                           <div
                                             class="pf-c-tile pf-m-selected pf-m-display-lg"
                                             data-testid="card-BMC"
-                                            id="BMC"
+                                            id="cluster.create.baremetal.subtitle"
                                             tabindex="0"
                                           >
                                             <div
