@@ -147,7 +147,6 @@
 }
 .temptifly-controls-title-main,
 .creation-view-controls-title-main {
-  color: #004080;
   font-weight: normal;
   font-size: 16px;
   padding: 16px 0;
@@ -158,7 +157,6 @@
 }
 .temptifly-controls-title-main.subtitle,
 .creation-view-controls-title-main.subtitle {
-  color: #5a6872;
   font-size: 16px;
 }
 .temptifly-controls-title-main-collapse-button,
@@ -170,7 +168,7 @@
   margin: 0 6px;
   width: 16px;
   height: 16px;
-  fill: #151515;
+  fill: var(--pf-global--Color--100);
   transition: all 100ms;
   transform: rotate(90deg);
 }
@@ -206,7 +204,6 @@
 }
 .temptifly-controls-title-normal,
 .creation-view-controls-title-normal {
-  color: #151515;
   font-weight: normal;
   font-size: 14px;
   padding: 0 0 8px;
@@ -353,14 +350,14 @@
 .creation-view-controls-combobox .tf--list-box .tf--list-box__menu,
 .temptifly-controls-treeselect .tf--list-box .tf--list-box__menu,
 .creation-view-controls-treeselect .tf--list-box .tf--list-box__menu {
-  box-shadow: rgba(3, 3, 3, 0.12) 0px 4px 8px 0px, rgba(3, 3, 3, 0.06) 0px 0px 4px 0px;
+  box-shadow: var(--pf-global--BoxShadow--md);
   position: absolute;
   left: 0;
   right: 0;
   top: 2.5rem;
   width: 100%;
   overflow-y: auto;
-  background-color: #fff;
+  background-color: var(--pf-global--BackgroundColor--100);
   z-index: 500;
   cursor: pointer;
 }
@@ -617,7 +614,6 @@
 .temptifly-controls-labels-container,
 .creation-view-controls-labels-container {
   min-height: 40px;
-  background-color: white;
   box-shadow: 0 1px 0 0 #5a6872;
   display: flex;
   flex-wrap: wrap;
@@ -778,7 +774,7 @@
 .creation-view-controls .creation-view-group-container {
   position: relative;
   border: 1px solid #dfe0e3;
-  background: white;
+  background: var(--pf-global--BackgroundColor--400);
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
   padding: 10px;
   margin: 10px 0;
