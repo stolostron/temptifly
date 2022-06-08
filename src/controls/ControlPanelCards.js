@@ -111,7 +111,7 @@ class ControlPanelCards extends React.Component {
                               return (
                                 !hidden && (
                                   <Tile
-                                    id={id}
+                                    id={title.replace(/\s+/g, '-').toLowerCase()}
                                     key={id}
                                     title={title}
                                     icon={logo}
