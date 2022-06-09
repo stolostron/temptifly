@@ -141,7 +141,7 @@ export function setEditingMode(controlData) {
       // if editing existing app, disable this field
       if (disabled) {
         control.disabled = true
-        control.immutable = control.path
+        control.immutable = { value: control.active, path: control.path }
       }
       // if editing existing app, disable this field
       if (collapsed) {
