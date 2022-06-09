@@ -860,7 +860,16 @@
 .creation-view-controls.showEditor .creation-view-controls-card-container {
   margin-bottom: 20px;
 }
-.temptifly-controls.showEditor .tf--grid,
+
+.creation-view-controls-card-container .pf-c-tile.pf-m-display-lg {
+  min-height: 140px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.pf-c-tile.pf-m-display-lg .temptifly-controls.showEditor .tf--grid,
 .creation-view-controls.showEditor .tf--grid,
 .temptifly-controls .tf--grid-container .tf--grid,
 .creation-view-controls .tf--grid-container .tf--grid {
