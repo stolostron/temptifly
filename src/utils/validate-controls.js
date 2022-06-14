@@ -274,8 +274,8 @@ const attachEditorToExceptions = (exceptions, editors, inx) => {
 
 const shouldValidateControl = (control) => {
   let required = false
-  const { sourcePath, validation, active } = control
-  if (sourcePath && validation) {
+  const { validation, active } = control
+  if (validation) {
     ;({ required } = validation)
     if (!required) {
       // if not required, only validate if that yaml path exists
@@ -289,6 +289,7 @@ const validateTextControl = (control, templateObjectMap, templateExceptionMap, i
   const {
     id,
     name,
+    availableMap,
     sourcePathMap,
     validation: { contextTester, tester, notification },
     template,
@@ -308,6 +309,9 @@ const validateTextControl = (control, templateObjectMap, templateExceptionMap, i
     }
   }
   control.active = active
+  if (availableMap && typeof availableMap[active] === 'string') {
+    active = availableMap[active]
+  }
   if (active === undefined) {
     addExceptions(undefined, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n)
   } else if (active || isFinalValidate) {
@@ -359,8 +363,8 @@ const validateCheckboxControl = (control, templateObjectMap, templateExceptionMa
   if (!active) {
     addExceptions(undefined, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n)
   }
-  if (available.indexOf(active) === -1) {
-    control.exception = i18n('validation.bad.value', [getKey(''), available.join(', ')])
+  if (Array.isArray(available) && available.length && available.indexOf(active) === -1) {
+    control.exception = i18n('validation.bad.value', [getKey([]), available.join(', ')])
     addExceptions(control.exception, sourcePathMap, templateExceptionMap, templateObjectMap, controlId, ref, i18n)
   }
 }

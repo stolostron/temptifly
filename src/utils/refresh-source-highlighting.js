@@ -230,7 +230,7 @@ export const highlightAllChanges = (editors, oldYAML, newYAML, otherYAMLTabs, se
 }
 
 export const highlightImmutables = (editors, immutableRows) => {
-  if (editors.length > 0 && immutableRows.length > 0) {
+  if (editors.length > 0) {
     const editor = editors[0]
     const decorationList = []
     immutableRows.forEach((obj) => {
@@ -240,14 +240,14 @@ export const highlightImmutables = (editors, immutableRows) => {
           inlineClassName: 'protectedDecoration',
         },
       })
-      setTimeout(() => {
-        editor.immutableList = decorationList
-        editor.decorations = editor.deltaDecorations(editor.decorations, [
-          ...(editor.errorList || []),
-          ...(editor.changeList || []),
-          ...editor.immutableList,
-        ])
-      }, 0)
     })
+    setTimeout(() => {
+      editor.immutableList = decorationList
+      editor.decorations = editor.deltaDecorations(editor.decorations, [
+        ...(editor.errorList || []),
+        ...(editor.changeList || []),
+        ...editor.immutableList,
+      ])
+    }, 0)
   }
 }

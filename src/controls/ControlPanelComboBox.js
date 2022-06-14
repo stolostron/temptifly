@@ -24,12 +24,15 @@ class ControlPanelComboBox extends React.Component {
     const { control, handleControlChange } = props
     const handleComboChange = (selectedItem) => {
       control.active = (selectedItem || '').trim()
-      handleControlChange()
+      if (control.lastActive !== control.active) {
+        control.lastActive = control.active
+        handleControlChange()
+      }
     }
     const { active } = control
     const { currentSelection } = state
     let { isOpen, preselect, searchText } = state
-    const { isBlurred } = state
+    const { isBlurred, typedText } = state
 
     /////////////////////////////////////////////////////////////
     // search mode
@@ -68,6 +71,7 @@ class ControlPanelComboBox extends React.Component {
       isOpen = false
       preselect = false
     } else if (isBlurred && !preselect) {
+      handleComboChange(typedText)
       isOpen = false
     }
     return {
@@ -258,7 +262,12 @@ class ControlPanelComboBox extends React.Component {
                             e.target.select()
                           }
                         }}
-                        onChange={(evt) => this.setState({ searchText: evt.currentTarget.value })}
+                        onChange={(evt) => {
+                          this.setState({
+                            searchText: evt.currentTarget.value,
+                            typedText: evt.currentTarget.value,
+                          })
+                        }}
                         data-testid={`combo-${controlId}`}
                       />
                     </div>

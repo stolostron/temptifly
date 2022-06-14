@@ -11,6 +11,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import capitalize from 'lodash/capitalize'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
+import set from 'lodash/set'
 
 export const ControlMode = Object.freeze({
   TABLE_ONLY: 'TABLE_ONLY',
@@ -60,29 +61,61 @@ export function reverseTemplate(controlData, templateObject, activeTabId) {
   })
 }
 
-//get readonly lines in yaml
-export function discoverImmutables(controlData, templateObject, immutableObjs) {
-  immutableObjs = immutableObjs || []
-  const findImmutables = (control) => {
+// find immutable paths
+export function getImmutables(controlData, immutables) {
+  immutables = immutables || []
+  const findImmutables = (control, immutables) => {
     const { type, active = [], immutable } = control
     if (type === 'group') {
       active.forEach((group) => {
         group.forEach((gcontrol) => {
-          findImmutables(gcontrol)
+          findImmutables(gcontrol, immutables)
         })
       })
     } else if (immutable) {
-      const path = getSourcePath(immutable)
-      const row = get(templateObject, path)
-      if (row) {
-        immutableObjs.push(row)
-      }
+      immutables.push(immutable)
     }
   }
   controlData.forEach((control) => {
-    findImmutables(control)
+    findImmutables(control, immutables)
   })
-  return immutableObjs
+  return immutables
+}
+
+// set immutable values
+export function setImmutableValues(immutables, resources) {
+  if (immutables.length) {
+    // create an array map
+    const parsed = {}
+    resources.forEach((resource) => {
+      if (!isEmpty(resource)) {
+        const key = get(resource, 'kind', 'unknown')
+        let values = parsed[key]
+        if (!values) {
+          values = parsed[key] = []
+        }
+        values.push(resource)
+      }
+    })
+
+    // set the values
+    immutables.forEach(({ value, path }) => {
+      set(parsed, path, value)
+    })
+  }
+}
+
+// get readonly lines in yaml
+export function getImmutableRows(immutables, templateObjects) {
+  const immutableRows = []
+  immutables.forEach(({ path: _path }) => {
+    const path = getSourcePath(_path)
+    const row = get(templateObjects, path)
+    if (row) {
+      immutableRows.push(row)
+    }
+  })
+  return immutableRows
 }
 
 // reverse control active valuess from template
@@ -108,7 +141,7 @@ export function setEditingMode(controlData) {
       // if editing existing app, disable this field
       if (disabled) {
         control.disabled = true
-        control.immutable = control.path
+        control.immutable = { value: control.active, path: control.path }
       }
       // if editing existing app, disable this field
       if (collapsed) {
