@@ -4,7 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import groupBy from 'lodash/groupBy'
-import { Title, TitleSizes } from '@patternfly/react-core'
+import { Title, TitleSizes, Gallery, Tile, Stack } from '@patternfly/react-core'
 import Tooltip from '../components/Tooltip'
 import isEmpty from 'lodash/isEmpty'
 
@@ -80,49 +80,65 @@ class ControlPanelCards extends React.Component {
         <div className="creation-view-controls-card-container" ref={this.setControlRef.bind(this, control)}>
           <div className={gridClasses}>
             <div className={'tf--grid'}>
-              {Object.keys(cardGroups).map((group) => {
-                const groupTooltip = group && control.sectionTooltips?.[group]
-                return (
-                  <React.Fragment key={group}>
-                    {group !== 'undefined' && (
-                      <Title headingLevel="h1" size={TitleSizes.xl}>
-                        {group}
-                        {groupTooltip && (
-                          <Tooltip
-                            control={{
-                              controlId: `group-${group}`,
-                              tooltip: groupTooltip,
-                            }}
-                            i18n={i18n}
-                            className="control-panel-cards__group-tooltip"
-                          />
-                        )}
-                      </Title>
-                    )}
-                    <div className={'tf--providers-container tf--row'}>
-                      {cardGroups[group]
-                        .filter((choice) => {
-                          return active.length === 0 || !collapsed || active.includes(choice.id)
-                        })
-                        .map((choice) => {
-                          const { id, hidden } = choice
-                          return (
-                            !hidden && (
-                              <ControlPanelCard
-                                key={id}
-                                type={id}
-                                selected={active.includes && active.includes(id)}
-                                choice={choice}
-                                handleOnClick={this.handleChange.bind(this, id)}
+              <Stack hasGutter>
+                {Object.keys(cardGroups).map((group) => {
+                  const groupTooltip = group && control.sectionTooltips?.[group]
+                  return (
+                    <React.Fragment key={group}>
+                      <Stack hasGutter>
+                        {group !== 'undefined' && (
+                          <Title headingLevel="h1" size={TitleSizes.xl}>
+                            {group}
+                            {groupTooltip && (
+                              <Tooltip
+                                control={{
+                                  controlId: `group-${group}`,
+                                  tooltip: groupTooltip,
+                                }}
                                 i18n={i18n}
+                                className="control-panel-cards__group-tooltip"
                               />
-                            )
-                          )
-                        })}
-                    </div>
-                  </React.Fragment>
-                )
-              })}
+                            )}
+                          </Title>
+                        )}
+                        <Gallery hasGutter>
+                          {cardGroups[group]
+                            .filter((choice) => {
+                              return active.length === 0 || !collapsed || active.includes(choice.id)
+                            })
+                            .map((choice) => {
+                              const { id, hidden, title, tooltip, text, logo } = choice
+                              const cardId = title.replace(/\s+/g, '-').toLowerCase()
+                              const testId = `card-${cardId}`
+                              return (
+                                !hidden && (
+                                  <Tile
+                                    id={cardId}
+                                    key={id}
+                                    title={title}
+                                    icon={logo}
+                                    isSelected={active.includes && active.includes(id)}
+                                    isStacked
+                                    isDisplayLarge
+                                    data-testid={testId}
+                                    onClick={this.handleChange.bind(this, id)}
+                                  >
+                                    {tooltip && (
+                                      <div className="card-tooltip-container">
+                                        <Tooltip control={{ tooltip }} />
+                                      </div>
+                                    )}
+                                    {text && <div className="control-panel-cards__extra-text">{text}</div>}
+                                  </Tile>
+                                )
+                              )
+                            })}
+                        </Gallery>
+                      </Stack>
+                    </React.Fragment>
+                  )
+                })}
+              </Stack>
             </div>
           </div>
         </div>
@@ -141,66 +157,6 @@ class ControlPanelCards extends React.Component {
     }
     this.props.handleChange(collapsed ? null : id)
   }
-}
-
-const ControlPanelCard = ({ choice, handleOnClick, type, selected, i18n }) => {
-  const { disabled, logo, title, tooltip, learnMore, text } = choice
-  const cardClasses = classNames({
-    'tf--create-cluster-page__provider-card': true,
-    'tf--create-cluster-page__provider-card-isSelected': selected,
-  })
-  const wrapperClasses = classNames('tf--provider-card', {
-    'tf--provider-card-isDisabled': disabled,
-  })
-  const handleClick = (evt) => {
-    if (!disabled) {
-      handleOnClick(evt, type)
-    }
-  }
-  let image = null
-  switch (typeof logo) {
-    case 'string':
-      image = <img src={logo} alt={title} />
-      break
-    case 'object':
-      image = logo
-      break
-  }
-
-  const id = title.replace(/\s+/g, '-').toLowerCase()
-  return (
-    <div
-      className={wrapperClasses}
-      id={id}
-      role="button"
-      onClick={handleClick}
-      tabIndex="0"
-      aria-label={title}
-      onKeyDown={handleClick}
-      data-testid={`card-${id}`}
-    >
-      <div className={'tf--provider-card-container'}>
-        <div className={cardClasses}>
-          <div>{image}</div>
-          <div>{title}</div>
-          {text && <div className="control-panel-cards__extra-text">{text}</div>}
-        </div>
-        {tooltip && !selected && (
-          <div className="card-tooltip-container">
-            <Tooltip control={{ tooltip, learnMore }} i18n={i18n} />
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
-ControlPanelCard.propTypes = {
-  choice: PropTypes.object,
-  handleOnClick: PropTypes.func,
-  i18n: PropTypes.func,
-  selected: PropTypes.bool,
-  type: PropTypes.string,
 }
 
 export default ControlPanelCards

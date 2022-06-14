@@ -82,11 +82,6 @@ $acm_background_color: #f0f0f0 !default;
     background-color: #e0e0e0;
   }
 
-  .pf-c-form-control.disabled,
-  .pf-c-form-control:disabled {
-    background-color: #e0e0e0;
-  }
-
   .pf-c-form-control {
     &.input {
       padding: 0;
@@ -157,7 +152,6 @@ $acm_background_color: #f0f0f0 !default;
       }
 
       &-main {
-        color: #004080;
         font-weight: normal;
         font-size: 16px;
         padding: 16px 0;
@@ -167,7 +161,6 @@ $acm_background_color: #f0f0f0 !default;
         line-height: 28px;
 
         &.subtitle {
-          color: $color__navy-gray-6;
           font-size: 16px;
         }
 
@@ -178,7 +171,6 @@ $acm_background_color: #f0f0f0 !default;
             margin: 0 6px;
             width: 16px;
             height: 16px;
-            fill: #151515;
             transition: all 100ms;
             transform: rotate(90deg);
           }
@@ -216,7 +208,6 @@ $acm_background_color: #f0f0f0 !default;
       }
 
       &-normal {
-        color: #151515;
         font-weight: normal;
         font-size: 14px;
         padding: 0 0 8px;
@@ -318,14 +309,14 @@ $acm_background_color: #f0f0f0 !default;
         }
 
         .tf--list-box__menu {
-          box-shadow: rgba(3, 3, 3, 0.12) 0px 4px 8px 0px, rgba(3, 3, 3, 0.06) 0px 0px 4px 0px;
+          box-shadow: var(--pf-global--BoxShadow--md);
           position: absolute;
           left: 0;
           right: 0;
           top: 2.5rem;
           width: 100%;
           overflow-y: auto;
-          background-color: #fff;
+          background-color: var(--pf-global--BackgroundColor--100);
           z-index: 500;
           cursor: pointer;
 
@@ -540,7 +531,6 @@ $acm_background_color: #f0f0f0 !default;
 
       &-container {
         min-height: 40px;
-        background-color: white;
         box-shadow: 0 1px 0 0 #5a6872;
         display: flex;
         flex-wrap: wrap;
@@ -642,7 +632,7 @@ $acm_background_color: #f0f0f0 !default;
       position: relative;
       border: 1px solid #dfe0e3;
       background: white;
-      box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+      box-shadow: var(--pf-global--BackgroundColor--400);
       padding: 10px;
       margin: 10px 0;
 
@@ -736,6 +726,14 @@ $acm_background_color: #f0f0f0 !default;
     &.showEditor {
       .creation-view-controls-card-container {
         margin-bottom: 20px;
+
+        .pf-c-tile.pf-m-display-lg {
+          min-height: 140px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+        }
       }
     }
 

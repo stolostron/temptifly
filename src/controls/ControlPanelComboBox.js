@@ -24,7 +24,10 @@ class ControlPanelComboBox extends React.Component {
     const { control, handleControlChange } = props
     const handleComboChange = (selectedItem) => {
       control.active = (selectedItem || '').trim()
-      handleControlChange()
+      if (control.lastActive !== control.active) {
+        control.lastActive = control.active
+        handleControlChange()
+      }
     }
     const { active } = control
     const { currentSelection } = state
