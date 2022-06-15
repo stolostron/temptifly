@@ -72,12 +72,6 @@
   height: 40px;
   background-color: #e0e0e0;
 }
-.temptifly .pf-c-form-control.disabled,
-.creation-view .pf-c-form-control.disabled,
-.temptifly .pf-c-form-control:disabled,
-.creation-view .pf-c-form-control:disabled {
-  background-color: #e0e0e0;
-}
 .temptifly .pf-c-form-control.input,
 .creation-view .pf-c-form-control.input {
   padding: 0;

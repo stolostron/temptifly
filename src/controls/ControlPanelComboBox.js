@@ -535,6 +535,7 @@ class ControlPanelComboBox extends React.Component {
     this.setState({ searchText: null })
     const { control, handleControlChange } = this.props
     control.active = ''
+    control.lastActive = ''
     handleControlChange()
   }
 }
