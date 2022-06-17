@@ -45,21 +45,23 @@ exports[`ControlPanelLabels component renders as expected 1`] = `
       <div
         class="pf-c-form__group-control"
       >
-        <div
-          class="creation-view-controls-labels-container"
-        >
+        <div>
           <div
-            class="creation-view-controls-labels-edit-container"
+            class="creation-view-controls-labels-container"
           >
-            <input
-              aria-invalid="false"
-              class="pf-c-form-control"
-              data-testid="label-controlId"
-              id="controlId"
-              placeholder="enter.add.label"
-              type="text"
-              value=""
-            />
+            <div
+              class="creation-view-controls-labels-edit-container"
+            >
+              <input
+                aria-invalid="false"
+                class="pf-c-form-control"
+                data-testid="label-controlId"
+                id="controlId"
+                placeholder="enter.add.label"
+                type="text"
+                value=""
+              />
+            </div>
           </div>
         </div>
       </div>

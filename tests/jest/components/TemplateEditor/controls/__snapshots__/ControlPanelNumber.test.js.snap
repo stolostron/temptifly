@@ -45,21 +45,50 @@ exports[`ControlPanelNumber component renders as expected 1`] = `
       <div
         class="pf-c-form__group-control"
       >
-        <div
-          class="pf-c-number-input"
-        >
+        <div>
           <div
-            class="pf-c-input-group"
+            class="pf-c-number-input"
           >
-            <button
-              aria-label="Minus"
-              class="pf-c-button pf-m-control"
-              data-testid="down-controlId"
-              style="line-height: 16px;"
-              type="button"
+            <div
+              class="pf-c-input-group"
             >
-              <span
-                class="pf-c-number-input__icon"
+              <button
+                aria-label="Minus"
+                class="pf-c-button pf-m-control"
+                data-testid="down-controlId"
+                style="line-height: 16px;"
+                type="button"
+              >
+                <span
+                  class="pf-c-number-input__icon"
+                >
+                  <svg
+                    height="16"
+                    role="img"
+                    viewBox="0 0 24 24"
+                    width="16"
+                  >
+                    <path
+                      d="M0 10h24v4h-24z"
+                    />
+                  </svg>
+                </span>
+              </button>
+              <input
+                aria-label="Number input"
+                class="pf-c-form-control"
+                data-testid="number-controlId"
+                name="number-input-default-name"
+                pattern="[0-9]*"
+                type="number"
+                value=""
+              />
+              <button
+                aria-label="Plus"
+                class="pf-c-button pf-m-control"
+                data-testid="up-controlId"
+                style="line-height: 16px;"
+                type="button"
               >
                 <svg
                   height="16"
@@ -68,38 +97,11 @@ exports[`ControlPanelNumber component renders as expected 1`] = `
                   width="16"
                 >
                   <path
-                    d="M0 10h24v4h-24z"
+                    d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"
                   />
                 </svg>
-              </span>
-            </button>
-            <input
-              aria-label="Number input"
-              class="pf-c-form-control"
-              data-testid="number-controlId"
-              name="number-input-default-name"
-              pattern="[0-9]*"
-              type="number"
-              value=""
-            />
-            <button
-              aria-label="Plus"
-              class="pf-c-button pf-m-control"
-              data-testid="up-controlId"
-              style="line-height: 16px;"
-              type="button"
-            >
-              <svg
-                height="16"
-                role="img"
-                viewBox="0 0 24 24"
-                width="16"
-              >
-                <path
-                  d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"
-                />
-              </svg>
-            </button>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -153,21 +155,50 @@ exports[`ControlPanelNumber component renders as expected 2`] = `
       <div
         class="pf-c-form__group-control"
       >
-        <div
-          class="pf-c-number-input"
-        >
+        <div>
           <div
-            class="pf-c-input-group"
+            class="pf-c-number-input"
           >
-            <button
-              aria-label="Minus"
-              class="pf-c-button pf-m-control"
-              data-testid="down-controlId"
-              style="line-height: 16px;"
-              type="button"
+            <div
+              class="pf-c-input-group"
             >
-              <span
-                class="pf-c-number-input__icon"
+              <button
+                aria-label="Minus"
+                class="pf-c-button pf-m-control"
+                data-testid="down-controlId"
+                style="line-height: 16px;"
+                type="button"
+              >
+                <span
+                  class="pf-c-number-input__icon"
+                >
+                  <svg
+                    height="16"
+                    role="img"
+                    viewBox="0 0 24 24"
+                    width="16"
+                  >
+                    <path
+                      d="M0 10h24v4h-24z"
+                    />
+                  </svg>
+                </span>
+              </button>
+              <input
+                aria-label="Number input"
+                class="pf-c-form-control"
+                data-testid="number-controlId"
+                name="number-input-default-name"
+                pattern="[0-9]*"
+                type="number"
+                value="0"
+              />
+              <button
+                aria-label="Plus"
+                class="pf-c-button pf-m-control"
+                data-testid="up-controlId"
+                style="line-height: 16px;"
+                type="button"
               >
                 <svg
                   height="16"
@@ -176,43 +207,16 @@ exports[`ControlPanelNumber component renders as expected 2`] = `
                   width="16"
                 >
                   <path
-                    d="M0 10h24v4h-24z"
+                    d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"
                   />
                 </svg>
-              </span>
-            </button>
-            <input
-              aria-label="Number input"
-              class="pf-c-form-control"
-              data-testid="number-controlId"
-              name="number-input-default-name"
-              pattern="[0-9]*"
-              type="number"
-              value="0"
-            />
-            <button
-              aria-label="Plus"
-              class="pf-c-button pf-m-control"
-              data-testid="up-controlId"
-              style="line-height: 16px;"
-              type="button"
-            >
-              <svg
-                height="16"
-                role="img"
-                viewBox="0 0 24 24"
-                width="16"
-              >
-                <path
-                  d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"
-                />
-              </svg>
-            </button>
+              </button>
+            </div>
           </div>
+          <div
+            style="border-top: 1.75px solid red; padding-bottom: 6px; max-width: 400px;"
+          />
         </div>
-        <div
-          style="border-top: 1.75px solid red; padding-bottom: 6px; max-width: 400px;"
-        />
         <div
           aria-live="polite"
           class="pf-c-form__helper-text pf-m-error"

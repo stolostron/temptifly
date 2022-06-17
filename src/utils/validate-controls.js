@@ -246,6 +246,7 @@ const validateControl = (control, controlData, templateObjectMap, templateExcept
         validateTextControl(control, templateObjectMap, templateExceptionMap, isFinalValidate, i18n)
         break
       case 'checkbox':
+      case 'radio':
         validateCheckboxControl(control, templateObjectMap, templateExceptionMap, i18n)
         break
       case 'cards':

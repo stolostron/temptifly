@@ -184,7 +184,6 @@ class ControlPanel extends React.Component {
           {this.renderNotifications(true)}
           <div className="content">{this.renderControlSections(sections)}</div>
         </div>
-        <div className="creation-view-controls-container-blurr bottom" ref={this.setCreationViewBottomBlurrRef} />
       </React.Fragment>
     )
   }
@@ -550,6 +549,7 @@ class ControlPanel extends React.Component {
           />
         )
       case 'checkbox':
+      case 'radio':
         return (
           <ControlPanelCheckbox
             key={controlId}

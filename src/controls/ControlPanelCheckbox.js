@@ -2,7 +2,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Checkbox } from '@patternfly/react-core'
+import { Checkbox, Radio } from '@patternfly/react-core'
 import ControlPanelFormGroup from './ControlPanelFormGroup'
 
 class ControlPanelCheckbox extends React.Component {
@@ -23,13 +23,14 @@ class ControlPanelCheckbox extends React.Component {
 
   render() {
     const { controlId, control, handleChange } = this.props
-    const { name, active, tip, disabled = false } = control
+    const { name, active, type, tip, disabled = false } = control
 
     const onChange = () => {
       control.active = !active
       handleChange()
     }
 
+    const Input = type === 'radio' ? Radio : Checkbox
     return (
       <React.Fragment>
         <div
@@ -38,7 +39,7 @@ class ControlPanelCheckbox extends React.Component {
           ref={this.setControlRef.bind(this, control)}
         >
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Checkbox
+            <Input
               aria-label={name}
               id={controlId}
               isChecked={typeof active === 'boolean' ? active : active === 'true'}

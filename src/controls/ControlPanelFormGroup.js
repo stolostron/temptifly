@@ -15,7 +15,7 @@ class ControlPanelFormGroup extends React.Component {
 
   render() {
     const { controlId, control, showTip, children } = this.props
-    const { name, exception, tooltip, tip, validation = {}, icon } = control
+    const { name, exception, opaque, tooltip, tip, validation = {}, icon } = control
 
     const validated = exception ? 'error' : undefined
     return (
@@ -46,8 +46,10 @@ class ControlPanelFormGroup extends React.Component {
             )
           }
         >
-          {children}
-          {(showTip === undefined || showTip === true) && tip && <div style={{ fontSize: '14px' }}>{tip}</div>}
+          <div style={opaque ? { pointerEvents: 'none', opacity: 0.3 } : {}}>
+            {children}
+            {(showTip === undefined || showTip === true) && tip && <div style={{ fontSize: '14px' }}>{tip}</div>}
+          </div>
         </FormGroup>
       </React.Fragment>
     )

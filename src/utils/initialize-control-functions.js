@@ -87,6 +87,7 @@ const initialControl = (control, editor) => {
         const getTrueActive = (active) => {
           switch (ctrl.type) {
             case 'checkbox':
+            case 'radio':
               if (!active) {
                 active = { $v: false }
               } else if (active.$v === undefined) {

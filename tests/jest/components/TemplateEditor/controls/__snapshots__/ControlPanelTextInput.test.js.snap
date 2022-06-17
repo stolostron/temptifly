@@ -45,15 +45,17 @@ exports[`ControlPanelTextInput component renders as expected 1`] = `
       <div
         class="pf-c-form__group-control"
       >
-        <input
-          aria-invalid="false"
-          class="pf-c-form-control"
-          data-testid="text-controlId"
-          id="controlId"
-          spellcheck="false"
-          type="text"
-          value=""
-        />
+        <div>
+          <input
+            aria-invalid="false"
+            class="pf-c-form-control"
+            data-testid="text-controlId"
+            id="controlId"
+            spellcheck="false"
+            type="text"
+            value=""
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -72,16 +74,18 @@ exports[`ControlPanelTextInput component renders as expected 2`] = `
       <div
         class="pf-c-form__group-control"
       >
-        <input
-          aria-invalid="true"
-          class="pf-c-form-control"
-          data-testid="text-controlId"
-          id="controlId"
-          placeholder="placeholder"
-          spellcheck="false"
-          type="text"
-          value="n"
-        />
+        <div>
+          <input
+            aria-invalid="true"
+            class="pf-c-form-control"
+            data-testid="text-controlId"
+            id="controlId"
+            placeholder="placeholder"
+            spellcheck="false"
+            type="text"
+            value="n"
+          />
+        </div>
         <div
           aria-live="polite"
           class="pf-c-form__helper-text pf-m-error"
