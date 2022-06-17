@@ -23,10 +23,12 @@ class ControlPanelComboBox extends React.Component {
   static getDerivedStateFromProps(props, state) {
     const { control, handleControlChange } = props
     const handleComboChange = (selectedItem) => {
-      control.active = (selectedItem || '').trim()
-      if (control.lastActive !== control.active) {
-        control.lastActive = control.active
-        handleControlChange()
+      if (!control.disabled) {
+        control.active = (selectedItem || '').trim()
+        if (control.lastActive !== control.active) {
+          control.lastActive = control.active
+          handleControlChange()
+        }
       }
     }
     const { active } = control
@@ -241,7 +243,7 @@ class ControlPanelComboBox extends React.Component {
                   >
                     <div className={inputClasses}>
                       <input
-                        className="pf-c-combo-control"
+                        className="pf-c-combo-control pf-c-form-control"
                         aria-label="ListBox input field"
                         spellCheck="false"
                         role="combobox"

@@ -78,7 +78,6 @@
 }
 .temptifly .pf-c-form-control .pf-c-combo-control,
 .creation-view .pf-c-form-control .pf-c-combo-control {
-  width: 86%;
   height: 100%;
   border: none;
   text-overflow: ellipsis;
@@ -148,6 +147,10 @@
   align-items: center;
   position: relative;
   line-height: 28px;
+}
+.temptifly-controls-title-main.overline,
+.creation-view-controls-title-main.overline {
+  border-top: 4px double #d3caca;
 }
 .temptifly-controls-title-main.subtitle,
 .creation-view-controls-title-main.subtitle {
@@ -757,8 +760,9 @@
   position: relative;
 }
 .temptifly-controls-checkbox .pf-c-form__group-label,
-.creation-view-controls-checkbox .pf-c-form__group-label {
-  padding: 0;
+.creation-view-controls-checkbox .pf-c-form__group-label,
+.creation-view-controls-custom .pf-c-form__group-label {
+  padding: 0 0 0 5px;
 }
 .temptifly-controls-checkbox .pf-c-check__input,
 .creation-view-controls-checkbox .pf-c-check__input {
@@ -767,15 +771,11 @@
 .temptifly-controls .creation-view-group-container,
 .creation-view-controls .creation-view-group-container {
   position: relative;
-  border: 1px solid #dfe0e3;
-  background: var(--pf-global--BackgroundColor--400);
+  border: 1px solid var(--pf-global--BorderColor--300);
+  background-color: var(--pf-global--BackgroundColor--light-200);
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
   padding: 10px;
   margin: 10px 0;
-}
-.temptifly-controls .creation-view-group-container .creation-view-controls-title,
-.creation-view-controls .creation-view-group-container .creation-view-controls-title {
-  margin-bottom: 16px;
 }
 .temptifly-controls .creation-view-group-container .creation-view-controls-title.collapsed,
 .creation-view-controls .creation-view-group-container .creation-view-controls-title.collapsed {
@@ -1070,12 +1070,12 @@
 }
 .temptifly .pf-c-wizard .creation-view-controls .creation-view-controls-title-main-collapse-button,
 .creation-view .pf-c-wizard .creation-view-controls .creation-view-controls-title-main-collapse-button {
-  left: -30px;
+  left: -25px;
 }
 .temptifly .pf-c-wizard .creation-view-controls .creation-view-group-container,
 .creation-view .pf-c-wizard .creation-view-controls .creation-view-group-container {
   border: none;
   box-shadow: none;
-  padding: 0 0 0 12px;
-  margin-left: 10px;
+  padding: 0 0 0 22px;
+  margin-left: 0px;
 }

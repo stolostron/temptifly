@@ -198,6 +198,7 @@ class ControlPanelFinish extends React.Component {
         desc = active
         break
       case 'checkbox':
+      case 'radio':
         term = name
         desc = active ? active.toString() : 'false'
         break

@@ -27,7 +27,7 @@ class ControlPanelAccordion extends React.Component {
 
   render() {
     const { controlId, i18n, control, controlData } = this.props
-    const { tooltip, note, collapsable, collapsed = false, content = [], techPreview } = control
+    const { tooltip, note, overline, collapsable, collapsed = false, content = [], techPreview } = control
     let { title, subtitle, info } = control
     if (typeof title === 'function') {
       title = title(control, controlData, i18n)
@@ -73,6 +73,7 @@ class ControlPanelAccordion extends React.Component {
     const mainTitleClasses = classNames({
       'creation-view-controls-title-main': true,
       subtitle: !!subtitle,
+      overline,
     })
     let summary = []
     this.getSummary(content, summary)
@@ -141,9 +142,11 @@ class ControlPanelAccordion extends React.Component {
                 </div>
               </div>
             )}
-            <div className="creation-view-controls-title-normal-container">
-              {info && <div className="creation-view-controls-title-normal">{info}</div>}
-            </div>
+            {info && (
+              <div className="creation-view-controls-title-normal-container">
+                <div className="creation-view-controls-title-normal">{info}</div>
+              </div>
+            )}
           </div>
         ) : null}
       </React.Fragment>
@@ -163,6 +166,7 @@ class ControlPanelAccordion extends React.Component {
             case 'hidden':
               break
             case 'checkbox':
+            case 'radio':
               summary.push(available ? available[!active ? 0 : 1] : active.toString())
               break
             case 'number':

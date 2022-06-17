@@ -45,80 +45,82 @@ exports[`ControlPanelTreeSelect component renders as expected 1`] = `
       <div
         class="pf-c-form__group-control"
       >
-        <div
-          id="controlId"
-        >
+        <div>
           <div
-            aria-label="Choose an item"
-            class="tf--list-box"
-            role="listbox"
-            tabindex="0"
+            id="controlId"
           >
             <div
-              aria-expanded="false"
-              aria-haspopup="true"
-              aria-label="Open menu"
-              class="pf-c-form-control input"
-              data-toggle="true"
-              role="button"
+              aria-label="Choose an item"
+              class="tf--list-box"
+              role="listbox"
               tabindex="0"
-              type="button"
             >
-              <input
-                aria-controls="controlId-creation.app.name-"
-                aria-expanded="true"
-                aria-label="ListBox input field"
-                autocomplete="new-password"
-                class="pf-c-combo-control"
-                data-testid="tree-controlId"
-                id="controlId-input"
-                placeholder=""
-                role="combobox"
-                spellcheck="false"
-                value="false"
-              />
               <div
-                class="tf--list-box__selection"
-                role="button"
-                style="color: rgb(106, 110, 115);"
-                tabindex="0"
-                title="Clear selected item"
-              >
-                <svg
-                  aria-hidden="true"
-                  fill="currentColor"
-                  height="1em"
-                  role="img"
-                  style="vertical-align: -0.125em;"
-                  viewBox="0 0 512 512"
-                  width="1em"
-                >
-                  <path
-                    d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z"
-                  />
-                </svg>
-              </div>
-              <div
-                class="tf--list-box__menu-icon"
+                aria-expanded="false"
+                aria-haspopup="true"
+                aria-label="Open menu"
+                class="pf-c-form-control input"
+                data-toggle="true"
                 role="button"
                 tabindex="0"
+                type="button"
               >
-                <svg
-                  alt="Open menu"
-                  aria-label="Open menu"
-                  fill-rule="evenodd"
-                  height="5"
-                  role="img"
-                  viewBox="0 0 10 5"
-                  width="10"
+                <input
+                  aria-controls="controlId-creation.app.name-"
+                  aria-expanded="true"
+                  aria-label="ListBox input field"
+                  autocomplete="new-password"
+                  class="pf-c-combo-control"
+                  data-testid="tree-controlId"
+                  id="controlId-input"
+                  placeholder=""
+                  role="combobox"
+                  spellcheck="false"
+                  value="false"
+                />
+                <div
+                  class="tf--list-box__selection"
+                  role="button"
+                  style="color: rgb(106, 110, 115);"
+                  tabindex="0"
+                  title="Clear selected item"
                 >
-                  <title>
-                    Close menu
-                  </title>
-                  <path
-                    d="M0 0l5 4.998L10 0z"
-                  />
-                </svg>
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 512 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z"
+                    />
+                  </svg>
+                </div>
+                <div
+                  class="tf--list-box__menu-icon"
+                  role="button"
+                  tabindex="0"
+                >
+                  <svg
+                    alt="Open menu"
+                    aria-label="Open menu"
+                    fill-rule="evenodd"
+                    height="5"
+                    role="img"
+                    viewBox="0 0 10 5"
+                    width="10"
+                  >
+                    <title>
+                      Close menu
+                    </title>
+                    <path
+                      d="M0 0l5 4.998L10 0z"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
           </div>

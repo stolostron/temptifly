@@ -81,6 +81,7 @@ const initializeControlActive = (type, control) => {
   const { active, available = [] } = control
   switch (type) {
     case 'checkbox':
+    case 'radio':
       control.active = available.indexOf(active) > 0
       break
     case 'number':

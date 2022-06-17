@@ -60,7 +60,9 @@ exports[`ControlPanelCheckbox component renders as expected 1`] = `
         </div>
         <div
           class="pf-c-form__group-control"
-        />
+        >
+          <div />
+        </div>
       </div>
     </div>
     <div
