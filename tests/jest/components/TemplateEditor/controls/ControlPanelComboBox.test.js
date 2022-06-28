@@ -4,8 +4,7 @@ import React from 'react'
 import ControlPanelComboBox from '../../../../../src/controls/ControlPanelComboBox'
 import { render } from '@testing-library/react'
 
-export const control =
-{
+export const control = {
   active: false,
   name: 'creation.app.name',
   tooltip: 'tooltip.creation.app.name',
@@ -14,20 +13,12 @@ export const control =
   type: 'checkbox',
 }
 
-describe('ControlPanelComboBox component', () => {
+describe('ControlPanelComboBox component ', () => {
   it('renders as expected', () => {
     const fn = jest.fn()
 
     const Component = () => {
-      return (
-        <ControlPanelComboBox
-          key={'key'}
-          control={control}
-          controlId={'controlId'}
-          handleChange={fn}
-          i18n={fn}
-        />
-      )
+      return <ControlPanelComboBox key={'key'} control={control} controlId={'controlId'} handleChange={fn} i18n={fn} />
     }
     const { asFragment } = render(<Component />)
     expect(asFragment()).toMatchSnapshot()
